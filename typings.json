@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "body-parser": "registry:npm/body-parser#1.15.2+20160815132839",
+    "cheerio": "registry:npm/cheerio#0.20.0+20160422172414",
+    "express": "registry:npm/express#4.14.0+20160815112707",
+    "mongodb": "registry:npm/mongodb#2.1.0+20160721204323",
+    "request": "registry:npm/request#2.69.0+20160428223725"
+  },
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20160818175514",
+    "q": "registry:dt/q#0.0.0+20160613154756"
+  }
+}

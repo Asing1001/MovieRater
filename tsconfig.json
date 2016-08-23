@@ -1,0 +1,23 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "mapRoot": "",
+        "module": "commonjs",
+        "noEmitOnError": true,
+        "noImplicitAny": false,
+        "outDir": "dist/",
+        "rootDir": ".",
+        "sourceMap": true,
+        "target": "es5"
+    }
+    ,
+    "files": [
+        "typings/index.d.ts",
+        "server.ts",
+        "da.ts",
+        "crawler/yahooCrawler.ts"
+    ]
+}
