@@ -13,11 +13,4 @@
         "sourceMap": true,
         "target": "es5"
     }
-    ,
-    "files": [
-        "typings/index.d.ts",
-        "server.ts",
-        "da.ts",
-        "crawler/yahooCrawler.ts"
-    ]
 }

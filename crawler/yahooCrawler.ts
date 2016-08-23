@@ -1,29 +1,27 @@
 import * as request from "request";
 import * as cheerio from "cheerio";
-import * as express from "express";
-// import * as db from "../db";
-import {DataAccess, Movie} from "../da";
+import {db} from "../db";
 import * as Q from "q";
 
 
 export default function crawlYahoo() {
     const promises = [];
-    const da = new DataAccess();
-    let movieIds = [];
-    da.openDbConnection();
-    da.getMovies().then(movies=>{
-        movieIds =  movies.map((value, index) => value.yahooId)
+    db.getCollection("movies").then(movies => {
+        let movieIds: Array<any> = movies.map((value, index) => value.yahooId)
+        for (let i = 6000; i <= 6009; i++) {
+            if (movieIds.indexOf(i) === -1) {
+                const promise = crawlYahooPage(i);
+                promises.push(promise);
+            }
+        }
+
+        Q.all(promises).then(
+            (result) => {
+                db.insertCollection(result, "movies")
+                console.log(`new movieInfo count:${result.length}, result:${JSON.stringify(result)}`);
+            }
+        );
     });
-    console.log(movieIds);
-
-    for (let i = 6000; i <= 6003; i++) {
-        const promise = crawlYahooPage(i);
-        promises.push(promise);
-    }
-
-    Q.all(promises).then(
-        (result) => da.insertMovies(result)
-    );
 }
 
 function crawlYahooPage(id: number) {
@@ -51,9 +49,7 @@ function crawlYahooPage(id: number) {
             sourceUrl: yahooMovieUrl,
 
         };
-        console.log(movieInfo);
         defer.resolve(movieInfo);
-
     })
     return defer.promise;
 
