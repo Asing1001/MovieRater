@@ -76,5 +76,15 @@ export class db {
         return deferred.promise;
     }
 
-    
+    public static getDocument(query: Object, collectionName: string): any {
+        var deferred = Q.defer();
+        this.dbConnection.collection(collectionName).findOne(query, (err, document) => {
+            assert.equal(err, null);
+            if (err) {
+                deferred.reject(new Error(JSON.stringify(err)));
+            }
+            deferred.resolve(document);
+        });
+        return deferred.promise;
+    }    
 }
