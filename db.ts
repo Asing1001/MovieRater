@@ -3,7 +3,7 @@ import * as assert from "assert";
 import * as Q from "q";
 
 export class db {    
-    static dbUrl: string = 'mongodb://acmLab1001:6RsEeqp9FfKJ@ds145415.mlab.com:45415/movierater';
+    static dbUrl: string = 'mongodb://localhost:27017/movierater';//'mongodb://acmLab1001:6RsEeqp9FfKJ@ds145415.mlab.com:45415/movierater';
     static dbConnection: Db = null;    
 
     public static openDbConnection() {
