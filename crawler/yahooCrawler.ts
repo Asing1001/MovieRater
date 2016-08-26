@@ -3,11 +3,24 @@ import * as cheerio from "cheerio";
 import {db} from "../db";
 import * as Q from "q";
 
+export interface YahooMovie {
+    yahooId: number,
+    chineseTitle: string,
+    englishTitle: string,
+    releaseDate: Date,
+    type: string,
+    runTime: string,
+    director: string,
+    actor: string,
+    launchCompany: string,
+    companyUrl: string,
+    sourceUrl: string
+}
 
-export default function crawlYahoo() {
+export function crawlYahoo() {
     const promises = [];
-    db.getCollection("movies").then(movies => {
-        let movieIds: Array<any> = movies.map((value, index) => value.yahooId)
+    db.getCollection("yahooMovies").then(yahooMovies => {
+        let movieIds: Array<any> = yahooMovies.map(({yahooId}) => yahooId)
         for (let i = 6000; i <= 6009; i++) {
             if (movieIds.indexOf(i) === -1) {
                 const promise = crawlYahooPage(i);
@@ -17,7 +30,7 @@ export default function crawlYahoo() {
 
         Q.all(promises).then(
             (result) => {
-                db.insertCollection(result, "movies")
+                db.insertCollection(result, "yahooMovies")
                 console.log(`new movieInfo count:${result.length}, result:${JSON.stringify(result)}`);
             }
         );

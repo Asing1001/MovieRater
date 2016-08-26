@@ -69,14 +69,14 @@ const QueryType = new GraphQLObjectType({
         allMovies: {
             type: new GraphQLList(MovieType),
             description: 'every movies',
-            resolve: (root, args) => db.getCollection("movies")
+            resolve: (root, args) => db.getCollection("yahooMovies")
         },
         movie: {
             type: MovieType,
             args: {
                 yahooId: { type: new GraphQLNonNull(GraphQLInt) }                
             },
-            resolve: (root, args:any) => db.getDocument({yahooId:args.yahooId},"movies"),
+            resolve: (root, args:any) => db.getDocument({yahooId:args.yahooId},"yahooMovies"),
         },
     }),
 });

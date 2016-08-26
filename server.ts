@@ -3,7 +3,7 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as path from 'path';
 import * as graphqlHTTP from 'express-graphql';
-import crawler from './crawler/yahooCrawler';
+import {crawlYahoo} from './crawler/yahooCrawler';
 import {db} from './db';
 import schema from './schema';
 
@@ -14,14 +14,24 @@ app.set('port', (process.env.PORT || 3000));
 app.get('/test', (req, res) => {
   res.send('test!');
 });
-app.get('/movies', (req, res) => {
-  db.getCollection("movies").then(movies => {
+app.get('/yahooMovies', (req, res) => {
+  db.getCollection("yahooMovies").then(yahooMovies => {
+    res.send(yahooMovies);
+  });
+});
+app.get('/pttPages', (req, res) => {
+  db.getCollection("pttPages").then(pages => {
+    res.send(pages);
+  });
+});
+app.get('/imdbMovies', (req, res) => {
+  db.getCollection("imdbMovies").then(movies => {
     res.send(movies);
   });
 });
 
 db.openDbConnection().then((db)=>{
-  crawler();
+  crawlYahoo();
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));

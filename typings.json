@@ -10,6 +10,7 @@
   "globalDependencies": {
     "express-graphql": "registry:dt/express-graphql#0.0.0+20160626095004",
     "node": "registry:dt/node#6.0.0+20160818175514",
+    "node-fetch": "registry:dt/node-fetch#0.0.0+20160711094047",
     "q": "registry:dt/q#0.0.0+20160613154756"
   }
 }
