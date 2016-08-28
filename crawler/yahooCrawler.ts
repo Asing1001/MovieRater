@@ -7,19 +7,20 @@ export interface YahooMovie {
     yahooId: number,
     chineseTitle: string,
     englishTitle: string,
-    releaseDate: Date,
+    releaseDate: string,
     type: string,
     runTime: string,
     director: string,
     actor: string,
     launchCompany: string,
     companyUrl: string,
-    sourceUrl: string
+    sourceUrl: string,
+    rating: string
 }
 
 export function crawlYahoo() {
     const promises = [];
-    db.getCollection("yahooMovies").then(yahooMovies => {
+    return db.getCollection("yahooMovies").then(yahooMovies => {
         let movieIds: Array<any> = yahooMovies.map(({yahooId}) => yahooId)
         for (let i = 6000; i <= 6009; i++) {
             if (movieIds.indexOf(i) === -1) {
@@ -28,7 +29,7 @@ export function crawlYahoo() {
             }
         }
 
-        Q.all(promises).then(
+        return Q.all(promises).then(
             (result) => {
                 db.insertCollection(result, "yahooMovies")
                 console.log(`new movieInfo count:${result.length}, result:${JSON.stringify(result)}`);
@@ -48,7 +49,7 @@ function crawlYahooPage(id: number) {
         const $ = cheerio.load(html);
         const $movieInfoDiv = $('.text.bulletin');
         const $movieInfoValues = $movieInfoDiv.find('p .dta');
-        const movieInfo = {
+        const movieInfo:YahooMovie = {
             yahooId: id,
             chineseTitle: $movieInfoDiv.find('h4').text(),
             englishTitle: $movieInfoDiv.find('h5').text(),
@@ -60,7 +61,7 @@ function crawlYahooPage(id: number) {
             launchCompany: $movieInfoValues.eq(5).text(),
             companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
             sourceUrl: yahooMovieUrl,
-
+            rating: $('#yuievtautoid-3 em').text()
         };
         defer.resolve(movieInfo);
     })
