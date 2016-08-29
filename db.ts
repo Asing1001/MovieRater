@@ -2,9 +2,9 @@ import {MongoClient, Db} from 'mongodb';
 import * as assert from "assert";
 import * as Q from "q";
 
-export class db {    
+export class db {
     static dbUrl: string = 'mongodb://localhost:27017/movierater';//'mongodb://acmLab1001:6RsEeqp9FfKJ@ds145415.mlab.com:45415/movierater';
-    static dbConnection: Db = null;    
+    static dbConnection: Db = null;
 
     public static openDbConnection() {
         var deferred = Q.defer();
@@ -26,6 +26,19 @@ export class db {
         }
     }
 
+    public static updateDocument(filter: Object, value:Object, collectionName: string): any {
+        var deferred = Q.defer();
+        this.dbConnection.collection(collectionName).updateOne(filter, {$set: value}, (err, result) => {
+            assert.equal(err, null);
+            if (err) {
+                deferred.reject(new Error(JSON.stringify(err)));
+            }
+            deferred.resolve(result);
+        });
+
+        return deferred.promise;
+    }
+
     public static insertDocument(document: any, collectionName: string): any {
         var deferred = Q.defer();
         this.dbConnection.collection(collectionName).insertOne(document, (err, result) => {
@@ -39,16 +52,19 @@ export class db {
         return deferred.promise;
     }
 
-    public static insertCollection(document: any, collectionName: string): any {
+    public static insertCollection(collection: any, collectionName: string): any {
         var deferred = Q.defer();
-        this.dbConnection.collection(collectionName).insert(document, (err, result) => {
-            assert.equal(err, null);
-            if (err) {
-                deferred.reject(new Error(JSON.stringify(err)));
-            }
-            deferred.resolve(result);
-        });
-
+        if (collection && collection.length > 0) {
+            this.dbConnection.collection(collectionName).insert(collection, (err, result) => {
+                assert.equal(err, null);
+                if (err) {
+                    deferred.reject(new Error(JSON.stringify(err)));
+                }
+                deferred.resolve(result);
+            });
+        } else {
+            deferred.resolve();
+        }
         return deferred.promise;
     }
 
@@ -86,5 +102,5 @@ export class db {
             deferred.resolve(document);
         });
         return deferred.promise;
-    }    
+    }
 }

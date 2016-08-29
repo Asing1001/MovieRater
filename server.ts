@@ -31,8 +31,8 @@ app.get('/imdbMovies', (req, res) => {
 });
 
 db.openDbConnection().then((db)=>{
-  crawlYahoo();
-});
+  return crawlYahoo();
+}).then(()=>console.log('crawler done'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
