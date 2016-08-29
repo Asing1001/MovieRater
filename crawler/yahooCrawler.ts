@@ -19,15 +19,17 @@ export interface YahooMovie {
 }
 
 export function crawlYahoo() {
+    const crawlerStatusFilter = { name: "crawlerStatus" };
+    let endYahooId = 6477;
     console.time('crawlYahoo');
-    return db.getCollection("yahooMovies").then(yahooMovies => {
-        let visitedMovieIds: Array<any> = yahooMovies.map(({yahooId}) => yahooId);
+    return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
+        if (crawlerStatus.hasOwnProperty(endYahooId)) {
+            endYahooId = crawlerStatus.endYahooId + 1;
+        }
         const promises = [];
-        for (let i = 6470; i <= 6478; i++) {
-            if (visitedMovieIds.indexOf(i) === -1) {
-                const promise = crawlYahooPage(i);
-                promises.push(promise);
-            }
+        for (let i = endYahooId - 5; i <= endYahooId; i++) {
+            const promise = crawlYahooPage(i);
+            promises.push(promise);
         }
 
         return Q.allSettled(promises);
@@ -40,37 +42,30 @@ export function crawlYahoo() {
             } else {
                 var reason = result.reason;
                 console.error(reason);
-                if(reason.statusCode === 404){
-                    db.updateDocument({name:'crawlerStatus'},{yahooId:reason.yahooId},'config');
-                }
             }
         });
+        let movieIds = yahooMovies.map(({yahooId}) => yahooId);
+        db.updateDocument(crawlerStatusFilter, { endYahooId: Math.max(...movieIds) }, 'configs');
         console.timeEnd('crawlYahoo');
         console.log(`new movieInfo count:${yahooMovies.length}`);
-        return db.insertCollection(yahooMovies, "yahooMovies");
+
+        let promises = yahooMovies.map(yahooMovie => db.updateDocument({ yahooId: yahooMovie.yahooId }, yahooMovie, "yahooMovies"))
+        return Q.all(promises);
     });
 }
 
 export function crawlYahooPage(id: number) {
     const defer = Q.defer();
     const yahooMovieUrl = 'https://tw.movies.yahoo.com/movieinfo_main.html/id=' + id;
-    var req = request({url:yahooMovieUrl,followRedirect :false}, (error, res, body) => {
+    var req = request({ url: yahooMovieUrl, followRedirect: false }, (error, res, body) => {
         if (error) {
-            let reson = {
-                message:`error occur when request ${yahooMovieUrl}, error:${error}`,
-                statusCode:500,
-                yahooId:id
-            }
-            defer.reject(reson);
+            let reason = `error occur when request ${yahooMovieUrl}, error:${error}`;
+            defer.reject(reason);
         }
-        
+
         if (res.headers.location) {
-            let reson = {
-                message:`${yahooMovieUrl} 404 not found`,
-                statusCode:404,
-                yahooId:id
-            }
-            defer.reject(reson);
+            let reason = `${yahooMovieUrl} 404 not found`;
+            defer.reject(reason);
         }
 
         const $ = cheerio.load(body);
@@ -88,7 +83,7 @@ export function crawlYahooPage(id: number) {
             launchCompany: $movieInfoValues.eq(5).text(),
             companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
             sourceUrl: yahooMovieUrl,
-            rating: $('#yuievtautoid-3 em').text()
+            rating: $('#ymvis em').text()
         };
         defer.resolve(movieInfo);
     })
