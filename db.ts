@@ -1,8 +1,8 @@
-import {MongoClient, Db} from 'mongodb';
+import {MongoClient, Db, ReplaceOneOptions} from 'mongodb';
 import * as assert from "assert";
 import * as Q from "q";
 
-export class db {    
+export class db {
     static dbConnection: Db = null;
 
     public static openDbConnection(connectionString) {
@@ -14,7 +14,7 @@ export class db {
                 this.dbConnection = db;
                 deferred.resolve(db);
             });
-        }else{
+        } else {
             deferred.resolve(Db)
         }
         return deferred.promise;
@@ -27,9 +27,9 @@ export class db {
         }
     }
 
-    public static updateDocument(filter: Object, value:Object, collectionName: string): any {
+    public static updateDocument(filter: Object, value: Object, collectionName: string, options:ReplaceOneOptions = { upsert: true }): any {
         var deferred = Q.defer();
-        this.dbConnection.collection(collectionName).updateOne(filter, {$set: value}, (err, result) => {
+        this.dbConnection.collection(collectionName).updateOne(filter, { $set: value }, options, (err, result) => {
             assert.equal(err, null);
             if (err) {
                 deferred.reject(new Error(JSON.stringify(err)));
