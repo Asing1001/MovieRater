@@ -1,8 +1,7 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {crawlImdb} from '../crawler/imdbCrawler';
-import {crawlYahoo,crawlYahooPage} from '../crawler/yahooCrawler';
 import {db} from '../db';
+import {systemSetting} from '../configs/systemSetting'; 
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -12,39 +11,17 @@ chai.use(chaiAsPromised);
 
 describe('db', () => {
   describe('connection', () => {
-    it('should not null when connection string is correct', () =>
-      db.openDbConnection().should.eventually.exist
-    );
+    it('should not null when connection string is correct', function() {
+      this.timeout(5000);
+      return db.openDbConnection(systemSetting.dbUrl).should.eventually.fulfilled
+    });
   });
 
   describe('insertCollection', () => {
     it('should resolve when give empty array', () => db.insertCollection([], 'test').should.be.fulfilled);
   });
-});
 
-describe('Crawler', () => {
-  describe('YahooCrawler', () => {
-    it('should correctly get new data from yahoo', function () {
-      this.timeout(20000);
-      return crawlYahoo().then(() => {
-        return db.getCollection("yahooMovies").then((yahooMovies) =>
-          expect(yahooMovies.length).to.be.above(0)
-        )
-      })
-    });
-  });
-
-  describe('crawlYahooPage', () => {
-    it('should reject when yahooid not exist', function () {
-      this.timeout(20000);
-      return crawlYahooPage(99999).should.eventually.rejected;
-    });
-  });
-
-  describe('crawlYahooPage', () => {
-    it('should resolve when yahooid exist', function () {
-      this.timeout(20000);
-      return crawlYahooPage(6470).should.eventually.fulfilled;
-    });
+  describe('updateDocument', () => {
+    it('should resolve when update object not exist', () =>db.updateDocument({name:'crawlerStatus'},{yahooId:6478},'configs').should.be.fulfilled)
   });
 });

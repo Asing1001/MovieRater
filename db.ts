@@ -2,19 +2,20 @@ import {MongoClient, Db} from 'mongodb';
 import * as assert from "assert";
 import * as Q from "q";
 
-export class db {
-    static dbUrl: string = 'mongodb://localhost:27017/movierater';//'mongodb://acmLab1001:6RsEeqp9FfKJ@ds145415.mlab.com:45415/movierater';
+export class db {    
     static dbConnection: Db = null;
 
-    public static openDbConnection() {
+    public static openDbConnection(connectionString) {
         var deferred = Q.defer();
         if (this.dbConnection == null) {
-            MongoClient.connect(this.dbUrl, (err, db) => {
+            MongoClient.connect(connectionString, (err, db) => {
                 assert.equal(null, err);
                 console.log("Connected correctly to MongoDB server.");
                 this.dbConnection = db;
                 deferred.resolve(db);
             });
+        }else{
+            deferred.resolve(Db)
         }
         return deferred.promise;
     }

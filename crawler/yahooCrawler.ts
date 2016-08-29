@@ -23,7 +23,7 @@ export function crawlYahoo() {
     return db.getCollection("yahooMovies").then(yahooMovies => {
         let visitedMovieIds: Array<any> = yahooMovies.map(({yahooId}) => yahooId);
         const promises = [];
-        for (let i = 6470; i <= 6277; i++) {
+        for (let i = 6470; i <= 6478; i++) {
             if (visitedMovieIds.indexOf(i) === -1) {
                 const promise = crawlYahooPage(i);
                 promises.push(promise);
@@ -46,7 +46,7 @@ export function crawlYahoo() {
             }
         });
         console.timeEnd('crawlYahoo');
-        console.log(`new movieInfo count:${yahooMovies.length}, result:${JSON.stringify(yahooMovies)}`);
+        console.log(`new movieInfo count:${yahooMovies.length}`);
         return db.insertCollection(yahooMovies, "yahooMovies");
     });
 }
@@ -55,7 +55,7 @@ export function crawlYahooPage(id: number) {
     const defer = Q.defer();
     const yahooMovieUrl = 'https://tw.movies.yahoo.com/movieinfo_main.html/id=' + id;
     var req = request({url:yahooMovieUrl,followRedirect :false}, (error, res, body) => {
-        if (error || !body) {
+        if (error) {
             let reson = {
                 message:`error occur when request ${yahooMovieUrl}, error:${error}`,
                 statusCode:500,

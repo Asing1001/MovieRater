@@ -6,6 +6,8 @@ import * as graphqlHTTP from 'express-graphql';
 import {crawlYahoo} from './crawler/yahooCrawler';
 import {db} from './db';
 import schema from './schema';
+import {systemSetting} from './configs/systemSetting'; 
+
 
 const app = express();
 const staticRoot = path.join(__dirname, 'public/');
@@ -30,7 +32,7 @@ app.get('/imdbMovies', (req, res) => {
   });
 });
 
-db.openDbConnection().then((db)=>{
+db.openDbConnection(systemSetting.dbUrl).then((db)=>{
   return crawlYahoo();
 }).then(()=>console.log('crawler done'));
 
