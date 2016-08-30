@@ -20,14 +20,14 @@ export interface YahooMovie {
 
 export function crawlYahoo() {
     const crawlerStatusFilter = { name: "crawlerStatus" };
-    let endYahooId = 6477;
+    let maxYahooId = 6477;
     console.time('crawlYahoo');
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
-        if (crawlerStatus.hasOwnProperty(endYahooId)) {
-            endYahooId = crawlerStatus.endYahooId + 1;
+        if (crawlerStatus && crawlerStatus.maxYahooId) {
+            maxYahooId = crawlerStatus.maxYahooId + 5;
         }
         const promises = [];
-        for (let i = endYahooId - 5; i <= endYahooId; i++) {
+        for (let i = maxYahooId - 20; i <= maxYahooId; i++) {
             const promise = crawlYahooPage(i);
             promises.push(promise);
         }
@@ -45,9 +45,10 @@ export function crawlYahoo() {
             }
         });
         let movieIds = yahooMovies.map(({yahooId}) => yahooId);
-        db.updateDocument(crawlerStatusFilter, { endYahooId: Math.max(...movieIds) }, 'configs');
+        maxYahooId = Math.max(...movieIds);
+        db.updateDocument(crawlerStatusFilter, { maxYahooId: maxYahooId }, 'configs');
         console.timeEnd('crawlYahoo');
-        console.log(`new movieInfo count:${yahooMovies.length}`);
+        console.log(`new movieInfo count:${yahooMovies.length}, maxYahooId:${maxYahooId}`);
 
         let promises = yahooMovies.map(yahooMovie => db.updateDocument({ yahooId: yahooMovie.yahooId }, yahooMovie, "yahooMovies"))
         return Q.all(promises);

@@ -22,6 +22,6 @@ describe('db', () => {
   });
 
   describe('updateDocument', () => {
-    it('should resolve when update object not exist', () => db.updateDocument({ name: 'crawlerStatus' }, { yahooId: 68, test: 123 }, 'configs').should.be.fulfilled)
+    it('should resolve when update object not exist', () => db.updateDocument({ name: 'crawlerStatus' }, {unitTest:'test'}, 'configs').should.be.fulfilled)
   });
 });

@@ -16,12 +16,8 @@ describe('YahooCrawler', () => {
   describe('crawlYahoo', () => {
     before(()=>{return db.openDbConnection(systemSetting.dbUrl)})
     it('should correctly get new data from yahoo', function () {
-      this.timeout(20000);
-      return crawlYahoo().then(() => {
-        return db.getCollection("yahooMovies").then((yahooMovies) =>
-          expect(yahooMovies.length).to.be.above(0)
-        )
-      })
+      this.timeout(30000);
+      return crawlYahoo().should.eventually.have.length.above(0)
     });
   });
 
