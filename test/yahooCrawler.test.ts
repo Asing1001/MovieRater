@@ -30,7 +30,7 @@ describe('YahooCrawler', () => {
 
   describe('crawlYahooPage', () => {
     it('should resolve when yahooid exist', function () {
-      this.timeout(5000);
+      this.timeout(10000);
       return crawlYahooPage(6470).should.eventually.fulfilled;
     });
   });

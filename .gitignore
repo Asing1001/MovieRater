@@ -8,7 +8,6 @@
 
 # IDEs and editors
 /.idea
-/.vscode
 
 # misc
 npm-debug.log

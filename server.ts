@@ -4,6 +4,8 @@ import * as bodyParser from "body-parser";
 import * as path from 'path';
 import * as graphqlHTTP from 'express-graphql';
 import {crawlYahoo} from './crawler/yahooCrawler';
+import {crawlImdb} from './crawler/imdbCrawler';
+import {crawlPtt} from './crawler/pttCrawler';
 import {db} from './db';
 import schema from './schema';
 import {systemSetting} from './configs/systemSetting'; 
@@ -32,9 +34,11 @@ app.get('/imdbMovies', (req, res) => {
   });
 });
 
-db.openDbConnection(systemSetting.dbUrl).then((db)=>{
-  return crawlYahoo();
-}).then(()=>console.log('crawler done'));
+db.openDbConnection(systemSetting.dbUrl)
+//.then(crawlYahoo)
+// .then(crawlPtt)
+// .then(crawlImdb)
+.then(()=>console.log('task done'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

@@ -2,9 +2,11 @@ import * as request from "request";
 import * as cheerio from "cheerio";
 import {db} from "../db";
 import * as Q from "q";
+import {yahooCrawlerSetting} from '../configs/systemSetting';
 
 export interface YahooMovie {
     yahooId: number,
+    posterUrl: string,
     chineseTitle: string,
     englishTitle: string,
     releaseDate: string,
@@ -20,14 +22,21 @@ export interface YahooMovie {
 
 export function crawlYahoo() {
     const crawlerStatusFilter = { name: "crawlerStatus" };
-    let maxYahooId = 6477;
+    let [maxYahooId,endYahooId] = [6477,6477];
+    let startYahooId = endYahooId - 20;
     console.time('crawlYahoo');
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
         if (crawlerStatus && crawlerStatus.maxYahooId) {
-            maxYahooId = crawlerStatus.maxYahooId + 5;
+            endYahooId = crawlerStatus.maxYahooId + 5;
+            startYahooId = endYahooId - 20;
         }
+        if (yahooCrawlerSetting.enable) {
+            startYahooId = yahooCrawlerSetting.startIndex;
+            endYahooId = yahooCrawlerSetting.endIndex;
+        }
+
         const promises = [];
-        for (let i = maxYahooId - 20; i <= maxYahooId; i++) {
+        for (let i = startYahooId; i <= endYahooId; i++) {
             const promise = crawlYahooPage(i);
             promises.push(promise);
         }
@@ -74,6 +83,7 @@ export function crawlYahooPage(id: number) {
         const $movieInfoValues = $movieInfoDiv.find('p .dta');
         const movieInfo: YahooMovie = {
             yahooId: id,
+            posterUrl: $('#ymvmvf').find('.img a').attr('href'),
             chineseTitle: $movieInfoDiv.find('h4').text(),
             englishTitle: $movieInfoDiv.find('h5').text(),
             releaseDate: $movieInfoValues.eq(0).text(),
