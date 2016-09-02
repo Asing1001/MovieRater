@@ -25,7 +25,7 @@ function onSpreadFullfilled(yahooMovies: Array<YahooMovie>, pttPages) {
     function mergeByChineseTitle({chineseTitle}) {
         //TODO 用模糊比對取代indexOf資料會比較多
         let relateArticles = allArticles.filter(({title}) => title.indexOf(chineseTitle) !== -1);
-        let goodRateCount, normalRateCount, badRateCount = 0;
+        let [goodRateCount, normalRateCount, badRateCount] = [0,0,0];
         relateArticles.forEach(({title}) => {
             if (title.indexOf('好雷') !== -1) goodRateCount++;
             if (title.indexOf('普雷') !== -1) normalRateCount++;

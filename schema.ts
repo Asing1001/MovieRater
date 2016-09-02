@@ -9,6 +9,32 @@ import {
 } from 'graphql';
 import {db} from './db';
 
+const ArticleType = new GraphQLObjectType({
+    name: 'article',
+    description: 'ptt articles',
+    fields: () => ({
+        title: {
+            type: GraphQLString,
+            resolve: obj => obj.title,
+        },
+        push: {
+            type: GraphQLString,
+            resolve: obj => obj.push,
+        },
+        url: {
+            type: GraphQLString,
+            resolve: obj => obj.url,
+        },
+        date: {
+            type: GraphQLString,
+            resolve: obj => obj.date,
+        },
+        author: {
+            type: GraphQLString,
+            resolve: obj => obj.author,
+        },
+    })
+})
 
 const MovieType = new GraphQLObjectType({
     name: 'Movie',
@@ -19,45 +45,82 @@ const MovieType = new GraphQLObjectType({
             description: 'yahoo movie id',
             resolve: obj => obj.yahooId,
         },
+        posterUrl: {
+            type: GraphQLString,
+            description: 'poster image url',
+            resolve: obj => obj.posterUrl,
+        },
         chineseTitle: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.chineseTitle,
         },
         englishTitle: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.englishTitle,
         },
         releaseDate: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.releaseDate,
         },
         type: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.type,
         },
         runTime: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.runTime,
         },
         director: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.director,
         },
         actor: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.actor,
         },
         launchCompany: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.launchCompany,
         },
         companyUrl: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.companyUrl,
         },
         sourceUrl: {
-            type: GraphQLString,            
+            type: GraphQLString,
             resolve: obj => obj.sourceUrl,
+        },
+        goodRateCount: {
+            type: GraphQLString,
+            resolve: obj => obj.goodRateCount,
+        },
+        normalRateCount: {
+            type: GraphQLString,
+            resolve: obj => obj.normalRateCount,
+        },
+        badRateCount: {
+            type: GraphQLString,
+            resolve: obj => obj.badRateCount,
+        },
+        relateArticles: {
+            type: new GraphQLList(ArticleType),
+            resolve: obj => obj.relateArticles,
+        },
+        imdbID: {
+            type: GraphQLString,
+            resolve: obj => obj.imdbID,
+        },
+        imdbRating: {
+            type: GraphQLString,
+            resolve: obj => obj.imdbRating,
+        },
+        tomatoRating: {
+            type: GraphQLString,
+            resolve: obj => obj.tomatoRating,
+        },
+        tomatoURL: {
+            type: GraphQLString,
+            resolve: obj => obj.tomatoURL,
         },
     })
 });
@@ -74,9 +137,15 @@ const QueryType = new GraphQLObjectType({
         movie: {
             type: MovieType,
             args: {
-                yahooId: { type: new GraphQLNonNull(GraphQLInt) }                
+                yahooId: { type: GraphQLInt },
+                chineseTitle: { type: GraphQLString }
             },
-            resolve: (root, args:any) => db.getDocument({yahooId:args.yahooId},"yahooMovies"),
+            resolve: (root, {yahooId, chineseTitle}) => {
+                let query: any = {}
+                if (yahooId) query.yahooId = yahooId;
+                if (chineseTitle) query.chineseTitle = chineseTitle;
+                return db.getDocument(query, "yahooMovies")
+            },
         },
     }),
 });

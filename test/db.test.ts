@@ -17,11 +17,15 @@ describe('db', () => {
     });
   });
 
+  describe('getCollection', () => {
+    it('get yahooMovie collection should return length above 0', () => db.getCollection('yahooMovies').should.eventually.have.length.above(0));
+  });
+
   describe('insertCollection', () => {
-    it('should resolve when give empty array', () => db.insertCollection([], 'test').should.be.fulfilled);
+    it('should resolve when give empty array', () => db.insertCollection([], 'test').should.eventually.fulfilled);
   });
 
   describe('updateDocument', () => {
-    it('should resolve when update object not exist', () => db.updateDocument({ name: 'crawlerStatus' }, {unitTest:'test'}, 'configs').should.be.fulfilled)
+    it('should resolve when update object not exist', () => db.updateDocument({ name: 'crawlerStatus' }, {unitTest:'test'}, 'configs').should.eventually.fulfilled)
   });
 });
