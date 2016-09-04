@@ -1,6 +1,6 @@
 import * as request from "request";
 import * as cheerio from "cheerio";
-import {db} from "../db";
+import {db} from "../data/db";
 import * as Q from "q";
 import {yahooCrawlerSetting} from '../configs/systemSetting';
 
@@ -20,9 +20,31 @@ export interface YahooMovie {
     rating: string
 }
 
+export function crawlYahooRange(startId, endId) {
+    const promises = [];
+    for (let i = startId; i <= endId; i++) {
+        const promise = crawlYahooPage(i);
+        promises.push(promise);
+    }
+
+    return Q.allSettled(promises).then(results => {
+        let yahooMovies = [];
+        results.forEach((result) => {
+            if (result.state === "fulfilled") {
+                var value = result.value;
+                yahooMovies.push(value);
+            } else {
+                var reason = result.reason;
+                console.error(reason);
+            }
+        });
+        return yahooMovies;
+    });
+}
+
 export function crawlYahoo() {
     const crawlerStatusFilter = { name: "crawlerStatus" };
-    let [maxYahooId,endYahooId] = [6477,6477];
+    let [maxYahooId, endYahooId] = [6477, 6477];
     let startYahooId = endYahooId - 20;
     console.time('crawlYahoo');
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {

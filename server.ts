@@ -3,11 +3,11 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as path from 'path';
 import * as graphqlHTTP from 'express-graphql';
-import {crawlYahoo} from './crawler/yahooCrawler';
+import {crawlYahooRange} from './crawler/yahooCrawler';
 import {crawlImdb} from './crawler/imdbCrawler';
 import {crawlPtt} from './crawler/pttCrawler';
-import {db} from './db';
-import schema from './schema';
+import {db} from './data/db';
+import schema from './data/schema';
 import {systemSetting} from './configs/systemSetting'; 
 
 

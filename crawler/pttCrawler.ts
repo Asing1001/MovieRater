@@ -1,6 +1,6 @@
 import * as request from "request";
 import * as cheerio from "cheerio";
-import {db} from "../db";
+import {db} from "../data/db";
 import * as Q from "q";
 import {pttCrawlerSetting} from '../configs/systemSetting'; 
 

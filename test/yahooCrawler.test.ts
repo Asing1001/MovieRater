@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {crawlYahoo,crawlYahooPage} from '../crawler/yahooCrawler';
-import {db} from '../db';
+import {crawlYahooRange,crawlYahooPage} from '../crawler/yahooCrawler';
+import {db} from "../data/db";
 import {systemSetting} from '../configs/systemSetting'; 
 
 
@@ -13,11 +13,11 @@ chai.use(chaiAsPromised);
 
 
 describe('YahooCrawler', () => {
-  describe('crawlYahoo', () => {
+  describe('crawlYahooRange(10,20)', () => {
     before(()=>{return db.openDbConnection(systemSetting.dbUrl)})
     it('should correctly get new data from yahoo', function () {
       this.timeout(30000);
-      return crawlYahoo().should.eventually.have.length.above(0)
+      return crawlYahooRange(10,20).should.eventually.have.length.above(0)
     });
   });
 

@@ -1,4 +1,4 @@
-import {db} from "../db";
+import {db} from "../data/db";
 import {YahooMovie} from "./yahooCrawler";
 import * as fetch from "node-fetch";
 import * as Q from "q";

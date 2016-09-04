@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {crawlPtt, crawlPttPage} from '../crawler/pttCrawler';
-import {db} from '../db';
+import {db} from "../data/db";
 import {systemSetting} from '../configs/systemSetting';
 
 
