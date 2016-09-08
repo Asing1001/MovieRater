@@ -20,6 +20,7 @@
     "graphql": "^0.6.2",
     "mongodb": "^2.2.5",
     "node-fetch": "^1.6.0",
+    "node-schedule": "^1.1.1",
     "q": "^1.4.1",
     "request": "^2.74.0"
   },

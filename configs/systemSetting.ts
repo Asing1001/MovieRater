@@ -12,5 +12,6 @@ export const pttCrawlerSetting = {
 export const yahooCrawlerSetting = {
     enable : false,
     startIndex : 6100,
-    endIndex : 6200
+    endIndex : 6200,
+    howManyPagePerTime : 20, 
 }

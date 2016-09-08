@@ -7,6 +7,7 @@ import {crawlYahooRange} from './crawler/yahooCrawler';
 import {crawlImdb} from './crawler/imdbCrawler';
 import {crawlPtt} from './crawler/pttCrawler';
 import {db} from './data/db';
+import {initScheduler} from './backgroundService/scheduler'; 
 import schema from './data/schema';
 import {systemSetting} from './configs/systemSetting'; 
 
@@ -38,7 +39,7 @@ db.openDbConnection(systemSetting.dbUrl)
 //.then(crawlYahoo)
 // .then(crawlPtt)
 // .then(crawlImdb)
-.then(()=>console.log('task done'));
+.then(initScheduler);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

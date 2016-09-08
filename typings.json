@@ -14,6 +14,7 @@
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "node": "registry:dt/node#6.0.0+20160818175514",
     "node-fetch": "registry:dt/node-fetch#0.0.0+20160711094047",
+    "node-schedule": "registry:dt/node-schedule#1.1.0+20160521153413",
     "promises-a-plus": "registry:dt/promises-a-plus#0.0.0+20160317120654",
     "q": "registry:dt/q#0.0.0+20160613154756"
   }
