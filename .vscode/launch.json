@@ -5,7 +5,7 @@
             "name": "啟動",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/dist/server.js",
+            "program": "${workspaceRoot}/src/server.ts",
             "stopOnEntry": false,
             "args": [],
             "cwd": "${workspaceRoot}",
@@ -17,9 +17,8 @@
             "env": {
                 "NODE_ENV": "development"
             },
-            "externalConsole": false,
-            "sourceMaps": false,
-            "outDir": null
+            "sourceMaps": true,
+            "outDir": "${workspaceRoot}/dist"
         },
         {
             "name": "Run mocha",

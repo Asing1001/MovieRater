@@ -8,8 +8,11 @@
         "noEmitOnError": true,
         "noImplicitAny": false,
         "outDir": "dist/",
-        "rootDir": ".",
+        "rootDir": "src/",
         "sourceMap": true,
-        "target": "ES5"
+        "target": "ES5",
+        "types": [
+            "mocha","core-js"
+        ]
     }
 }
