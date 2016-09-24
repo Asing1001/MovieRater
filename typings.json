@@ -1,22 +1,5 @@
 {
   "dependencies": {
-    "body-parser": "registry:npm/body-parser#1.15.2+20160815132839",
-    "cheerio": "registry:npm/cheerio#0.20.0+20160422172414",
-    "express": "registry:npm/express#4.14.0+20160815112707",
-    "graphql": "registry:npm/graphql#0.5.0+20160602041655",
-    "mongodb": "registry:npm/mongodb#2.1.0+20160721204323",
-    "request": "registry:npm/request#2.69.0+20160428223725"
-  },
-  "globalDependencies": {
-    "chai": "registry:dt/chai#3.4.0+20160601211834",
-    "chai-as-promised": "registry:dt/chai-as-promised#0.0.0+20160423070304",
-    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
-    "express-graphql": "registry:dt/express-graphql#0.0.0+20160626095004",
-    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
-    "node": "registry:dt/node#6.0.0+20160818175514",
-    "node-fetch": "registry:dt/node-fetch#0.0.0+20160711094047",
-    "node-schedule": "registry:dt/node-schedule#1.1.0+20160521153413",
-    "promises-a-plus": "registry:dt/promises-a-plus#0.0.0+20160317120654",
-    "q": "registry:dt/q#0.0.0+20160613154756"
+    "graphql": "registry:npm/graphql#0.5.0+20160602041655"
   }
 }

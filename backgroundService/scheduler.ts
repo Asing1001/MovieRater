@@ -2,6 +2,7 @@ import {crawlYahooRange} from '../crawler/yahooCrawler';
 import {yahooCrawlerSetting} from '../configs/systemSetting';
 import {Range,RecurrenceRule,scheduleJob} from 'node-schedule';
 import {db} from "../data/db";
+import * as Q from 'q';
 
 export function initScheduler(){
     crawlYahoo();
