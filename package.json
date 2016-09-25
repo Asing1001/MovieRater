@@ -22,7 +22,10 @@
     "node-fetch": "^1.6.0",
     "node-schedule": "^1.1.1",
     "q": "^1.4.1",
-    "request": "^2.74.0"
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "request": "^2.74.0",
+    "universal-router": "^1.2.2"
   },
   "devDependencies": {
     "@types/body-parser": "0.0.33",
@@ -39,7 +42,10 @@
     "@types/node-schedule": "0.0.32",
     "@types/promises-a-plus": "0.0.27",
     "@types/q": "0.0.31",
+    "@types/react": "^0.14.37",
+    "@types/react-dom": "^0.14.17",
     "@types/request": "0.0.31",
+    "@types/universal-router": "0.0.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "json-loader": "^0.5.4",

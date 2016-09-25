@@ -10,6 +10,9 @@ import {db} from './data/db';
 import {initScheduler} from './backgroundService/scheduler'; 
 import schema from './data/schema';
 import {systemSetting} from './configs/systemSetting'; 
+import * as React from 'react';
+import { renderToString } from 'react-dom/server'
+import * as UniversalRouter from 'universal-router';
 
 
 const app = express();

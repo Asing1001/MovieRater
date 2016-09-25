@@ -11,6 +11,7 @@
         "rootDir": "src/",
         "sourceMap": true,
         "target": "ES5",
+        "jsx": "react",
         "types": [
             "mocha","core-js"
         ]
