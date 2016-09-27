@@ -13,7 +13,7 @@
         "target": "ES5",
         "jsx": "react",
         "types": [
-            "mocha","core-js"
+            "mocha","core-js","typed-graphql","react-dom"
         ]
     }
 }
