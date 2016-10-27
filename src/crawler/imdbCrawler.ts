@@ -1,6 +1,6 @@
 import {db} from "../data/db";
 import {YahooMovie} from "./yahooCrawler";
-import * as fetch from "node-fetch";
+import fetch from "node-fetch";
 import * as Q from "q";
 const omdbApiUrl = 'http://www.omdbapi.com/';
 export function crawlImdb() {

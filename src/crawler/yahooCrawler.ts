@@ -48,12 +48,12 @@ function crawlYahooPage(id: number) {
     var req = request({ url: yahooMovieUrl, followRedirect: false }, (error, res, body) => {
         if (error) {
             let reason = `error occur when request ${yahooMovieUrl}, error:${error}`;
-            defer.reject(reason);
+            return defer.reject(reason);
         }
 
         if (res.headers.location) {
             let reason = `${yahooMovieUrl} 404 not found`;
-            defer.reject(reason);
+            return defer.reject(reason);
         }
 
         const $ = cheerio.load(body);
@@ -74,7 +74,7 @@ function crawlYahooPage(id: number) {
             sourceUrl: yahooMovieUrl,
             rating: $('#ymvis em').text()
         };
-        defer.resolve(movieInfo);
+        return defer.resolve(movieInfo);
     })
     return defer.promise;
 

@@ -12,8 +12,9 @@ import schema from './data/schema';
 import {systemSetting} from './configs/systemSetting'; 
 import * as React from 'react';
 import { renderToString } from 'react-dom/server'
-import * as UniversalRouter from 'universal-router';
-
+import * as Router from 'react-router'; 
+import * as swig from 'swig';
+import routes from './app/routes';
 
 const app = express();
 const staticRoot = path.join(__dirname, 'public/');
@@ -50,6 +51,22 @@ app.use(bodyParser.json());
 app.use(express.static(staticRoot));
 
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: true, graphiql: true }))
+
+app.use(function(req, res) {
+  Router.match({ routes: routes, location: req.url }, function(err, redirectLocation, renderProps) {
+    if (err) {
+      res.status(500).send(err.message)
+    } else if (redirectLocation) {
+      res.status(302).redirect(redirectLocation.pathname + redirectLocation.search)
+    } else if (renderProps) {
+      var html = renderToString(React.createElement(Router.RouterContext, renderProps));
+      var page = swig.renderFile('./src/index.html', { html: html });
+      res.status(200).send(page);
+    } else {
+      res.status(404).send('Page Not Found')
+    }
+  });
+});
 
 app.listen(app.get('port'), function () {
   console.log('app running on port', app.get('port'));
