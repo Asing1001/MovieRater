@@ -1,9 +1,16 @@
 var nodeExternals = require('webpack-node-externals');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: "./src/server.ts",
     output: {
         filename: "./dist/server.js",
+    },
+
+    //release node __dirname to bundles
+    context: __dirname,
+    node: {
+        __dirname: true
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -18,10 +25,10 @@ module.exports = {
         loaders: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
             { test: /\.tsx?$/, loader: "ts-loader" },
-      {
-        test: /\.json$/,
-        loader: 'json-loader',
-      }
+            {
+                test: /\.json$/,
+                loader: 'json-loader',
+            }
         ],
 
         preLoaders: [
@@ -35,6 +42,14 @@ module.exports = {
     // This is important because it allows us to avoid bundling all of our
     // dependencies, which allows browsers to cache those libraries between builds.
     externals: [
-        nodeExternals()]
-    
+        nodeExternals()],
+
+    plugins: [
+        new CopyWebpackPlugin([{
+            from: 'src/index.html',
+            to: 'dist/index.html'
+        }])
+    ]
+
+
 };
