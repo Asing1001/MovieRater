@@ -19,7 +19,6 @@ import routes from './app/routes';
 const app = express();
 const staticRoot = path.join(__dirname, 'public/');
 
-app.set('port', (process.env.PORT || 3000));
 app.get('/test', (req, res) => {
   res.send('test!');
 });
@@ -68,6 +67,8 @@ app.use(function(req, res) {
   });
 });
 
-app.listen(app.get('port'), function () {
-  console.log('app running on port', app.get('port'));
+
+let port = process.env.PORT || 3000; 
+app.listen(port, function () {
+  console.log('app running on port', port);
 });
