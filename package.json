@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "webpack && node dist/server.js",
+    "start": "npm run build && node dist/server.js",
     "dev": "concurrently \"npm run tsc:w\" \"npm run nodemon\"",
     "test": "mocha dist/test/*.js",
     "nodemon": "nodemon dist/server.js",
     "webpack-watch": "webpack --progress --colors --watch",
     "pre-debug-test": "node-inspector",
     "debug-test": "mocha --debug-brk dist/test/db.test.js",
-    "clean": "rimraf dist",
+    "build": "rimraf dist && webpack",
     "tsc:w": "tsc -w"
   },
   "private": true,
