@@ -51,13 +51,15 @@ app.use('/app', express.static(staticRoot));
 
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: true, graphiql: true }))
 
-app.use(function(req, res) {
+app.use(function(req, res) {  
   Router.match({ routes: routes, location: req.url }, function(err, redirectLocation, renderProps) {
     if (err) {
       res.status(500).send(err.message)
     } else if (redirectLocation) {
       res.status(302).redirect(redirectLocation.pathname + redirectLocation.search)
     } else if (renderProps) {
+      //for material-ui auto prefixer
+      global.navigator =  {userAgent: req.headers['user-agent']};
       var html = renderToString(React.createElement(Router.RouterContext, renderProps));
       var page = swig.renderFile(path.join(__dirname, 'index.html'), { html: html });
       res.status(200).send(page);
