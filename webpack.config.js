@@ -1,16 +1,13 @@
-var nodeExternals = require('webpack-node-externals');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: "./src/server.ts",
-    output: {
-        filename: "./dist/server.js",
+    entry: {
+        'main': './src/app/main.tsx',
     },
 
-    //release node __dirname to bundles
-    context: __dirname,
-    node: {
-        __dirname: true
+    output: {
+        filename: "/app/bundle.js",
+        path: __dirname + '/dist'
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -37,19 +34,21 @@ module.exports = {
         ]
     },
 
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
-    externals: [
-        nodeExternals()],
-
     plugins: [
         new CopyWebpackPlugin([{
             from: 'src/index.html',
-            to: 'dist/index.html'
+            to: 'index.html'
         }])
-    ]
+    ],
 
-
+    devServer: {
+        historyApiFallback: true,
+        stats: 'minimal',
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3000',
+                secure: false
+            }
+        }
+    }
 };

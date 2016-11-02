@@ -1,1 +1,0 @@
-1. use webpack plugin to move static files and then change server.ts index.html location 

@@ -17,7 +17,6 @@ import * as swig from 'swig';
 import routes from './app/routes';
 
 const app = express();
-const staticRoot = path.join(__dirname, 'public/');
 
 app.get('/test', (req, res) => {
   res.send('test!');
@@ -47,7 +46,8 @@ db.openDbConnection(systemSetting.dbUrl)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(express.static(staticRoot));
+const staticRoot = path.join(__dirname, 'app/');
+app.use('/app', express.static(staticRoot));
 
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: true, graphiql: true }))
 
