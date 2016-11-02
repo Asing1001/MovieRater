@@ -46,8 +46,8 @@ db.openDbConnection(systemSetting.dbUrl)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const staticRoot = path.join(__dirname, 'app/');
-app.use('/app', express.static(staticRoot));
+const staticRoot = path.join(__dirname, 'public/');
+app.use('/public', express.static(staticRoot));
 
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: true, graphiql: true }))
 
@@ -70,7 +70,7 @@ app.use(function(req, res) {
 });
 
 
-let port = process.env.PORT || 3000; 
+let port = process.env.PORT || 3003; 
 app.listen(port, function () {
   console.log('app running on port', port);
 });

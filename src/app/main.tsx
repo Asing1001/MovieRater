@@ -3,7 +3,7 @@ import {Router} from 'react-router';
 import * as ReactDOM from 'react-dom';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import routes from './routes';
-import 'material-ui';
+import './main.css';
 
 let history = createBrowserHistory();
 
