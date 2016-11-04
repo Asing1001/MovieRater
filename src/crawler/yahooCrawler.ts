@@ -3,20 +3,21 @@ import * as cheerio from "cheerio";
 import {db} from "../data/db";
 import * as Q from "q";
 
-export interface YahooMovie {
-    yahooId: number,
-    posterUrl: string,
-    chineseTitle: string,
-    englishTitle: string,
-    releaseDate: string,
-    type: string,
-    runTime: string,
-    director: string,
-    actor: string,
-    launchCompany: string,
-    companyUrl: string,
-    sourceUrl: string,
+export class YahooMovie {
+    yahooId: number
+    posterUrl: string
+    chineseTitle: string
+    englishTitle: string
+    releaseDate: string
+    type: string
+    runTime: string
+    director: string
+    actor: string
+    launchCompany: string
+    companyUrl: string
+    sourceUrl: string
     rating: string
+    summary: string
 }
 
 export function crawlYahooRange(startId, endId) {
@@ -72,7 +73,8 @@ function crawlYahooPage(id: number) {
             launchCompany: $movieInfoValues.eq(5).text(),
             companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
             sourceUrl: yahooMovieUrl,
-            rating: $('#ymvis em').text()
+            rating: $('#ymvis em').text(),
+            summary: $('.text.full>p').text()
         };
         return defer.resolve(movieInfo);
     })

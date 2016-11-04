@@ -38,9 +38,6 @@ app.get('/imdbMovies', (req, res) => {
 });
 
 db.openDbConnection(systemSetting.dbUrl)
-//.then(crawlYahoo)
-// .then(crawlPtt)
-// .then(crawlImdb)
 .then(initScheduler);
 
 app.use(bodyParser.urlencoded({ extended: true }));

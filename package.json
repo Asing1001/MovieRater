@@ -15,7 +15,6 @@
   },
   "private": true,
   "dependencies": {
-    "@types/isomorphic-fetch": "0.0.31",
     "body-parser": "^1.15.2",
     "cheerio": "^0.22.0",
     "express": "^4.14.0",
@@ -24,7 +23,6 @@
     "isomorphic-fetch": "^2.2.1",
     "material-ui": "^0.16.1",
     "mongodb": "^2.2.5",
-    "node-fetch": "^1.6.0",
     "node-schedule": "^1.1.1",
     "q": "^1.4.1",
     "react": "^15.3.2",
@@ -57,6 +55,7 @@
     "@types/react-tap-event-plugin": "0.0.30",
     "@types/request": "0.0.32",
     "@types/swig": "0.0.28",
+    "@types/isomorphic-fetch": "0.0.31",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "concurrently": "^3.1.0",
