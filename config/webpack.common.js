@@ -44,6 +44,16 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html'
-    })
+    }),
+
+    new CopyWebpackPlugin(
+      [
+        {
+          from: './src/public',
+          to: 'public'
+        }
+      ]
+    )
+
   ]
 };

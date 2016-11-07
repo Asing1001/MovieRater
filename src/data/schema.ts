@@ -7,7 +7,7 @@ import {
     GraphQLString,
     GraphQLInt,
 } from 'graphql';
-import {db} from './db';
+import { db } from './db';
 
 const ArticleType = new GraphQLObjectType({
     name: 'article',
@@ -109,6 +109,10 @@ const MovieType = new GraphQLObjectType({
         imdbID: {
             type: GraphQLString,
             resolve: obj => obj.imdbID,
+        },
+        rating: {
+            type: GraphQLString,
+            resolve: obj => obj.rating,
         },
         imdbRating: {
             type: GraphQLString,

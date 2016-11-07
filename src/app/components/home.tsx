@@ -11,9 +11,25 @@ class Home extends React.Component<any, any> {
     super(props)
     this.state = {
       dataSource: [],
-      resultMovie: { chineseTitle: 'aaa' }
+      resultMovie: { chineseTitle: '' }
     };
-
+    /*
+    var json = {
+      "data": {
+        "allMovies": [
+          {
+            "chineseTitle": "零日網路戰",
+            "englishTitle": "Zero Days",
+            "yahooId": 6403
+          }
+        ]
+      }
+    }
+    json.data.allMovies.forEach(({chineseTitle, englishTitle, yahooId}: YahooMovie) => {
+      this.allMoviesName.push({ value: yahooId, text: chineseTitle }, { value: yahooId, text: englishTitle })
+    });
+    this.state.dataSource = this.allMoviesName;
+    */
     this.getDataSource();
   }
 
@@ -29,7 +45,7 @@ class Home extends React.Component<any, any> {
     }).then(res => res.json())
       .then(json => {
         json.data.allMovies.forEach(({chineseTitle, englishTitle, yahooId}: YahooMovie) => {
-          this.allMoviesName.push({value:yahooId,text:chineseTitle}, {value:yahooId,text:englishTitle})
+          this.allMoviesName.push({ value: yahooId, text: chineseTitle }, { value: yahooId, text: englishTitle })
         });
         this.setState({ dataSource: this.allMoviesName })
       });
@@ -51,6 +67,7 @@ class Home extends React.Component<any, any> {
             chineseTitle
             englishTitle
             yahooId
+            rating
             imdbRating
             posterUrl
             tomatoRating
@@ -71,6 +88,7 @@ class Home extends React.Component<any, any> {
   render() {
     return (
       <div>
+
         <AutoComplete
           hintText="電影名稱(中英皆可)"
           dataSource={this.state.dataSource}
@@ -78,17 +96,21 @@ class Home extends React.Component<any, any> {
           fullWidth={true}
           filter={AutoComplete.fuzzyFilter}
           maxSearchResults={6}
-          onNewRequest={this.search.bind(this)}          
+          onNewRequest={this.search.bind(this)}
           />
-        <Card className="temp">          
+        <Card className="temp">
+          <CardHeader
+            title={<CardText>
+              <img src="public/image/imdb.png" /> {this.state.resultMovie.imdbRating} <img src="public/image/yahoo.png" /> {this.state.resultMovie.rating} <img src="public/image/rottentomatoes.png" />{this.state.resultMovie.tomatoRating}
+            </CardText>}
+            >
+          </CardHeader>
+
           <CardMedia
             overlay={<CardTitle title={this.state.resultMovie.chineseTitle} subtitle={this.state.resultMovie.englishTitle} />}
             >
             <img src={this.state.resultMovie.posterUrl} />
           </CardMedia>
-          <CardText>
-             
-          </CardText>
           <CardActions>
           </CardActions>
         </Card>

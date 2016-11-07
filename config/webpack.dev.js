@@ -21,7 +21,7 @@ module.exports = webpackMerge(commonConfig, {
     historyApiFallback: true,
     stats: 'minimal',
     proxy: {
-      '/api': {
+      '/public': {
         target: 'http://localhost:3003',
         secure: false
       },
