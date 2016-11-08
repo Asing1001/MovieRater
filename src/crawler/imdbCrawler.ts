@@ -1,6 +1,8 @@
 import {db} from "../data/db";
 import {YahooMovie} from "./yahooCrawler";
 import * as Q from "q";
+import * as fetch from "isomorphic-fetch";
+
 const omdbApiUrl = 'http://www.omdbapi.com/';
 export function crawlImdb() {
     return db.getCollection("yahooMovies").then(yahooMovies => {
