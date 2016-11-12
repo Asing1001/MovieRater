@@ -8,6 +8,7 @@ import {
     GraphQLInt,
 } from 'graphql';
 import { db } from './db';
+import cacheManager from '../data/cacheManager';
 
 const ArticleType = new GraphQLObjectType({
     name: 'article',
@@ -136,7 +137,7 @@ const QueryType = new GraphQLObjectType({
         allMovies: {
             type: new GraphQLList(MovieType),
             description: 'every movies',
-            resolve: (root, args) => db.getCollection("yahooMovies")
+            resolve: (root, args) => cacheManager.get("allMovies")
         },
         movie: {
             type: MovieType,
@@ -145,10 +146,12 @@ const QueryType = new GraphQLObjectType({
                 chineseTitle: { type: GraphQLString }
             },
             resolve: (root, {yahooId, chineseTitle}) => {
-                let query: any = {}
-                if (yahooId) query.yahooId = yahooId;
-                if (chineseTitle) query.chineseTitle = chineseTitle;
-                return db.getDocument(query, "yahooMovies")
+                let allMovies = cacheManager.get("allMovies");
+                return allMovies.find((movie)=>{return movie.yahooId === yahooId;})
+                // let query: any = {}
+                // if (yahooId) query.yahooId = yahooId;
+                // if (chineseTitle) query.chineseTitle = chineseTitle;
+                // return db.getDocument(query, "yahooMovies")
             },
         },
     }),

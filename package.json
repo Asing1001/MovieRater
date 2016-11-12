@@ -5,11 +5,12 @@
   "scripts": {
     "start": "node dist/server.js",
     "test": "mocha dist/test/*.js",
-    "nodemon": "concurrently \"npm run tsc -w\" \"nodemon dist/server.js\"",
+    "nodemon": "concurrently \"npm run tsc:w \" \"nodemon dist/server.js\"",
     "webpack": "webpack-dev-server --inline --progress --port 3004",
     "pre-debug-test": "node-inspector",
     "debug-test": "mocha --debug-brk dist/test/db.test.js",
-    "build": "rimraf dist && tsc && webpack --config config/webpack.prod.js --progress --profile --bail"
+    "build": "rimraf dist && tsc && webpack --config config/webpack.prod.js --progress --profile --bail",
+    "tsc:w": "tsc -w"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +21,7 @@
     "graphql": "^0.7.0",
     "isomorphic-fetch": "^2.2.1",
     "material-ui": "^0.16.1",
+    "memory-cache": "^0.1.6",
     "mongodb": "^2.2.5",
     "node-schedule": "^1.1.1",
     "q": "^1.4.1",
@@ -39,7 +41,9 @@
     "@types/express": "^4.0.33",
     "@types/express-graphql": "0.0.33",
     "@types/history": "^2.0.39",
+    "@types/isomorphic-fetch": "0.0.31",
     "@types/material-ui": "^0.16.38",
+    "@types/memory-cache": "0.0.29",
     "@types/mocha": "^2.2.32",
     "@types/mongodb": "^2.1.33",
     "@types/node": "^6.0.41",
@@ -53,7 +57,6 @@
     "@types/react-tap-event-plugin": "0.0.30",
     "@types/request": "0.0.32",
     "@types/swig": "0.0.28",
-    "@types/isomorphic-fetch": "0.0.31",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "concurrently": "^3.1.0",

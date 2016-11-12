@@ -15,6 +15,7 @@ import { renderToString } from 'react-dom/server'
 import * as Router from 'react-router'; 
 import * as swig from 'swig';
 import routes from './app/routes';
+import cacheManager from './data/cacheManager';
 
 const app = express();
 
@@ -38,7 +39,10 @@ app.get('/imdbMovies', (req, res) => {
 });
 
 db.openDbConnection(systemSetting.dbUrl)
-.then(initScheduler);
+.then(()=>{
+  cacheManager.init()
+  initScheduler();
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
