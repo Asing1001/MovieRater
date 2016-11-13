@@ -1,12 +1,13 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900");
 
-.container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.temp {
-  margin-top: 75px;
-}
+.clearButton{ 
+    cursor: pointer;
+    background-color: inherit;
+    border:0; 
+    font-size:16px;
+    position: absolute; 
+    bottom: 10px; 
+    left: 95%;
+    outline:none;    
+    color: #26C6DA
+};
