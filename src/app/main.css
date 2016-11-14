@@ -1,33 +1,32 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900");
-
-.clearButton{ 
+.clearButton {
     cursor: pointer;
     background-color: inherit;
-    border:0; 
-    font-size:16px;
-    position: absolute; 
-    bottom: 10px; 
+    border: 0;
+    font-size: 16px;
+    position: absolute;
+    bottom: 10px;
     left: 100%;
     margin-left: -20px;
-    outline:none;    
+    outline: none;
     color: #26C6DA
 }
 
-.movieDetail td{
+.movieDetail td {
     padding-right: 0 !important;
 }
 
-.movieDetail tr>td:nth-child(1){
+.movieDetail tr>td:nth-child(1) {
     width: 35%
 }
 
-.movieDetail tr>td:nth-child(2){
-    white-space: initial !important; 
+.movieDetail tr>td:nth-child(2) {
+    white-space: initial !important;
 }
- 
-.ratings{
+
+.ratings {
     text-align: center;
-    padding-top: 1em; 
+    padding-top: 1em;
     padding-bottom: 1em;
 }
 
@@ -36,7 +35,7 @@
     padding-right: 0.2em;
 }
 
-.pttLogo{
+.pttLogo {
     background: black;
     color: white;
     padding: 7px 6px;
@@ -45,12 +44,11 @@
 }
 
 @media (min-width: 768px) {
-  .ratings {
-    padding-left: 24px;
-  }
-
-  .ratingWrapper {
-    display: inline-block;
-    padding-right: 1em;
-  }
+    .ratings {
+        padding-left: 24px;
+    }
+    .ratingWrapper {
+        display: inline-block;
+        padding-right: 1em;
+    }
 }

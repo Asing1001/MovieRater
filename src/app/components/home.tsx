@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MovieDetail from './movieDetail';
 import AutoComplete from 'material-ui/AutoComplete';
-import YahooMovie from '../../models/YahooMovie';
+import Movie from '../../models/movie';
 
 class Home extends React.Component<any, any> {
   allMoviesName: Array<Object> = [];
@@ -27,7 +27,7 @@ class Home extends React.Component<any, any> {
       credentials: 'include',
     }).then(res => res.json())
       .then(json => {
-        json.data.allMovies.forEach(({chineseTitle, englishTitle, yahooId}: YahooMovie) => {
+        json.data.allMovies.forEach(({chineseTitle, englishTitle, yahooId}: Movie) => {
           this.allMoviesName.push({ value: yahooId, text: chineseTitle }, { value: yahooId, text: englishTitle })
         });
         this.setState({ dataSource: this.allMoviesName })
