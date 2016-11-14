@@ -1,4 +1,4 @@
-import YahooMovie from '../models/YahooMovie';
+import YahooMovie from './yahooMovie';
 import Article from './article';
 
 export default class Movie extends YahooMovie {
