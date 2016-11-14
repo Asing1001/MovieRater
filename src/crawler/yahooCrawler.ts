@@ -2,7 +2,7 @@ import * as request from "request";
 import * as cheerio from "cheerio";
 import {db} from "../data/db";
 import * as Q from "q";
-import YahooMovie from '../models/YahooMovie';
+import YahooMovie from '../models/yahooMovie';
 
 export function crawlYahooRange(startId, endId) {
     const promises = [];
