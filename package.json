@@ -75,9 +75,9 @@
     "rimraf": "^2.5.4",
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.1",
-    "ts-loader": "^0.9.5",
+    "ts-loader": "^1.2.0",
     "typed-graphql": "^1.0.2",
-    "typescript": "^2.0.3",
+    "typescript": "^2.0.9",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2",
     "webpack-merge": "^0.14.1"
