@@ -1,5 +1,5 @@
 import {db} from "../data/db";
-import {YahooMovie} from "./yahooCrawler";
+import YahooMovie from '../models/YahooMovie';
 import * as Q from "q";
 
 export function mergeData() {

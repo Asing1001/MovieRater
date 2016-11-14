@@ -11,4 +11,46 @@
     margin-left: -20px;
     outline:none;    
     color: #26C6DA
-};
+}
+
+.movieDetail td{
+    padding-right: 0 !important;
+}
+
+.movieDetail tr>td:nth-child(1){
+    width: 35%
+}
+
+.movieDetail tr>td:nth-child(2){
+    white-space: initial !important; 
+}
+ 
+.ratings{
+    text-align: center;
+    padding-top: 1em; 
+    padding-bottom: 1em;
+}
+
+.ratingWrapper {
+    display: inline-block;
+    padding-right: 0.2em;
+}
+
+.pttLogo{
+    background: black;
+    color: white;
+    padding: 7px 6px;
+    margin-right: 0.2em;
+    font-size: 0.8em;
+}
+
+@media (min-width: 768px) {
+  .ratings {
+    padding-left: 24px;
+  }
+
+  .ratingWrapper {
+    display: inline-block;
+    padding-right: 1em;
+  }
+}

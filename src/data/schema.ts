@@ -111,9 +111,9 @@ const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.imdbID,
         },
-        rating: {
+        yahooRating: {
             type: GraphQLString,
-            resolve: obj => obj.rating,
+            resolve: obj => obj.yahooRating,
         },
         imdbRating: {
             type: GraphQLString,
@@ -148,10 +148,6 @@ const QueryType = new GraphQLObjectType({
             resolve: (root, {yahooId, chineseTitle}) => {
                 let allMovies = cacheManager.get("allMovies");
                 return allMovies.find((movie)=>{return movie.yahooId === yahooId;})
-                // let query: any = {}
-                // if (yahooId) query.yahooId = yahooId;
-                // if (chineseTitle) query.chineseTitle = chineseTitle;
-                // return db.getDocument(query, "yahooMovies")
             },
         },
     }),

@@ -16,8 +16,8 @@ describe('imdbCrawler', () => {
   describe('crawlImdb', () => {
     before(()=>{return db.openDbConnection(systemSetting.dbUrl)})
     it('should correctly get new data from imdb', function () {
-      this.timeout(30000);
-      return crawlImdb().should.eventually.fulfilled//have.length.above(0)
+      this.timeout(60000);
+      return crawlImdb().should.eventually.fulfilled
     });
   });
 });

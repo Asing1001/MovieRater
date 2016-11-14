@@ -7,3 +7,4 @@ import 'react-dom';
 
 //css
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'hint.css/hint.min.css'

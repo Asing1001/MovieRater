@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MovieDetail from './movieDetail';
 import AutoComplete from 'material-ui/AutoComplete';
-import { YahooMovie } from '../../crawler/yahooCrawler';
+import YahooMovie from '../../models/YahooMovie';
 
 class Home extends React.Component<any, any> {
   allMoviesName: Array<Object> = [];
@@ -62,7 +62,7 @@ class Home extends React.Component<any, any> {
             launchCompany
             companyUrl
             sourceUrl                       
-            rating
+            yahooRating
             imdbRating            
             tomatoRating
             badRateCount
@@ -97,7 +97,7 @@ class Home extends React.Component<any, any> {
             onUpdateInput={this.handleUpdateInput.bind(this)}
             />
           <button className="clearButton" onClick={this.clearSearchText.bind(this)}>X</button>
-        </div>
+        </div>        
         <MovieDetail movie={this.state.resultMovie}></MovieDetail>
       </div>
     );
