@@ -1,6 +1,8 @@
 import { crawlYahooRange } from '../crawler/yahooCrawler';
+import { crawlImdb } from '../crawler/imdbCrawler';
+import { crawlPtt } from '../crawler/pttCrawler';
+import { mergeData } from '../crawler/mergeData';
 import { yahooCrawlerSetting, systemSetting } from '../configs/systemSetting';
-//import * as schedule from 'node-schedule';
 import * as fetch from "isomorphic-fetch";
 import { db } from "../data/db";
 import * as Q from 'q';
@@ -9,14 +11,28 @@ export function initScheduler() {
 
     console.log("[initScheduler] Create Schedule for keep website alive.");
     setInterval(function () {
-        fetch(systemSetting.websiteUrl).then(res =>         
-        console.log(`[initScheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`))
+        fetch(systemSetting.websiteUrl).then(res =>
+            console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`))
     }, 900000, null);
 
-    console.log("[initScheduler] Create Schedule for crawler.");
+    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlImdb.");
     setInterval(function () {
-        crawlYahoo();
+        crawlYahoo().then(() => {
+            console.log("[Scheduler] crawlYahoo success.");
+            crawlImdb().then(() =>
+                console.log("[Scheduler] crawlImdb success."));
+        });
     }, 900000, null);
+
+    console.log("[initScheduler] Create Schedule for pttCrawler and mergeData.");
+    setInterval(function () {
+        crawlPtt().then(() => {
+            console.log("[Scheduler] crawlPtt success.");
+            mergeData().then(() =>
+                console.log("[Scheduler] mergeData success."))
+        });
+    }, 900000, null);
+
 }
 
 
