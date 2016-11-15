@@ -1,11 +1,22 @@
-import {crawlYahooRange} from '../crawler/yahooCrawler';
-import {yahooCrawlerSetting} from '../configs/systemSetting';
-import {Range,RecurrenceRule,scheduleJob} from 'node-schedule';
-import {db} from "../data/db";
+import { crawlYahooRange } from '../crawler/yahooCrawler';
+import { yahooCrawlerSetting, systemSetting } from '../configs/systemSetting';
+//import * as schedule from 'node-schedule';
+import * as fetch from "isomorphic-fetch";
+import { db } from "../data/db";
 import * as Q from 'q';
 
-export function initScheduler(){
-    crawlYahoo();
+export function initScheduler() {
+
+    console.log("[initScheduler] Create Schedule for keep website alive.");
+    setInterval(function () {
+        fetch(systemSetting.websiteUrl).then(res =>         
+        console.log(`[initScheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`))
+    }, 900000, null);
+
+    console.log("[initScheduler] Create Schedule for crawler.");
+    setInterval(function () {
+        crawlYahoo();
+    }, 900000, null);
 }
 
 
@@ -24,7 +35,7 @@ function crawlYahoo() {
             endYahooId = yahooCrawlerSetting.endIndex;
         }
 
-        return crawlYahooRange(startYahooId,endYahooId)
+        return crawlYahooRange(startYahooId, endYahooId)
     }).then((yahooMovies) => {
         let movieIds = yahooMovies.map(({yahooId}) => yahooId);
         maxYahooId = Math.max(...movieIds);
