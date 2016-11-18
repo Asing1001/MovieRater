@@ -31,8 +31,7 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
         if (!this.state.movie.chineseTitle) { return null }
         return (
             <Paper style={{ display: 'table' }} zDepth={2}>
-                <img src={this.state.movie.posterUrl} style={{ padding: 0 }} className="col-lg-6 col-xs-12" alt="" />
-                <div className="col-lg-6 col-xs-12">
+                <div id="movieInfo" className="col-lg-6 col-xs-12 pull-right">
                     <div className="ratings row">
                         <div className="ratingWrapper"><img src="public/image/imdb.png" />
                             {this.state.movie.imdbID ? <a target="_blank" href={"http://www.imdb.com/title/" + this.state.movie.imdbID}> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</a>
@@ -93,6 +92,7 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
                         </TableBody>
                     </Table>
                 </div>
+                <img src={this.state.movie.posterUrl} style={{ padding: 0 }} className="col-lg-6 col-xs-12" alt="" />                
             </Paper>
         );
     };

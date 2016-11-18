@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {db} from "../data/db";
-import {systemSetting} from '../configs/systemSetting';
+import { db } from "../data/db";
+import { systemSetting } from '../configs/systemSetting';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -18,7 +18,10 @@ describe('db', () => {
   });
 
   describe('getCollection', () => {
-    it('get yahooMovie collection should return length above 0', () => db.getCollection('yahooMovies').should.eventually.have.length.above(0));
+    it('get yahooMovie collection should return length above 0', function () {
+      this.timeout(5000);
+      db.getCollection('yahooMovies').should.eventually.have.length.above(0)
+    });
   });
 
   describe('insertCollection', () => {
@@ -26,6 +29,6 @@ describe('db', () => {
   });
 
   describe('updateDocument', () => {
-    it('should resolve when update object not exist', () => db.updateDocument({ name: 'crawlerStatus' }, {unitTest:'test'}, 'configs').should.eventually.fulfilled)
+    it('should resolve when update object not exist', () => db.updateDocument({ name: 'crawlerStatus' }, { unitTest: 'test' }, 'configs').should.eventually.fulfilled)
   });
 });
