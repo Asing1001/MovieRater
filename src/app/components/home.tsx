@@ -43,7 +43,10 @@ class Home extends React.Component<any, any> {
 
   private handleUpdateInput(text) { this.setState({ searchText: text }) }
 
-  private clearSearchText() { this.setState({ searchText: '' }) }
+  private clearSearchText() { 
+    this.setState({ searchText: '' });
+    document.querySelector('input').focus();
+  }
 
   private search(selectItem, index) {
     console.log(selectItem, index)
@@ -106,7 +109,7 @@ class Home extends React.Component<any, any> {
             searchText={this.state.searchText}
             onUpdateInput={this.handleUpdateInput.bind(this)}
             />
-          <button className="clearButton" onClick={this.clearSearchText.bind(this)}>X</button>
+          <button className={`clearButton ${this.state.searchText?'':'displayNone'}`} onClick={this.clearSearchText.bind(this)}>X</button>
         </div>
         <MovieDetail movie={this.state.resultMovie}></MovieDetail>
       </div>
