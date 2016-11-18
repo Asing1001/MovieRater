@@ -30,6 +30,8 @@ function onSpreadFullfilled(yahooMovies: Array<YahooMovie>, pttPages) {
                 normalRateArticles.push(article)
             } else if (title.indexOf('負雷') !== -1) {
                 badRateArticles.push(article)
+            } else {
+                otherArticles.push(article);
             }
         });
 

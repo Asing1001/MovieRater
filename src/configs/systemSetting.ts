@@ -1,3 +1,5 @@
+const isProduction = process.env.ENV === 'production';
+
 export const systemSetting = {
     dbUrl : 'mongodb://acmLab1001:6RsEeqp9FfKJ@ds145415.mlab.com:45415/movierater',
     websiteUrl: 'http://movieqat.azurewebsites.net/',
