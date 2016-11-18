@@ -19,22 +19,20 @@ import cacheManager from './data/cacheManager';
 
 const app = express();
 
-app.get('/test', (req, res) => {
+app.get('/api/test', (req, res) => {
   res.send('test!');
 });
-app.get('/yahooMovies', (req, res) => {
+app.get('/api/crawlerStatus', (req, res) => {
+  db.getDocument({ name: "crawlerStatus" }, "configs").then(c=>res.send(c));
+});
+app.get('/api/yahooMovies', (req, res) => {
   db.getCollection("yahooMovies").then(yahooMovies => {
     res.send(yahooMovies);
   });
 });
-app.get('/pttPages', (req, res) => {
+app.get('/api/pttPages', (req, res) => {
   db.getCollection("pttPages").then(pages => {
     res.send(pages);
-  });
-});
-app.get('/imdbMovies', (req, res) => {
-  db.getCollection("imdbMovies").then(movies => {
-    res.send(movies);
   });
 });
 

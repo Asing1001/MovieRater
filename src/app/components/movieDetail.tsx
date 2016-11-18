@@ -33,13 +33,23 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
             <Paper style={{ display: 'table' }} zDepth={2}>
                 <img src={this.state.movie.posterUrl} style={{ padding: 0 }} className="col-lg-6 col-xs-12" alt="" />
                 <div className="col-lg-6 col-xs-12">
-                    <div className="ratings">
-                        <div className="ratingWrapper"><img src="public/image/imdb.png" /> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</div>
-                        <div className="ratingWrapper"><img src="public/image/yahoo.png" /> {this.state.movie.yahooRating ? this.state.movie.yahooRating : 'N/A'}</div>
-                        <div className="ratingWrapper"><img src="public/image/rottentomatoes.png" />{this.state.movie.tomatoRating ? this.state.movie.tomatoRating : 'N/A'}</div>
+                    <div className="ratings row">
+                        <div className="ratingWrapper"><img src="public/image/imdb.png" />
+                            {this.state.movie.imdbID ? <a target="_blank" href={"http://www.imdb.com/title/" + this.state.movie.imdbID}> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</a>
+                                :<span> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</span>
+                            }
+                        </div>
+                        <div className="ratingWrapper"><img src="public/image/yahoo.png" />
+                            <a target="_blank" href={"https://tw.movies.yahoo.com/movieinfo_main.html/id=" + this.state.movie.yahooId}> {this.state.movie.yahooRating ? this.state.movie.yahooRating : 'N/A'}</a>
+                        </div>
+                        <div className="ratingWrapper"><img src="public/image/rottentomatoes.png" />
+                            {this.state.movie.tomatoURL && this.state.movie.tomatoURL!=='N/A' ? <a target="_blank" href={this.state.movie.tomatoURL}> {this.state.movie.tomatoRating ? this.state.movie.tomatoRating : 'N/A'}</a>
+                                :<span> {this.state.movie.tomatoRating ? this.state.movie.tomatoRating : 'N/A'}</span>
+                            }                            
+                        </div>
                         <div className="ratingWrapper"><span className="pttLogo">PTT</span>
                             <span className="hint--bottom" aria-label="(好雷/普雷/負雷)">
-                                {this.state.movie.goodRateCount}/{this.state.movie.normalRateCount}/{this.state.movie.badRateCount}
+                                {this.state.movie.goodRateArticles.length}/{this.state.movie.normalRateArticles.length}/{this.state.movie.badRateArticles.length}
                             </span>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import {db} from "../data/db";
+import { db } from "../data/db";
 import YahooMovie from '../models/yahooMovie';
 import * as Q from "q";
 
@@ -14,30 +14,32 @@ export function mergeData() {
 function onSpreadFullfilled(yahooMovies: Array<YahooMovie>, pttPages) {
     //merge [[1,2],[3,4]] to [1,2,3,4]
     let allArticles = [].concat(...pttPages.map(({articles}) => articles));
-    let mergedDatas = yahooMovies.filter(filterBySomething).map(mergeByChineseTitle);
-    return mergedDatas;
-
-    function filterBySomething(yahooMovie) {
-        //TODO 可在此決定哪些不要再update了
-        return true;
-    }
+    let mergedMovies = yahooMovies.map(mergeByChineseTitle);
+    return mergedMovies;
 
     function mergeByChineseTitle({chineseTitle}) {
-        //TODO 用模糊比對取代indexOf資料會比較多
         let relateArticles = allArticles.filter(({title}) => title.indexOf(chineseTitle) !== -1);
-        let [goodRateCount, normalRateCount, badRateCount] = [0,0,0];
-        relateArticles.forEach(({title}) => {
-            if (title.indexOf('好雷') !== -1) goodRateCount++;
-            if (title.indexOf('普雷') !== -1) normalRateCount++;
-            if (title.indexOf('負雷') !== -1) badRateCount++;
+        let [noRateArticles, goodRateArticles, normalRateArticles, badRateArticles, otherArticles] = [[], [], [], [], []];
+        relateArticles.forEach((article) => {
+            let title = article.title;
+            if (title.indexOf('無雷') !== -1) {
+                noRateArticles.push();
+            } else if (title.indexOf('好雷') !== -1 || title.indexOf('好無雷') !== -1) {
+                goodRateArticles.push(article);
+            } else if (title.indexOf('普雷') !== -1) {
+                normalRateArticles.push(article)
+            } else if (title.indexOf('負雷') !== -1) {
+                badRateArticles.push(article)
+            }
         });
 
         return {
-            goodRateCount: goodRateCount,
-            normalRateCount: normalRateCount,
-            badRateCount: badRateCount,
+            noRateArticles: noRateArticles,
+            goodRateArticles: goodRateArticles,
+            normalRateArticles: normalRateArticles,
+            badRateArticles: badRateArticles,
             chineseTitle: chineseTitle,
-            relateArticles: relateArticles
+            otherArticles: otherArticles
         };
     }
 }

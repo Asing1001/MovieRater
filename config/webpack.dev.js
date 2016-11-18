@@ -25,6 +25,10 @@ module.exports = webpackMerge(commonConfig, {
         target: 'http://localhost:3003',
         secure: false
       },
+      '/api': {
+        target: 'http://localhost:3003',
+        secure: false
+      },
       '/graphql': {
         target: 'http://localhost:3003',
         secure: false

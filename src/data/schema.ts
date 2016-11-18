@@ -91,21 +91,21 @@ const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.sourceUrl,
         },
-        goodRateCount: {
-            type: GraphQLString,
-            resolve: obj => obj.goodRateCount,
-        },
-        normalRateCount: {
-            type: GraphQLString,
-            resolve: obj => obj.normalRateCount,
-        },
-        badRateCount: {
-            type: GraphQLString,
-            resolve: obj => obj.badRateCount,
-        },
-        relateArticles: {
+        goodRateArticles: {
             type: new GraphQLList(ArticleType),
-            resolve: obj => obj.relateArticles,
+            resolve: obj => obj.goodRateArticles,
+        },
+        normalRateArticles: {
+            type: new GraphQLList(ArticleType),
+            resolve: obj => obj.normalRateArticles,
+        },
+        badRateArticles: {
+            type: new GraphQLList(ArticleType),
+            resolve: obj => obj.badRateArticles,
+        },
+        otherArticles: {
+            type: new GraphQLList(ArticleType),
+            resolve: obj => obj.otherArticles,
         },
         imdbID: {
             type: GraphQLString,

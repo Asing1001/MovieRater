@@ -41,6 +41,7 @@ function getImdbMovieInfo({englishTitle}) {
                 }  
                 defer.resolve(imdbInfos);
             }else{
+                json.englishTitle = englishTitle;
                 defer.reject(json);
             }
             return defer.promise;

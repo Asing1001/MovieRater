@@ -1,27 +1,26 @@
 import * as request from "request";
 import * as cheerio from "cheerio";
-import {db} from "../data/db";
+import { db } from "../data/db";
 import * as Q from "q";
-import {pttCrawlerSetting} from '../configs/systemSetting'; 
+import { pttCrawlerSetting } from '../configs/systemSetting';
 
 const pttBaseUrl = 'https://www.ptt.cc';
+const crawlerStatusFilter = { name: "crawlerStatus" };
 export function crawlPtt() {
-    console.time('crawlPtt');
-    const crawlerStatusFilter = { name: "crawlerStatus" };
-    let [maxPttIndex,endIndex] = [4482,4482];
-    let startIndex = maxPttIndex-10;
+    let howManyPagePerTime = 50;
+    let startPttIndex = 1;
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
         if (crawlerStatus && crawlerStatus.maxPttIndex) {
-            endIndex = crawlerStatus.maxPttIndex + 5;
+            startPttIndex = crawlerStatus.maxPttIndex;
         }
 
-        if(pttCrawlerSetting.enable){
-            startIndex = pttCrawlerSetting.startIndex;
-            endIndex = pttCrawlerSetting.endIndex;
+        if (pttCrawlerSetting.enable) {
+            startPttIndex = pttCrawlerSetting.startPttIndex;
+            howManyPagePerTime = pttCrawlerSetting.howManyPagePerTime;
         }
 
         const promises = [];
-        for (let i = startIndex; i <= endIndex; i++) {
+        for (let i = startPttIndex; i <= startPttIndex + howManyPagePerTime; i++) {
             const promise = crawlPttPage(i);
             promises.push(promise);
         }
@@ -40,10 +39,13 @@ export function crawlPtt() {
             }
         });
         let pttIndexs = pttPages.map(({pageIndex}) => pageIndex);
-        maxPttIndex = Math.max(...pttIndexs);
-        db.updateDocument(crawlerStatusFilter, { maxPttIndex: maxPttIndex }, 'configs');
-        console.timeEnd('crawlPtt');        
-        console.log(`new pttPages count:${pttPages.length}, maxPttIndex:${maxPttIndex}`);
+        let newMaxPttIndex = Math.max(...pttIndexs);
+        let alreadyCrawlTheNewest = newMaxPttIndex === startPttIndex;
+        if (alreadyCrawlTheNewest) {
+            newMaxPttIndex - 100 > 0 ? newMaxPttIndex - 100 : 1;
+        }
+        db.updateDocument(crawlerStatusFilter, { maxPttIndex: newMaxPttIndex }, 'configs');
+        console.log(`new pttPages count:${pttPages.length}, newMaxPttIndex:${newMaxPttIndex}`);
         let promises = pttPages.map(pttPage => db.updateDocument({ pageIndex: pttPage.pageIndex }, pttPage, "pttPages"))
         return Q.all(promises);
     })
@@ -58,9 +60,9 @@ export function crawlPttPage(index) {
         }
         const $ = cheerio.load(html);
         const $articleInfoDivs = $('.r-ent');
-        if(!$articleInfoDivs.length){
-           let serverReturn =  $('.bbs-screen.bbs-content').text();
-           return defer.reject(`index${index} not exist, server return:${serverReturn}`);
+        if (!$articleInfoDivs.length) {
+            let serverReturn = $('.bbs-screen.bbs-content').text();
+            return defer.reject(`index${index} not exist, server return:${serverReturn}`);
         }
         const articleInfos = Array.from($articleInfoDivs).map((articleInfoDiv) => {
             const $articleInfoDiv = $(articleInfoDiv);

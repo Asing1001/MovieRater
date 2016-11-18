@@ -16,6 +16,10 @@ class Home extends React.Component<any, any> {
     this.getDataSource();
   }
 
+  componentDidMount() {
+    document.querySelector('input').focus();
+  }
+
   private getDataSource() {
     fetch('/graphql', {
       method: 'POST',
@@ -28,17 +32,20 @@ class Home extends React.Component<any, any> {
     }).then(res => res.json())
       .then(json => {
         json.data.allMovies.forEach(({chineseTitle, englishTitle, yahooId}: Movie) => {
-          this.allMoviesName.push({ value: yahooId, text: chineseTitle }, { value: yahooId, text: englishTitle })
+          this.allMoviesName.push({ value: yahooId, text: chineseTitle })
+          if (englishTitle && englishTitle !== chineseTitle) {
+            this.allMoviesName.push({ value: yahooId, text: englishTitle })
+          }
         });
         this.setState({ dataSource: this.allMoviesName })
       });
   }
 
-  handleUpdateInput(text) { this.setState({ searchText: text }) }
+  private handleUpdateInput(text) { this.setState({ searchText: text }) }
 
-  clearSearchText() { this.setState({ searchText: '' }) }
+  private clearSearchText() { this.setState({ searchText: '' }) }
 
-  search(selectItem, index) {
+  private search(selectItem, index) {
     console.log(selectItem, index)
     fetch('/graphql', {
       method: 'POST',
@@ -63,11 +70,14 @@ class Home extends React.Component<any, any> {
             companyUrl
             sourceUrl                       
             yahooRating
-            imdbRating            
+            imdbID
+            imdbRating
+            tomatoURL            
             tomatoRating
-            badRateCount
-            goodRateCount
-            normalRateCount
+            badRateArticles{title,push,url,date,author}
+            goodRateArticles{title,push,url,date,author}
+            normalRateArticles{title,push,url,date,author}
+            otherArticles{title,push,url,date,author}
           }
         }
     ` }),
@@ -90,14 +100,14 @@ class Home extends React.Component<any, any> {
             dataSource={this.state.dataSource}
             floatingLabelText="找電影"
             fullWidth={true}
-            filter={AutoComplete.fuzzyFilter}
+            filter={AutoComplete.caseInsensitiveFilter}
             maxSearchResults={6}
             onNewRequest={this.search.bind(this)}
             searchText={this.state.searchText}
             onUpdateInput={this.handleUpdateInput.bind(this)}
             />
           <button className="clearButton" onClick={this.clearSearchText.bind(this)}>X</button>
-        </div>        
+        </div>
         <MovieDetail movie={this.state.resultMovie}></MovieDetail>
       </div>
     );
