@@ -1,4 +1,9 @@
-@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900");
+@import url(http://fonts.googleapis.com/earlyaccess/notosanstc.css);
+
+div * {
+    font-family: "Noto Sans TC" , Sans-Serif; 
+}
+
 .clearButton {
     cursor: pointer;
     background-color: inherit;
