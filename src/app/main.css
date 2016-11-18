@@ -13,14 +13,14 @@
     color: #26C6DA
 }
 
-.displayNone{
-    display: none;
-}
-
 @media (min-width: 768px) {
-    .clearButton{
+    .clearButton {
         display: none;
     }
+}
+
+.displayNone {
+    display: none;
 }
 
 .movieDetail td {
@@ -35,25 +35,32 @@
     white-space: initial !important;
 }
 
+@media (min-width: 768px) {
+    .movieDetail tr>td:nth-child(1) {
+        width: 120px
+    }
+}
+
 .ratings {
-    text-align: center;
     padding-top: 1em;
     padding-bottom: 1em;
+    padding-left: 24px;
 }
 
 .ratingWrapper {
     display: inline-block;
-    padding-right: 0.2em;
+    padding-right: 1em;
 }
 
-
-@media (min-width: 768px) {
+@media (max-width: 992px) {
     .ratings {
-        padding-left: 24px;
+        text-align: center;
+        padding-left: 0;
+        margin-left: -15px;
+        margin-right: -15px;
     }
     .ratingWrapper {
-        display: inline-block;
-        padding-right: 1em;
+        padding-right: 0.2em;
     }
 }
 
