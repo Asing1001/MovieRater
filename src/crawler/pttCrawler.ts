@@ -11,7 +11,7 @@ export function crawlPtt() {
     let startPttIndex = 1;
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
         if (crawlerStatus && crawlerStatus.maxPttIndex) {
-            startPttIndex = crawlerStatus.maxPttIndex;
+            startPttIndex = crawlerStatus.maxPttIndex + 1;
         }
 
         if (pttCrawlerSetting.enable) {
@@ -39,7 +39,7 @@ export function crawlPtt() {
             }
         });
         let pttIndexs = pttPages.map(({pageIndex}) => pageIndex);
-        let newMaxPttIndex = Math.max(...pttIndexs);
+        let newMaxPttIndex = Math.max(...pttIndexs, startPttIndex);
         let alreadyCrawlTheNewest = newMaxPttIndex === startPttIndex;
         if (alreadyCrawlTheNewest) {
             newMaxPttIndex - 100 > 0 ? newMaxPttIndex - 100 : 1;

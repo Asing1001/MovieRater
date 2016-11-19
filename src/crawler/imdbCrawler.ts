@@ -19,7 +19,7 @@ export function crawlImdb() {
                 } else {
                     var reason = result.reason;
                     imdbInfo = {
-                        englishTitle: reason.englishTitle
+                        yahooId: reason.yahooId
                     }
                     console.error(reason);
                 }
@@ -27,7 +27,7 @@ export function crawlImdb() {
                 imdbInfos.push(imdbInfo);
             });
             console.log(`new imdbInfos count:${imdbInfos.length}`);
-            let promises = imdbInfos.map(imdbInfo => db.updateDocument({ englishTitle: imdbInfo.englishTitle }, imdbInfo, "yahooMovies"))
+            let promises = imdbInfos.map(imdbInfo => db.updateDocument({ yahooId: imdbInfo.yahooId }, imdbInfo, "yahooMovies"))
             return Q.all(promises);
         });
 }
@@ -35,18 +35,19 @@ export function crawlImdb() {
 export function filterNeedCrawlMovie({englishTitle, imdbRating, releaseDate, imdbLastCrawlTime}: Movie) {
     let now = moment();
     let isThisYearMovie = now.diff(moment(releaseDate), 'years') === 0;
-    let notYetCrawlToday = now.diff(moment(imdbLastCrawlTime), 'days') > 1;
-    return (notYetCrawlToday && englishTitle && (isThisYearMovie || (!isThisYearMovie && !imdbRating)));
+    let hasCrawlToday = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime), 'days') === 0);
+    let shouldCrawl = !hasCrawlToday && englishTitle && (isThisYearMovie || (!isThisYearMovie && !imdbLastCrawlTime));
+    return shouldCrawl;
 }
 
-function getImdbMovieInfo({englishTitle}) {
-    return fetch(`${omdbApiUrl}?t=${englishTitle}&tomatoes=true&r=json`)
-        .then(res => res.json())
+function getImdbMovieInfo({englishTitle, yahooId}: Movie) {
+    return fetch(`${omdbApiUrl}?t=${encodeURIComponent(englishTitle)}&tomatoes=true&r=json`)
+        .then(res => { return res.json() })
         .then(json => {
             var defer = Q.defer();
             if (json.Response === 'True') {
                 let imdbInfo = {
-                    englishTitle: englishTitle,
+                    yahooId: yahooId,
                     imdbID: json.imdbID,
                     imdbRating: json.imdbRating,
                     tomatoRating: json.tomatoRating,
@@ -54,7 +55,7 @@ function getImdbMovieInfo({englishTitle}) {
                 }
                 defer.resolve(imdbInfo);
             } else {
-                json.englishTitle = englishTitle;
+                json.yahooId = yahooId;
                 defer.reject(json);
             }
             return defer.promise;
