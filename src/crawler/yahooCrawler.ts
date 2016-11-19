@@ -22,7 +22,7 @@ export function crawlYahoo() {
         return crawlYahooRange(startYahooId, startYahooId + howManyPagePerTime)
     }).then((yahooMovies) => {
         let movieIds = yahooMovies.map(({yahooId}) => yahooId);
-        let newMaxYahooId = Math.max(...movieIds);
+        let newMaxYahooId = Math.max(...movieIds, startYahooId);
         let alreadyCrawlTheNewest = newMaxYahooId === startYahooId;
         if (alreadyCrawlTheNewest) {
             newMaxYahooId = startYahooId - 500 > 0 ? startYahooId - 500 : 1;

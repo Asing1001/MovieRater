@@ -19,12 +19,10 @@ function onSpreadFullfilled(yahooMovies: Array<YahooMovie>, pttPages) {
 
     function mergeByChineseTitle({chineseTitle}) {
         let relateArticles = allArticles.filter(({title}) => title.indexOf(chineseTitle) !== -1);
-        let [noRateArticles, goodRateArticles, normalRateArticles, badRateArticles, otherArticles] = [[], [], [], [], []];
+        let [goodRateArticles, normalRateArticles, badRateArticles, otherArticles] = [[], [], [], [], []];
         relateArticles.forEach((article) => {
             let title = article.title;
-            if (title.indexOf('無雷') !== -1) {
-                noRateArticles.push();
-            } else if (title.indexOf('好雷') !== -1 || title.indexOf('好無雷') !== -1) {
+            if (title.indexOf('好雷') !== -1 || title.indexOf('好無雷') !== -1) {
                 goodRateArticles.push(article);
             } else if (title.indexOf('普雷') !== -1) {
                 normalRateArticles.push(article)
@@ -36,7 +34,6 @@ function onSpreadFullfilled(yahooMovies: Array<YahooMovie>, pttPages) {
         });
 
         return {
-            noRateArticles: noRateArticles,
             goodRateArticles: goodRateArticles,
             normalRateArticles: normalRateArticles,
             badRateArticles: badRateArticles,
