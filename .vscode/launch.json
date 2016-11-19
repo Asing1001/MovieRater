@@ -34,7 +34,9 @@
             "runtimeExecutable": null,
             "env": {
                 "NODE_ENV": "testing"
-            }
+            },
+            "sourceMaps": true,
+            "outDir": "${workspaceRoot}/dist"
         },
         {
             "name": "附加",

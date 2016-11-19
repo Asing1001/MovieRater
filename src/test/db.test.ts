@@ -19,8 +19,8 @@ describe('db', () => {
 
   describe('getCollection', () => {
     it('get yahooMovie collection should return length above 0', function () {
-      this.timeout(5000);
-      db.getCollection('yahooMovies').should.eventually.have.length.above(0)
+      this.timeout(10000);
+      return db.getCollection('yahooMovies').should.eventually.have.length.above(0)
     });
   });
 
