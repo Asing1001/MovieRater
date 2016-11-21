@@ -13,22 +13,24 @@ describe('db', () => {
   describe('connection', () => {
     it('should not null when connection string is correct', function () {
       this.timeout(5000);
-      return db.openDbConnection(systemSetting.dbUrl).should.eventually.fulfilled
+      return db.openDbConnection(systemSetting.dbUrl).should.eventually.be.fulfilled
     });
   });
 
   describe('getCollection', () => {
-    it('get yahooMovie collection should return length above 0', function () {
+    it('get collection should success return array', function () {
       this.timeout(10000);
-      return db.getCollection('yahooMovies').should.eventually.have.length.above(0)
+      return db.getCollection('test').should.eventually.have.property('map')
     });
   });
 
   describe('insertCollection', () => {
-    it('should resolve when give empty array', () => db.insertCollection([], 'test').should.eventually.fulfilled);
+    it('should resolve when give empty array', () => db.insertCollection([], 'test').should.eventually.be.fulfilled);
   });
 
   describe('updateDocument', () => {
-    it('should resolve when update object not exist', () => db.updateDocument({ name: 'crawlerStatus' }, { unitTest: 'test' }, 'configs').should.eventually.fulfilled)
+    it('should resolve when update object not exist', () => {
+      return db.updateDocument({ name: 'unitTest' }, { unitTest: 'test' }, 'test').should.eventually.be.fulfilled
+    })
   });
 });

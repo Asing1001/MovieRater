@@ -1,23 +1,15 @@
 import { db } from "../data/db";
 import YahooMovie from '../models/yahooMovie';
 import * as Q from "q";
+import cacheManager from '../data/cacheManager';
 
-export function mergeData() {
-    return Q.spread([db.getCollection("yahooMovies"), db.getCollection("pttPages")], onSpreadFullfilled)
-        .then(mergedDatas => {
-            let promises = mergedDatas.map(mergedData => db.updateDocument({ chineseTitle: mergedData.chineseTitle }, mergedData, "yahooMovies"))
-            return Q.all(promises);
-        })
-}
-
-
-function onSpreadFullfilled(yahooMovies: Array<YahooMovie>, pttPages) {
+export function mergeData(yahooMovies: Array<YahooMovie>, pttPages) {
     //merge [[1,2],[3,4]] to [1,2,3,4]
     let allArticles = [].concat(...pttPages.map(({articles}) => articles));
     let mergedMovies = yahooMovies.map(mergeByChineseTitle);
     return mergedMovies;
 
-    function mergeByChineseTitle({chineseTitle}) {
+    function mergeByChineseTitle({chineseTitle, yahooId}:YahooMovie) {
         let relateArticles = allArticles.filter(({title}) => title.indexOf(chineseTitle) !== -1);
         let [goodRateArticles, normalRateArticles, badRateArticles, otherArticles] = [[], [], [], [], []];
         relateArticles.forEach((article) => {
@@ -34,10 +26,10 @@ function onSpreadFullfilled(yahooMovies: Array<YahooMovie>, pttPages) {
         });
 
         return {
+            yahooId: yahooId,
             goodRateArticles: goodRateArticles,
             normalRateArticles: normalRateArticles,
             badRateArticles: badRateArticles,
-            chineseTitle: chineseTitle,
             otherArticles: otherArticles
         };
     }

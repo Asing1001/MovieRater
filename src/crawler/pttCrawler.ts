@@ -24,8 +24,7 @@ export function crawlPtt() {
             const promise = crawlPttPage(i);
             promises.push(promise);
         }
-        let newestPagePromise = crawlPttPage('');
-        promises.push(newestPagePromise);
+
         return Q.allSettled(promises);
     }).then((results) => {
         let pttPages = [];
@@ -42,7 +41,7 @@ export function crawlPtt() {
         let newMaxPttIndex = Math.max(...pttIndexs, startPttIndex);
         let alreadyCrawlTheNewest = newMaxPttIndex === startPttIndex;
         if (alreadyCrawlTheNewest) {
-            newMaxPttIndex - 100 > 0 ? newMaxPttIndex - 100 : 1;
+            newMaxPttIndex = newMaxPttIndex - 100 > 0 ? newMaxPttIndex - 100 : 1;
         }
         db.updateDocument(crawlerStatusFilter, { maxPttIndex: newMaxPttIndex }, 'configs');
         console.log(`new pttPages count:${pttPages.length}, newMaxPttIndex:${newMaxPttIndex}`);

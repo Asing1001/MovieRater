@@ -11,7 +11,7 @@ export function crawlYahoo() {
     let startYahooId = 1;
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
         if (crawlerStatus && crawlerStatus.maxYahooId) {
-            startYahooId = crawlerStatus.maxYahooId;
+            startYahooId = crawlerStatus.maxYahooId + 1;
         }
 
         if (yahooCrawlerSetting.enable) {

@@ -7,6 +7,7 @@ import * as fetch from "isomorphic-fetch";
 import { db } from "../data/db";
 import * as Q from 'q';
 import cacheManager from '../data/cacheManager';
+import Movie from "../models/movie";
 
 export function initScheduler() {
 
@@ -18,29 +19,21 @@ export function initScheduler() {
 
     console.log("[initScheduler] Create Schedule for yahooCrawler and crawlImdb.");
     setInterval(function () {
-        console.time('crawlYahoo');
+        console.time('[Scheduler] crawlYahoo');
         crawlYahoo().then(() => {
-            console.log("[Scheduler] crawlYahoo success.");
-            console.timeEnd('crawlYahoo');
-            console.time('crawlImdb');
+            console.timeEnd('[Scheduler] crawlYahoo');
+            console.time('[Scheduler] crawlImdb');
             crawlImdb().then(() => {
-                console.log("[Scheduler] crawlImdb success.");
-                console.timeEnd('crawlImdb');
+                console.timeEnd('[Scheduler] crawlImdb');
             });
         });
     }, 900000, null);
 
     console.log("[initScheduler] Create Schedule for pttCrawler and mergeData.");
     setInterval(function () {
-        console.time('crawlPtt');
+        console.time('[Scheduler] crawlPtt');
         crawlPtt().then(() => {
-            console.log("[Scheduler] crawlPtt success.");
-            console.timeEnd('crawlPtt');
-            console.time('mergeData');
-            mergeData().then(() => {
-                console.log("[Scheduler] mergeData success.")
-                console.timeEnd('mergeData');
-            })
+            console.timeEnd('[Scheduler] crawlPtt');
         });
     }, 900000, null);
 
@@ -48,6 +41,17 @@ export function initScheduler() {
     setInterval(function () {
         cacheManager.init().then(() => {
             console.log("[Scheduler] cacheManager.init success.");
+            db.getCollection("pttPages").then(pttPages => {
+                var yahooMovies = cacheManager.get("yahooMovies");
+                console.time('[Scheduler] mergeData');
+                let mergedDatas = mergeData(yahooMovies, pttPages)
+                console.timeEnd('[Scheduler] mergeData');
+                let promises = mergedDatas.map((mergedData: Movie) => db.updateDocument({ yahooId: mergedData.yahooId }, mergedData, "yahooMovies"))
+                console.time('[Scheduler] update mergeData to db');
+                Q.all(promises).then(() => {
+                    console.timeEnd('[Scheduler] update mergeData to db');
+                })
+            })
         });
     }, 3600000, null);
 }
