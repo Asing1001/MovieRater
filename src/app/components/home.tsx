@@ -2,6 +2,7 @@ import * as React from 'react';
 import MovieDetail from './movieDetail';
 import AutoComplete from 'material-ui/AutoComplete';
 import Movie from '../../models/movie';
+import 'isomorphic-fetch';
 
 class Home extends React.Component<any, any> {
   allMoviesName: Array<Object> = [];

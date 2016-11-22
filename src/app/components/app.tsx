@@ -3,7 +3,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
-import 'isomorphic-fetch';
 
 injectTapEventPlugin();
 
