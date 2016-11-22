@@ -1,21 +1,20 @@
 import * as memoryCache from 'memory-cache';
 import { db } from "../data/db";
 import * as Q from "q";
+import { mergeData } from '../crawler/mergeData';
 
 export default class cacheManager {
+    static cacheKey = 'allMovies';
     static init() {
-        var allMoviesPromise = db.getCollection("yahooMovies", { sort: { yahooId: -1 } }).then((data) => {
-            console.log("[cacheManager] db.getCollection('yahooMovies') >> success");
-            return memoryCache.put("allMovies", data);
-        })
-
-        var allArticlesPromise = db.getCollection("pttPages", { sort: { yahooId: -1 } }).then((pttPages) => {            
-            console.log("[cacheManager] db.getCollection('pttPages') >> success");
-            let allArticles = [].concat(...pttPages.map(({articles}) => articles));
-            return memoryCache.put("allArticles", allArticles);
-        })
-
-        return Q.all([allMoviesPromise,allArticlesPromise]);
+        console.time('get yahooMovies and pttPages');
+        return Q.spread([db.getCollection("yahooMovies", { sort: { yahooId: -1 } }), db.getCollection("pttPages")], function(yahooMovies, pttPages) {
+            console.timeEnd('get yahooMovies and pttPages');
+            memoryCache.put(cacheManager.cacheKey, yahooMovies);
+            console.time('mergeData');
+            let mergedDatas = mergeData(yahooMovies, pttPages);
+            console.timeEnd('mergeData');
+            return memoryCache.put(cacheManager.cacheKey, mergedDatas);
+        });
     }
 
     static get(key) {

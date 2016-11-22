@@ -1,8 +1,10 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {db} from "../data/db";
-import {systemSetting} from '../configs/systemSetting'; 
+import { db } from "../data/db";
+import { systemSetting } from '../configs/systemSetting';
 import cacheManager from '../data/cacheManager';
+import * as memoryCache from 'memory-cache';
+import * as Q from "q";
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -10,19 +12,25 @@ const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
 
+class mockCacheManager extends cacheManager {
+  static init() {
+    let defer = Q.defer<void>();
+    memoryCache.put(cacheManager.cacheKey, [1]);
+    defer.resolve();
+    return defer.promise;
+  }
+}
 
 describe('cacheManager', () => {
-before(()=>{return db.openDbConnection(systemSetting.dbUrl)})
   describe('init cacheManager', () => {
     it('should init complete', function () {
-      this.timeout(30000);
-      return cacheManager.init().should.eventually.fulfilled
+      return mockCacheManager.init().should.eventually.fulfilled;
     });
   });
-  
-  describe('getAllMovies', () => {
-    it('should correctly get data from cacheManager', function () {
-      return cacheManager.get('allMovies').should.have.length.above(0)
+
+  describe('get', () => {
+    it('cacheManager', function () {
+      return mockCacheManager.get(cacheManager.cacheKey).should.have.length.above(0)
     });
   });
 });

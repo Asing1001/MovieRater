@@ -109,9 +109,7 @@ const MovieType = new GraphQLObjectType({
         },
         relatedArticles: {
             type: new GraphQLList(ArticleType),
-            resolve: ({chineseTitle}) => {
-                return cacheManager.get('allArticles').filter(({title})=>title.indexOf(chineseTitle)!==-1);
-            },
+            resolve: obj => obj.relatedArticles,
         },
         imdbID: {
             type: GraphQLString,
@@ -153,7 +151,7 @@ const QueryType = new GraphQLObjectType({
             },
             resolve: (root, {yahooId, chineseTitle}) => {
                 let allMovies = cacheManager.get("allMovies");
-                return allMovies.find((movie)=>{return movie.yahooId === yahooId;})
+                return allMovies.find((movie) => { return movie.yahooId === yahooId; })
             },
         },
     }),
