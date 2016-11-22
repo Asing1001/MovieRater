@@ -53,7 +53,11 @@ module.exports = {
           to: 'public'
         }
       ]
-    )
+    ),
+
+    new webpack.ProvidePlugin({
+      'Promise': "bluebird"
+    }),
 
   ]
 };
