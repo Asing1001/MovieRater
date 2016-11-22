@@ -32,7 +32,7 @@ export function initScheduler() {
     console.log("[initScheduler] Create Schedule for pttCrawler and mergeData.");
     setInterval(function () {
         console.time('[Scheduler] crawlPtt');
-        crawlPtt().then(() => {
+        crawlPtt().then((pttPages) => {
             console.timeEnd('[Scheduler] crawlPtt');
         });
     }, 900000, null);
@@ -40,18 +40,18 @@ export function initScheduler() {
     console.log("[initScheduler] Create Schedule for cacheManager.init");
     setInterval(function () {
         cacheManager.init().then(() => {
-            console.log("[Scheduler] cacheManager.init success.");
-            db.getCollection("pttPages").then(pttPages => {
-                var yahooMovies = cacheManager.get("yahooMovies");
-                console.time('[Scheduler] mergeData');
-                let mergedDatas = mergeData(yahooMovies, pttPages)
-                console.timeEnd('[Scheduler] mergeData');
-                let promises = mergedDatas.map((mergedData: Movie) => db.updateDocument({ yahooId: mergedData.yahooId }, mergedData, "yahooMovies"))
-                console.time('[Scheduler] update mergeData to db');
-                Q.all(promises).then(() => {
-                    console.timeEnd('[Scheduler] update mergeData to db');
-                })
-            })
+            // console.log("[Scheduler] cacheManager.init success.");
+            // db.getCollection("pttPages").then(pttPages => {
+            //     var yahooMovies = cacheManager.get("allMovies");
+            //     console.time('[Scheduler] mergeData');
+            //     let mergedDatas = mergeData(yahooMovies, pttPages)
+            //     console.timeEnd('[Scheduler] mergeData');
+            //     let promises = mergedDatas.map((mergedData: Movie) => db.updateDocument({ yahooId: mergedData.yahooId }, mergedData, "yahooMovies"))
+            //     console.time('[Scheduler] update mergeData to db');
+            //     Q.all(promises).then(() => {
+            //         console.timeEnd('[Scheduler] update mergeData to db');
+            //     })
+            // })
         });
     }, 3600000, null);
 }

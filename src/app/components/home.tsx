@@ -78,10 +78,7 @@ class Home extends React.Component<any, any> {
             imdbRating
             tomatoURL            
             tomatoRating
-            badRateArticles{title,push,url,date,author}
-            goodRateArticles{title,push,url,date,author}
-            normalRateArticles{title,push,url,date,author}
-            otherArticles{title,push,url,date,author}
+            relatedArticles{title,push,url,date,author}
           }
         }
     ` }),

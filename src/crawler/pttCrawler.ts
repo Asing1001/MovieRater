@@ -46,7 +46,7 @@ export function crawlPtt() {
         db.updateDocument(crawlerStatusFilter, { maxPttIndex: newMaxPttIndex }, 'configs');
         console.log(`new pttPages count:${pttPages.length}, newMaxPttIndex:${newMaxPttIndex}`);
         let promises = pttPages.map(pttPage => db.updateDocument({ pageIndex: pttPage.pageIndex }, pttPage, "pttPages"))
-        return Q.all(promises);
+        return Q.all(promises).then(()=>pttPages);
     })
 }
 

@@ -107,6 +107,12 @@ const MovieType = new GraphQLObjectType({
             type: new GraphQLList(ArticleType),
             resolve: obj => obj.otherArticles,
         },
+        relatedArticles: {
+            type: new GraphQLList(ArticleType),
+            resolve: ({chineseTitle}) => {
+                return cacheManager.get('allArticles').filter(({title})=>title.indexOf(chineseTitle)!==-1);
+            },
+        },
         imdbID: {
             type: GraphQLString,
             resolve: obj => obj.imdbID,

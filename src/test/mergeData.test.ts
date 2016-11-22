@@ -22,8 +22,8 @@ describe('mergeData', () => {
             "url": "https://www.ptt.cc/bbs/movie/M.1472305062.A.807.html",
           }]
       }];
-      let actual = mergeData(yahooMovies,pttPages);
-      assert.equal(JSON.stringify(actual[0].goodRateArticles),JSON.stringify(pttPages[0].articles));
+      let actual:Array<Movie> = mergeData(yahooMovies,pttPages);
+      assert.equal(JSON.stringify(actual[0].relatedArticles),JSON.stringify(pttPages[0].articles));
     });
   });
 });

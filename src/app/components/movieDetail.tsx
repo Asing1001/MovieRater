@@ -22,9 +22,31 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.movie !== this.state.movie) {
-            this.setState({ movie: nextProps.movie });
+        if (nextProps.movie !== this.state.movie) {          
+            this.setState({ movie: this.classifyArticle(nextProps.movie) });
         }
+    }
+
+    private classifyArticle(movie:Movie) {
+        if(!movie.relatedArticles) return movie;   
+        var [goodRateArticles,normalRateArticles,badRateArticles,otherArticles] = [[],[],[],[]];  
+        movie.relatedArticles.forEach((article) => {
+            let title = article.title;
+            if (title.indexOf('好雷') !== -1 || title.indexOf('好無雷') !== -1) {
+                goodRateArticles.push(article);
+            } else if (title.indexOf('普雷') !== -1) {
+                normalRateArticles.push(article)
+            } else if (title.indexOf('負雷') !== -1) {
+                badRateArticles.push(article)
+            } else {
+                otherArticles.push(article);
+            }
+        });
+        movie.goodRateArticles = goodRateArticles; 
+        movie.normalRateArticles = normalRateArticles; 
+        movie.badRateArticles = badRateArticles; 
+        movie.otherArticles = otherArticles; 
+        return movie;
     }
 
     render() {
@@ -35,16 +57,16 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
                     <div className="ratings">
                         <div className="ratingWrapper"><img src="public/image/imdb.png" />
                             {this.state.movie.imdbID ? <a target="_blank" href={"http://www.imdb.com/title/" + this.state.movie.imdbID}> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</a>
-                                :<span> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</span>
+                                : <span> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</span>
                             }
                         </div>
                         <div className="ratingWrapper"><img src="public/image/yahoo.png" />
                             <a target="_blank" href={"https://tw.movies.yahoo.com/movieinfo_main.html/id=" + this.state.movie.yahooId}> {this.state.movie.yahooRating ? this.state.movie.yahooRating : 'N/A'}</a>
                         </div>
                         <div className="ratingWrapper"><img src="public/image/rottentomatoes.png" />
-                            {this.state.movie.tomatoURL && this.state.movie.tomatoURL!=='N/A' ? <a target="_blank" href={this.state.movie.tomatoURL}> {this.state.movie.tomatoRating ? this.state.movie.tomatoRating : 'N/A'}</a>
-                                :<span> {this.state.movie.tomatoRating ? this.state.movie.tomatoRating : 'N/A'}</span>
-                            }                            
+                            {this.state.movie.tomatoURL && this.state.movie.tomatoURL !== 'N/A' ? <a target="_blank" href={this.state.movie.tomatoURL}> {this.state.movie.tomatoRating ? this.state.movie.tomatoRating : 'N/A'}</a>
+                                : <span> {this.state.movie.tomatoRating ? this.state.movie.tomatoRating : 'N/A'}</span>
+                            }
                         </div>
                         <div className="ratingWrapper"><span className="pttLogo">PTT</span>
                             <span className="hint--bottom" aria-label="(好雷/普雷/負雷)">
@@ -92,7 +114,7 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
                         </TableBody>
                     </Table>
                 </div>
-                <img src={this.state.movie.posterUrl} style={{ padding: 0 }} className="col-md-4 col-xs-12" alt="" />                
+                <img src={this.state.movie.posterUrl} style={{ padding: 0 }} className="col-md-4 col-xs-12" alt="" />
             </Paper>
         );
     };

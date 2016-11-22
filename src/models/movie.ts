@@ -6,9 +6,10 @@ export default class Movie extends YahooMovie {
     normalRateArticles?: Array<Article>
     badRateArticles?: Array<Article>
     otherArticles?: Array<Article>
+    relatedArticles?: Array<Article>
     imdbID?: string
-    imdbRating?: number
+    imdbRating?: string
     imdbLastCrawlTime ?: string
-    tomatoRating?: number
+    tomatoRating?: string
     tomatoURL?: string
 }
