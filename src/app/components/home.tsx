@@ -1,5 +1,5 @@
 import * as React from 'react';
-import MovieDetail from './movieDetail';
+import MovieDetailTabs from './movieDetailTabs';
 import AutoComplete from 'material-ui/AutoComplete';
 import Movie from '../../models/movie';
 import 'isomorphic-fetch';
@@ -109,7 +109,7 @@ class Home extends React.Component<any, any> {
             />
           <button className={`clearButton ${this.state.searchText?'':'displayNone'}`} onClick={this.clearSearchText.bind(this)}>X</button>
         </div>
-        <MovieDetail movie={this.state.resultMovie}></MovieDetail>
+        <MovieDetailTabs movie={this.state.resultMovie}></MovieDetailTabs>
       </div>
     );
   }

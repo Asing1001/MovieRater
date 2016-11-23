@@ -27,7 +27,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/mergeData.test.js",
+                "dist/test/cacheManager.test.js",
                 "--no-timeouts"
             ],
             "cwd": "${workspaceRoot}",
