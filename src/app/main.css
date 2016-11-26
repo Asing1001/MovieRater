@@ -53,7 +53,7 @@ div * {
 }
 
 .ratingWrapper {
-    display: inline-block;
+    display: inline;
     padding-right: 1em;
 }
 
