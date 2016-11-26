@@ -1,8 +1,10 @@
 import * as React from 'react';
 import MovieDetailTabs from './movieDetailTabs';
 import AutoComplete from 'material-ui/AutoComplete';
+import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
 import 'isomorphic-fetch';
+
 
 class Home extends React.Component<any, any> {
   allMoviesName: Array<Object> = [];
@@ -44,7 +46,7 @@ class Home extends React.Component<any, any> {
 
   private handleUpdateInput(text) { this.setState({ searchText: text }) }
 
-  private clearSearchText() { 
+  private clearSearchText() {
     this.setState({ searchText: '' });
     document.querySelector('input').focus();
   }
@@ -107,9 +109,11 @@ class Home extends React.Component<any, any> {
             searchText={this.state.searchText}
             onUpdateInput={this.handleUpdateInput.bind(this)}
             />
-          <button className={`clearButton ${this.state.searchText?'':'displayNone'}`} onClick={this.clearSearchText.bind(this)}>X</button>
+          <button className={`clearButton ${this.state.searchText ? '' : 'displayNone'}`} onClick={this.clearSearchText.bind(this)}>X</button>
         </div>
-        <MovieDetailTabs movie={this.state.resultMovie}></MovieDetailTabs>
+        <Paper zDepth={2}>
+          <MovieDetailTabs movie={this.state.resultMovie}></MovieDetailTabs>
+        </Paper>
       </div>
     );
   }

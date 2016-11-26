@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-import { CardText } from 'material-ui/Card';
-import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
 
 
@@ -17,7 +15,7 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
     constructor(props) {
         super(props)
         this.state = {
-            movie: new Movie()
+            movie: props.movie
         }
     }
 
@@ -28,10 +26,9 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
     }
 
     render() {
-        if (!this.state.movie.chineseTitle) { return null }
         return (
-            <Paper style={{ display: 'table' }} zDepth={2}>
-                <div id="movieInfo" className="col-md-8 col-xs-12 pull-right">
+            <div>
+                <div className="col-md-8 col-xs-12 pull-right">
                     <div className="ratings">
                         <div className="ratingWrapper"><img src="public/image/imdb.png" />
                             {this.state.movie.imdbID ? <a target="_blank" href={"http://www.imdb.com/title/" + this.state.movie.imdbID}> {this.state.movie.imdbRating ? this.state.movie.imdbRating : 'N/A'}</a>
@@ -51,7 +48,8 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
                                 {this.state.movie.goodRateArticles.length}/{this.state.movie.normalRateArticles.length}/{this.state.movie.badRateArticles.length}
                             </span>
                         </div>
-                    </div>
+                    </div> 
+
                     <Table className="movieDetail"
                         selectable={false}
                         >
@@ -93,7 +91,7 @@ class MovieDetail extends React.Component<MovieDetailProps, MovieDetailState> {
                     </Table>
                 </div>
                 <img src={this.state.movie.posterUrl} style={{ padding: 0 }} className="col-md-4 col-xs-12" alt="" />
-            </Paper>
+            </div>
         );
     };
 }
