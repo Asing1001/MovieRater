@@ -35,7 +35,7 @@ class PttArticles extends React.Component<MovieDetailProps, MovieDetailState> {
                             return <ListItem
                                 key={article.url}
                                 leftAvatar={<span>{article.push}</span>}
-                                primaryText={article.title}
+                                primaryText={<a target="_blank" href={article.url}>{article.title}</a>}
                                 secondaryText={article.date + ' ' + article.author} />
                         })}
                     </List>
