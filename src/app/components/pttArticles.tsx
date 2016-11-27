@@ -26,6 +26,20 @@ class PttArticles extends React.Component<MovieDetailProps, MovieDetailState> {
         }
     }
 
+    private getPttPushColor(push: string) {
+        if (!push) {
+            return '';
+        } else if (push === '爆') {
+            return '#f66';
+        } else if (push.toLowerCase().startsWith('x')) {
+            return '#666';
+        } else if (parseInt(push) < 10) {
+            return '#6f6';
+        } else {
+            return '#ff6';
+        }
+    }
+
     render() {
         return (
             <div>
@@ -33,10 +47,11 @@ class PttArticles extends React.Component<MovieDetailProps, MovieDetailState> {
                     <List>
                         {this.state.movie.relatedArticles.map(article => {
                             return <ListItem
+                                innerDivStyle={{ paddingLeft: '56px', background: 'black' }}
                                 key={article.url}
-                                leftAvatar={<span>{article.push}</span>}
-                                primaryText={<a target="_blank" href={article.url}>{article.title}</a>}
-                                secondaryText={article.date + ' ' + article.author} />
+                                leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
+                                primaryText={<a target="_blank" className="pttArticleTitle" href={article.url}>{article.title}</a>}
+                                secondaryText={<div style={{ color: '#aaa' }}>{article.date + ' ' + article.author}</div>} />
                         })}
                     </List>
                 </div>
