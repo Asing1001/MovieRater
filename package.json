@@ -36,6 +36,7 @@
     "react-swipeable-views": "^0.8.0",
     "react-tap-event-plugin": "^2.0.1",
     "request": "^2.74.0",
+    "serve-favicon": "^2.3.2",
     "swig": "^1.4.2"
   },
   "devDependencies": {
@@ -59,11 +60,12 @@
     "@types/q": "0.0.32",
     "@types/react": "^0.14.50",
     "@types/react-dom": "^0.14.19",
-    "@types/react-router": "^2.0.38",
-    "@types/react-tap-event-plugin": "0.0.30",
     "@types/react-motion": "0.0.20",
-    "@types/react-swipeable-views": "0.0.26",    
+    "@types/react-router": "^2.0.38",
+    "@types/react-swipeable-views": "0.0.26",
+    "@types/react-tap-event-plugin": "0.0.30",
     "@types/request": "0.0.32",
+    "@types/serve-favicon": "^2.2.28",
     "@types/swig": "0.0.28",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",

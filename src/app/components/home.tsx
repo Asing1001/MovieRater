@@ -81,6 +81,7 @@ class Home extends React.Component<any, any> {
             tomatoURL            
             tomatoRating
             relatedArticles{title,push,url,date,author}
+            summary
           }
         }
     ` }),

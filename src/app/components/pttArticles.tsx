@@ -43,11 +43,11 @@ class PttArticles extends React.Component<MovieDetailProps, MovieDetailState> {
     render() {
         return (
             <div>
-                <div className="col-md-8 col-xs-12">
+                <div className="col-xs-12">
                     <List>
                         {this.state.movie.relatedArticles.map(article => {
                             return <ListItem
-                                innerDivStyle={{ paddingLeft: '56px', background: 'black' }}
+                                innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor:'initial' }}
                                 key={article.url}
                                 leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
                                 primaryText={<a target="_blank" className="pttArticleTitle" href={article.url}>{article.title}</a>}

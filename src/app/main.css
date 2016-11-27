@@ -1,7 +1,6 @@
 @import url(http://fonts.googleapis.com/earlyaccess/notosanstc.css);
-
 div * {
-    font-family: "Noto Sans TC" , Sans-Serif; 
+    font-family: "Noto Sans TC", Sans-Serif;
 }
 
 .clearButton {
@@ -47,7 +46,6 @@ div * {
 }
 
 .ratings {
-    display: table;
     padding-top: 1em;
     padding-bottom: 1em;
     padding-left: 24px;
@@ -60,8 +58,10 @@ div * {
 
 @media (max-width: 992px) {
     .ratings {
+        text-align: center;
         padding-left: 0;
-        margin: 0 auto;
+        margin-left: -15px;
+        margin-right: -15px;
     }
     .ratingWrapper {
         padding-right: 0.2em;
@@ -82,10 +82,10 @@ div * {
 
 a.pttArticleTitle {
     line-height: 1.2em !important;
-    color:#aaa !important;
+    color: #aaa !important;
     text-decoration: underline;
 }
 
 a.pttArticleTitle:visited {
-    color:#888 !important;
+    color: #888 !important;
 }

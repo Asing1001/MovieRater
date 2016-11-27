@@ -51,6 +51,10 @@ const MovieType = new GraphQLObjectType({
             description: 'poster image url',
             resolve: obj => obj.posterUrl,
         },
+        summary: {
+            type: GraphQLString,
+            resolve: obj => obj.summary,
+        },
         chineseTitle: {
             type: GraphQLString,
             resolve: obj => obj.chineseTitle,

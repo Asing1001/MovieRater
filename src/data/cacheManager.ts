@@ -7,14 +7,16 @@ export default class cacheManager {
     static cacheKey = 'allMovies';
     static init() {
         console.time('get yahooMovies and pttPages');
-        return Q.spread([db.getCollection("yahooMovies", { sort: { yahooId: -1 } }), db.getCollection("pttPages")], function(yahooMovies, pttPages) {
-            console.timeEnd('get yahooMovies and pttPages');
-            memoryCache.put(cacheManager.cacheKey, yahooMovies);
-            console.time('mergeData');
-            let mergedDatas = mergeData(yahooMovies, pttPages);
-            console.timeEnd('mergeData');
-            return memoryCache.put(cacheManager.cacheKey, mergedDatas);
-        });
+        return Q.spread([db.getCollection("yahooMovies", { sort: { yahooId: -1 } }),
+        db.getCollection("pttPages"), { sort: { pageIndex: -1 } }],
+            function (yahooMovies, pttPages) {
+                console.timeEnd('get yahooMovies and pttPages');
+                memoryCache.put(cacheManager.cacheKey, yahooMovies);
+                console.time('mergeData');
+                let mergedDatas = mergeData(yahooMovies, pttPages);
+                console.timeEnd('mergeData');
+                return memoryCache.put(cacheManager.cacheKey, mergedDatas);
+            });
     }
 
     static get(key) {

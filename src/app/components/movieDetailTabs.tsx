@@ -67,7 +67,7 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
           onChange={this.handleChange}
           value={this.state.slideIndex}
           >
-          <Tab label="Movie Detail" value={0} />
+          <Tab label="Detail" value={0} />
           <Tab label="Ptt" value={1} />
           <Tab label="Summary" value={2} />
         </Tabs>
@@ -76,8 +76,8 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
           onChangeIndex={this.handleChange}
           >
           <MovieDetail movie={this.state.movie}></MovieDetail>
-          <div style={{ background: 'black', height: '100%' }}><PttArticles movie={this.state.movie}></PttArticles></div>
-          <div></div>
+          <div style={{ background: 'black', height: '100vh' }}><PttArticles movie={this.state.movie}></PttArticles></div>
+          <div className="col-xs-12">{this.state.movie.summary}</div>
         </SwipeableViews>
       </div>
     );
