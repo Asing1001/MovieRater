@@ -21,7 +21,7 @@ export function mergeData(yahooMovies: Array<YahooMovie>, pttPages) {
             if(isChinesetitleMatch && date){
                 //let articleYear = //todo: wait to cralwer provide.
                 let articleFullDate = releaseYear + '/' + date.trim();
-                let isInNearMonth = moment(articleFullDate).isBetween(rangeStart, rangeEnd);
+                let isInNearMonth = moment(articleFullDate, 'YYYY/MM/DD').isBetween(rangeStart, rangeEnd);
                 return isInNearMonth;
             }
             return isChinesetitleMatch;

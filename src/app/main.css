@@ -47,6 +47,7 @@ div * {
 }
 
 .ratings {
+    display: table;
     padding-top: 1em;
     padding-bottom: 1em;
     padding-left: 24px;
@@ -59,10 +60,8 @@ div * {
 
 @media (max-width: 992px) {
     .ratings {
-        text-align: center;
         padding-left: 0;
-        margin-left: -15px;
-        margin-right: -15px;
+        margin: 0 auto;
     }
     .ratingWrapper {
         padding-right: 0.2em;

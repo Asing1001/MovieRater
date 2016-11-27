@@ -27,13 +27,13 @@ describe('mergeData', () => {
     });
 
     it('should relate if article date in range', function () {
-      let yahooMovies:Array<Movie> = [{ yahooId: 1, chineseTitle: '測試', releaseDate:'2016-11-7' }];
+      let yahooMovies:Array<Movie> = [{ yahooId: 1, chineseTitle: '測試', releaseDate:'2016-11-07' }];
       let pttPages = [{
         "articles": [
           {
             "title": "[好雷] 測試資料",
             "url": "https://www.ptt.cc/bbs/movie/M.1472305062.A.807.html",
-            "date": "10/7"
+            "date": "10/07"
           }]
       }];
       let actual:Array<Movie> = mergeData(yahooMovies,pttPages);
