@@ -42,19 +42,20 @@ class PttArticles extends React.Component<MovieDetailProps, MovieDetailState> {
 
     render() {
         return (
-            <div>
-                <div className="col-xs-12">
+            <div className="col-xs-12" style={{ background: 'black', height: '100%' }}>
+                {this.state.movie.relatedArticles.length === 0 ?
+                    <h4 style={{ color: '#aaa', textAlign: "center" }}>找不到相關文章</h4> :
                     <List>
                         {this.state.movie.relatedArticles.map(article => {
                             return <ListItem
-                                innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor:'initial' }}
+                                innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor: 'initial' }}
                                 key={article.url}
                                 leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
                                 primaryText={<a target="_blank" className="pttArticleTitle" href={article.url}>{article.title}</a>}
-                                secondaryText={<div style={{ color: '#aaa' }}>{article.date + ' ' + article.author}</div>} />
+                                secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
                         })}
                     </List>
-                </div>
+                }
             </div>
         );
     };

@@ -76,7 +76,7 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
           onChangeIndex={this.handleChange}
           >
           <MovieDetail movie={this.state.movie}></MovieDetail>
-          <div style={{ background: 'black', height: '100vh' }}><PttArticles movie={this.state.movie}></PttArticles></div>
+          <PttArticles movie={this.state.movie}></PttArticles>
           <div className="col-xs-12">{this.state.movie.summary}</div>
         </SwipeableViews>
       </div>

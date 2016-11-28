@@ -1,6 +1,9 @@
 @import url(http://fonts.googleapis.com/earlyaccess/notosanstc.css);
+
+html, body { height: 100%; width: 100%; margin: 0; }
+
 div * {
-    font-family: "Noto Sans TC", Sans-Serif;
+    font-family: Noto Sans TC, Sans-Serif;
 }
 
 .clearButton {
@@ -25,6 +28,11 @@ div * {
 
 .displayNone {
     display: none;
+}
+
+.movieDetail {
+    position: relative;
+    z-index: -1;
 }
 
 .movieDetail td {
