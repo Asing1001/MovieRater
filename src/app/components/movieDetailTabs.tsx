@@ -10,7 +10,6 @@ interface MovieDetailProps {
 }
 
 interface MovieDetailState {
-  movie: Movie,
   slideIndex: number
 }
 
@@ -19,48 +18,19 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
   constructor(props) {
     super(props)
     this.state = {
-      movie: new Movie(),
       slideIndex: 0
     }
   }
 
   handleChange = (value) => {
     this.setState({
-      movie: this.state.movie,
       slideIndex: value
     });
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.movie !== this.state.movie) {
-      this.setState({ movie: this.classifyArticle(nextProps.movie), slideIndex: this.state.slideIndex });
-    }
-  }
-
-  private classifyArticle(movie: Movie) {
-    if (!movie.relatedArticles) return movie;
-    var [goodRateArticles, normalRateArticles, badRateArticles, otherArticles] = [[], [], [], []];
-    movie.relatedArticles.forEach((article) => {
-      let title = article.title;
-      if (title.indexOf('好雷') !== -1 || title.indexOf('好無雷') !== -1) {
-        goodRateArticles.push(article);
-      } else if (title.indexOf('普雷') !== -1) {
-        normalRateArticles.push(article)
-      } else if (title.indexOf('負雷') !== -1) {
-        badRateArticles.push(article)
-      } else {
-        otherArticles.push(article);
-      }
-    });
-    movie.goodRateArticles = goodRateArticles;
-    movie.normalRateArticles = normalRateArticles;
-    movie.badRateArticles = badRateArticles;
-    movie.otherArticles = otherArticles;
-    return movie;
-  }
-
+  
   render() {
-    if (!this.state.movie.chineseTitle) { return null }
+    if (!this.props.movie.chineseTitle) { return null }
     return (
       <div>
         <Tabs
@@ -75,9 +45,9 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
           index={this.state.slideIndex}
           onChangeIndex={this.handleChange}
           >
-          <MovieDetail movie={this.state.movie}></MovieDetail>
-          <PttArticles movie={this.state.movie}></PttArticles>
-          <div className="col-xs-12">{this.state.movie.summary}</div>
+          <MovieDetail movie={this.props.movie}></MovieDetail>
+          <PttArticles movie={this.props.movie}></PttArticles>
+          <div className="col-xs-12" dangerouslySetInnerHTML={{__html: this.props.movie.summary}}></div>
         </SwipeableViews>
       </div>
     );

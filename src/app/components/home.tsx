@@ -14,8 +14,11 @@ class Home extends React.Component<any, any> {
     this.state = {
       searchText: '',
       dataSource: [],
-      resultMovie: { chineseTitle: '' }
+      resultMovie: new Movie()
     };
+  }
+
+  componentWillMount(){
     this.getDataSource();
   }
 
@@ -52,7 +55,6 @@ class Home extends React.Component<any, any> {
   }
 
   private search(selectItem, index) {
-    console.log(selectItem, index)
     fetch('/graphql', {
       method: 'POST',
       headers: {
@@ -88,11 +90,31 @@ class Home extends React.Component<any, any> {
       credentials: 'include',
     }).then(res => res.json())
       .then(json => {
-        console.log(json)
-        this.setState({ resultMovie: json.data.movie });
+        this.setState({ resultMovie: this.classifyArticle(json.data.movie) });
       });
   }
 
+  private classifyArticle(movie: Movie) {
+    if (!movie.relatedArticles) return movie;
+    var [goodRateArticles, normalRateArticles, badRateArticles, otherArticles] = [[], [], [], []];
+    movie.relatedArticles.forEach((article) => {
+      let title = article.title;
+      if (title.indexOf('好雷') !== -1 || title.indexOf('好無雷') !== -1) {
+        goodRateArticles.push(article);
+      } else if (title.indexOf('普雷') !== -1) {
+        normalRateArticles.push(article)
+      } else if (title.indexOf('負雷') !== -1) {
+        badRateArticles.push(article)
+      } else {
+        otherArticles.push(article);
+      }
+    });
+    movie.goodRateArticles = goodRateArticles;
+    movie.normalRateArticles = normalRateArticles;
+    movie.badRateArticles = badRateArticles;
+    movie.otherArticles = otherArticles;
+    return movie;
+  }
 
 
   render() {

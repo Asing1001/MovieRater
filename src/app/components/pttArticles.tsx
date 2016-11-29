@@ -2,28 +2,15 @@ import * as React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Movie from '../../models/movie';
 import { List, ListItem } from 'material-ui/List';
-
+import { Checkbox } from 'material-ui/Checkbox';
 
 interface MovieDetailProps {
     movie: Movie
 }
 
-interface MovieDetailState {
-    movie: Movie
-}
-
-class PttArticles extends React.Component<MovieDetailProps, MovieDetailState> {
+class PttArticles extends React.Component<MovieDetailProps, null> {
     constructor(props) {
         super(props)
-        this.state = {
-            movie: props.movie
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.movie !== this.state.movie) {
-            this.setState({ movie: nextProps.movie });
-        }
     }
 
     private getPttPushColor(push: string) {
@@ -43,10 +30,10 @@ class PttArticles extends React.Component<MovieDetailProps, MovieDetailState> {
     render() {
         return (
             <div className="col-xs-12" style={{ background: 'black', height: '100%' }}>
-                {this.state.movie.relatedArticles.length === 0 ?
+                {this.props.movie.relatedArticles.length === 0 ?
                     <h4 style={{ color: '#aaa', textAlign: "center" }}>找不到相關文章</h4> :
                     <List>
-                        {this.state.movie.relatedArticles.map(article => {
+                        {this.props.movie.relatedArticles.map(article => {
                             return <ListItem
                                 innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor: 'initial' }}
                                 key={article.url}

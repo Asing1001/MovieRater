@@ -25,7 +25,7 @@ export function crawlYahoo() {
         let newMaxYahooId = Math.max(...movieIds, startYahooId);
         let alreadyCrawlTheNewest = newMaxYahooId === startYahooId;
         if (alreadyCrawlTheNewest) {
-            newMaxYahooId = startYahooId - 500 > 0 ? startYahooId - 500 : 1;
+            newMaxYahooId = 1;
         }
         db.updateDocument(crawlerStatusFilter, { maxYahooId: newMaxYahooId }, 'configs');
         console.log(`new movieInfo count:${yahooMovies.length}, newMaxYahooId:${newMaxYahooId}`);
@@ -88,7 +88,7 @@ function crawlYahooPage(id: number) {
             companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
             sourceUrl: yahooMovieUrl,
             yahooRating: $('#ymvis em').text(),
-            summary: $('.text.full>p').text()
+            summary: $('.text.full>p').html()
         };
         return defer.resolve(movieInfo);
     })

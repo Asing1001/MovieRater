@@ -9,6 +9,7 @@ import {
 } from 'graphql';
 import { db } from './db';
 import cacheManager from '../data/cacheManager';
+import Movie from '../models/movie';
 
 const ArticleType = new GraphQLObjectType({
     name: 'article',
@@ -150,12 +151,27 @@ const QueryType = new GraphQLObjectType({
         movie: {
             type: MovieType,
             args: {
-                yahooId: { type: GraphQLInt },
-                chineseTitle: { type: GraphQLString }
+                yahooId: { type: GraphQLInt }
             },
             resolve: (root, {yahooId, chineseTitle}) => {
                 let allMovies = cacheManager.get("allMovies");
                 return allMovies.find((movie) => { return movie.yahooId === yahooId; })
+            },
+        },
+        movieList: {
+            type: new GraphQLList(MovieType),
+            args: {
+                yahooIds: { type: new GraphQLList(GraphQLInt) }
+            },
+            resolve: (root, {yahooIds}) => {
+                let allMovies: Array<Movie> = cacheManager.get("allMovies");
+                let result = [];
+                allMovies.forEach((movie) => {
+                    if (yahooIds.indexOf(movie.yahooId)!==-1) {
+                        result.push(movie);
+                    }
+                })
+                return result;
             },
         },
     }),
