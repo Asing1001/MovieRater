@@ -13,8 +13,10 @@ export function initScheduler() {
 
     console.log("[initScheduler] Create Schedule for keep website alive.");
     setInterval(function () {
-        fetch(systemSetting.websiteUrl).then(res =>
-            console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`))
+        systemSetting.websiteUrls.forEach(websiteUrl => {
+            fetch(websiteUrl).then(res =>
+                console.log(`[Scheduler] Access to website:${websiteUrl}, status:${res.status}`));
+        })
     }, 900000, null);
 
     console.log("[initScheduler] Create Schedule for yahooCrawler and crawlImdb.");
