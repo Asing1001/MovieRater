@@ -18,7 +18,7 @@ class Home extends React.Component<any, any> {
     };
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.getDataSource();
   }
 
@@ -91,6 +91,7 @@ class Home extends React.Component<any, any> {
     }).then(res => res.json())
       .then(json => {
         this.setState({ resultMovie: this.classifyArticle(json.data.movie) });
+        document.querySelector('input').focus();
       });
   }
 
