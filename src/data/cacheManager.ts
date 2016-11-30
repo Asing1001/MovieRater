@@ -7,8 +7,8 @@ export default class cacheManager {
     static cacheKey = 'allMovies';
     static init() {
         console.time('get yahooMovies and pttPages');
-        return Q.spread([db.getCollection("yahooMovies", { sort: { yahooId: -1 } }),
-        db.getCollection("pttPages"), { sort: { pageIndex: -1 } }],
+        return Q.spread([db.getCollection("yahooMovies", { yahooId: -1 }),
+        db.getCollection("pttPages", { pageIndex: -1 })],
             function (yahooMovies, pttPages) {
                 console.timeEnd('get yahooMovies and pttPages');
                 memoryCache.put(cacheManager.cacheKey, yahooMovies);

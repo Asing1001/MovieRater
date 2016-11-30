@@ -81,9 +81,9 @@ export class db {
         return deferred.promise;
     }
 
-    public static getCollection(collectionName: string, query?: Object): any {
+    public static getCollection(collectionName: string, sort?: Object): any {
         var deferred = Q.defer();
-        this.dbConnection.collection(collectionName).find({},query).toArray((err, items) => {
+        this.dbConnection.collection(collectionName).find({}).sort(sort).toArray((err, items) => {
             assert.equal(err, null);
             if (err) {
                 deferred.reject(new Error(JSON.stringify(err)));
