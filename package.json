@@ -6,7 +6,7 @@
     "start": "node dist/server.js",
     "test": "mocha dist/test/*.js",
     "nodemon": "concurrently \"npm run tsc:w \" \"nodemon dist/server.js\"",
-    "webpack": "webpack-dev-server --inline --progress --port 3004",
+    "webpack": "start http://localhost:3004/ && webpack-dev-server --hot --inline --progress --port 3004",
     "pre-debug-test": "node-inspector",
     "debug-test": "mocha --debug-brk dist/test/db.test.js",
     "build": "rimraf dist && tsc && webpack --config config/webpack.prod.js --progress --profile --bail",

@@ -13,9 +13,14 @@ module.exports = webpackMerge(commonConfig, {
     chunkFilename: '[id].chunk.js'
   },
 
-  plugins: [
-    new ExtractTextPlugin('public/[name].css')
-  ],
+  module: {
+    loaders: [
+      {
+        test: /\.css$/,
+        loader: 'style!css'
+      }
+    ]
+  },
 
   devServer: {
     historyApiFallback: true,
