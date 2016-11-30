@@ -16,6 +16,15 @@ module.exports = webpackMerge(commonConfig, {
     chunkFilename: 'public/[id].[hash].chunk.js'
   },
 
+  module: {
+    loaders: [      
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+      }
+    ]
+  },
+
   htmlLoader: {
     minimize: true
   },
