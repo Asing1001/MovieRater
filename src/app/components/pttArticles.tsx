@@ -1,58 +1,16 @@
 import * as React from 'react';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Movie from '../../models/movie';
 import Article from '../../models/article';
 import { List, ListItem } from 'material-ui/List';
-import { Checkbox } from 'material-ui/Checkbox';
-import Toggle from 'material-ui/Toggle';
+import { Tabs, Tab } from 'material-ui/Tabs';
+
 interface MovieDetailProps {
     movie: Movie
 }
 
-enum ArticleType {
-    GoodRate, badRate, normalRate, other
-}
-
-class PttArticles extends React.Component<MovieDetailProps, any> {
+class PttArticles extends React.Component<MovieDetailProps, null> {
     constructor(props) {
         super(props);
-        this.state = {
-            filteredArticles: [],
-            goodRateToggle: true,
-            badRateToggle: true,
-            normalRateToggle: true,
-            otherToggle: true
-        }
-    }
-
-    componentWillReceiveProps(nextProps: MovieDetailProps) {
-        if (this.props !== nextProps) {
-            this.getFilterdArticles();
-        }
-    }
-
-    private toggleGoodRate(){
-        this.setState({goodRateToggle:!this.state.goodRateToggle})
-        this.getFilterdArticles();
-    }
-
-    private handleToggle(articleType : ArticleType){
-        // switch(articleType){
-        //     case ArticleType.GoodRate:
-        //         this.setState({goodRateToggle:!this.state.goodRateToggle})
-        // }
-        // alert(articleType)
-        //this.getFilterdArticles();
-        return null;
-    }
-
-    private getFilterdArticles() {
-        let movie = this.props.movie;
-        let filteredArticles = [].concat(this.state.goodRateToggle ? movie.goodRateArticles : [],
-            this.state.badRateToggle ? movie.badRateArticles : [],
-            this.state.normalRateToggle ? movie.normalRateArticles : [],
-            this.state.otherToggle ? movie.otherArticles : [])
-        this.setState({ filteredArticles: filteredArticles });
     }
 
     private getPttPushColor(push: string) {
@@ -69,27 +27,39 @@ class PttArticles extends React.Component<MovieDetailProps, any> {
         }
     }
 
+    private getArticleList(articleList) {
+        return articleList.length === 0 ?
+            <h4 style={{ color: '#aaa', textAlign: "center" }}>找不到相關文章</h4> :
+            <List>
+                {articleList.map((article: Article) => {
+                    return <ListItem
+                        innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor: 'initial' }}
+                        key={article.url}
+                        leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
+                        primaryText={<a target="_blank" className="pttArticleTitle" href={article.url}>{article.title}</a>}
+                        secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
+                })}
+            </List>
+
+    }
+
     render() {
         return (
-
             <div className="col-xs-12" style={{ background: 'black', height: '100%' }}>
-                <Toggle
-                    label="GoodRate" style={{ color: 'white'}} toggled={this.state.goodRateToggle} onToggle={this.toggleGoodRate.bind(this)}
-                    />
-                {this.state.goodRateToggle}
-                {this.state.filteredArticles.length === 0 ?
-                    <h4 style={{ color: '#aaa', textAlign: "center" }}>找不到相關文章</h4> :
-                    <List>
-                        {this.state.filteredArticles.map(article => {
-                            return <ListItem
-                                innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor: 'initial' }}
-                                key={article.url}
-                                leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
-                                primaryText={<a target="_blank" className="pttArticleTitle" href={article.url}>{article.title}</a>}
-                                secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
-                        })}
-                    </List>
-                }
+                <Tabs className="row" inkBarStyle={{ background: '#aaa' }} tabItemContainerStyle={{ background: 'black' }}>
+                    <Tab label={`好雷(${this.props.movie.goodRateArticles.length})`}>
+                        {this.getArticleList(this.props.movie.goodRateArticles)}
+                    </Tab>
+                    <Tab label={`普雷(${this.props.movie.normalRateArticles.length})`}>
+                        {this.getArticleList(this.props.movie.normalRateArticles)}
+                    </Tab>
+                    <Tab label={`負雷(${this.props.movie.badRateArticles.length})`}>
+                        {this.getArticleList(this.props.movie.badRateArticles)}
+                    </Tab>
+                    <Tab label={`Oth(${this.props.movie.otherArticles.length})`}>
+                        {this.getArticleList(this.props.movie.otherArticles)}
+                    </Tab>
+                </Tabs>
             </div>
         );
     };
