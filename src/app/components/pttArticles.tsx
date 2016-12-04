@@ -29,14 +29,14 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
 
     private getArticleList(articleList) {
         return articleList.length === 0 ?
-            <h4 style={{ color: '#aaa', textAlign: "center", paddingTop:'18px' }}>找不到相關文章</h4> :
+            <h4 style={{ color: '#aaa', textAlign: "center", paddingTop: '18px' }}>找不到相關文章</h4> :
             <List>
                 {articleList.map((article: Article) => {
                     return <ListItem
                         innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor: 'initial' }}
                         key={article.url}
                         leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
-                        primaryText={<a target="_blank" className="pttArticleTitle" href={article.url}>{article.title}</a>}
+                        primaryText={<a target="_blank" className="pttArticleTitle" href={'https://www.ptt.cc' + article.url}>{article.title}</a>}
                         secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
                 })}
             </List>

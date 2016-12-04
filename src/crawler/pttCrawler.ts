@@ -3,6 +3,7 @@ import * as cheerio from "cheerio";
 import { db } from "../data/db";
 import * as Q from "q";
 import { pttCrawlerSetting } from '../configs/systemSetting';
+import * as moment from 'moment';
 
 const pttBaseUrl = 'https://www.ptt.cc';
 const crawlerStatusFilter = { name: "crawlerStatus" };
@@ -46,7 +47,7 @@ export function crawlPtt() {
         db.updateDocument(crawlerStatusFilter, { maxPttIndex: newMaxPttIndex }, 'configs');
         console.log(`new pttPages count:${pttPages.length}, newMaxPttIndex:${newMaxPttIndex}`);
         let promises = pttPages.map(pttPage => db.updateDocument({ pageIndex: pttPage.pageIndex }, pttPage, "pttPages"))
-        return Q.all(promises).then(()=>pttPages);
+        return Q.all(promises).then(() => pttPages);
     })
 }
 
@@ -64,12 +65,15 @@ export function crawlPttPage(index) {
             return defer.reject(`index${index} not exist, server return:${serverReturn}`);
         }
         const articleInfos = Array.from($articleInfoDivs).map((articleInfoDiv) => {
-            const $articleInfoDiv = $(articleInfoDiv);
+            let $articleInfoDiv = $(articleInfoDiv);
+            let articleUrl = $articleInfoDiv.find('.title>a').attr('href');
+            let articleHasDeleted = !articleUrl;
+            let date = articleHasDeleted ? moment().format('YYYY/MM/DD') : moment(parseInt(articleUrl.split('.')[1]) * 1000).format('YYYY/MM/DD');
             const articleInfo = {
                 title: $articleInfoDiv.find('.title>a').text(),
                 push: $articleInfoDiv.find('.nrec>.hl').text(),
-                url: pttBaseUrl + $articleInfoDiv.find('.title>a').attr('href'),
-                date: $articleInfoDiv.find('.meta>.date').text(),
+                url: articleUrl,
+                date: date,
                 author: $articleInfoDiv.find('.meta>.author').text()
             };
             return articleInfo;

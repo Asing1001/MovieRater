@@ -13,15 +13,15 @@ export function mergeData(yahooMovies: Array<YahooMovie>, pttPages) {
         let chineseTitle = movie.chineseTitle;
         let releaseDate = moment(movie.releaseDate);
         let releaseYear = releaseDate.year();
-        let rangeStart = releaseDate.clone().subtract(2, 'months');
-        let rangeEnd = releaseDate.clone().add(3, 'months');
+        let rangeStart = releaseDate.clone().subtract(3, 'months');
+        let rangeEnd = releaseDate.clone().add(6, 'months');
 
         movie.relatedArticles = allArticles.filter(({title, date}: Article) => {
             let isChinesetitleMatch = title.indexOf(chineseTitle) !== -1;
-            if(isChinesetitleMatch && date){
-                //let articleYear = //todo: wait to cralwer provide.
-                let articleFullDate = releaseYear + '/' + date.trim();
-                let isInNearMonth = moment(articleFullDate, 'YYYY/MM/DD').isBetween(rangeStart, rangeEnd);
+            if (isChinesetitleMatch) {
+                //let articleYear = //todo: wait to cralwer provide.                
+                let articleFullDate = moment(date, 'YYYY/MM/DD');
+                let isInNearMonth = articleFullDate.isBetween(rangeStart, rangeEnd);
                 return isInNearMonth;
             }
             return isChinesetitleMatch;
