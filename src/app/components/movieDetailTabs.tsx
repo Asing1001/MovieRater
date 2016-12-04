@@ -47,7 +47,7 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
           >
           <MovieDetail movie={this.props.movie}></MovieDetail>
           <PttArticles movie={this.props.movie}></PttArticles>
-          <div className="col-xs-12" dangerouslySetInnerHTML={{__html: this.props.movie.summary}}></div>
+          <div className="col-xs-12" style={{paddingTop:'1em'}} dangerouslySetInnerHTML={{__html: this.props.movie.summary}}></div>
         </SwipeableViews>
       </div>
     );

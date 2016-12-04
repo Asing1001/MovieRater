@@ -29,7 +29,7 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
 
     private getArticleList(articleList) {
         return articleList.length === 0 ?
-            <h4 style={{ color: '#aaa', textAlign: "center" }}>找不到相關文章</h4> :
+            <h4 style={{ color: '#aaa', textAlign: "center", paddingTop:'18px' }}>找不到相關文章</h4> :
             <List>
                 {articleList.map((article: Article) => {
                     return <ListItem
@@ -56,7 +56,7 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
                     <Tab label={`負雷(${this.props.movie.badRateArticles.length})`}>
                         {this.getArticleList(this.props.movie.badRateArticles)}
                     </Tab>
-                    <Tab label={`Oth(${this.props.movie.otherArticles.length})`}>
+                    <Tab label={`其他(${this.props.movie.otherArticles.length})`}>
                         {this.getArticleList(this.props.movie.otherArticles)}
                     </Tab>
                 </Tabs>
