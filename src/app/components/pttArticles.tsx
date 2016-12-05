@@ -28,25 +28,29 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
     }
 
     private getArticleList(articleList) {
-        return articleList.length === 0 ?
-            <h4 style={{ color: '#aaa', textAlign: "center", paddingTop: '18px' }}>找不到相關文章</h4> :
-            <List>
-                {articleList.map((article: Article) => {
-                    return <ListItem
-                        innerDivStyle={{ paddingLeft: '56px', background: 'black', cursor: 'initial' }}
-                        key={article.url}
-                        leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
-                        primaryText={<a target="_blank" className="pttArticleTitle" href={'https://www.ptt.cc' + article.url}>{article.title}</a>}
-                        secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
-                })}
-            </List>
-
+        return (
+            <div style={{ background: 'black', height: '100%' }}>
+                {articleList.length === 0 ?
+                    <h4 style={{ color: '#aaa', textAlign: "center", paddingTop: '18px' }}>找不到相關文章</h4> :
+                    <List style={{ background: 'black' }}>
+                        {articleList.map((article: Article) => {
+                            return <ListItem
+                                innerDivStyle={{ paddingLeft: '56px', cursor: 'initial' }}
+                                key={article.url}
+                                leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
+                                primaryText={<a target="_blank" className="pttArticleTitle" href={'https://www.ptt.cc' + article.url}>{article.title}</a>}
+                                secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
+                        })}
+                    </List>
+                }
+            </div>
+        )
     }
 
     render() {
         return (
             <div className="col-xs-12" style={{ background: 'black', height: '100%' }}>
-                <Tabs className="row" inkBarStyle={{ background: '#aaa' }} style={{ height: '100%' }} tabItemContainerStyle={{ background: 'black' }}>
+                <Tabs className="row" inkBarStyle={{ background: '#aaa' }} tabItemContainerStyle={{ background: 'black' }} >
                     <Tab label={`好雷(${this.props.movie.goodRateArticles.length})`}>
                         {this.getArticleList(this.props.movie.goodRateArticles)}
                     </Tab>
