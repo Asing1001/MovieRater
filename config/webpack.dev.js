@@ -6,6 +6,14 @@ var helpers = require('./helpers');
 module.exports = webpackMerge(commonConfig, {
   devtool: 'cheap-module-eval-source-map',
 
+  entry: {
+    // Add the react hot loader entry point - in reality, you only want this in your dev Webpack config
+    'hot' :'react-hot-loader/patch',
+    'hotserver' :'webpack/hot/only-dev-server',
+    'main': './src/app/main.tsx',
+    'vendor': './src/app/vendor.ts',
+  },
+
   output: {
     path: helpers.root('dist'),
     publicPath: 'http://localhost:3004/',

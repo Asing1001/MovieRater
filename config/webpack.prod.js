@@ -9,6 +9,11 @@ const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 module.exports = webpackMerge(commonConfig, {
   devtool: 'source-map',
 
+  entry: {
+    'main': './src/app/main.tsx',
+    'vendor': './src/app/vendor.ts'
+  },
+
   output: {
     path: helpers.root('dist'),
     publicPath: '/',

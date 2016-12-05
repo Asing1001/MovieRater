@@ -1,10 +1,24 @@
 import * as React from 'react';
-import {Router} from 'react-router';
+import { Router } from 'react-router';
 import * as ReactDOM from 'react-dom';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import routes from './routes';
 import './main.css';
 
-let history = createBrowserHistory();
+class Root extends React.Component<any, any> {
+  render() {
+    return (
+      <Router history={createBrowserHistory()}>{routes}</Router>
+    );
+  }
+}
 
-ReactDOM.render(<Router history={history}>{routes}</Router>, document.getElementById('app'));
+const rootElement = document.getElementById('app');
+ReactDOM.render(<Root></Root>, rootElement);
+
+//for hot module reload
+declare var module;
+if (module.hot) {
+  module.hot.accept();
+}
+

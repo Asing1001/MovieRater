@@ -4,11 +4,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var helpers = require('./helpers');
 
-module.exports = {
-  entry: {
-    'main': './src/app/main.tsx',
-    'vendor': './src/app/vendor.ts'
-  },
+module.exports = { 
 
   resolve: {
     extensions: ['', '.js', '.ts', '.tsx']
@@ -16,7 +12,7 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.tsx?$/, loader: "ts-loader" },
+      { test: /\.tsx?$/, loaders: ["react-hot-loader/webpack" , "ts-loader"] },
       {
         test: /\.html$/,
         loader: 'html'

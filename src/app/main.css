@@ -2,6 +2,13 @@
 
 html, body { height: 100%; width: 100%; margin: 0; }
 
+@media (min-width: 992px) {
+    /*prevent scrollbar vibarate content */
+    body {
+        width: calc(100vw - 34px);
+    }
+}
+
 div * {
     font-family: Noto Sans TC, Sans-Serif;
 }
@@ -20,7 +27,7 @@ div * {
     color: #26C6DA
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) {    
     .clearButton {
         display: none;
     }

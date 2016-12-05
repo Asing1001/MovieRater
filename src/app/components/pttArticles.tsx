@@ -46,7 +46,7 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
     render() {
         return (
             <div className="col-xs-12" style={{ background: 'black', height: '100%' }}>
-                <Tabs className="row" inkBarStyle={{ background: '#aaa' }} tabItemContainerStyle={{ background: 'black' }}>
+                <Tabs className="row" inkBarStyle={{ background: '#aaa' }} style={{ height: '100%' }} tabItemContainerStyle={{ background: 'black' }}>
                     <Tab label={`好雷(${this.props.movie.goodRateArticles.length})`}>
                         {this.getArticleList(this.props.movie.goodRateArticles)}
                     </Tab>
