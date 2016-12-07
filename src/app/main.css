@@ -104,3 +104,12 @@ a.pttArticleTitle {
 a.pttArticleTitle:visited {
     color: #888 !important;
 }
+
+.pttArticles::before{
+    content: "";
+    position: fixed;
+    top:0px;
+    bottom: 0;
+    background-color: black;
+    width: 100%;
+}

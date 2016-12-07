@@ -64,7 +64,7 @@ class Home extends React.Component<any, any> {
       body: JSON.stringify({
         query: `
         {
-          movie(yahooId:${selectItem.value}){
+          movies(yahooIds:[${selectItem.value}]){
             yahooId
             posterUrl
             chineseTitle
@@ -90,7 +90,7 @@ class Home extends React.Component<any, any> {
       credentials: 'include',
     }).then(res => res.json())
       .then(json => {
-        this.setState({ resultMovie: this.classifyArticle(json.data.movie) });
+        this.setState({ resultMovie: this.classifyArticle(json.data.movies[0]) });
         document.querySelector('input').focus();
       });
   }

@@ -150,6 +150,7 @@ const QueryType = new GraphQLObjectType({
         },
         movie: {
             type: MovieType,
+            description:"[deprecated] query single movie, please use movies(yahooIds) instead",
             args: {
                 yahooId: { type: GraphQLInt }
             },
@@ -158,7 +159,7 @@ const QueryType = new GraphQLObjectType({
                 return allMovies.find((movie) => { return movie.yahooId === yahooId; })
             },
         },
-        movieList: {
+        movies: {
             type: new GraphQLList(MovieType),
             args: {
                 yahooIds: { type: new GraphQLList(GraphQLInt) }
