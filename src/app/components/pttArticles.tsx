@@ -40,7 +40,6 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
                         secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
                 })}
             </List>
-
     }
 
     render() {
@@ -58,7 +57,7 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
                 <Tab label={`其他(${this.props.movie.otherArticles.length})`}>
                     {this.getArticleList(this.props.movie.otherArticles)}
                 </Tab>
-            </Tabs>
+            </Tabs>   
         );
     };
 }
