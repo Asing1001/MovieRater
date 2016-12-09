@@ -1,5 +1,6 @@
 import * as React from 'react';
 import MovieDetailTabs from './movieDetailTabs';
+import FindResult from './findResult';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
@@ -7,14 +8,12 @@ import 'isomorphic-fetch';
 
 
 class Home extends React.Component<any, any> {
-  allMoviesName: Array<Object> = [];
-  resultMovie: any = {};
   constructor(props) {
     super(props)
     this.state = {
       searchText: '',
       dataSource: [],
-      resultMovie: new Movie()
+      resultMovies: []
     };
   }
 
@@ -33,17 +32,11 @@ class Home extends React.Component<any, any> {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: "{allMovies{chineseTitle,englishTitle,yahooId}}" }),
+      body: JSON.stringify({ query: "{allMoviesNames{value,text}}" }),
       credentials: 'include',
     }).then(res => res.json())
       .then(json => {
-        json.data.allMovies.forEach(({chineseTitle, englishTitle, yahooId}: Movie) => {
-          this.allMoviesName.push({ value: yahooId, text: chineseTitle })
-          if (englishTitle && englishTitle !== chineseTitle) {
-            this.allMoviesName.push({ value: yahooId, text: englishTitle })
-          }
-        });
-        this.setState({ dataSource: this.allMoviesName })
+        this.setState({ dataSource: json.data.allMoviesNames })
       });
   }
 
@@ -54,7 +47,18 @@ class Home extends React.Component<any, any> {
     document.querySelector('input').focus();
   }
 
-  private search(selectItem, index) {
+  private search(selectItem, index, filteredList) {
+    let yahooIds = [];
+    if (index === -1) {
+      let searchText = selectItem.toLowerCase();
+      if (!filteredList) {
+        yahooIds = this.state.dataSource.filter(({value, text}) => text.toLowerCase().indexOf(searchText) !== -1).map(({value}) => parseInt(value));
+      } else {
+        yahooIds = filteredList.map(({value}) => parseInt(value.key));
+      }
+    } else {
+      yahooIds.push(parseInt(selectItem.value));
+    }
     fetch('/graphql', {
       method: 'POST',
       headers: {
@@ -64,7 +68,7 @@ class Home extends React.Component<any, any> {
       body: JSON.stringify({
         query: `
         {
-          movies(yahooIds:[${selectItem.value}]){
+          movies(yahooIds:${JSON.stringify(yahooIds)}){
             yahooId
             posterUrl
             chineseTitle
@@ -90,8 +94,7 @@ class Home extends React.Component<any, any> {
       credentials: 'include',
     }).then(res => res.json())
       .then(json => {
-        this.setState({ resultMovie: this.classifyArticle(json.data.movies[0]) });
-        document.querySelector('input').focus();
+        this.setState({ resultMovies: json.data.movies.slice(0,6).map(movie => this.classifyArticle(movie)) });
       });
   }
 
@@ -135,9 +138,15 @@ class Home extends React.Component<any, any> {
             />
           <button className={`clearButton ${this.state.searchText ? '' : 'displayNone'}`} onClick={this.clearSearchText.bind(this)}>X</button>
         </div>
-        <Paper zDepth={2}>
-          <MovieDetailTabs movie={this.state.resultMovie}></MovieDetailTabs>
-        </Paper>
+        {
+          this.state.resultMovies.length === 1 ?
+            <Paper zDepth={2}>
+              <MovieDetailTabs movie={this.state.resultMovies[0]}></MovieDetailTabs>
+            </Paper> :
+            this.state.resultMovies.map((movie: Movie) => (
+              <FindResult key={movie.yahooId} movie={movie}></FindResult>
+            ))
+        }
       </div>
     );
   }

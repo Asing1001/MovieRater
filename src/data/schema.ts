@@ -139,6 +139,20 @@ const MovieType = new GraphQLObjectType({
     })
 });
 
+const autoCompleteType = new GraphQLObjectType({
+    name: "autoCompleteType",
+    fields: () => ({
+        value: {
+            type: GraphQLString,
+            resolve: obj => obj.value,
+        },
+        text: {
+            type: GraphQLString,
+            resolve: obj => obj.text,
+        },
+    })
+})
+
 const QueryType = new GraphQLObjectType({
     name: 'Query',
     description: 'query...',
@@ -150,14 +164,19 @@ const QueryType = new GraphQLObjectType({
         },
         movie: {
             type: MovieType,
-            description:"[deprecated] query single movie, please use movies(yahooIds) instead",
+            description: "[deprecated] query single movie, please use movies(yahooIds) instead",
             args: {
                 yahooId: { type: GraphQLInt }
             },
             resolve: (root, {yahooId, chineseTitle}) => {
-                let allMovies = cacheManager.get("allMovies");
+                let allMovies = cacheManager.get(cacheManager.All_MOVIES);
                 return allMovies.find((movie) => { return movie.yahooId === yahooId; })
             },
+        },
+        allMoviesNames: {
+            type: new GraphQLList(autoCompleteType),
+            description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
+            resolve: (root, args) => cacheManager.get(cacheManager.All_MOVIES_NAMES)
         },
         movies: {
             type: new GraphQLList(MovieType),
@@ -168,7 +187,7 @@ const QueryType = new GraphQLObjectType({
                 let allMovies: Array<Movie> = cacheManager.get("allMovies");
                 let result = [];
                 allMovies.forEach((movie) => {
-                    if (yahooIds.indexOf(movie.yahooId)!==-1) {
+                    if (yahooIds.indexOf(movie.yahooId) !== -1) {
                         result.push(movie);
                     }
                 })
