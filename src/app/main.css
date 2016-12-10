@@ -114,3 +114,13 @@ a.pttArticleTitle:visited {
     width: 100%;
     z-index: -1;
 }
+
+.no-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.no-margin {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}

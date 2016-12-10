@@ -52,9 +52,9 @@ class Home extends React.Component<any, any> {
     if (index === -1) {
       let searchText = selectItem.toLowerCase();
       if (!filteredList) {
-        yahooIds = this.state.dataSource.filter(({value, text}) => text.toLowerCase().indexOf(searchText) !== -1).map(({value}) => parseInt(value));
+        yahooIds = this.state.dataSource.filter(({value, text}) => text.toLowerCase().indexOf(searchText) !== -1).map(({value}) => parseInt(value)).slice(0,6);
       } else {
-        yahooIds = filteredList.map(({value}) => parseInt(value.key));
+        yahooIds = filteredList.map(({value}) => parseInt(value.key)).slice(0,6);
       }
     } else {
       yahooIds.push(parseInt(selectItem.value));
@@ -94,7 +94,7 @@ class Home extends React.Component<any, any> {
       credentials: 'include',
     }).then(res => res.json())
       .then(json => {
-        this.setState({ resultMovies: json.data.movies.slice(0,6).map(movie => this.classifyArticle(movie)) });
+        this.setState({ resultMovies: json.data.movies.map(movie => this.classifyArticle(movie)) });
       });
   }
 
