@@ -91,6 +91,15 @@ div * {
     font-size: 0.8em;
 }
 
+@media (max-width: 768px) {
+    .ratingWrapper>img{
+        width:20px;
+    }
+    .pttLogo {
+        padding: 1px 2px;
+    }
+}
+
 .pttPush {
     margin-top: 6px;
 }
@@ -123,4 +132,10 @@ a.pttArticleTitle:visited {
 .no-margin {
     margin-left: 0 !important;
     margin-right: 0 !important;
+}
+
+.resultSummary {
+    overflow: hidden;
+    max-height: 150px;
+    padding-top: .5em;
 }
