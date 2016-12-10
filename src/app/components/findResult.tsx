@@ -8,7 +8,7 @@ interface MovieDetailProps {
     showDetail: Function
 }
 
-const isSmallScreen = window.matchMedia("only screen and (max-width: 760px)").matches;
+const isSmallScreen = typeof window !== 'undefined' && window.matchMedia("only screen and (max-width: 760px)").matches;
 class FindResult extends React.Component<MovieDetailProps, {}> {
     constructor(props) {
         super(props)
