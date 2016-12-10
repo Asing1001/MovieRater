@@ -2,13 +2,16 @@ import * as memoryCache from 'memory-cache';
 import { db } from "../data/db";
 import * as Q from "q";
 import { mergeData } from '../crawler/mergeData';
+import * as moment from 'moment';
+import Movie from '../models/movie';
+
 
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
     static All_MOVIES_NAMES = 'allMoviesNames';
     static init() {
         console.time('get yahooMovies and pttPages');
-        return Q.spread([db.getCollection("yahooMovies", { yahooId: -1 }),
+        return Q.spread([db.getCollection("yahooMovies", { yahooId: 1 }),
         db.getCollection("pttPages", { pageIndex: -1 })],
             function (yahooMovies, pttPages) {
                 console.timeEnd('get yahooMovies and pttPages');
@@ -18,15 +21,17 @@ export default class cacheManager {
             });
     }
 
-    private static setAllMoviesNamesCache(yahooMovies) {
+    private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
         let allMoviesName = [];
+        let threeWeeksAfterNow = moment().add(21, 'days');
         console.time('setAllMoviesNamesCache');
-        yahooMovies.forEach(({chineseTitle, englishTitle, yahooId}) => {
+        yahooMovies.forEach(({chineseTitle, englishTitle, yahooId, releaseDate}) => {
+            let isFarInFuture = moment(releaseDate).isAfter(threeWeeksAfterNow);
             if (chineseTitle) {
-                allMoviesName.push({ value: yahooId, text: chineseTitle })
+                isFarInFuture ? allMoviesName.push({ value: yahooId, text: chineseTitle }) : allMoviesName.unshift({ value: yahooId, text: chineseTitle });
             }
             if (englishTitle && englishTitle !== chineseTitle) {
-                allMoviesName.push({ value: yahooId, text: englishTitle })
+                isFarInFuture ? allMoviesName.push({ value: yahooId, text: englishTitle }) : allMoviesName.unshift({ value: yahooId, text: englishTitle });
             }
         });
 

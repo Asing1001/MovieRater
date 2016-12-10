@@ -120,11 +120,15 @@ class Home extends React.Component<any, any> {
     return movie;
   }
 
+  private showDetail(movie){
+     this.setState({ resultMovies: [movie] });
+  }
+
 
   render() {
     return (
       <div className="container">
-        <div style={{ position: 'relative' }}>
+        <div className="autoCompleteWrapper">
           <AutoComplete
             hintText="電影名稱(中英皆可)"
             dataSource={this.state.dataSource}
@@ -144,7 +148,7 @@ class Home extends React.Component<any, any> {
               <MovieDetailTabs movie={this.state.resultMovies[0]}></MovieDetailTabs>
             </Paper> :
             this.state.resultMovies.map((movie: Movie) => (
-              <FindResult key={movie.yahooId} movie={movie}></FindResult>
+              <FindResult key={movie.yahooId} movie={movie} showDetail={this.showDetail.bind(this)}></FindResult>
             ))
         }
       </div>

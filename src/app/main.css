@@ -13,6 +13,10 @@ div * {
     font-family: Noto Sans TC, Sans-Serif;
 }
 
+.autoCompleteWrapper {
+    position: relative;
+}
+
 .clearButton {
     cursor: pointer;
     background-color: inherit;
@@ -24,12 +28,16 @@ div * {
     left: 100%;
     margin-left: -35px;
     outline: none;
-    color: #26C6DA
+    color: #26C6DA;
+    display: none;
 }
 
-@media (min-width: 768px) {    
+@media (max-width: 768px) {    
     .clearButton {
-        display: none;
+        display: block;
+    }
+    .autoCompleteWrapper {
+        margin-top: -.8em;
     }
 }
 
@@ -71,6 +79,10 @@ div * {
     padding-right: 1em;
 }
 
+.ratingWrapper>img, .ratingWrapper>pttLogo{
+    margin-right: .2em;
+}
+
 @media (max-width: 992px) {
     .ratings {
         text-align: center;
@@ -89,15 +101,6 @@ div * {
     padding: 7px 6px;
     margin-right: 0.2em;
     font-size: 0.8em;
-}
-
-@media (max-width: 768px) {
-    .ratingWrapper>img{
-        width:20px;
-    }
-    .pttLogo {
-        padding: 1px 2px;
-    }
 }
 
 .pttPush {
@@ -138,4 +141,30 @@ a.pttArticleTitle:visited {
     overflow: hidden;
     max-height: 150px;
     padding-top: .5em;
+}
+
+.resultInfo>span{
+    padding-right: 1em
+}
+
+@media (max-width: 768px) {
+    .resultRatings .ratingWrapper>img{
+        width:20px;
+        margin-right: .1em;
+    }
+    .resultRatings .pttLogo {
+        padding: 1px 2px;
+        margin-right: .1em;
+    }
+    .resultInfo>span{
+        padding-right: .5em
+    }
+    .container, [class*="col-"] {
+        padding-left: .5em;
+        padding-right: .5em;
+    }
+}
+
+.pointer {
+    cursor: pointer;
 }
