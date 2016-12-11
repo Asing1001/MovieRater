@@ -194,6 +194,11 @@ const QueryType = new GraphQLObjectType({
                 return result;
             },
         },
+        recentMovies: {
+            type: new GraphQLList(MovieType),
+            description: 'recent movies',
+            resolve: (root, args) => cacheManager.get(cacheManager.RECENT_MOVIES)
+        },
     }),
 });
 

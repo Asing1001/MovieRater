@@ -9,16 +9,29 @@ import Movie from '../models/movie';
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
     static All_MOVIES_NAMES = 'allMoviesNames';
+    static RECENT_MOVIES = 'recentMovies';
     static init() {
         console.time('get yahooMovies and pttPages');
         return Q.spread([db.getCollection("yahooMovies", { yahooId: 1 }),
         db.getCollection("pttPages", { pageIndex: -1 })],
             function (yahooMovies, pttPages) {
                 console.timeEnd('get yahooMovies and pttPages');
+                cacheManager.setRecentMoviesCache(yahooMovies);
                 cacheManager.setAllMoviesNamesCache(yahooMovies);
                 cacheManager.setAllMoviesCache(yahooMovies, pttPages);
                 return;
             });
+    }
+
+    private static setRecentMoviesCache(yahooMovies: Array<Movie>) {
+        let twoMonthsBeforeNow = moment().subtract(2, 'months');
+        let now = moment();
+        console.time('setRecentMoviesCache');
+        let recentMovies = yahooMovies.filter(({releaseDate}) => {
+            return moment(releaseDate).isBetween(twoMonthsBeforeNow, now);
+        });
+        memoryCache.put(cacheManager.RECENT_MOVIES, recentMovies);
+        console.timeEnd('setRecentMoviesCache');
     }
 
     private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {

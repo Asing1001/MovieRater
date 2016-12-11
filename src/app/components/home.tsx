@@ -6,7 +6,6 @@ import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
 import 'isomorphic-fetch';
 
-
 class Home extends React.Component<any, any> {
   constructor(props) {
     super(props)
@@ -18,10 +17,15 @@ class Home extends React.Component<any, any> {
   }
 
   componentWillMount() {
-    this.getDataSource();
+    if (this.props.params.id){
+      this.search([parseInt(this.props.params.id)]);
+    }else{
+
+    }
   }
 
   componentDidMount() {
+    this.getDataSource();
     document.querySelector('input').focus();
   }
 
@@ -47,18 +51,23 @@ class Home extends React.Component<any, any> {
     document.querySelector('input').focus();
   }
 
-  private search(selectItem, index, filteredList) {
+  private onNewRequest(selectItem, index, filteredList) {
     let yahooIds = [];
     if (index === -1) {
       let searchText = selectItem.toLowerCase();
       if (!filteredList) {
-        yahooIds = this.state.dataSource.filter(({value, text}) => text.toLowerCase().indexOf(searchText) !== -1).map(({value}) => parseInt(value)).slice(0,6);
+        yahooIds = this.state.dataSource.filter(({value, text}) => text.toLowerCase().indexOf(searchText) !== -1).map(({value}) => parseInt(value)).slice(0, 6);
       } else {
-        yahooIds = filteredList.map(({value}) => parseInt(value.key)).slice(0,6);
+        yahooIds = filteredList.map(({value}) => parseInt(value.key)).slice(0, 6);
       }
     } else {
       yahooIds.push(parseInt(selectItem.value));
     }
+
+    this.search(yahooIds);
+  }
+
+  private search(yahooIds: Array<Number>) {
     fetch('/graphql', {
       method: 'POST',
       headers: {
@@ -120,8 +129,8 @@ class Home extends React.Component<any, any> {
     return movie;
   }
 
-  private showDetail(movie){
-     this.setState({ resultMovies: [movie] });
+  private showDetail(movie) {
+    this.setState({ resultMovies: [movie] });
   }
 
 
@@ -136,7 +145,7 @@ class Home extends React.Component<any, any> {
             fullWidth={true}
             filter={AutoComplete.caseInsensitiveFilter}
             maxSearchResults={6}
-            onNewRequest={this.search.bind(this)}
+            onNewRequest={this.onNewRequest.bind(this)}
             searchText={this.state.searchText}
             onUpdateInput={this.handleUpdateInput.bind(this)}
             />

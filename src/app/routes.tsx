@@ -5,6 +5,8 @@ import Home from './components/home';
 
 export default (
   <Route component={App}>
-    <Route path='/' component={Home} />
+    <Route path='/' component={Home} >
+        <Route path="/movie/:id" component={Home}/>
+    </Route>
   </Route>
 );

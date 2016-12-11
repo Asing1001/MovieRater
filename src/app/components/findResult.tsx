@@ -15,7 +15,7 @@ class FindResult extends React.Component<MovieDetailProps, {}> {
     }
 
     private getSmallPosterSrc(posterUrl: string) {
-        return isSmallScreen ? posterUrl.replace('mpost', 'mpost2') : posterUrl;
+        return isSmallScreen ? posterUrl.replace('mpost', 'mpost4') : posterUrl;
     }
 
     private showDetail(e) {
