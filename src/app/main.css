@@ -17,6 +17,11 @@ div * {
     position: relative;
 }
 
+input::-ms-clear {
+  width : 0;
+  height: 0;
+}
+
 .clearButton {
     cursor: pointer;
     background-color: inherit;
