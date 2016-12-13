@@ -15,7 +15,7 @@ chai.use(chaiAsPromised);
 class mockCacheManager extends cacheManager {
   static init() {
     let defer = Q.defer<void>();
-    memoryCache.put(cacheManager.cacheKey, [1]);
+    memoryCache.put(cacheManager.All_MOVIES, [1]);
     defer.resolve();
     return defer.promise;
   }
@@ -30,7 +30,7 @@ describe('cacheManager', () => {
 
   describe('get', () => {
     it('cacheManager', function () {
-      return mockCacheManager.get(cacheManager.cacheKey).should.have.length.above(0)
+      return mockCacheManager.get(cacheManager.All_MOVIES).should.have.length.above(0)
     });
   });
 });
