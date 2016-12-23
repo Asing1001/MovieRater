@@ -1,6 +1,9 @@
 @import url(http://fonts.googleapis.com/earlyaccess/notosanstc.css);
-
-html, body { height: 100%; width: 100%; margin: 0; }
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
 
 @media (min-width: 992px) {
     /*prevent scrollbar vibarate content */
@@ -18,8 +21,8 @@ div * {
 }
 
 input::-ms-clear {
-  width : 0;
-  height: 0;
+    width: 0;
+    height: 0;
 }
 
 .clearButton {
@@ -37,7 +40,7 @@ input::-ms-clear {
     display: none;
 }
 
-@media (max-width: 768px) {    
+@media (max-width: 768px) {
     .clearButton {
         display: block;
     }
@@ -84,7 +87,7 @@ input::-ms-clear {
     padding-right: 1em;
 }
 
-.ratingWrapper>img, .ratingWrapper>pttLogo{
+.ratingWrapper>img, .ratingWrapper>pttLogo {
     margin-right: .2em;
 }
 
@@ -92,8 +95,6 @@ input::-ms-clear {
     .ratings {
         text-align: center;
         padding-left: 0;
-        margin-left: -15px;
-        margin-right: -15px;
     }
     .ratingWrapper {
         padding-right: 0.2em;
@@ -122,10 +123,10 @@ a.pttArticleTitle:visited {
     color: #888 !important;
 }
 
-.pttArticles::before{
+.pttArticles::before {
     content: "";
     position: fixed;
-    top:0px;
+    top: 0px;
     bottom: 0;
     background-color: black;
     width: 100%;
@@ -148,20 +149,20 @@ a.pttArticleTitle:visited {
     padding-top: .5em;
 }
 
-.resultInfo>span{
+.resultInfo>span {
     padding-right: 1em
 }
 
 @media (max-width: 768px) {
-    .resultRatings .ratingWrapper>img{
-        width:20px;
+    .resultRatings .ratingWrapper>img {
+        width: 20px;
         margin-right: .1em;
     }
     .resultRatings .pttLogo {
         padding: 1px 2px;
         margin-right: .1em;
     }
-    .resultInfo>span{
+    .resultInfo>span {
         padding-right: .5em
     }
     .container, [class*="col-"] {
