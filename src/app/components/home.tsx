@@ -1,11 +1,32 @@
 import * as React from 'react';
 import MovieDetailTabs from './movieDetailTabs';
-import FindResult from './findResult';
+import MovieList from './MovieList';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
 import 'isomorphic-fetch';
 
+const ALLDATA = `{
+            yahooId
+            posterUrl
+            chineseTitle
+            englishTitle
+            releaseDate
+            type
+            runTime
+            director
+            actor
+            launchCompany
+            companyUrl
+            sourceUrl                       
+            yahooRating
+            imdbID
+            imdbRating
+            tomatoURL            
+            tomatoRating
+            relatedArticles{title,push,url,date,author}
+            summary
+          }`
 class Home extends React.Component<any, any> {
   constructor(props) {
     super(props)
@@ -17,10 +38,12 @@ class Home extends React.Component<any, any> {
   }
 
   componentWillMount() {
-    if (this.props.params.id){
+    if (this.props.params.id) {
       this.search([parseInt(this.props.params.id)]);
-    }else{
-
+    } else {
+      this.requestGraphQL(`{recentMovies${ALLDATA}}`).then(json => {
+        this.setState({ resultMovies: json.data.recentMovies.map(movie => this.classifyArticle(movie)) });
+      });
     }
   }
 
@@ -67,41 +90,26 @@ class Home extends React.Component<any, any> {
     this.search(yahooIds);
   }
 
-  private search(yahooIds: Array<Number>) {
-    fetch('/graphql', {
+  private requestGraphQL(query: string) {
+    return fetch('/graphql', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        query: `
-        {
-          movies(yahooIds:${JSON.stringify(yahooIds)}){
-            yahooId
-            posterUrl
-            chineseTitle
-            englishTitle
-            releaseDate
-            type
-            runTime
-            director
-            actor
-            launchCompany
-            companyUrl
-            sourceUrl                       
-            yahooRating
-            imdbID
-            imdbRating
-            tomatoURL            
-            tomatoRating
-            relatedArticles{title,push,url,date,author}
-            summary
-          }
-        }
-    ` }),
+        query: query
+      }),
       credentials: 'include',
     }).then(res => res.json())
+  }
+
+  private search(yahooIds) {
+    this.requestGraphQL(`
+        {
+          movies(yahooIds:${JSON.stringify(yahooIds)})${ALLDATA}
+        }
+    `)
       .then(json => {
         this.setState({ resultMovies: json.data.movies.map(movie => this.classifyArticle(movie)) });
       });
@@ -156,9 +164,7 @@ class Home extends React.Component<any, any> {
             <Paper zDepth={2}>
               <MovieDetailTabs movie={this.state.resultMovies[0]}></MovieDetailTabs>
             </Paper> :
-            this.state.resultMovies.map((movie: Movie) => (
-              <FindResult key={movie.yahooId} movie={movie} showDetail={this.showDetail.bind(this)}></FindResult>
-            ))
+            <MovieList movies={this.state.resultMovies} showDetail={this.showDetail.bind(this)}></MovieList>
         }
       </div>
     );
