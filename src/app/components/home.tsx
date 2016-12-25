@@ -1,6 +1,6 @@
 import * as React from 'react';
 import MovieDetailTabs from './movieDetailTabs';
-import MovieList from './MovieList';
+import MovieList from './movieList';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
