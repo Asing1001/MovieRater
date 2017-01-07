@@ -83,6 +83,7 @@ export class db {
 
     public static getCollection(collectionName: string, sort?: Object): any {
         var deferred = Q.defer();
+        // this.dbConnection.collection(collectionName).find({}).limit(1000).sort(sort).toArray((err, items) => {
         this.dbConnection.collection(collectionName).find({}).sort(sort).toArray((err, items) => {
             assert.equal(err, null);
             if (err) {

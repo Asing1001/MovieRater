@@ -27,7 +27,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/cacheManager.test.js",
+                "dist/test/yahooInTheaterCrawler.test.js",
                 "--no-timeouts"
             ],
             "cwd": "${workspaceRoot}",
