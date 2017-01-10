@@ -1,6 +1,6 @@
 import * as request from "request";
 import * as cheerio from "cheerio";
-import {db} from "../data/db";
+import { db } from "../data/db";
 import * as Q from "q";
 import YahooMovie from '../models/yahooMovie';
 import { yahooCrawlerSetting } from '../configs/systemSetting';
@@ -90,6 +90,12 @@ function crawlYahooPage(id: number) {
             yahooRating: $('#ymvis em').text(),
             summary: $('.text.full>p').html()
         };
+
+        if (!movieInfo.chineseTitle) {
+            let reason = `${yahooMovieUrl} can not find chineseTitle, data might got problem.`;
+            return defer.reject(reason);
+        }
+
         return defer.resolve(movieInfo);
     })
     return defer.promise;

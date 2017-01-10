@@ -28,7 +28,7 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
     });
   };
 
-  
+
   render() {
     if (!this.props.movie.chineseTitle) { return null }
     return (
@@ -45,9 +45,13 @@ export default class MovieDetailTabs extends React.Component<MovieDetailProps, M
           index={this.state.slideIndex}
           onChangeIndex={this.handleChange}
           >
-          <MovieDetail movie={this.props.movie}></MovieDetail>
-          <PttArticles movie={this.props.movie}></PttArticles>
-          <div className="col-xs-12" style={{paddingTop:'1em'}} dangerouslySetInnerHTML={{__html: this.props.movie.summary}}></div>
+          <div style={{ height: this.state.slideIndex === 0 ? 'auto' : 0 }}>
+            <MovieDetail movie={this.props.movie}></MovieDetail>
+          </div>
+          <div style={{ height: this.state.slideIndex === 1 ? 'auto' : 0 }}>
+            <PttArticles movie={this.props.movie}></PttArticles>
+          </div>
+          <div className="col-xs-12" style={{ paddingTop: '1em', height: this.state.slideIndex === 2 ? 'auto' : 0 }} dangerouslySetInnerHTML={{ __html: this.props.movie.summary }}></div>
         </SwipeableViews>
       </div>
     );
