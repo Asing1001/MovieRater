@@ -52,8 +52,9 @@ export default class cacheManager {
     private static setRecentMoviesCache(yahooMovies: Array<Movie>) {
         console.time('setRecentMoviesCache');
         return crawlInTheater().then((yahooIds: Array<number>) => {
+            let today = moment();
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(({yahooId}) => yahooIds.indexOf(yahooId) !== -1)
+                .filter(({yahooId, releaseDate}:Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90) 
             memoryCache.put(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
             return;
