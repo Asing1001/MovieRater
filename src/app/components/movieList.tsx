@@ -4,7 +4,7 @@ import Movie from '../../models/movie';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 
-import IconLocationOn from 'material-ui/svg-icons/communication/location-on';
+import IconLocationOn from 'material-ui/svg-icons/content/sort';
 import FontIcon from 'material-ui/FontIcon';
 const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
 const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
@@ -21,29 +21,40 @@ class MovieList extends React.Component<any, any> {
   constructor(props) {
     super(props)
     this.state = {
-      selectedIndex : SortType.imdb,
+      selectedIndex: SortType.imdb,
       sortFunction: (a, b) => b.imdbRating - a.imdbRating
     };
   }
 
   select = (index) => {
+    if(this.state.selectedIndex === index){
+      return;
+    }
     var sortFunction;
     switch (index) {
       case SortType.imdb:
-        sortFunction = (a, b) => b.imdbRating - a.imdbRating
+        sortFunction = this.GetStandardSortFunction('imdbRating');
         break;
       case SortType.ptt:
         sortFunction = (a, b) => this.GetPttRating(b) - this.GetPttRating(a)
         break;
       case SortType.tomato:
-        sortFunction = (a, b) => b.tomatoRating - a.tomatoRating
+        sortFunction = this.GetStandardSortFunction('tomatoRating');
         break;
       case SortType.yahoo:
-        sortFunction = (a, b) => b.yahooRating - a.yahooRating;
+        sortFunction = this.GetStandardSortFunction('yahooRating');
         break;
     }
 
     this.setState({ selectedIndex: index, sortFunction: sortFunction });
+  }
+
+  GetStandardSortFunction = (propertyName) => {
+    return function (a, b) {
+      let aValue = a[propertyName] === 'N/A' ? 0 : a[propertyName];
+      let bValue = b[propertyName] === 'N/A' ? 0 : b[propertyName];
+      return bValue - aValue;
+    }
   }
 
   GetPttRating = (movie: Movie) => {
