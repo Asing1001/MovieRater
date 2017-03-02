@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { db } from "../data/db";
-import { systemSetting } from '../configs/systemSetting';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -13,7 +12,7 @@ describe('db', () => {
   describe('connection', () => {
     it('should not null when connection string is correct', function () {
       this.timeout(5000);
-      return db.openDbConnection(systemSetting.dbUrl).should.eventually.be.fulfilled
+      return db.openDbConnection().should.eventually.be.fulfilled
     });
   });
 

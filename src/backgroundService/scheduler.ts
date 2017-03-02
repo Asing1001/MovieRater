@@ -41,6 +41,7 @@ export function initScheduler() {
 
     console.log("[initScheduler] Create Schedule for cacheManager.init");
     setInterval(function () {
-        cacheManager.init();
+        db.closeDbConnection();
+        db.openDbConnection().then(cacheManager.init);
     }, 86400000, null);
 }

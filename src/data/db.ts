@@ -1,21 +1,22 @@
 import { MongoClient, Db, ReplaceOneOptions } from 'mongodb';
 import * as assert from "assert";
 import * as Q from "q";
+import { systemSetting } from '../configs/systemSetting';
 
 export class db {
     static dbConnection: Db = null;
 
-    public static openDbConnection(connectionString) {
+    public static openDbConnection() {
         var deferred = Q.defer();
         if (this.dbConnection == null) {
-            MongoClient.connect(connectionString, (err, db) => {
+            MongoClient.connect(systemSetting.dbUrl, (err, db) => {
                 assert.equal(null, err);
                 console.log("Connected correctly to MongoDB server.");
                 this.dbConnection = db;
                 deferred.resolve(db);
             });
         } else {
-            deferred.resolve(Db)
+            deferred.resolve(this.dbConnection)
         }
         return deferred.promise;
     }
