@@ -23,6 +23,13 @@ describe('db', () => {
     });
   });
 
+  describe('getDocument', () => {
+    it('get Document should success', function () {
+      this.timeout(10000);
+      return db.getDocument({},"test").should.eventually.be.fulfilled
+    });
+  });
+
   describe('insertCollection', () => {
     it('should resolve when give empty array', () => db.insertCollection([], 'test').should.eventually.be.fulfilled);
   });

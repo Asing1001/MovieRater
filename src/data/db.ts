@@ -1,7 +1,7 @@
 import { MongoClient, Db, ReplaceOneOptions } from 'mongodb';
-import * as assert from "assert";
 import * as Q from "q";
 import { systemSetting } from '../configs/systemSetting';
+import log from '../helper/log';
 
 export class db {
     static dbConnection: Db = null;
@@ -9,9 +9,13 @@ export class db {
     public static openDbConnection() {
         var deferred = Q.defer();
         try {
+            log.debug(arguments);
             if (this.dbConnection == null) {
                 MongoClient.connect(systemSetting.dbUrl, (err, db) => {
-                    assert.equal(null, err);
+                    if (err) {
+                        console.error(err);
+                        deferred.reject(err);
+                    }
                     console.log("Connected correctly to MongoDB server.");
                     this.dbConnection = db;
                     deferred.resolve(db);
@@ -35,10 +39,11 @@ export class db {
     public static updateDocument(filter: Object, value: Object, collectionName: string, options: ReplaceOneOptions = { upsert: true }): any {
         var deferred = Q.defer();
         try {
+            log.debug(arguments);
             this.dbConnection.collection(collectionName).updateOne(filter, { $set: value }, options, (err, result) => {
-                assert.equal(err, null);
                 if (err) {
-                    deferred.reject(new Error(JSON.stringify(err)));
+                    console.error(err);
+                    deferred.reject(err);
                 }
                 deferred.resolve(result);
             });
@@ -51,10 +56,11 @@ export class db {
     public static insertDocument(document: any, collectionName: string): any {
         var deferred = Q.defer();
         try {
+            log.debug(arguments);
             this.dbConnection.collection(collectionName).insertOne(document, (err, result) => {
-                assert.equal(err, null);
                 if (err) {
-                    deferred.reject(new Error(JSON.stringify(err)));
+                    console.error(err);
+                    deferred.reject(err);
                 }
                 deferred.resolve(result);
             });
@@ -67,11 +73,12 @@ export class db {
     public static insertCollection(collection: any, collectionName: string): any {
         var deferred = Q.defer();
         try {
+            log.debug(arguments);
             if (collection && collection.length > 0) {
                 this.dbConnection.collection(collectionName).insert(collection, (err, result) => {
-                    assert.equal(err, null);
                     if (err) {
-                        deferred.reject(new Error(JSON.stringify(err)));
+                        console.error(err);
+                        deferred.reject(err);
                     }
                     deferred.resolve(result);
                 });
@@ -87,10 +94,11 @@ export class db {
     public static getCollectionCount(collectionName: string): any {
         var deferred = Q.defer();
         try {
+            log.debug(arguments);
             this.dbConnection.collection(collectionName).count((err, result) => {
-                assert.equal(err, null);
                 if (err) {
-                    deferred.reject(new Error(JSON.stringify(err)));
+                    console.error(err);
+                    deferred.reject(err);
                 }
                 deferred.resolve(result);
             });
@@ -103,10 +111,11 @@ export class db {
     public static getCollection(collectionName: string, sort?: Object): any {
         var deferred = Q.defer();
         try {
+            log.debug(arguments);
             this.dbConnection.collection(collectionName).find({}).sort(sort).toArray((err, items) => {
-                assert.equal(err, null);
                 if (err) {
-                    deferred.reject(new Error(JSON.stringify(err)));
+                    console.error(err);
+                    deferred.reject(err);
                 }
                 deferred.resolve(items);
             });
@@ -119,10 +128,11 @@ export class db {
     public static getDocument(query: Object, collectionName: string): any {
         var deferred = Q.defer();
         try {
+            log.debug(arguments);
             this.dbConnection.collection(collectionName).findOne(query, (err, document) => {
-                assert.equal(err, null);
                 if (err) {
-                    deferred.reject(new Error(JSON.stringify(err)));
+                    console.error(err);
+                    deferred.reject(err);
                 }
                 deferred.resolve(document);
             });
