@@ -10,9 +10,9 @@ chai.should();
 chai.use(chaiAsPromised);
 
 describe('Scheduler', () => {
-  describe('yahooScheduler', () => {
+  describe('initScheduler', () => {
     before(()=>{return db.openDbConnection()})
-    it('should correctly get new data from yahoo', function () {
+    it('should init schedules without exception', function () {
       this.timeout(30000);
       return initScheduler()
     });
