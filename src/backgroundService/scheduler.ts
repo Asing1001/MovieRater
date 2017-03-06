@@ -17,7 +17,7 @@ export function initScheduler() {
             fetch(websiteUrl).then(res =>
                 console.log(`[Scheduler] Access to website:${websiteUrl}, status:${res.status}`));
         })
-    }, 900000, null);
+    }, 300000, null);
 
     console.log("[initScheduler] Create Schedule for yahooCrawler and crawlImdb.");
     setInterval(function () {

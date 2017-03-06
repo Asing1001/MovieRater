@@ -22,7 +22,7 @@ class MovieList extends React.Component<any, any> {
     super(props)
     this.state = {
       selectedIndex: SortType.imdb,
-      sortFunction: (a, b) => b.imdbRating - a.imdbRating
+      sortFunction: this.GetStandardSortFunction('imdbRating')
     };
   }
 

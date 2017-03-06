@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {crawlImdb, filterNeedCrawlMovie} from '../crawler/imdbCrawler';
 import {db} from "../data/db";
-import {systemSetting} from '../configs/systemSetting'; 
 import Movie from "../models/movie";
 import * as moment from 'moment';
 
@@ -15,7 +14,7 @@ chai.use(chaiAsPromised);
 
 describe('imdbCrawler', () => {
   describe('crawlImdb', () => {
-    before(()=>{return db.openDbConnection(systemSetting.dbUrl)})
+    before(()=>{return db.openDbConnection()})
     it('should correctly get new data from imdb', function () {
       this.timeout(60000);
       return crawlImdb().should.eventually.fulfilled

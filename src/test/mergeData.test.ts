@@ -2,7 +2,6 @@ import { mergeData } from '../crawler/mergeData';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { db } from "../data/db";
-import { systemSetting } from '../configs/systemSetting';
 import Movie from "../models/movie";
 
 const assert = chai.assert;

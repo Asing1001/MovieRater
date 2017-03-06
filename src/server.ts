@@ -37,7 +37,7 @@ app.get('/api/pttPages', (req, res) => {
   });
 });
 
-db.openDbConnection(systemSetting.dbUrl)
+db.openDbConnection()
   .then(() => {
     cacheManager.init()
     initScheduler();
