@@ -10,14 +10,11 @@ import cacheManager from '../data/cacheManager';
 import Movie from "../models/movie";
 
 export function initScheduler() {
-
     console.log("[initScheduler] Create Schedule for keep website alive.");
     setInterval(function () {
-        systemSetting.websiteUrls.forEach(websiteUrl => {
-            fetch(websiteUrl).then(res =>
-                console.log(`[Scheduler] Access to website:${websiteUrl}, status:${res.status}`));
-        })
-    }, 300000, null);
+        fetch(systemSetting.websiteUrl).then(res =>
+            console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
+    }, 600000, null);
 
     console.log("[initScheduler] Create Schedule for yahooCrawler and crawlImdb.");
     setInterval(function () {
