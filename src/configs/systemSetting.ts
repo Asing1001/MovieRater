@@ -17,3 +17,5 @@ export const yahooCrawlerSetting = {
     startYahooId: 6100,
     howManyPagePerTime: 30,
 }
+
+console.log("systemSetting", JSON.stringify(systemSetting));
