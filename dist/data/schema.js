@@ -1,6 +1,6 @@
 "use strict";
-var graphql_1 = require("graphql");
-var cacheManager_1 = require("../data/cacheManager");
+var graphql_1 = require('graphql');
+var cacheManager_1 = require('../data/cacheManager');
 var ArticleType = new graphql_1.GraphQLObjectType({
     name: 'article',
     description: 'ptt articles',

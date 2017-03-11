@@ -4,23 +4,22 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var React = require("react");
-var movieDetailTabs_1 = require("./movieDetailTabs");
-var movieList_1 = require("./movieList");
-var AutoComplete_1 = require("material-ui/AutoComplete");
-var Paper_1 = require("material-ui/Paper");
-require("isomorphic-fetch");
+var React = require('react');
+var movieDetailTabs_1 = require('./movieDetailTabs');
+var movieList_1 = require('./movieList');
+var AutoComplete_1 = require('material-ui/AutoComplete');
+var Paper_1 = require('material-ui/Paper');
+require('isomorphic-fetch');
 var ALLDATA = "{\n            yahooId\n            posterUrl\n            chineseTitle\n            englishTitle\n            releaseDate\n            type\n            runTime\n            director\n            actor\n            launchCompany\n            companyUrl\n            sourceUrl                       \n            yahooRating\n            imdbID\n            imdbRating\n            tomatoURL            \n            tomatoRating\n            relatedArticles{title,push,url,date,author}\n            summary\n          }";
 var Home = (function (_super) {
     __extends(Home, _super);
     function Home(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+        _super.call(this, props);
+        this.state = {
             searchText: '',
             dataSource: [],
             resultMovies: []
         };
-        return _this;
     }
     Home.prototype.componentWillMount = function () {
         var _this = this;
@@ -131,14 +130,15 @@ var Home = (function (_super) {
         this.setState({ resultMovies: [movie] });
     };
     Home.prototype.render = function () {
-        return (React.createElement("div", { className: "container" },
-            React.createElement("div", { className: "autoCompleteWrapper" },
-                React.createElement(AutoComplete_1.default, { hintText: "電影名稱(中英皆可)", dataSource: this.state.dataSource, floatingLabelText: "找電影", fullWidth: true, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 6, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this) }),
-                React.createElement("button", { className: "clearButton " + (this.state.searchText ? '' : 'displayNone'), onClick: this.clearSearchText.bind(this) }, "X")),
+        return (React.createElement("div", {className: "container"}, 
+            React.createElement("div", {className: "autoCompleteWrapper"}, 
+                React.createElement(AutoComplete_1.default, {hintText: "電影名稱(中英皆可)", dataSource: this.state.dataSource, floatingLabelText: "找電影", fullWidth: true, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 6, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this)}), 
+                React.createElement("button", {className: "clearButton " + (this.state.searchText ? '' : 'displayNone'), onClick: this.clearSearchText.bind(this)}, "X")), 
             this.state.resultMovies.length === 1 ?
-                React.createElement(Paper_1.default, { zDepth: 2 },
-                    React.createElement(movieDetailTabs_1.default, { movie: this.state.resultMovies[0] })) :
-                React.createElement(movieList_1.default, { movies: this.state.resultMovies, showDetail: this.showDetail.bind(this) })));
+                React.createElement(Paper_1.default, {zDepth: 2}, 
+                    React.createElement(movieDetailTabs_1.default, {movie: this.state.resultMovies[0]})
+                ) :
+                React.createElement(movieList_1.default, {movies: this.state.resultMovies, showDetail: this.showDetail.bind(this)})));
     };
     return Home;
 }(React.Component));

@@ -2,7 +2,7 @@
 var db_1 = require("../data/db");
 var Q = require("q");
 var fetch = require("isomorphic-fetch");
-var moment = require("moment");
+var moment = require('moment');
 var omdbApiUrl = 'http://www.omdbapi.com/';
 function crawlImdb() {
     return db_1.db.getCollection("yahooMovies").then(function (yahooMovies) {

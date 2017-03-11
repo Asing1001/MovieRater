@@ -4,10 +4,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
-var cacheManager_1 = require("../data/cacheManager");
-var memoryCache = require("memory-cache");
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+var cacheManager_1 = require('../data/cacheManager');
+var memoryCache = require('memory-cache');
 var Q = require("q");
 var assert = chai.assert;
 var expect = chai.expect;
@@ -17,7 +17,7 @@ chai.use(chaiAsPromised);
 var mockCacheManager = (function (_super) {
     __extends(mockCacheManager, _super);
     function mockCacheManager() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        _super.apply(this, arguments);
     }
     mockCacheManager.init = function () {
         var defer = Q.defer();

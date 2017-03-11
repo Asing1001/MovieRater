@@ -1,7 +1,7 @@
 "use strict";
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
-var yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+var yahooInTheaterCrawler_1 = require('../crawler/yahooInTheaterCrawler');
 var db_1 = require("../data/db");
 var assert = chai.assert;
 var expect = chai.expect;

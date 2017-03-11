@@ -1,7 +1,7 @@
 "use strict";
-var mergeData_1 = require("../crawler/mergeData");
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
+var mergeData_1 = require('../crawler/mergeData');
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
 var assert = chai.assert;
 var expect = chai.expect;
 var should = chai.should();
@@ -17,8 +17,7 @@ describe('mergeData', function () {
                             "title": "[好雷] 測試資料1",
                             "url": "https://www.ptt.cc/bbs/movie/M.1472305062.A.807.html",
                             "date": "2016/06/06"
-                        }
-                    ]
+                        }]
                 }];
             var actual = mergeData_1.mergeData(yahooMovies, pttPages);
             assert.equal(JSON.stringify(actual[0].relatedArticles), JSON.stringify([]));
@@ -31,8 +30,7 @@ describe('mergeData', function () {
                             "title": "[好雷] 測試資料",
                             "url": "https://www.ptt.cc/bbs/movie/M.1472305062.A.807.html",
                             "date": "2016/08/07"
-                        }
-                    ]
+                        }]
                 }];
             var actual = mergeData_1.mergeData(yahooMovies, pttPages);
             assert.equal(JSON.stringify(actual[0].relatedArticles), JSON.stringify(pttPages[0].articles));

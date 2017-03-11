@@ -1,5 +1,5 @@
 "use strict";
-var moment = require("moment");
+var moment = require('moment');
 var log = {
     debug: function (args) {
         var functionName = new Error().stack.split(' ')[11].substr(9);

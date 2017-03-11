@@ -15,4 +15,5 @@ exports.yahooCrawlerSetting = {
     startYahooId: 6100,
     howManyPagePerTime: 30,
 };
+console.log("systemSetting", JSON.stringify(exports.systemSetting));
 //# sourceMappingURL=systemSetting.js.map

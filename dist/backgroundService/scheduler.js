@@ -1,12 +1,11 @@
 "use strict";
-var yahooCrawler_1 = require("../crawler/yahooCrawler");
-var imdbCrawler_1 = require("../crawler/imdbCrawler");
-var pttCrawler_1 = require("../crawler/pttCrawler");
-var systemSetting_1 = require("../configs/systemSetting");
+var yahooCrawler_1 = require('../crawler/yahooCrawler');
+var imdbCrawler_1 = require('../crawler/imdbCrawler');
+var pttCrawler_1 = require('../crawler/pttCrawler');
+var systemSetting_1 = require('../configs/systemSetting');
 var fetch = require("isomorphic-fetch");
-var cacheManager_1 = require("../data/cacheManager");
+var cacheManager_1 = require('../data/cacheManager');
 function initScheduler() {
-    console.log("SystemSetting", JSON.stringify(systemSetting_1));
     console.log("[initScheduler] Create Schedule for keep website alive.");
     setInterval(function () {
         fetch(systemSetting_1.systemSetting.websiteUrl).then(function (res) {

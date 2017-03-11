@@ -1,8 +1,8 @@
 "use strict";
-var moment = require("moment");
+var moment = require('moment');
 function mergeData(yahooMovies, pttPages) {
     //merge [[1,2],[3,4]] to [1,2,3,4]
-    var allArticles = [].concat.apply([], pttPages.map(function (_a) {
+    var allArticles = (_a = []).concat.apply(_a, pttPages.map(function (_a) {
         var articles = _a.articles;
         return articles;
     }));
@@ -27,6 +27,7 @@ function mergeData(yahooMovies, pttPages) {
         });
         return movie;
     }
+    var _a;
 }
 exports.mergeData = mergeData;
 //# sourceMappingURL=mergeData.js.map

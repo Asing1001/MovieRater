@@ -1,7 +1,7 @@
 "use strict";
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
-var pttCrawler_1 = require("../crawler/pttCrawler");
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+var pttCrawler_1 = require('../crawler/pttCrawler');
 var db_1 = require("../data/db");
 var assert = chai.assert;
 var expect = chai.expect;

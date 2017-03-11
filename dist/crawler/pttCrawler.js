@@ -3,8 +3,8 @@ var request = require("request");
 var cheerio = require("cheerio");
 var db_1 = require("../data/db");
 var Q = require("q");
-var systemSetting_1 = require("../configs/systemSetting");
-var moment = require("moment");
+var systemSetting_1 = require('../configs/systemSetting');
+var moment = require('moment');
 var pttBaseUrl = 'https://www.ptt.cc';
 var crawlerStatusFilter = { name: "crawlerStatus" };
 function crawlPtt() {

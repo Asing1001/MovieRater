@@ -1,10 +1,10 @@
 "use strict";
-var memoryCache = require("memory-cache");
+var memoryCache = require('memory-cache');
 var db_1 = require("../data/db");
 var Q = require("q");
-var mergeData_1 = require("../crawler/mergeData");
-var moment = require("moment");
-var yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
+var mergeData_1 = require('../crawler/mergeData');
+var moment = require('moment');
+var yahooInTheaterCrawler_1 = require('../crawler/yahooInTheaterCrawler');
 var cacheManager = (function () {
     function cacheManager() {
     }
@@ -58,11 +58,11 @@ var cacheManager = (function () {
         var data = memoryCache.get(key);
         return data;
     };
+    cacheManager.All_MOVIES = 'allMovies';
+    cacheManager.All_MOVIES_NAMES = 'allMoviesNames';
+    cacheManager.RECENT_MOVIES = 'recentMovies';
     return cacheManager;
 }());
-cacheManager.All_MOVIES = 'allMovies';
-cacheManager.All_MOVIES_NAMES = 'allMoviesNames';
-cacheManager.RECENT_MOVIES = 'recentMovies';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = cacheManager;
 //# sourceMappingURL=cacheManager.js.map

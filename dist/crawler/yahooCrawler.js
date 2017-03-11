@@ -3,7 +3,7 @@ var request = require("request");
 var cheerio = require("cheerio");
 var db_1 = require("../data/db");
 var Q = require("q");
-var systemSetting_1 = require("../configs/systemSetting");
+var systemSetting_1 = require('../configs/systemSetting');
 function crawlYahoo() {
     var crawlerStatusFilter = { name: "crawlerStatus" };
     var howManyPagePerTime = 50;

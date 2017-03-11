@@ -1,8 +1,8 @@
 "use strict";
-var mongodb_1 = require("mongodb");
+var mongodb_1 = require('mongodb');
 var Q = require("q");
-var systemSetting_1 = require("../configs/systemSetting");
-var log_1 = require("../helper/log");
+var systemSetting_1 = require('../configs/systemSetting');
+var log_1 = require('../helper/log');
 var db = (function () {
     function db() {
     }
@@ -145,8 +145,8 @@ var db = (function () {
         }
         return deferred.promise;
     };
+    db.dbConnection = null;
     return db;
 }());
-db.dbConnection = null;
 exports.db = db;
 //# sourceMappingURL=db.js.map

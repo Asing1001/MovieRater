@@ -4,19 +4,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var React = require("react");
-var react_router_1 = require("react-router");
-var ReactDOM = require("react-dom");
-var createBrowserHistory_1 = require("history/lib/createBrowserHistory");
-var routes_1 = require("./routes");
-require("./main.css");
+var React = require('react');
+var react_router_1 = require('react-router');
+var ReactDOM = require('react-dom');
+var createBrowserHistory_1 = require('history/lib/createBrowserHistory');
+var routes_1 = require('./routes');
+require('./main.css');
 var Root = (function (_super) {
     __extends(Root, _super);
     function Root() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        _super.apply(this, arguments);
     }
     Root.prototype.render = function () {
-        return (React.createElement(react_router_1.Router, { history: createBrowserHistory_1.default() }, routes_1.default));
+        return (React.createElement(react_router_1.Router, {history: createBrowserHistory_1.default()}, routes_1.default));
     };
     return Root;
 }(React.Component));
