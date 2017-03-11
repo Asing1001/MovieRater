@@ -44,7 +44,7 @@ var FindResult = (function (_super) {
                             this.props.movie.runTime))), 
                 React.createElement(ratings_1.default, {className: "resultRatings", movie: this.props.movie}), 
                 React.createElement("div", {className: "hidden-xs"}, 
-                    React.createElement("div", {className: "resultSummary", dangerouslySetInnerHTML: { __html: this.props.movie.summary }}), 
+                    React.createElement("div", {className: "resultSummary", dangerouslySetInnerHTML: { __html: this.props.movie.briefSummary }}), 
                     React.createElement("a", {href: "", className: "pointer", onClick: this.showDetail.bind(this)}, "繼續閱讀...")))));
     };
     ;
