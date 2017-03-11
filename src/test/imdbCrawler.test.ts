@@ -13,13 +13,14 @@ chai.use(chaiAsPromised);
 
 
 describe('imdbCrawler', () => {
-  describe('crawlImdb', () => {
-    before(()=>{return db.openDbConnection()})
-    it('should correctly get new data from imdb', function () {
-      this.timeout(60000);
-      return crawlImdb().should.eventually.fulfilled
-    });
-  });
+  // should remove omdb dependency in unit test
+  // describe('crawlImdb', () => {
+  //   before(()=>{return db.openDbConnection()})
+  //   it('should correctly get new data from imdb', function () {
+  //     this.timeout(60000);
+  //     return crawlImdb().should.eventually.fulfilled
+  //   });
+  // });
 
   describe('filterNeedCrawlMovie', () => {
     it('should return true if movie release in this year and not yet crawl today', function () {
