@@ -40,7 +40,7 @@ class FindResult extends React.Component<MovieDetailProps, {}> {
                     </div>
                     <Ratings className="resultRatings" movie={this.props.movie}></Ratings>
                     <div className="hidden-xs">
-                        <div className="resultSummary" dangerouslySetInnerHTML={{ __html: this.props.movie.summary }}></div>
+                        <div className="resultSummary" dangerouslySetInnerHTML={{ __html: this.props.movie.briefSummary }}></div>
                         <a href="" className="pointer" onClick={this.showDetail.bind(this)}>繼續閱讀...</a>
                     </div>
                 </div>
