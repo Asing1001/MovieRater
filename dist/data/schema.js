@@ -45,6 +45,10 @@ var MovieType = new graphql_1.GraphQLObjectType({
             type: graphql_1.GraphQLString,
             resolve: function (obj) { return obj.summary; },
         },
+        briefSummary: {
+            type: graphql_1.GraphQLString,
+            resolve: function (obj) { return obj.summary.substr(0, 300); },
+        },
         chineseTitle: {
             type: graphql_1.GraphQLString,
             resolve: function (obj) { return obj.chineseTitle; },

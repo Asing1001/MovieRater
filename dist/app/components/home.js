@@ -10,7 +10,8 @@ var movieList_1 = require('./movieList');
 var AutoComplete_1 = require('material-ui/AutoComplete');
 var Paper_1 = require('material-ui/Paper');
 require('isomorphic-fetch');
-var ALLDATA = "{\n            yahooId\n            posterUrl\n            chineseTitle\n            englishTitle\n            releaseDate\n            type\n            runTime\n            director\n            actor\n            launchCompany\n            companyUrl\n            sourceUrl                       \n            yahooRating\n            imdbID\n            imdbRating\n            tomatoURL            \n            tomatoRating\n            relatedArticles{title,push,url,date,author}\n            summary\n          }";
+var ALLDATA = "{\n            yahooId\n            posterUrl\n            chineseTitle\n            englishTitle\n            releaseDate\n            type\n            runTime\n            director\n            actor\n            launchCompany\n            companyUrl\n            yahooRating\n            imdbID\n            imdbRating\n            tomatoURL            \n            tomatoRating\n            relatedArticles{title,push,url,date,author}\n            summary\n          }";
+var BRIEFDATA = "{\n            yahooId\n            posterUrl\n            chineseTitle\n            englishTitle\n            releaseDate\n            type\n            runTime\n            yahooRating\n            imdbID\n            imdbRating\n            tomatoURL            \n            tomatoRating            \n            relatedArticles{title}\n            briefSummary\n          }";
 var Home = (function (_super) {
     __extends(Home, _super);
     function Home(props) {
@@ -27,7 +28,7 @@ var Home = (function (_super) {
             this.search([parseInt(this.props.params.id)]);
         }
         else {
-            this.requestGraphQL("{recentMovies" + ALLDATA + "}").then(function (json) {
+            this.requestGraphQL("{recentMovies" + BRIEFDATA + "}").then(function (json) {
                 _this.setState({ resultMovies: json.data.recentMovies.map(function (movie) { return _this.classifyArticle(movie); }) });
             });
         }
@@ -96,7 +97,7 @@ var Home = (function (_super) {
     };
     Home.prototype.search = function (yahooIds) {
         var _this = this;
-        this.requestGraphQL("\n        {\n          movies(yahooIds:" + JSON.stringify(yahooIds) + ")" + ALLDATA + "\n        }\n    ")
+        this.requestGraphQL("\n        {\n          movies(yahooIds:" + JSON.stringify(yahooIds) + ")" + (yahooIds.length === 1 ? ALLDATA : BRIEFDATA) + "\n        }\n    ")
             .then(function (json) {
             _this.setState({ resultMovies: json.data.movies.map(function (movie) { return _this.classifyArticle(movie); }) });
         });

@@ -43,8 +43,8 @@ function filterNeedCrawlMovie(_a) {
 }
 exports.filterNeedCrawlMovie = filterNeedCrawlMovie;
 function getImdbMovieInfo(_a) {
-    var englishTitle = _a.englishTitle, yahooId = _a.yahooId, releaseDate = _a.releaseDate;
-    return fetch(omdbApiUrl + "?t=" + encodeURIComponent(englishTitle) + "&y=" + releaseDate.substr(0, 4) + "&tomatoes=true&r=json")
+    var englishTitle = _a.englishTitle, yahooId = _a.yahooId;
+    return fetch(omdbApiUrl + "?t=" + encodeURIComponent(englishTitle) + "&tomatoes=true&r=json")
         .then(function (res) { return res.json(); })
         .then(function (json) {
         var defer = Q.defer();
