@@ -36,9 +36,9 @@ export function crawlOmdb() {
 
 export function filterNeedCrawlMovie({englishTitle, imdbRating, releaseDate, imdbLastCrawlTime}: Movie) {
     let now = moment();
-    let isThisYearMovie = now.diff(moment(releaseDate), 'years') === 0;
+    let isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
     let hasCrawlToday = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime), 'days') === 0);
-    let shouldCrawl = !hasCrawlToday && englishTitle && (isThisYearMovie || (!isThisYearMovie && !imdbLastCrawlTime));
+    let shouldCrawl = !hasCrawlToday && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
     return shouldCrawl;
 }
 

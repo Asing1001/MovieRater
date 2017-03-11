@@ -13,12 +13,12 @@ chai.use(chaiAsPromised);
 
 
 describe('imdbCrawler', () => {
-  // should remove omdb dependency in unit test
+  //should remove omdb dependency in unit test
   // describe('crawlImdb', () => {
   //   before(()=>{return db.openDbConnection()})
   //   it('should correctly get new data from imdb', function () {
   //     this.timeout(60000);
-  //     return crawlImdb().should.eventually.fulfilled
+  //     return crawlOmdb().should.eventually.fulfilled
   //   });
   // });
 
