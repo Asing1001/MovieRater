@@ -42,8 +42,8 @@ export function filterNeedCrawlMovie({englishTitle, imdbRating, releaseDate, imd
     return shouldCrawl;
 }
 
-function getImdbMovieInfo({englishTitle, yahooId, releaseDate}: Movie) {
-    return fetch(`${omdbApiUrl}?t=${encodeURIComponent(englishTitle)}&y=${releaseDate.substr(0, 4)}&tomatoes=true&r=json`)
+function getImdbMovieInfo({englishTitle, yahooId}: Movie) {
+    return fetch(`${omdbApiUrl}?t=${encodeURIComponent(englishTitle)}&tomatoes=true&r=json`)
         .then(res => { return res.json() })
         .then(json => {
             var defer = Q.defer();

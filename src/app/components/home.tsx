@@ -18,7 +18,6 @@ const ALLDATA = `{
             actor
             launchCompany
             companyUrl
-            sourceUrl                       
             yahooRating
             imdbID
             imdbRating
@@ -26,7 +25,25 @@ const ALLDATA = `{
             tomatoRating
             relatedArticles{title,push,url,date,author}
             summary
-          }`
+          }`;
+
+const BRIEFDATA = `{
+            yahooId
+            posterUrl
+            chineseTitle
+            englishTitle
+            releaseDate
+            type
+            runTime
+            yahooRating
+            imdbID
+            imdbRating
+            tomatoURL            
+            tomatoRating            
+            relatedArticles{title}
+            briefSummary
+          }`;
+
 class Home extends React.Component<any, any> {
   constructor(props) {
     super(props)
@@ -41,7 +58,7 @@ class Home extends React.Component<any, any> {
     if (this.props.params.id) {
       this.search([parseInt(this.props.params.id)]);
     } else {
-      this.requestGraphQL(`{recentMovies${ALLDATA}}`).then(json => {
+      this.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then(json => {
         this.setState({ resultMovies: json.data.recentMovies.map(movie => this.classifyArticle(movie)) });
       });
     }
@@ -104,10 +121,10 @@ class Home extends React.Component<any, any> {
     }).then(res => res.json())
   }
 
-  private search(yahooIds) {
+  private search(yahooIds:Number[]) {
     this.requestGraphQL(`
         {
-          movies(yahooIds:${JSON.stringify(yahooIds)})${ALLDATA}
+          movies(yahooIds:${JSON.stringify(yahooIds)})${yahooIds.length===1?ALLDATA:BRIEFDATA}
         }
     `)
       .then(json => {
