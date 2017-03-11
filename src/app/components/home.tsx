@@ -137,8 +137,9 @@ class Home extends React.Component<any, any> {
     return movie;
   }
 
-  private showDetail(movie) {
-    this.setState({ resultMovies: [movie] });
+  private showDetail(movie:Movie) {
+    location.href = `/movie/${movie.yahooId}`;
+    //this.setState({ resultMovies: [movie] });
   }
 
 
