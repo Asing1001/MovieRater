@@ -2,8 +2,6 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {crawlPtt, crawlPttPage} from '../crawler/pttCrawler';
 import {db} from "../data/db";
-import {systemSetting} from '../configs/systemSetting';
-
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -14,7 +12,7 @@ chai.use(chaiAsPromised);
 
 describe('pttCrawler', () => {
     describe('crawlPtt', () => {
-        before(() => { return db.openDbConnection(systemSetting.dbUrl) })
+        before(() => { return db.openDbConnection() })
         it('should correctly get new data from Ptt', function () {
             this.timeout(30000);
             return crawlPtt().should.eventually.fulfilled//have.articles.length.above(0)

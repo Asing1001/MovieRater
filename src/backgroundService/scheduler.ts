@@ -1,5 +1,5 @@
 import { crawlYahoo } from '../crawler/yahooCrawler';
-import { crawlImdb } from '../crawler/imdbCrawler';
+import { crawlOmdb } from '../crawler/omdbCrawler';
 import { crawlPtt } from '../crawler/pttCrawler';
 import { mergeData } from '../crawler/mergeData';
 import { systemSetting } from '../configs/systemSetting';
@@ -10,23 +10,20 @@ import cacheManager from '../data/cacheManager';
 import Movie from "../models/movie";
 
 export function initScheduler() {
-
     console.log("[initScheduler] Create Schedule for keep website alive.");
     setInterval(function () {
-        systemSetting.websiteUrls.forEach(websiteUrl => {
-            fetch(websiteUrl).then(res =>
-                console.log(`[Scheduler] Access to website:${websiteUrl}, status:${res.status}`));
-        })
-    }, 900000, null);
+        fetch(systemSetting.websiteUrl).then(res =>
+            console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
+    }, 600000, null);
 
-    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlImdb.");
+    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlOmdb.");
     setInterval(function () {
         console.time('[Scheduler] crawlYahoo');
         crawlYahoo().then(() => {
             console.timeEnd('[Scheduler] crawlYahoo');
-            console.time('[Scheduler] crawlImdb');
-            crawlImdb().then(() => {
-                console.timeEnd('[Scheduler] crawlImdb');
+            console.time('[Scheduler] crawlOmdb');
+            crawlOmdb().then(() => {
+                console.timeEnd('[Scheduler] crawlOmdb');
             });
         });
     }, 900000, null);

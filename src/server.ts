@@ -3,13 +3,9 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as path from 'path';
 import * as graphqlHTTP from 'express-graphql';
-import { crawlYahooRange } from './crawler/yahooCrawler';
-import { crawlImdb } from './crawler/imdbCrawler';
-import { crawlPtt } from './crawler/pttCrawler';
 import { db } from './data/db';
 import { initScheduler } from './backgroundService/scheduler';
 import schema from './data/schema';
-import { systemSetting } from './configs/systemSetting';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server'
 import * as Router from 'react-router';
@@ -37,7 +33,7 @@ app.get('/api/pttPages', (req, res) => {
   });
 });
 
-db.openDbConnection(systemSetting.dbUrl)
+db.openDbConnection()
   .then(() => {
     cacheManager.init()
     initScheduler();
