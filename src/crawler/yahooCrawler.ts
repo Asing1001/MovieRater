@@ -71,7 +71,7 @@ function crawlYahooPage(id: number) {
             return defer.reject(reason);
         }
 
-        const $ = cheerio.load(body);
+        const $ = cheerio.load(body, { decodeEntities: false });
         const $movieInfoDiv = $('.text.bulletin');
         const $movieInfoValues = $movieInfoDiv.find('p .dta');
         const movieInfo: YahooMovie = {
