@@ -127,7 +127,8 @@ var Home = (function (_super) {
         return movie;
     };
     Home.prototype.showDetail = function (movie) {
-        this.setState({ resultMovies: [movie] });
+        location.href = "/movie/" + movie.yahooId;
+        //this.setState({ resultMovies: [movie] });
     };
     Home.prototype.render = function () {
         return (React.createElement("div", {className: "container"}, 

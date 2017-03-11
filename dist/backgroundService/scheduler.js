@@ -1,6 +1,6 @@
 "use strict";
 var yahooCrawler_1 = require('../crawler/yahooCrawler');
-var imdbCrawler_1 = require('../crawler/imdbCrawler');
+var omdbCrawler_1 = require('../crawler/omdbCrawler');
 var pttCrawler_1 = require('../crawler/pttCrawler');
 var systemSetting_1 = require('../configs/systemSetting');
 var fetch = require("isomorphic-fetch");
@@ -12,14 +12,14 @@ function initScheduler() {
             return console.log("[Scheduler] Access to website:" + systemSetting_1.systemSetting.websiteUrl + ", status:" + res.status);
         });
     }, 600000, null);
-    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlImdb.");
+    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlOmdb.");
     setInterval(function () {
         console.time('[Scheduler] crawlYahoo');
         yahooCrawler_1.crawlYahoo().then(function () {
             console.timeEnd('[Scheduler] crawlYahoo');
-            console.time('[Scheduler] crawlImdb');
-            imdbCrawler_1.crawlImdb().then(function () {
-                console.timeEnd('[Scheduler] crawlImdb');
+            console.time('[Scheduler] crawlOmdb');
+            omdbCrawler_1.crawlOmdb().then(function () {
+                console.timeEnd('[Scheduler] crawlOmdb');
             });
         });
     }, 900000, null);
