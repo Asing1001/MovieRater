@@ -68,7 +68,7 @@ function crawlYahooPage(id) {
             var reason = yahooMovieUrl + " 404 not found";
             return defer.reject(reason);
         }
-        var $ = cheerio.load(body);
+        var $ = cheerio.load(body, { decodeEntities: false });
         var $movieInfoDiv = $('.text.bulletin');
         var $movieInfoValues = $movieInfoDiv.find('p .dta');
         var movieInfo = {

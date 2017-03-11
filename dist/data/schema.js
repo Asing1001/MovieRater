@@ -47,7 +47,7 @@ var MovieType = new graphql_1.GraphQLObjectType({
         },
         briefSummary: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.summary.substr(0, 300); },
+            resolve: function (obj) { return obj.summary && obj.summary.length > 300 ? obj.summary.substr(0, 300) + '...' : obj.summary; },
         },
         chineseTitle: {
             type: graphql_1.GraphQLString,
