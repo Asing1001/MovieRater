@@ -1,7 +1,6 @@
 import { crawlYahoo } from '../crawler/yahooCrawler';
 import { crawlOmdb } from '../crawler/omdbCrawler';
 import { crawlPtt } from '../crawler/pttCrawler';
-import { mergeData } from '../crawler/mergeData';
 import { systemSetting } from '../configs/systemSetting';
 import * as fetch from "isomorphic-fetch";
 import { db } from "../data/db";
@@ -28,7 +27,7 @@ export function initScheduler() {
         });
     }, 900000, null);
 
-    console.log("[initScheduler] Create Schedule for pttCrawler and mergeData.");
+    console.log("[initScheduler] Create Schedule for pttCrawler.");
     setInterval(function () {
         console.time('[Scheduler] crawlPtt');
         crawlPtt().then((pttPages) => {

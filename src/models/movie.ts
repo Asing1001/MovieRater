@@ -12,4 +12,5 @@ export default class Movie extends YahooMovie {
     imdbLastCrawlTime ?: string
     tomatoRating?: string
     tomatoURL?: string
+    briefSummary?: string
 }

@@ -18,7 +18,6 @@ const ALLDATA = `{
             actor
             launchCompany
             companyUrl
-            sourceUrl                       
             yahooRating
             imdbID
             imdbRating
@@ -26,7 +25,25 @@ const ALLDATA = `{
             tomatoRating
             relatedArticles{title,push,url,date,author}
             summary
-          }`
+          }`;
+
+const BRIEFDATA = `{
+            yahooId
+            posterUrl
+            chineseTitle
+            englishTitle
+            releaseDate
+            type
+            runTime
+            yahooRating
+            imdbID
+            imdbRating
+            tomatoURL            
+            tomatoRating            
+            relatedArticles{title}
+            briefSummary
+          }`;
+
 class Home extends React.Component<any, any> {
   constructor(props) {
     super(props)
@@ -41,7 +58,7 @@ class Home extends React.Component<any, any> {
     if (this.props.params.id) {
       this.search([parseInt(this.props.params.id)]);
     } else {
-      this.requestGraphQL(`{recentMovies${ALLDATA}}`).then(json => {
+      this.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then(json => {
         this.setState({ resultMovies: json.data.recentMovies.map(movie => this.classifyArticle(movie)) });
       });
     }
@@ -104,10 +121,10 @@ class Home extends React.Component<any, any> {
     }).then(res => res.json())
   }
 
-  private search(yahooIds) {
+  private search(yahooIds:Number[]) {
     this.requestGraphQL(`
         {
-          movies(yahooIds:${JSON.stringify(yahooIds)})${ALLDATA}
+          movies(yahooIds:${JSON.stringify(yahooIds)})${yahooIds.length===1?ALLDATA:BRIEFDATA}
         }
     `)
       .then(json => {
@@ -137,12 +154,6 @@ class Home extends React.Component<any, any> {
     return movie;
   }
 
-  private showDetail(movie:Movie) {
-    location.href = `/movie/${movie.yahooId}`;
-    //this.setState({ resultMovies: [movie] });
-  }
-
-
   render() {
     return (
       <div className="container">
@@ -165,7 +176,7 @@ class Home extends React.Component<any, any> {
             <Paper zDepth={2}>
               <MovieDetailTabs movie={this.state.resultMovies[0]}></MovieDetailTabs>
             </Paper> :
-            <MovieList movies={this.state.resultMovies} showDetail={this.showDetail.bind(this)}></MovieList>
+            <MovieList movies={this.state.resultMovies}></MovieList>
         }
       </div>
     );

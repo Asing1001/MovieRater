@@ -13,8 +13,11 @@ import * as swig from 'swig';
 import routes from './app/routes';
 import cacheManager from './data/cacheManager';
 import * as favicon from 'serve-favicon';
+import * as compression from 'compression';
+import { systemSetting } from './configs/systemSetting';
 
 const app = express();
+app.use(compression());
 
 app.get('/api/test', (req, res) => {
   res.send('test!');
@@ -45,7 +48,7 @@ app.use(bodyParser.json());
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot));
 app.use(favicon(path.join(__dirname, 'public', 'image', 'favicon.ico')));
-app.use('/graphql', graphqlHTTP({ schema: schema, pretty: true, graphiql: true }))
+app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql,  }))
 
 app.use(function (req, res) {
   Router.match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {

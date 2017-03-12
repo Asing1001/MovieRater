@@ -71,7 +71,7 @@ function crawlYahooPage(id: number) {
             return defer.reject(reason);
         }
 
-        const $ = cheerio.load(body);
+        const $ = cheerio.load(body, { decodeEntities: false });
         const $movieInfoDiv = $('.text.bulletin');
         const $movieInfoValues = $movieInfoDiv.find('p .dta');
         const movieInfo: YahooMovie = {
@@ -88,7 +88,7 @@ function crawlYahooPage(id: number) {
             companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
             sourceUrl: yahooMovieUrl,
             yahooRating: $('#ymvis em').text(),
-            summary: $('.text.full>p').html()
+            summary: $('.text.full>p').html() || $('.text.show>p').html()
         };
 
         if (!movieInfo.chineseTitle) {

@@ -56,6 +56,10 @@ const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.summary,
         },
+        briefSummary: {
+            type: GraphQLString,
+            resolve: obj => obj.summary && obj.summary.length > 300 ? obj.summary.substr(0, 300) + '...' : obj.summary,
+        },
         chineseTitle: {
             type: GraphQLString,
             resolve: obj => obj.chineseTitle,
