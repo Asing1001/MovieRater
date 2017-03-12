@@ -154,12 +154,6 @@ class Home extends React.Component<any, any> {
     return movie;
   }
 
-  private showDetail(movie:Movie) {
-    location.href = `/movie/${movie.yahooId}`;
-    //this.setState({ resultMovies: [movie] });
-  }
-
-
   render() {
     return (
       <div className="container">
@@ -182,7 +176,7 @@ class Home extends React.Component<any, any> {
             <Paper zDepth={2}>
               <MovieDetailTabs movie={this.state.resultMovies[0]}></MovieDetailTabs>
             </Paper> :
-            <MovieList movies={this.state.resultMovies} showDetail={this.showDetail.bind(this)}></MovieList>
+            <MovieList movies={this.state.resultMovies}></MovieList>
         }
       </div>
     );

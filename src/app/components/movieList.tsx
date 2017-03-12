@@ -90,7 +90,7 @@ class MovieList extends React.Component<any, any> {
         </Paper>
         {
           this.props.movies.sort(this.state.sortFunction).map((movie: Movie) => (
-            <FindResult key={movie.yahooId} movie={movie} showDetail={this.props.showDetail.bind(this)}></FindResult>
+            <FindResult key={movie.yahooId} movie={movie}></FindResult>
           ))
         }
       </div>
