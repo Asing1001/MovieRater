@@ -127,10 +127,6 @@ var Home = (function (_super) {
         movie.otherArticles = otherArticles;
         return movie;
     };
-    Home.prototype.showDetail = function (movie) {
-        location.href = "/movie/" + movie.yahooId;
-        //this.setState({ resultMovies: [movie] });
-    };
     Home.prototype.render = function () {
         return (React.createElement("div", {className: "container"}, 
             React.createElement("div", {className: "autoCompleteWrapper"}, 
@@ -140,7 +136,7 @@ var Home = (function (_super) {
                 React.createElement(Paper_1.default, {zDepth: 2}, 
                     React.createElement(movieDetailTabs_1.default, {movie: this.state.resultMovies[0]})
                 ) :
-                React.createElement(movieList_1.default, {movies: this.state.resultMovies, showDetail: this.showDetail.bind(this)})));
+                React.createElement(movieList_1.default, {movies: this.state.resultMovies})));
     };
     return Home;
 }(React.Component));

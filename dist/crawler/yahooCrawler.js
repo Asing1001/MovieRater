@@ -85,7 +85,7 @@ function crawlYahooPage(id) {
             companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
             sourceUrl: yahooMovieUrl,
             yahooRating: $('#ymvis em').text(),
-            summary: $('.text.full>p').html()
+            summary: $('.text.full>p').html() || $('.text.show>p').html()
         };
         if (!movieInfo.chineseTitle) {
             var reason = yahooMovieUrl + " can not find chineseTitle, data might got problem.";
