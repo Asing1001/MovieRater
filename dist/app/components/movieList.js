@@ -71,7 +71,7 @@ var MovieList = (function (_super) {
                     React.createElement(BottomNavigation_1.BottomNavigationItem, {label: "TOMATO", icon: nearbyIcon, onTouchTap: function () { return _this.select(SortType.tomato); }}), 
                     React.createElement(BottomNavigation_1.BottomNavigationItem, {label: "PTT", icon: nearbyIcon, onTouchTap: function () { return _this.select(SortType.ptt); }}))
             ), 
-            this.props.movies.sort(this.state.sortFunction).map(function (movie) { return (React.createElement(findResult_1.default, {key: movie.yahooId, movie: movie, showDetail: _this.props.showDetail.bind(_this)})); })));
+            this.props.movies.sort(this.state.sortFunction).map(function (movie) { return (React.createElement(findResult_1.default, {key: movie.yahooId, movie: movie})); })));
     };
     return MovieList;
 }(React.Component));

@@ -23,7 +23,7 @@ function initScheduler() {
             });
         });
     }, 900000, null);
-    console.log("[initScheduler] Create Schedule for pttCrawler and mergeData.");
+    console.log("[initScheduler] Create Schedule for pttCrawler.");
     setInterval(function () {
         console.time('[Scheduler] crawlPtt');
         pttCrawler_1.crawlPtt().then(function (pttPages) {

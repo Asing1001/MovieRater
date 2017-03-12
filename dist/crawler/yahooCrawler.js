@@ -68,7 +68,7 @@ function crawlYahooPage(id) {
             var reason = yahooMovieUrl + " 404 not found";
             return defer.reject(reason);
         }
-        var $ = cheerio.load(body);
+        var $ = cheerio.load(body, { decodeEntities: false });
         var $movieInfoDiv = $('.text.bulletin');
         var $movieInfoValues = $movieInfoDiv.find('p .dta');
         var movieInfo = {
@@ -85,7 +85,7 @@ function crawlYahooPage(id) {
             companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
             sourceUrl: yahooMovieUrl,
             yahooRating: $('#ymvis em').text(),
-            summary: $('.text.full>p').html()
+            summary: $('.text.full>p').html() || $('.text.show>p').html()
         };
         if (!movieInfo.chineseTitle) {
             var reason = yahooMovieUrl + " can not find chineseTitle, data might got problem.";

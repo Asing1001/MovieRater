@@ -18,7 +18,6 @@ function mergeData(yahooMovies, pttPages) {
             var title = _a.title, date = _a.date;
             var isChinesetitleMatch = title.indexOf(chineseTitle) !== -1;
             if (isChinesetitleMatch) {
-                //let articleYear = //todo: wait to cralwer provide.                
                 var articleFullDate = moment(date, 'YYYY/MM/DD');
                 var isInNearMonth = articleFullDate.isBetween(rangeStart, rangeEnd);
                 return isInNearMonth;

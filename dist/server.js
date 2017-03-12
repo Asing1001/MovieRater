@@ -13,7 +13,10 @@ var swig = require('swig');
 var routes_1 = require('./app/routes');
 var cacheManager_1 = require('./data/cacheManager');
 var favicon = require('serve-favicon');
+var compression = require('compression');
+var systemSetting_1 = require('./configs/systemSetting');
 var app = express();
+app.use(compression());
 app.get('/api/test', function (req, res) {
     res.send('test!');
 });
@@ -40,7 +43,7 @@ app.use(bodyParser.json());
 var staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot));
 app.use(favicon(path.join(__dirname, 'public', 'image', 'favicon.ico')));
-app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: true, graphiql: true }));
+app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
 app.use(function (req, res) {
     Router.match({ routes: routes_1.default, location: req.url }, function (err, redirectLocation, renderProps) {
         if (err) {
