@@ -77,4 +77,8 @@ export default class cacheManager {
         let data = memoryCache.get(key);
         return data;
     }
+
+    static set(key, value) {
+        memoryCache.put(key, value);
+    }
 }

@@ -4,6 +4,11 @@ import { db } from "../data/db";
 import * as Q from "q";
 import { pttCrawlerSetting } from '../configs/systemSetting';
 import * as moment from 'moment';
+import Article from '../models/article';
+import cacheManager from '../data/cacheManager';
+import YahooMovie from '../models/yahooMovie';
+
+
 
 const pttBaseUrl = 'https://www.ptt.cc';
 const crawlerStatusFilter = { name: "crawlerStatus" };
@@ -69,8 +74,10 @@ export function crawlPttPage(index) {
             let articleUrl = $articleInfoDiv.find('.title>a').attr('href');
             let articleHasDeleted = !articleUrl;
             let date = articleHasDeleted ? moment().format('YYYY/MM/DD') : moment(parseInt(articleUrl.split('.')[1]) * 1000).format('YYYY/MM/DD');
-            const articleInfo = {
-                title: $articleInfoDiv.find('.title>a').text(),
+            let articleTitle = $articleInfoDiv.find('.title>a').text();
+            const articleInfo: Article = {
+                yahooId: getMatchedYahooId(articleTitle, date),
+                title: articleTitle,
                 push: $articleInfoDiv.find('.nrec>.hl').text(),
                 url: articleUrl,
                 date: date,
@@ -87,4 +94,17 @@ export function crawlPttPage(index) {
         defer.resolve(pageInfo);
     })
     return defer.promise;
+}
+
+export function getMatchedYahooId(articleTitle, date) {
+    return cacheManager.get(cacheManager.All_MOVIES).find((yahooMovie: YahooMovie) => {
+        let releaseDate = moment(yahooMovie.releaseDate);
+        let releaseYear = releaseDate.year();
+        let rangeStart = releaseDate.clone().subtract(3, 'months');
+        let rangeEnd = releaseDate.clone().add(6, 'months');
+        let articleFullDate = moment(date, 'YYYY/MM/DD');
+        let isInNearMonth = articleFullDate.isBetween(rangeStart, rangeEnd);
+        let isChinesetitleMatch = articleTitle.indexOf(yahooMovie.chineseTitle) !== -1;
+        return isChinesetitleMatch && isInNearMonth;
+    });
 }
