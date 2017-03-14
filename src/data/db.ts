@@ -25,6 +25,7 @@ export class db {
             }
         } catch (error) {
             console.error(error);
+            deferred.reject(error);
         }
         return deferred.promise;
     }
@@ -108,11 +109,11 @@ export class db {
         return deferred.promise;
     }
 
-    public static getCollection(collectionName: string, sort?: Object, limit?:number): any {
+    public static getCollection(collectionName: string, sort?: Object): any {
         var deferred = Q.defer();
         try {
             log.debug(arguments);
-            this.dbConnection.collection(collectionName).find({}).sort(sort).limit(limit).toArray((err, items) => {
+            this.dbConnection.collection(collectionName).find({}).sort(sort).toArray((err, items) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);

@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import { crawlPtt, crawlPttPage } from '../crawler/pttCrawler';
+import { getMatchedYahooId, crawlPttPage } from '../crawler/pttCrawler';
 import { db } from "../data/db";
 import cacheManager from '../data/cacheManager';
 
@@ -10,15 +10,26 @@ const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
 
+const testMoviesData = [{
+    "yahooId": 6571,
+    "chineseTitle": "羅根",
+    "englishTitle": "Logan",
+    "releaseDate": "2017-02-28",
+},{
+    "yahooId": 999999,
+    "chineseTitle": "chineseTitle",
+    "englishTitle": "englishTitle",
+    "releaseDate": "2013-02-28",
+}]
 
 describe('pttCrawler', () => {
-    describe('crawlPtt', () => {
+    describe('getMatchedYahooId', () => {
         before(() => {
             cacheManager.set(cacheManager.All_MOVIES, testMoviesData)
             return;
         })
         it('should find match yahooId 6571', function () {
-            return crawlPtt().should.eventually.fulfilled
+            return getMatchedYahooId("[普雷] 羅根 (原來還蠻血腥的)", "2017/03/14").should.have.property("yahooId",6571);
         });
     });
 
@@ -39,14 +50,3 @@ describe('pttCrawler', () => {
     });
 });
 
-const testMoviesData = [{
-    "yahooId": 6571,
-    "chineseTitle": "羅根",
-    "englishTitle": "Logan",
-    "releaseDate": "2017-02-28",
-},{
-    "yahooId": 999999,
-    "chineseTitle": "chineseTitle",
-    "englishTitle": "englishTitle",
-    "releaseDate": "2013-02-28",
-}]

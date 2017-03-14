@@ -14,14 +14,14 @@ chai.use(chaiAsPromised);
 
 describe('imdbCrawler', () => {
   describe('crawlImdb', () => {
-    it('should correctly get new data from imdb', function () {
+    it('crawlImdb("tt4972582").should.eventually.fulfilled', function () {
       this.timeout(60000);
       return crawlImdb("tt4972582").should.eventually.fulfilled
     });
 
-    it('should correctly get new data from imdb', function () {
+    it('crawlImdb("").should.eventually.equal("")', function () {
       this.timeout(60000);
-      return crawlImdb("").should.eventually.fulfilled
+      return crawlImdb("").should.eventually.equal("")
     });
   });
 });

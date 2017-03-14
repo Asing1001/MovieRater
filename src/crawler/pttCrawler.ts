@@ -97,7 +97,7 @@ export function crawlPttPage(index) {
 }
 
 export function getMatchedYahooId(articleTitle, date) {
-    return cacheManager.get(cacheManager.All_MOVIES).find((yahooMovie: YahooMovie) => {
+    let matchedYahooMovie: YahooMovie = cacheManager.get(cacheManager.All_MOVIES).find((yahooMovie: YahooMovie) => {
         let releaseDate = moment(yahooMovie.releaseDate);
         let releaseYear = releaseDate.year();
         let rangeStart = releaseDate.clone().subtract(3, 'months');
@@ -107,4 +107,5 @@ export function getMatchedYahooId(articleTitle, date) {
         let isChinesetitleMatch = articleTitle.indexOf(yahooMovie.chineseTitle) !== -1;
         return isChinesetitleMatch && isInNearMonth;
     });
+    return matchedYahooMovie ? matchedYahooMovie.yahooId : null;
 }

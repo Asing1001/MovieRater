@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 
 describe('db', () => {
   describe('connection', () => {
-    it('should not null when connection string is correct', function () {
+    it('db.openDbConnection().should.eventually.be.fulfilled', function () {
       this.timeout(5000);
       return db.openDbConnection().should.eventually.be.fulfilled
     });
@@ -24,19 +24,30 @@ describe('db', () => {
   });
 
   describe('getDocument', () => {
-    it('get Document should success', function () {
+    it('should.eventually.be.fulfilled', function () {
       this.timeout(10000);
       return db.getDocument({},"test").should.eventually.be.fulfilled
     });
   });
 
   describe('insertCollection', () => {
-    it('should resolve when give empty array', () => db.insertCollection([], 'test').should.eventually.be.fulfilled);
+    it('should fulfilled when give empty array', () => db.insertCollection([], 'test').should.eventually.be.fulfilled);
   });
 
   describe('updateDocument', () => {
-    it('should resolve when update object not exist', () => {
+    it('should insert when target object not exist', () => {
       return db.updateDocument({ name: 'unitTest' }, { unitTest: 'test' }, 'test').should.eventually.be.fulfilled
+    })
+
+    it('update with only property "unitTest2" should not override property "unitTest"', () => {
+       return db.updateDocument({ name: 'unitTest' }, { unitTest2: 'test' }, 'test')
+       .then(()=>db.getDocument({ name: 'unitTest' },'test')).should.eventually.have.property('unitTest');;
+    })
+
+    it('should updateDocument successfully', () => {
+       return db.updateDocument({ name: 'unitTest' }, { page: 'test', article:[{id:123}] }, 'test')
+       //.then(()=>db.updateDocument({ name: 'unitTest' }, { page: 'test', article:[{prop:'foo'}] }, 'test'))
+       .then(()=>db.getDocument({ name: 'unitTest' },'test')).should.eventually.have.deep.property('article[0].id');
     })
   });
 });
