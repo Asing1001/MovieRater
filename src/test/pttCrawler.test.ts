@@ -29,7 +29,7 @@ describe('pttCrawler', () => {
             return;
         })
         it('should find match yahooId 6571', function () {
-            return getMatchedYahooId("[普雷] 羅根 (原來還蠻血腥的)", "2017/03/14").should.have.property("yahooId",6571);
+            return getMatchedYahooId("[普雷] 羅根 (原來還蠻血腥的)", "2017/03/14").should.equal(6571);
         });
     });
 
