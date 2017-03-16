@@ -7,16 +7,9 @@ export const systemSetting = {
     enableGraphiql: process.env.ENABLE_GRAPHIQL
 }
 
-export const pttCrawlerSetting = {
-    enable: false,
-    startPttIndex: 4000,
-    howManyPagePerTime: 30
-}
-
-export const yahooCrawlerSetting = {
-    enable: false,
-    startYahooId: 6100,
-    howManyPagePerTime: 30,
+export const schedulerSetting = {
+    pttPagePerTime: 50,
+    yahooPagePerTime: 50
 }
 
 console.log("systemSetting", JSON.stringify(systemSetting));

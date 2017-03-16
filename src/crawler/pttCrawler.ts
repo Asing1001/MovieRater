@@ -2,37 +2,39 @@ import * as request from "request";
 import * as cheerio from "cheerio";
 import { db } from "../data/db";
 import * as Q from "q";
-import { pttCrawlerSetting } from '../configs/systemSetting';
 import * as moment from 'moment';
 import Article from '../models/article';
+import PttPage from '../models/pttPage';
 import cacheManager from '../data/cacheManager';
 import YahooMovie from '../models/yahooMovie';
 
-
-
 const pttBaseUrl = 'https://www.ptt.cc';
 const crawlerStatusFilter = { name: "crawlerStatus" };
-export function crawlPtt() {
-    let howManyPagePerTime = 50;
-    let startPttIndex = 1;
+let startPttIndex = 1;
+
+export function crawlPtt(howManyPagePerTime) {
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
         if (crawlerStatus && crawlerStatus.maxPttIndex) {
             startPttIndex = crawlerStatus.maxPttIndex + 1;
         }
 
-        if (pttCrawlerSetting.enable) {
-            startPttIndex = pttCrawlerSetting.startPttIndex;
-            howManyPagePerTime = pttCrawlerSetting.howManyPagePerTime;
-        }
+        return crawlPttRange(startPttIndex, startPttIndex + howManyPagePerTime)
+    }).then((pttPages: PttPage[]) => {
+        updatePttMaxIndex(pttPages);
+        let allArticles: Article[] = [].concat(...pttPages.map(({articles}) => articles));
+        let promises = allArticles.map(article => db.updateDocument({ url: article.url }, article, "pttArticles"));
+        return Q.all(promises).then(() => pttPages);
+    })
+}
 
-        const promises = [];
-        for (let i = startPttIndex; i <= startPttIndex + howManyPagePerTime; i++) {
-            const promise = crawlPttPage(i);
-            promises.push(promise);
-        }
+export function crawlPttRange(startId, endId) {
+    const promises = [];
+    for (let i = startId; i <= endId; i++) {
+        const promise = crawlPttPage(i);
+        promises.push(promise);
+    }
 
-        return Q.allSettled(promises);
-    }).then((results) => {
+    return Q.allSettled(promises).then(results => {
         let pttPages = [];
         results.forEach((result) => {
             if (result.state === "fulfilled") {
@@ -43,17 +45,19 @@ export function crawlPtt() {
                 console.error(reason);
             }
         });
-        let pttIndexs = pttPages.map(({pageIndex}) => pageIndex);
-        let newMaxPttIndex = Math.max(...pttIndexs, startPttIndex);
-        let alreadyCrawlTheNewest = newMaxPttIndex === startPttIndex;
-        if (alreadyCrawlTheNewest) {
-            newMaxPttIndex = newMaxPttIndex - 100 > 0 ? newMaxPttIndex - 100 : 1;
-        }
-        db.updateDocument(crawlerStatusFilter, { maxPttIndex: newMaxPttIndex }, 'configs');
-        console.log(`new pttPages count:${pttPages.length}, newMaxPttIndex:${newMaxPttIndex}`);
-        let promises = pttPages.map(pttPage => db.updateDocument({ pageIndex: pttPage.pageIndex }, pttPage, "pttPages"))
-        return Q.all(promises).then(() => pttPages);
-    })
+        return pttPages;
+    });
+}
+
+function updatePttMaxIndex(pttPages) {
+    let pttIndexs = pttPages.map(({pageIndex}) => pageIndex);
+    let newMaxPttIndex = Math.max(...pttIndexs, startPttIndex);
+    let alreadyCrawlTheNewest = newMaxPttIndex === startPttIndex;
+    if (alreadyCrawlTheNewest) {
+        newMaxPttIndex = newMaxPttIndex - 100 > 0 ? newMaxPttIndex - 100 : 1;
+    }
+    db.updateDocument(crawlerStatusFilter, { maxPttIndex: newMaxPttIndex }, 'configs');
+    console.log(`new pttPages count:${pttPages.length}, newMaxPttIndex:${newMaxPttIndex}`);
 }
 
 export function crawlPttPage(index) {

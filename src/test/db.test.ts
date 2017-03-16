@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { db } from "../data/db";
+import * as Q from 'Q';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -26,7 +27,7 @@ describe('db', () => {
   describe('getDocument', () => {
     it('should.eventually.be.fulfilled', function () {
       this.timeout(10000);
-      return db.getDocument({},"test").should.eventually.be.fulfilled
+      return db.getDocument({}, "test").should.eventually.be.fulfilled
     });
   });
 
@@ -40,14 +41,22 @@ describe('db', () => {
     })
 
     it('update with only property "unitTest2" should not override property "unitTest"', () => {
-       return db.updateDocument({ name: 'unitTest' }, { unitTest2: 'test' }, 'test')
-       .then(()=>db.getDocument({ name: 'unitTest' },'test')).should.eventually.have.property('unitTest');;
+      return db.updateDocument({ name: 'unitTest' }, { unitTest2: 'test' }, 'test')
+        .then(() => db.getDocument({ name: 'unitTest' }, 'test')).should.eventually.have.property('unitTest');;
     })
 
     it('should updateDocument successfully', () => {
-       return db.updateDocument({ name: 'unitTest' }, { page: 'test', article:[{id:123}] }, 'test')
-       //.then(()=>db.updateDocument({ name: 'unitTest' }, { page: 'test', article:[{prop:'foo'}] }, 'test'))
-       .then(()=>db.getDocument({ name: 'unitTest' },'test')).should.eventually.have.deep.property('article[0].id');
+      return db.updateDocument({ name: 'unitTest' }, { page: 'test', article: [{ id: 123 }] }, 'test')
+        .then(() => db.getDocument({ name: 'unitTest' }, 'test')).should.eventually.have.deep.property('article[0].id');
     })
+
+    // it('This is db script', function() {
+    //   this.timeout(10000000);
+    //   return db.getCollection('pttPages').then(pttPages => {
+    //     let allArticles = [].concat(...pttPages.map(({articles}) => articles));
+    //     let promises = db.insertCollection( allArticles, "pttArticles");
+    //     return Q.all(promises).then(() => pttPages);
+    //   })
+    // })
   });
 });

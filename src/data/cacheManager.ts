@@ -14,13 +14,13 @@ export default class cacheManager {
     static RECENT_MOVIES = 'recentMovies';
     static MOVIES_SCHEDULES = 'MoviesSchedules';
     static init() {
-        console.time('get yahooMovies and pttPages');
+        console.time('get yahooMovies and pttArticles');
         return Q.spread([db.getCollection("yahooMovies", { yahooId: -1 }),
-        db.getCollection("pttPages", { pageIndex: -1 })],
-            function (yahooMovies, pttPages) {
-                console.timeEnd('get yahooMovies and pttPages');
+        db.getCollection("pttArticles")],
+            function (yahooMovies, pttArticles) {
+                console.timeEnd('get yahooMovies and pttArticles');
                 cacheManager.setAllMoviesNamesCache(yahooMovies);
-                cacheManager.setAllMoviesCache(yahooMovies, pttPages);
+                cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
                 cacheManager.setRecentMoviesCache();
                 return;
             });
@@ -42,9 +42,9 @@ export default class cacheManager {
         console.timeEnd('setAllMoviesNamesCache');
     }
 
-    private static setAllMoviesCache(yahooMovies, pttPages) {
+    private static setAllMoviesCache(yahooMovies, pttArticles) {
         console.time('mergeData');
-        let mergedDatas = mergeData(yahooMovies, pttPages);
+        let mergedDatas = mergeData(yahooMovies, pttArticles);
         console.timeEnd('mergeData');
         memoryCache.put(cacheManager.All_MOVIES, mergedDatas);
     }

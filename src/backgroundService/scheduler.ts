@@ -1,7 +1,7 @@
 import { crawlYahoo } from '../crawler/yahooCrawler';
 import { crawlOmdb } from '../crawler/omdbCrawler';
 import { crawlPtt } from '../crawler/pttCrawler';
-import { systemSetting } from '../configs/systemSetting';
+import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import * as fetch from "isomorphic-fetch";
 import { db } from "../data/db";
 import * as Q from 'q';
@@ -18,7 +18,7 @@ export function initScheduler() {
     console.log("[initScheduler] Create Schedule for yahooCrawler and crawlOmdb.");
     setInterval(function () {
         console.time('[Scheduler] crawlYahoo');
-        crawlYahoo().then(() => {
+        crawlYahoo(schedulerSetting.yahooPagePerTime).then(() => {
             console.timeEnd('[Scheduler] crawlYahoo');
             console.time('[Scheduler] crawlOmdb');
             crawlOmdb().then(() => {
@@ -30,7 +30,7 @@ export function initScheduler() {
     console.log("[initScheduler] Create Schedule for pttCrawler.");
     setInterval(function () {
         console.time('[Scheduler] crawlPtt');
-        crawlPtt().then((pttPages) => {
+        crawlPtt(schedulerSetting.pttPagePerTime).then(() => {
             console.timeEnd('[Scheduler] crawlPtt');
         });
     }, 900000, null);
