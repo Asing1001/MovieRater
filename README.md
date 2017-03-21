@@ -1,11 +1,12 @@
-# movieRater.React
+# MovieRater
 Easily find high rating movie you want in Chinese and English.
 
-###Developement
-#### `npm install && npm run build && npm start`
-#### Develope in watch mode : 
-   client script watch : `npm run webpack`
-   server script watch : `npm run nodemon`
+## Developement
+`npm install && npm run build && npm start`
 
-###Feature
-1. combine ptt/imdb/yahoo rating
+## Develope in watch mode : 
+client script watch : `npm run webpack`
+server script watch : `npm run nodemon`
+
+## Feature
+Auto crawl ptt/imdb/yahoo ratings
