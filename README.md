@@ -1,4 +1,4 @@
-# MovieRater
+# MovieRater ![](https://app.codeship.com/projects/7cdda2d0-8179-0134-0e32-4ac14629b467/status?branch=master)
 Crawl and merge ptt/imdb/yahoo movie data, help easy search high rating movie in Chinese and English.
 ![](https://asing1001.github.io/portfolio/index/movierater.jpg)
 
