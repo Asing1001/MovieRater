@@ -10,7 +10,7 @@
         "outDir": "dist/",
         "rootDir": "src/",        
         "sourceMap": true,
-        "target": "ES5",
+        "target": "ES6",
         "jsx": "react",
         "types": [
             "mocha","core-js","typed-graphql","react-dom"
