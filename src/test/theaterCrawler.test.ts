@@ -1,30 +1,48 @@
 import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import {crawlTheaterList} from '../crawler/theaterCrawler';
-import {db} from "../data/db";
+import * as sinonChai  from 'sinon-chai';
+import * as sinon from 'sinon';
+import { getTheaterList, getRegionList, getTheaterListByRegion } from '../crawler/theaterCrawler';
 import Theater from "../models/theater";
-// import * as moment from 'moment';
 
-const assert = chai.assert;
-const expect = chai.expect;
+chai.use(sinonChai);
 const should = chai.should();
-chai.should();
-chai.use(chaiAsPromised);
 
+function hello(name, cb) {
+    cb("hello " + name);
+}
 
-describe('imdbCrawler', () => {
-  before(() => { return db.openDbConnection() })
-  describe('crawlTheaterList().should.eventually.have.length.above(0)', () => {
-    it('should correctly get theater list from yahoo', function () {
-      this.timeout(30000);
-      return crawlTheaterList().should.eventually.have.length.above(0)
+describe("hello", function () {
+    it("should call callback with correct greeting", function () {
+        var cb = sinon.spy();
+
+        hello("foo", cb);
+
+        cb.should.have.been.calledWith("hello foo");
+    });
+});
+
+describe('theaterCrawler', () => {
+  describe('getTheaterListByRegion(18)', () => {
+    it('length.should.eq(1)', async function () {
+      this.timeout(10000);
+      let theaterList = await getTheaterListByRegion({ yahooRegionId: 18 });
+      theaterList.length.should.eq(1);
     });
   });
 
+  describe('getTheaterList()', () => {
+    it('length.should.above(0)', async function () {
+      this.timeout(10000);
+      let theaterList = await getTheaterList();
+      theaterList.length.should.above(0);
+    });
+  });
 
-  // describe('filterNeedCrawlMovie', () => {
-  //   it('should return true if movie release in this year and not yet crawl today', function () {
-  //     return assert.isTrue(filterNeedCrawlMovie(movie));
-  //   });
-  // });
+  describe('getRegionList()', () => {
+    it('length.should.above(0)', async function () {
+      this.timeout(5000);
+      let regionList = await getRegionList();
+      regionList.length.should.above(0);
+    });
+  });
 });

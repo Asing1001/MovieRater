@@ -1,26 +1,56 @@
-import * as request from "request";
-import * as cheerio from "cheerio";
-import {db} from "../data/db";
-import * as Q from "q";
-import YahooMovie from '../models/yahooMovie';
+import * as fetch from 'isomorphic-fetch';
+import * as cheerio from 'cheerio';
+import * as Q from 'q';
+import * as FormData from 'form-data';
+import Region from '../models/region';
+import Theater from '../models/theater';
 
-const inTheaterUrl  = 'https://tw.movies.yahoo.com/';
-export function crawlInTheater() {
-    const defer = Q.defer();
-    var req = request({ url: inTheaterUrl, followRedirect: false }, (error, res, body) => {
-        if (error) {
-            let reason = `error occur when request ${inTheaterUrl}, error:${error}`;
-            return defer.reject(reason);
-        }
+const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
+export async function getTheaterList(): Promise<Theater[]> {
+    const regionList = await getRegionList();
+    const promises = regionList.map(getTheaterListByRegion);
+    const theaterList = [].concat(...(await Q.all(promises)));
+    return theaterList;
+}
 
-        if (res.headers.location) {
-            let reason = `${inTheaterUrl} 404 not found`;
-            return defer.reject(reason);
-        }
+export async function getTheaterListByRegion({ yahooRegionId }) {
+    var form = new FormData();
+    form.append('area', yahooRegionId);
+    const request = new Request(theaterListUrl, {
+        method: 'POST',
+        body: form
+    });
+    const $ = await get$(request);
+    const theaterList = Array.from($('#ymvthl tbody>tr')).map(theaterRow => {
+        const $theaterRow = $(theaterRow);
+        const theater: Theater = {
+            name: $theaterRow.find('a').text(),
+            url: $theaterRow.find('a').attr('href'),
+            address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
+            phone: $theaterRow.find('em').text(),
+        };
+        return theater;
+    });
+    return theaterList;
+}
 
-        const $ = cheerio.load(body);
-        let yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]').map((index,ele)=>parseInt($(ele).val())));
-        return defer.resolve(yahooIds);
-    })
-    return defer.promise;
+export async function getRegionList(): Promise<Region[]> {
+    const $ = await get$(theaterListUrl);
+    const regionList = Array.from($('#area>option')).map((option) => {
+        const $option = $(option);
+        return {
+            name: $option.text(),
+            yahooRegionId: $option.val(),
+        };
+    });
+
+    //remove first option "選擇地區"
+    regionList.shift();
+    return regionList;
+}
+
+async function get$(request: Request | string) {
+    const response = await fetch(request);
+    const html = await response.text();
+    return cheerio.load(html);
 }
