@@ -38,5 +38,11 @@ describe('cacheManager', function () {
             return mockCacheManager.get(cacheManager_1.default.All_MOVIES).should.have.length.above(0);
         });
     });
+    describe('setRecentMoviesCache', function () {
+        it('should.eventually.fulfilled', function () {
+            this.timeout(10000);
+            return mockCacheManager.setRecentMoviesCache().should.eventually.fulfilled;
+        });
+    });
 });
 //# sourceMappingURL=cacheManager.test.js.map

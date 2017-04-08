@@ -129,6 +129,13 @@ var MovieType = new graphql_1.GraphQLObjectType({
             type: graphql_1.GraphQLString,
             resolve: function (obj) { return obj.tomatoURL; },
         },
+        schedule: {
+            type: new graphql_1.GraphQLList(scheduleType),
+            resolve: function (obj) {
+                return cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES)
+                    .filter(function (schedule) { return schedule.yahooId == obj.yahooId; });
+            },
+        }
     }); }
 });
 var autoCompleteType = new graphql_1.GraphQLObjectType({
@@ -141,6 +148,27 @@ var autoCompleteType = new graphql_1.GraphQLObjectType({
         text: {
             type: graphql_1.GraphQLString,
             resolve: function (obj) { return obj.text; },
+        },
+    }); }
+});
+var scheduleType = new graphql_1.GraphQLObjectType({
+    name: "scheduleType",
+    fields: function () { return ({
+        theaterName: {
+            type: graphql_1.GraphQLString,
+            resolve: function (obj) { return obj.theaterName; },
+        },
+        yahooId: {
+            type: graphql_1.GraphQLString,
+            resolve: function (obj) { return obj.yahooId; },
+        },
+        timesValues: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: function (obj) { return obj.timesValues; },
+        },
+        timesStrings: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: function (obj) { return obj.timesStrings; },
         },
     }); }
 });
