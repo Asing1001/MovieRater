@@ -12,7 +12,7 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /\.tsx?$/, loaders: ["react-hot-loader/webpack", "ts-loader"] },
+            { test: /\.tsx?$/, loaders: ['babel-loader?presets[]=es2015', "ts-loader"] },
             {
                 test: /\.html$/,
                 loader: 'html'
