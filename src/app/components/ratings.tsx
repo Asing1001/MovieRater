@@ -22,7 +22,7 @@ class Ratings extends React.Component<MovieDetailProps, {}> {
                 <div className="ratingWrapper"><img src="/public/image/yahoo.png" />
                     <a href={"https://tw.movies.yahoo.com/movieinfo_main.html/id=" + this.props.movie.yahooId}>{parseInt(this.props.movie.yahooRating) ? this.props.movie.yahooRating : 'N/A'}</a>
                 </div>
-                <div className="ratingWrapper"><img src="/public/image/rottentomatoes.png" />
+                <div className="ratingWrapper hide"><img src="/public/image/rottentomatoes.png" />
                     {this.props.movie.tomatoURL && this.props.movie.tomatoURL !== 'N/A' ? <a href={this.props.movie.tomatoURL}>{this.props.movie.tomatoRating ? this.props.movie.tomatoRating : 'N/A'}</a>
                         : <span>{this.props.movie.tomatoRating ? this.props.movie.tomatoRating : 'N/A'}</span>
                     }
