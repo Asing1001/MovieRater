@@ -1,19 +1,18 @@
 "use strict";
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var yahooCrawler_1 = require('../crawler/yahooCrawler');
-var db_1 = require("../data/db");
-var assert = chai.assert;
-var expect = chai.expect;
-var should = chai.should();
+Object.defineProperty(exports, "__esModule", { value: true });
+const chai = require("chai");
+const chaiAsPromised = require("chai-as-promised");
+const yahooCrawler_1 = require("../crawler/yahooCrawler");
+const assert = chai.assert;
+const expect = chai.expect;
+const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
-describe('YahooCrawler', function () {
-    before(function () { return db_1.db.openDbConnection(); });
-    describe('crawlYahooRange(10,20)', function () {
-        it('should correctly get new data from yahoo', function () {
+describe('YahooCrawler', () => {
+    describe('crawlYahooRange(10,11)', () => {
+        it('should correctly get datas from yahoo', function () {
             this.timeout(30000);
-            return yahooCrawler_1.crawlYahooRange(10, 20).should.eventually.have.length.above(0);
+            return yahooCrawler_1.crawlYahooRange(10, 11).should.eventually.have.length.above(0);
         });
     });
 });

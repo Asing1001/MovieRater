@@ -1,30 +1,28 @@
 "use strict";
-var memoryCache = require('memory-cache');
-var db_1 = require("../data/db");
-var Q = require("q");
-var mergeData_1 = require('../crawler/mergeData');
-var moment = require('moment');
-var yahooInTheaterCrawler_1 = require('../crawler/yahooInTheaterCrawler');
-var yahooMovieSchduleCrawler_1 = require('../crawler/yahooMovieSchduleCrawler');
-var cacheManager = (function () {
-    function cacheManager() {
-    }
-    cacheManager.init = function () {
-        console.time('get yahooMovies and pttPages');
+Object.defineProperty(exports, "__esModule", { value: true });
+const memoryCache = require("memory-cache");
+const db_1 = require("../data/db");
+const Q = require("q");
+const mergeData_1 = require("../crawler/mergeData");
+const moment = require("moment");
+const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
+const yahooMovieSchduleCrawler_1 = require("../crawler/yahooMovieSchduleCrawler");
+class cacheManager {
+    static init() {
+        console.time('get yahooMovies and pttArticles');
         return Q.spread([db_1.db.getCollection("yahooMovies", { yahooId: -1 }),
-            db_1.db.getCollection("pttPages", { pageIndex: -1 })], function (yahooMovies, pttPages) {
-            console.timeEnd('get yahooMovies and pttPages');
+            db_1.db.getCollection("pttArticles")], function (yahooMovies, pttArticles) {
+            console.timeEnd('get yahooMovies and pttArticles');
             cacheManager.setAllMoviesNamesCache(yahooMovies);
-            cacheManager.setAllMoviesCache(yahooMovies, pttPages);
+            cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
             cacheManager.setRecentMoviesCache();
             return;
         });
-    };
-    cacheManager.setAllMoviesNamesCache = function (yahooMovies) {
-        var allMoviesName = [];
+    }
+    static setAllMoviesNamesCache(yahooMovies) {
+        let allMoviesName = [];
         console.time('setAllMoviesNamesCache');
-        yahooMovies.forEach(function (_a) {
-            var chineseTitle = _a.chineseTitle, englishTitle = _a.englishTitle, yahooId = _a.yahooId, releaseDate = _a.releaseDate;
+        yahooMovies.forEach(({ chineseTitle, englishTitle, yahooId, releaseDate }) => {
             if (chineseTitle) {
                 allMoviesName.push({ value: yahooId, text: chineseTitle });
             }
@@ -34,48 +32,44 @@ var cacheManager = (function () {
         });
         memoryCache.put(cacheManager.All_MOVIES_NAMES, allMoviesName);
         console.timeEnd('setAllMoviesNamesCache');
-    };
-    cacheManager.setAllMoviesCache = function (yahooMovies, pttPages) {
+    }
+    static setAllMoviesCache(yahooMovies, pttArticles) {
         console.time('mergeData');
-        var mergedDatas = mergeData_1.mergeData(yahooMovies, pttPages);
+        let mergedDatas = mergeData_1.mergeData(yahooMovies, pttArticles);
         console.timeEnd('mergeData');
         memoryCache.put(cacheManager.All_MOVIES, mergedDatas);
-    };
-    cacheManager.setRecentMoviesCache = function () {
-        var _this = this;
+    }
+    static setRecentMoviesCache() {
         console.time('setRecentMoviesCache');
-        return yahooInTheaterCrawler_1.crawlInTheater().then(function (yahooIds) {
-            var today = moment();
-            var recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(function (_a) {
-                var yahooId = _a.yahooId, releaseDate = _a.releaseDate;
-                return yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90;
-            });
+        return yahooInTheaterCrawler_1.crawlInTheater().then((yahooIds) => {
+            let today = moment();
+            let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
+                .filter(({ yahooId, releaseDate }) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
             memoryCache.put(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
-            return _this.setMoviesSchedulesCache(yahooIds);
+            return this.setMoviesSchedulesCache(yahooIds);
         });
-    };
-    cacheManager.setMoviesSchedulesCache = function (yahooIds) {
+    }
+    static setMoviesSchedulesCache(yahooIds) {
         console.time('setMoviesSchedulesCache');
-        var schedulesPromise = yahooIds.map(function (yahooId) { return yahooMovieSchduleCrawler_1.default(yahooId); });
-        return Q.all(schedulesPromise).then(function (schedules) {
-            var allSchedules = (_a = []).concat.apply(_a, schedules);
+        let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
+        return Q.all(schedulesPromise).then(schedules => {
+            const allSchedules = [].concat(...schedules);
             memoryCache.put(cacheManager.MOVIES_SCHEDULES, allSchedules);
             console.timeEnd('setMoviesSchedulesCache');
-            var _a;
         });
-    };
-    cacheManager.get = function (key) {
-        var data = memoryCache.get(key);
+    }
+    static get(key) {
+        let data = memoryCache.get(key);
         return data;
-    };
-    cacheManager.All_MOVIES = 'allMovies';
-    cacheManager.All_MOVIES_NAMES = 'allMoviesNames';
-    cacheManager.RECENT_MOVIES = 'recentMovies';
-    cacheManager.MOVIES_SCHEDULES = 'MoviesSchedules';
-    return cacheManager;
-}());
-Object.defineProperty(exports, "__esModule", { value: true });
+    }
+    static set(key, value) {
+        memoryCache.put(key, value);
+    }
+}
+cacheManager.All_MOVIES = 'allMovies';
+cacheManager.All_MOVIES_NAMES = 'allMoviesNames';
+cacheManager.RECENT_MOVIES = 'recentMovies';
+cacheManager.MOVIES_SCHEDULES = 'MoviesSchedules';
 exports.default = cacheManager;
 //# sourceMappingURL=cacheManager.js.map

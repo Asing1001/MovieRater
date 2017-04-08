@@ -1,14 +1,15 @@
 "use strict";
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var yahooMovieSchduleCrawler_1 = require('../crawler/yahooMovieSchduleCrawler');
-var assert = chai.assert;
-var expect = chai.expect;
-var should = chai.should();
+Object.defineProperty(exports, "__esModule", { value: true });
+const chai = require("chai");
+const chaiAsPromised = require("chai-as-promised");
+const yahooMovieSchduleCrawler_1 = require("../crawler/yahooMovieSchduleCrawler");
+const assert = chai.assert;
+const expect = chai.expect;
+const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
-describe('yahooMovieSchduleCrawler', function () {
-    describe('crawyahooMovieSchdule', function () {
+describe('yahooMovieSchduleCrawler', () => {
+    describe('crawyahooMovieSchdule', () => {
         it('should correctly get new data from yahoo', function () {
             this.timeout(60000);
             return yahooMovieSchduleCrawler_1.default("6707").should.eventually.have.length.above(0);

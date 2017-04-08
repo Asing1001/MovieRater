@@ -1,16 +1,17 @@
 "use strict";
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var yahooInTheaterCrawler_1 = require('../crawler/yahooInTheaterCrawler');
-var db_1 = require("../data/db");
-var assert = chai.assert;
-var expect = chai.expect;
-var should = chai.should();
+Object.defineProperty(exports, "__esModule", { value: true });
+const chai = require("chai");
+const chaiAsPromised = require("chai-as-promised");
+const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
+const db_1 = require("../data/db");
+const assert = chai.assert;
+const expect = chai.expect;
+const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
-describe('yahooInTheaterCrawler', function () {
-    before(function () { return db_1.db.openDbConnection(); });
-    describe('crawlInTheater.', function () {
+describe('yahooInTheaterCrawler', () => {
+    before(() => { return db_1.db.openDbConnection(); });
+    describe('crawlInTheater.', () => {
         it('should got yahooId list.', function () {
             this.timeout(30000);
             return yahooInTheaterCrawler_1.crawlInTheater().should.eventually.have.length.above(0);

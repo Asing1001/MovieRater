@@ -1,16 +1,17 @@
 "use strict";
-var Q = require("q");
-var fetch = require("isomorphic-fetch");
-var cheerio = require("cheerio");
-var imdbMobileMovieUrl = 'http://m.imdb.com/title/';
+Object.defineProperty(exports, "__esModule", { value: true });
+const Q = require("q");
+const fetch = require("isomorphic-fetch");
+const cheerio = require("cheerio");
+const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
 function crawlImdb(id) {
-    return fetch("" + (imdbMobileMovieUrl + id))
-        .then(function (res) { return res.text(); })
-        .then(function (html) {
+    return fetch(`${imdbMobileMovieUrl + id}`)
+        .then(res => { return res.text(); })
+        .then(html => {
         var defer = Q.defer();
-        var $ = cheerio.load(html);
-        var rating = "";
-        var ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
+        const $ = cheerio.load(html);
+        let rating = "";
+        let ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
         if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
             rating = ratingWrapper.childNodes[0].nodeValue;
         }
@@ -18,6 +19,5 @@ function crawlImdb(id) {
         return defer.promise;
     });
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = crawlImdb;
 //# sourceMappingURL=imdbCrawler.js.map

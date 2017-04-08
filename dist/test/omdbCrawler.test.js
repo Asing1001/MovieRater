@@ -1,14 +1,15 @@
 "use strict";
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var omdbCrawler_1 = require('../crawler/omdbCrawler');
-var moment = require('moment');
-var assert = chai.assert;
-var expect = chai.expect;
-var should = chai.should();
+Object.defineProperty(exports, "__esModule", { value: true });
+const chai = require("chai");
+const chaiAsPromised = require("chai-as-promised");
+const omdbCrawler_1 = require("../crawler/omdbCrawler");
+const moment = require("moment");
+const assert = chai.assert;
+const expect = chai.expect;
+const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
-describe('imdbCrawler', function () {
+describe('imdbCrawler', () => {
     //should remove omdb dependency in unit test
     // describe('crawlImdb', () => {
     //   before(()=>{return db.openDbConnection()})
@@ -17,9 +18,9 @@ describe('imdbCrawler', function () {
     //     return crawlOmdb().should.eventually.fulfilled
     //   });
     // });
-    describe('filterNeedCrawlMovie', function () {
+    describe('filterNeedCrawlMovie', () => {
         it('should return true if movie release in this year and not yet crawl today', function () {
-            var movie = {
+            let movie = {
                 englishTitle: 'unitTest',
                 releaseDate: moment().format(),
                 imdbLastCrawlTime: moment().subtract(2, 'days').format()
