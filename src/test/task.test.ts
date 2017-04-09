@@ -1,23 +1,30 @@
 import * as chai from 'chai';
-import {db} from "../data/db";
-import {updateTheaterList} from '../backgroundService/task'; 
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import { db } from "../data/db";
+import { updateTheaterList, } from '../backgroundService/task';
 import Theater from '../models/theater';
+import * as theaterCrawler from '../crawler/theaterCrawler';
 
 const should = chai.should();
+chai.use(sinonChai);
 
 describe('task', () => {
-  describe('updateTheaterList', () => {
-    before(()=>{return db.openDbConnection()})
-    // should not do real update db in unit test
-    // it('should successful in 5 sec', async function () {
-    //   this.timeout(5000);
-    //   await updateTheaterList();
-    //   return;
-    // });
+  let sandbox, stubUpdateDocument;
 
-    it('db should have theaters length > 0', async function () {
-      let theaters:Theater[] = await db.getCollection('theaters');
-      theaters.length.should.above(0);
+  before(() => {
+    sandbox = sinon.sandbox.create();
+    stubUpdateDocument = sandbox.stub(db, 'updateDocument');
+  });
+
+  after(() => sandbox.restore());
+
+  describe('updateTheaterList', () => {
+    it('should get theater list then updateDocument', async function () {
+      const stubGetTheaterList = sandbox.stub(theaterCrawler, 'getTheaterList').returns([1]);
+      await updateTheaterList();
+      sandbox.assert.calledOnce(stubUpdateDocument);
+      sandbox.assert.calledOnce(stubGetTheaterList);
     });
   });
 });

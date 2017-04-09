@@ -1,8 +1,11 @@
 import * as chai from 'chai';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { getMatchedYahooId, crawlPttPage, crawlPttRange, crawlPtt } from '../crawler/pttCrawler';
 import { db } from "../data/db";
 import cacheManager from '../data/cacheManager';
+chai.use(sinonChai);
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -23,6 +26,15 @@ const testMoviesData = [{
 }]
 
 describe('pttCrawler', () => {
+    let sandbox, stubUpdateDocument;
+
+    before(() => {
+        sandbox = sinon.sandbox.create();
+        stubUpdateDocument = sandbox.stub(db, 'updateDocument');
+    });
+
+    after(() => sandbox.restore());
+    
     describe('getMatchedYahooId', () => {
         before(() => {
             cacheManager.set(cacheManager.All_MOVIES, testMoviesData)

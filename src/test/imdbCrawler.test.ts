@@ -1,9 +1,6 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import crawlImdb from '../crawler/imdbCrawler';
-import {db} from "../data/db";
-import Movie from "../models/movie";
-import * as moment from 'moment';
+import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -11,17 +8,13 @@ const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
 
-
 describe('imdbCrawler', () => {
-  describe('crawlImdb', () => {
-    it('crawlImdb("tt4972582").should.eventually.fulfilled', function () {
-      this.timeout(60000);
-      return crawlImdb("tt4972582").should.eventually.fulfilled
-    });
-
-    it('crawlImdb("").should.eventually.equal("")', function () {
-      this.timeout(60000);
-      return crawlImdb("").should.eventually.equal("")
+  describe('getIMDBMovieInfo', () => {
+    it('getIMDBMovieInfo("Who Killed Cock Robin").should.have.property("imdbID","tt5576318"),"imdbRating".above(7)', async function () {
+      this.timeout(10000);
+      const movieInfo = await getIMDBMovieInfo("Who Killed Cock Robin");
+      movieInfo.should.have.property("imdbID","tt5576318");
+      movieInfo.should.have.property("imdbRating").above(7);
     });
   });
 });

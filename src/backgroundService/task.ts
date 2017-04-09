@@ -4,6 +4,5 @@ import Theater from '../models/theater';
 
 export async function updateTheaterList() {
     const theaterList = await getTheaterList();
-    await Promise.all(theaterList.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
-    return theaterList;
+    return Promise.all(theaterList.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
 }

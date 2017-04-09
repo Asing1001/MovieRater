@@ -1,6 +1,5 @@
 import * as fetch from 'isomorphic-fetch';
 import * as cheerio from 'cheerio';
-import * as Q from 'q';
 import * as FormData from 'form-data';
 import Region from '../models/region';
 import Theater from '../models/theater';
@@ -9,7 +8,7 @@ const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
 export async function getTheaterList(): Promise<Theater[]> {
     const regionList = await getRegionList();
     const promises = regionList.map(getTheaterListByRegion);
-    const theaterList = [].concat(...(await Q.all(promises)));
+    const theaterList = [].concat(...(await Promise.all(promises)));
     return theaterList;
 }
 

@@ -7,6 +7,7 @@ import { db } from "../data/db";
 import * as Q from 'q';
 import cacheManager from '../data/cacheManager';
 import Movie from "../models/movie";
+import { updateImdbInfo } from '../task/imdbTask';
 
 export function initScheduler() {
     console.log("[initScheduler] Create Schedule for keep website alive.");
@@ -15,14 +16,14 @@ export function initScheduler() {
             console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
     }, 600000, null);
 
-    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlOmdb.");
+    console.log("[initScheduler] Create Schedule for yahooCrawler and updateImdbInfo.");
     setInterval(function () {
         console.time('[Scheduler] crawlYahoo');
         crawlYahoo(schedulerSetting.yahooPagePerTime).then(() => {
             console.timeEnd('[Scheduler] crawlYahoo');
-            console.time('[Scheduler] crawlOmdb');
-            crawlOmdb().then(() => {
-                console.timeEnd('[Scheduler] crawlOmdb');
+            console.time('[Scheduler] updateImdbInfo');
+            updateImdbInfo().then(() => {
+                console.timeEnd('[Scheduler] updateImdbInfo');
             });
         });
     }, 900000, null);
