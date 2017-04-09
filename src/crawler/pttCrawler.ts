@@ -80,7 +80,6 @@ export function crawlPttPage(index) {
             let date = articleHasDeleted ? moment().format('YYYY/MM/DD') : moment(parseInt(articleUrl.split('.')[1]) * 1000).format('YYYY/MM/DD');
             let articleTitle = $articleInfoDiv.find('.title>a').text();
             const articleInfo: Article = {
-                yahooId: getMatchedYahooId(articleTitle, date),
                 title: articleTitle,
                 push: $articleInfoDiv.find('.nrec>.hl').text(),
                 url: articleUrl,
