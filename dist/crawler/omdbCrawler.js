@@ -48,7 +48,7 @@ function getImdbMovieInfo({ englishTitle, yahooId }) {
         .then((json) => {
         var defer = Q.defer();
         if (json.Response === 'True') {
-            imdbCrawler_1.default(json.imdbID).then((rating) => {
+            imdbCrawler_1.getIMDBRating(json.imdbID).then((rating) => {
                 let imdbInfo = {
                     yahooId: yahooId,
                     imdbID: json.imdbID,

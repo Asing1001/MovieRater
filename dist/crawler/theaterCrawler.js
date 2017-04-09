@@ -10,14 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const fetch = require("isomorphic-fetch");
 const cheerio = require("cheerio");
-const Q = require("q");
 const FormData = require("form-data");
 const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
 function getTheaterList() {
     return __awaiter(this, void 0, void 0, function* () {
         const regionList = yield getRegionList();
         const promises = regionList.map(getTheaterListByRegion);
-        const theaterList = [].concat(...(yield Q.all(promises)));
+        const theaterList = [].concat(...(yield Promise.all(promises)));
         return theaterList;
     });
 }

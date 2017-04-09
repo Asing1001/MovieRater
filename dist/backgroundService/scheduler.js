@@ -1,24 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const yahooCrawler_1 = require("../crawler/yahooCrawler");
-const omdbCrawler_1 = require("../crawler/omdbCrawler");
 const pttCrawler_1 = require("../crawler/pttCrawler");
 const systemSetting_1 = require("../configs/systemSetting");
 const fetch = require("isomorphic-fetch");
 const cacheManager_1 = require("../data/cacheManager");
+const imdbTask_1 = require("../task/imdbTask");
 function initScheduler() {
     console.log("[initScheduler] Create Schedule for keep website alive.");
     setInterval(function () {
         fetch(systemSetting_1.systemSetting.websiteUrl).then(res => console.log(`[Scheduler] Access to website:${systemSetting_1.systemSetting.websiteUrl}, status:${res.status}`));
     }, 600000, null);
-    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlOmdb.");
+    console.log("[initScheduler] Create Schedule for yahooCrawler and updateImdbInfo.");
     setInterval(function () {
         console.time('[Scheduler] crawlYahoo');
         yahooCrawler_1.crawlYahoo(systemSetting_1.schedulerSetting.yahooPagePerTime).then(() => {
             console.timeEnd('[Scheduler] crawlYahoo');
-            console.time('[Scheduler] crawlOmdb');
-            omdbCrawler_1.crawlOmdb().then(() => {
-                console.timeEnd('[Scheduler] crawlOmdb');
+            console.time('[Scheduler] updateImdbInfo');
+            imdbTask_1.updateImdbInfo().then(() => {
+                console.timeEnd('[Scheduler] updateImdbInfo');
             });
         });
     }, 900000, null);

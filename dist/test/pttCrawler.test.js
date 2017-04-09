@@ -1,9 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai = require("chai");
+const sinon = require("sinon");
+const sinonChai = require("sinon-chai");
 const chaiAsPromised = require("chai-as-promised");
 const pttCrawler_1 = require("../crawler/pttCrawler");
+const db_1 = require("../data/db");
 const cacheManager_1 = require("../data/cacheManager");
+chai.use(sinonChai);
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
@@ -21,6 +25,12 @@ const testMoviesData = [{
         "releaseDate": "2013-02-28",
     }];
 describe('pttCrawler', () => {
+    let sandbox, stubUpdateDocument;
+    before(() => {
+        sandbox = sinon.sandbox.create();
+        stubUpdateDocument = sandbox.stub(db_1.db, 'updateDocument');
+    });
+    after(() => sandbox.restore());
     describe('getMatchedYahooId', () => {
         before(() => {
             cacheManager_1.default.set(cacheManager_1.default.All_MOVIES, testMoviesData);

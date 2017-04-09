@@ -9,21 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai = require("chai");
+const sinon = require("sinon");
+const sinonChai = require("sinon-chai");
 const db_1 = require("../data/db");
+const task_1 = require("../backgroundService/task");
+const theaterCrawler = require("../crawler/theaterCrawler");
 const should = chai.should();
+chai.use(sinonChai);
 describe('task', () => {
+    let sandbox, stubUpdateDocument;
+    before(() => {
+        sandbox = sinon.sandbox.create();
+        stubUpdateDocument = sandbox.stub(db_1.db, 'updateDocument');
+    });
+    after(() => sandbox.restore());
     describe('updateTheaterList', () => {
-        before(() => { return db_1.db.openDbConnection(); });
-        // should not do real update db in unit test
-        // it('should successful in 5 sec', async function () {
-        //   this.timeout(5000);
-        //   await updateTheaterList();
-        //   return;
-        // });
-        it('db should have theaters length > 0', function () {
+        it('should get theater list then updateDocument', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                let theaters = yield db_1.db.getCollection('theaters');
-                theaters.length.should.above(0);
+                const stubGetTheaterList = sandbox.stub(theaterCrawler, 'getTheaterList').returns([1]);
+                yield task_1.updateTheaterList();
+                sandbox.assert.calledOnce(stubUpdateDocument);
+                sandbox.assert.calledOnce(stubGetTheaterList);
             });
         });
     });

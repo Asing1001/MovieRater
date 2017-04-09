@@ -13,8 +13,7 @@ const db_1 = require("../data/db");
 function updateTheaterList() {
     return __awaiter(this, void 0, void 0, function* () {
         const theaterList = yield theaterCrawler_1.getTheaterList();
-        yield Promise.all(theaterList.map(theater => db_1.db.updateDocument({ name: theater.name }, theater, 'theaters')));
-        return theaterList;
+        return Promise.all(theaterList.map(theater => db_1.db.updateDocument({ name: theater.name }, theater, 'theaters')));
     });
 }
 exports.updateTheaterList = updateTheaterList;
