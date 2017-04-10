@@ -1,4 +1,3 @@
-import * as http from "http";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as path from 'path';
@@ -16,31 +15,18 @@ import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 import { systemSetting } from './configs/systemSetting';
 
+db.openDbConnection().then(cacheManager.init).then(initScheduler);
+
 const app = express();
 app.use(compression());
 
 app.get('/api/test', (req, res) => {
   res.send('test!');
 });
+
 app.get('/api/crawlerStatus', (req, res) => {
   db.getDocument({ name: "crawlerStatus" }, "configs").then(c => res.send(c));
 });
-app.get('/api/yahooMovies', (req, res) => {
-  db.getCollection("yahooMovies").then(yahooMovies => {
-    res.send(yahooMovies);
-  });
-});
-app.get('/api/pttPages', (req, res) => {
-  db.getCollection("pttPages").then(pages => {
-    res.send(pages);
-  });
-});
-
-db.openDbConnection()
-  .then(() => {
-    cacheManager.init()
-    initScheduler();
-  });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

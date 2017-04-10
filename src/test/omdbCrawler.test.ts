@@ -12,9 +12,8 @@ chai.should();
 chai.use(chaiAsPromised);
 
 
-describe('imdbCrawler', () => {
-  //should remove omdb dependency in unit test
-  // describe('crawlImdb', () => {
+describe('omdbCrawler', () => {
+  // describe('crawOImdb', () => {
   //   before(()=>{return db.openDbConnection()})
   //   it('should correctly get new data from imdb', function () {
   //     this.timeout(60000);

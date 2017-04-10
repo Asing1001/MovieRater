@@ -3,9 +3,7 @@ import Movie from '../models/movie';
 import Article from '../models/article';
 import * as moment from 'moment';
 
-export function mergeData(yahooMovies: Array<YahooMovie>, pttPages) {
-    //merge [[1,2],[3,4]] to [1,2,3,4]
-    let allArticles = [].concat(...pttPages.map(({articles}) => articles));
+export function mergeData(yahooMovies: Array<YahooMovie>, allArticles: Article[]) {
     let mergedMovies = yahooMovies.map(mergeByChineseTitle);
     return mergedMovies;
 

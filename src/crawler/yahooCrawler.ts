@@ -3,20 +3,13 @@ import * as cheerio from "cheerio";
 import { db } from "../data/db";
 import * as Q from "q";
 import YahooMovie from '../models/yahooMovie';
-import { yahooCrawlerSetting } from '../configs/systemSetting';
 
-export function crawlYahoo() {
+export function crawlYahoo(howManyPagePerTime) {
     const crawlerStatusFilter = { name: "crawlerStatus" };
-    let howManyPagePerTime = 50;
     let startYahooId = 1;
     return db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
         if (crawlerStatus && crawlerStatus.maxYahooId) {
             startYahooId = crawlerStatus.maxYahooId + 1;
-        }
-
-        if (yahooCrawlerSetting.enable) {
-            startYahooId = yahooCrawlerSetting.startYahooId;
-            howManyPagePerTime = yahooCrawlerSetting.howManyPagePerTime;
         }
 
         return crawlYahooRange(startYahooId, startYahooId + howManyPagePerTime)

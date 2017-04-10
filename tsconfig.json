@@ -8,12 +8,21 @@
         "noEmitOnError": true,
         "noImplicitAny": false,
         "outDir": "dist/",
-        "rootDir": "src/",        
+        "rootDir": "src/",
         "sourceMap": true,
-        "target": "ES5",
+        "target": "es6",
         "jsx": "react",
         "types": [
-            "mocha","core-js","typed-graphql","react-dom"
+            "mocha",
+            "core-js",
+            "typed-graphql",
+            "react-dom"
+        ],
+        "lib": [
+            "dom",
+            "es5",
+            "scripthost",
+            "es2015"
         ]
     }
 }

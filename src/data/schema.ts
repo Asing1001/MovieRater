@@ -10,6 +10,7 @@ import {
 import { db } from './db';
 import cacheManager from '../data/cacheManager';
 import Movie from '../models/movie';
+import Schedule from '../models/schedule';
 
 const ArticleType = new GraphQLObjectType({
     name: 'article',
@@ -140,6 +141,13 @@ const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.tomatoURL,
         },
+        schedule: {
+            type: new GraphQLList(scheduleType),
+            resolve: obj => {
+                return cacheManager.get(cacheManager.MOVIES_SCHEDULES)
+                    .filter((schedule: Schedule) => schedule.yahooId == obj.yahooId)
+            },
+        }
     })
 });
 
@@ -153,6 +161,28 @@ const autoCompleteType = new GraphQLObjectType({
         text: {
             type: GraphQLString,
             resolve: obj => obj.text,
+        },
+    })
+})
+
+const scheduleType = new GraphQLObjectType({
+    name: "scheduleType",
+    fields: () => ({
+        theaterName: {
+            type: GraphQLString,
+            resolve: obj => obj.theaterName,
+        },
+        yahooId: {
+            type: GraphQLString,
+            resolve: obj => obj.yahooId,
+        },
+        timesValues: {
+            type: new GraphQLList(GraphQLString),
+            resolve: obj => obj.timesValues,
+        },
+        timesStrings: {
+            type: new GraphQLList(GraphQLString),
+            resolve: obj => obj.timesStrings,
         },
     })
 })
@@ -172,7 +202,7 @@ const QueryType = new GraphQLObjectType({
             args: {
                 yahooId: { type: GraphQLInt }
             },
-            resolve: (root, {yahooId, chineseTitle}) => {
+            resolve: (root, { yahooId, chineseTitle }) => {
                 let allMovies = cacheManager.get(cacheManager.All_MOVIES);
                 return allMovies.find((movie) => { return movie.yahooId === yahooId; })
             },
@@ -187,7 +217,7 @@ const QueryType = new GraphQLObjectType({
             args: {
                 yahooIds: { type: new GraphQLList(GraphQLInt) }
             },
-            resolve: (root, {yahooIds}) => {
+            resolve: (root, { yahooIds }) => {
                 let allMovies: Array<Movie> = cacheManager.get("allMovies");
                 let result = [];
                 allMovies.forEach((movie) => {

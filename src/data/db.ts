@@ -25,6 +25,7 @@ export class db {
             }
         } catch (error) {
             console.error(error);
+            deferred.reject(error);
         }
         return deferred.promise;
     }
@@ -36,7 +37,7 @@ export class db {
         }
     }
 
-    public static updateDocument(filter: Object, value: Object, collectionName: string, options: ReplaceOneOptions = { upsert: true }): any {
+    public static updateDocument(filter: Object, value: Object, collectionName: string, options: ReplaceOneOptions = { upsert: true }): Q.Promise<any> {
         var deferred = Q.defer();
         try {
             log.debug(arguments);
@@ -53,7 +54,7 @@ export class db {
         return deferred.promise;
     }
 
-    public static insertDocument(document: any, collectionName: string): any {
+    public static insertDocument(document: any, collectionName: string): Q.Promise<any> {
         var deferred = Q.defer();
         try {
             log.debug(arguments);
@@ -70,7 +71,7 @@ export class db {
         return deferred.promise;
     }
 
-    public static insertCollection(collection: any, collectionName: string): any {
+    public static insertCollection(collection: any, collectionName: string): Q.Promise<any> {
         var deferred = Q.defer();
         try {
             log.debug(arguments);
@@ -91,7 +92,7 @@ export class db {
         return deferred.promise;
     }
 
-    public static getCollectionCount(collectionName: string): any {
+    public static getCollectionCount(collectionName: string): Q.Promise<any> {
         var deferred = Q.defer();
         try {
             log.debug(arguments);
@@ -108,7 +109,7 @@ export class db {
         return deferred.promise;
     }
 
-    public static getCollection(collectionName: string, sort?: Object): any {
+    public static getCollection(collectionName: string, sort?: Object): Q.Promise<any> {
         var deferred = Q.defer();
         try {
             log.debug(arguments);
@@ -125,7 +126,7 @@ export class db {
         return deferred.promise;
     }
 
-    public static getDocument(query: Object, collectionName: string): any {
+    public static getDocument(query: Object, collectionName: string): Q.Promise<any> {
         var deferred = Q.defer();
         try {
             log.debug(arguments);

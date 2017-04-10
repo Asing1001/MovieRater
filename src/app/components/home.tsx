@@ -58,7 +58,7 @@ class Home extends React.Component<any, any> {
     if (this.props.params.id) {
       this.search([parseInt(this.props.params.id)]);
     } else {
-      this.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then(json => {
+      this.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json:any) => {
         this.setState({ resultMovies: json.data.recentMovies.map(movie => this.classifyArticle(movie)) });
       });
     }
@@ -79,7 +79,7 @@ class Home extends React.Component<any, any> {
       body: JSON.stringify({ query: "{allMoviesNames{value,text}}" }),
       credentials: 'include',
     }).then(res => res.json())
-      .then(json => {
+      .then((json:any) => {
         this.setState({ dataSource: json.data.allMoviesNames })
       });
   }
@@ -127,7 +127,7 @@ class Home extends React.Component<any, any> {
           movies(yahooIds:${JSON.stringify(yahooIds)})${yahooIds.length===1?ALLDATA:BRIEFDATA}
         }
     `)
-      .then(json => {
+      .then((json:any) => {
         this.setState({ resultMovies: json.data.movies.map(movie => this.classifyArticle(movie)) });
       });
   }

@@ -1,7 +1,11 @@
 import * as chai from 'chai';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {crawlPtt, crawlPttPage} from '../crawler/pttCrawler';
-import {db} from "../data/db";
+import { getMatchedYahooId, crawlPttPage, crawlPttRange, crawlPtt } from '../crawler/pttCrawler';
+import { db } from "../data/db";
+import cacheManager from '../data/cacheManager';
+chai.use(sinonChai);
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -9,13 +13,49 @@ const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
 
+const testMoviesData = [{
+    "yahooId": 6571,
+    "chineseTitle": "羅根",
+    "englishTitle": "Logan",
+    "releaseDate": "2017-02-28",
+}, {
+    "yahooId": 999999,
+    "chineseTitle": "chineseTitle",
+    "englishTitle": "englishTitle",
+    "releaseDate": "2013-02-28",
+}]
 
 describe('pttCrawler', () => {
+    let sandbox, stubUpdateDocument;
+
+    before(() => {
+        sandbox = sinon.sandbox.create();
+        stubUpdateDocument = sandbox.stub(db, 'updateDocument');
+    });
+
+    after(() => sandbox.restore());
+    
+    describe('getMatchedYahooId', () => {
+        before(() => {
+            cacheManager.set(cacheManager.All_MOVIES, testMoviesData)
+            return;
+        })
+        it('should find match yahooId 6571', function () {
+            return getMatchedYahooId("[普雷] 羅根 (原來還蠻血腥的)", "2017/03/14").should.equal(6571);
+        });
+    });
+
     describe('crawlPtt', () => {
-        before(() => { return db.openDbConnection() })
-        it('should correctly get new data from Ptt', function () {
-            this.timeout(30000);
-            return crawlPtt().should.eventually.fulfilled//have.articles.length.above(0)
+        it('crawlPtt(1).should.eventually.fulfilled', function () {
+            this.timeout(10000);
+            return crawlPtt(1).should.eventually.fulfilled;
+        });
+    });
+
+    describe('crawlPttRange', () => {
+        it('crawlPttRange(4000,4001).should.eventually.have.length.equal(2)', function () {
+            this.timeout(10000);
+            return crawlPttRange(4000, 4001).should.eventually.have.property('length', 2);
         });
     });
 
@@ -26,12 +66,11 @@ describe('pttCrawler', () => {
             return crawlPttPage(pageIndex).should.eventually
                 .rejectedWith(`index${pageIndex} not exist, server return:500 - Internal Server Error / Server Too Busy.`);
         });
-    });
 
-    describe('crawlPttPage', () => {
         it('should resolve when Pttid exist', function () {
             this.timeout(5000);
             return crawlPttPage(4000).should.eventually.fulfilled;
         });
     });
 });
+

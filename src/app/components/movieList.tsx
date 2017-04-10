@@ -80,6 +80,7 @@ class MovieList extends React.Component<any, any> {
               label="TOMATO"
               icon={nearbyIcon}
               onTouchTap={() => this.select(SortType.tomato)}
+              className="hide"
               />
             <BottomNavigationItem
               label="PTT"

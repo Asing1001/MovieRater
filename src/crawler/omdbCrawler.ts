@@ -3,7 +3,7 @@ import Movie from '../models/movie';
 import * as Q from "q";
 import * as fetch from "isomorphic-fetch";
 import * as moment from 'moment';
-import crawlImdb from './imdbCrawler';
+import { getIMDBRating } from './imdbCrawler';
 
 
 const omdbApiUrl = 'http://www.omdbapi.com/';
@@ -34,7 +34,7 @@ export function crawlOmdb() {
         });
 }
 
-export function filterNeedCrawlMovie({englishTitle, imdbRating, releaseDate, imdbLastCrawlTime}: Movie) {
+export function filterNeedCrawlMovie({ englishTitle, imdbRating, releaseDate, imdbLastCrawlTime }: Movie) {
     let now = moment();
     let isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
     let hasCrawlToday = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime), 'days') === 0);
@@ -42,13 +42,13 @@ export function filterNeedCrawlMovie({englishTitle, imdbRating, releaseDate, imd
     return shouldCrawl;
 }
 
-function getImdbMovieInfo({englishTitle, yahooId}: Movie) {
+function getImdbMovieInfo({ englishTitle, yahooId }: Movie) {
     return fetch(`${omdbApiUrl}?t=${encodeURIComponent(englishTitle)}&tomatoes=true&r=json`)
         .then(res => { return res.json() })
-        .then(json => {
+        .then((json: any) => {
             var defer = Q.defer();
             if (json.Response === 'True') {
-                crawlImdb(json.imdbID).then(
+                getIMDBRating(json.imdbID).then(
                     (rating) => {
                         let imdbInfo = {
                             yahooId: yahooId,

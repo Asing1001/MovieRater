@@ -1,12 +1,13 @@
 import { crawlYahoo } from '../crawler/yahooCrawler';
 import { crawlOmdb } from '../crawler/omdbCrawler';
 import { crawlPtt } from '../crawler/pttCrawler';
-import { systemSetting } from '../configs/systemSetting';
+import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import * as fetch from "isomorphic-fetch";
 import { db } from "../data/db";
 import * as Q from 'q';
 import cacheManager from '../data/cacheManager';
 import Movie from "../models/movie";
+import { updateImdbInfo } from '../task/imdbTask';
 
 export function initScheduler() {
     console.log("[initScheduler] Create Schedule for keep website alive.");
@@ -15,14 +16,14 @@ export function initScheduler() {
             console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
     }, 600000, null);
 
-    console.log("[initScheduler] Create Schedule for yahooCrawler and crawlOmdb.");
+    console.log("[initScheduler] Create Schedule for yahooCrawler and updateImdbInfo.");
     setInterval(function () {
         console.time('[Scheduler] crawlYahoo');
-        crawlYahoo().then(() => {
+        crawlYahoo(schedulerSetting.yahooPagePerTime).then(() => {
             console.timeEnd('[Scheduler] crawlYahoo');
-            console.time('[Scheduler] crawlOmdb');
-            crawlOmdb().then(() => {
-                console.timeEnd('[Scheduler] crawlOmdb');
+            console.time('[Scheduler] updateImdbInfo');
+            updateImdbInfo().then(() => {
+                console.timeEnd('[Scheduler] updateImdbInfo');
             });
         });
     }, 900000, null);
@@ -30,7 +31,7 @@ export function initScheduler() {
     console.log("[initScheduler] Create Schedule for pttCrawler.");
     setInterval(function () {
         console.time('[Scheduler] crawlPtt');
-        crawlPtt().then((pttPages) => {
+        crawlPtt(schedulerSetting.pttPagePerTime).then(() => {
             console.timeEnd('[Scheduler] crawlPtt');
         });
     }, 900000, null);
