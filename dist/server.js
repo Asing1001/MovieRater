@@ -1,46 +1,33 @@
 "use strict";
-var express = require("express");
-var bodyParser = require("body-parser");
-var path = require('path');
-var graphqlHTTP = require('express-graphql');
-var db_1 = require('./data/db');
-var scheduler_1 = require('./backgroundService/scheduler');
-var schema_1 = require('./data/schema');
-var React = require('react');
-var server_1 = require('react-dom/server');
-var Router = require('react-router');
-var swig = require('swig');
-var routes_1 = require('./app/routes');
-var cacheManager_1 = require('./data/cacheManager');
-var favicon = require('serve-favicon');
-var compression = require('compression');
-var systemSetting_1 = require('./configs/systemSetting');
-var app = express();
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
+const graphqlHTTP = require("express-graphql");
+const db_1 = require("./data/db");
+const scheduler_1 = require("./backgroundService/scheduler");
+const schema_1 = require("./data/schema");
+const React = require("react");
+const server_1 = require("react-dom/server");
+const Router = require("react-router");
+const swig = require("swig");
+const routes_1 = require("./app/routes");
+const cacheManager_1 = require("./data/cacheManager");
+const favicon = require("serve-favicon");
+const compression = require("compression");
+const systemSetting_1 = require("./configs/systemSetting");
+db_1.db.openDbConnection().then(cacheManager_1.default.init).then(scheduler_1.initScheduler);
+const app = express();
 app.use(compression());
-app.get('/api/test', function (req, res) {
+app.get('/api/test', (req, res) => {
     res.send('test!');
 });
-app.get('/api/crawlerStatus', function (req, res) {
-    db_1.db.getDocument({ name: "crawlerStatus" }, "configs").then(function (c) { return res.send(c); });
-});
-app.get('/api/yahooMovies', function (req, res) {
-    db_1.db.getCollection("yahooMovies").then(function (yahooMovies) {
-        res.send(yahooMovies);
-    });
-});
-app.get('/api/pttPages', function (req, res) {
-    db_1.db.getCollection("pttPages").then(function (pages) {
-        res.send(pages);
-    });
-});
-db_1.db.openDbConnection()
-    .then(function () {
-    cacheManager_1.default.init();
-    scheduler_1.initScheduler();
+app.get('/api/crawlerStatus', (req, res) => {
+    db_1.db.getDocument({ name: "crawlerStatus" }, "configs").then(c => res.send(c));
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-var staticRoot = path.join(__dirname, 'public/');
+const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot));
 app.use(favicon(path.join(__dirname, 'public', 'image', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
@@ -64,7 +51,7 @@ app.use(function (req, res) {
         }
     });
 });
-var port = process.env.PORT || 3003;
+let port = process.env.PORT || 3003;
 app.listen(port, function () {
     console.log('app running on port', port);
 });

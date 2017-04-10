@@ -1,48 +1,40 @@
 "use strict";
-var request = require("request");
-var cheerio = require("cheerio");
-var db_1 = require("../data/db");
-var Q = require("q");
-var systemSetting_1 = require('../configs/systemSetting');
-function crawlYahoo() {
-    var crawlerStatusFilter = { name: "crawlerStatus" };
-    var howManyPagePerTime = 50;
-    var startYahooId = 1;
-    return db_1.db.getDocument(crawlerStatusFilter, "configs").then(function (crawlerStatus) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const request = require("request");
+const cheerio = require("cheerio");
+const db_1 = require("../data/db");
+const Q = require("q");
+function crawlYahoo(howManyPagePerTime) {
+    const crawlerStatusFilter = { name: "crawlerStatus" };
+    let startYahooId = 1;
+    return db_1.db.getDocument(crawlerStatusFilter, "configs").then(crawlerStatus => {
         if (crawlerStatus && crawlerStatus.maxYahooId) {
             startYahooId = crawlerStatus.maxYahooId + 1;
         }
-        if (systemSetting_1.yahooCrawlerSetting.enable) {
-            startYahooId = systemSetting_1.yahooCrawlerSetting.startYahooId;
-            howManyPagePerTime = systemSetting_1.yahooCrawlerSetting.howManyPagePerTime;
-        }
         return crawlYahooRange(startYahooId, startYahooId + howManyPagePerTime);
-    }).then(function (yahooMovies) {
-        var movieIds = yahooMovies.map(function (_a) {
-            var yahooId = _a.yahooId;
-            return yahooId;
-        });
-        var newMaxYahooId = Math.max.apply(Math, movieIds.concat([startYahooId]));
-        var alreadyCrawlTheNewest = newMaxYahooId === startYahooId;
+    }).then((yahooMovies) => {
+        let movieIds = yahooMovies.map(({ yahooId }) => yahooId);
+        let newMaxYahooId = Math.max(...movieIds, startYahooId);
+        let alreadyCrawlTheNewest = newMaxYahooId === startYahooId;
         if (alreadyCrawlTheNewest) {
             newMaxYahooId = 1;
         }
         db_1.db.updateDocument(crawlerStatusFilter, { maxYahooId: newMaxYahooId }, 'configs');
-        console.log("new movieInfo count:" + yahooMovies.length + ", newMaxYahooId:" + newMaxYahooId);
-        var promises = yahooMovies.map(function (yahooMovie) { return db_1.db.updateDocument({ yahooId: yahooMovie.yahooId }, yahooMovie, "yahooMovies"); });
+        console.log(`new movieInfo count:${yahooMovies.length}, newMaxYahooId:${newMaxYahooId}`);
+        let promises = yahooMovies.map(yahooMovie => db_1.db.updateDocument({ yahooId: yahooMovie.yahooId }, yahooMovie, "yahooMovies"));
         return Q.all(promises);
     });
 }
 exports.crawlYahoo = crawlYahoo;
 function crawlYahooRange(startId, endId) {
-    var promises = [];
-    for (var i = startId; i <= endId; i++) {
-        var promise = crawlYahooPage(i);
+    const promises = [];
+    for (let i = startId; i <= endId; i++) {
+        const promise = crawlYahooPage(i);
         promises.push(promise);
     }
-    return Q.allSettled(promises).then(function (results) {
-        var yahooMovies = [];
-        results.forEach(function (result) {
+    return Q.allSettled(promises).then(results => {
+        let yahooMovies = [];
+        results.forEach((result) => {
             if (result.state === "fulfilled") {
                 var value = result.value;
                 yahooMovies.push(value);
@@ -57,21 +49,21 @@ function crawlYahooRange(startId, endId) {
 }
 exports.crawlYahooRange = crawlYahooRange;
 function crawlYahooPage(id) {
-    var defer = Q.defer();
-    var yahooMovieUrl = 'https://tw.movies.yahoo.com/movieinfo_main.html/id=' + id;
-    var req = request({ url: yahooMovieUrl, followRedirect: false }, function (error, res, body) {
+    const defer = Q.defer();
+    const yahooMovieUrl = 'https://tw.movies.yahoo.com/movieinfo_main.html/id=' + id;
+    var req = request({ url: yahooMovieUrl, followRedirect: false }, (error, res, body) => {
         if (error) {
-            var reason = "error occur when request " + yahooMovieUrl + ", error:" + error;
+            let reason = `error occur when request ${yahooMovieUrl}, error:${error}`;
             return defer.reject(reason);
         }
         if (res.headers.location) {
-            var reason = yahooMovieUrl + " 404 not found";
+            let reason = `${yahooMovieUrl} 404 not found`;
             return defer.reject(reason);
         }
-        var $ = cheerio.load(body, { decodeEntities: false });
-        var $movieInfoDiv = $('.text.bulletin');
-        var $movieInfoValues = $movieInfoDiv.find('p .dta');
-        var movieInfo = {
+        const $ = cheerio.load(body, { decodeEntities: false });
+        const $movieInfoDiv = $('.text.bulletin');
+        const $movieInfoValues = $movieInfoDiv.find('p .dta');
+        const movieInfo = {
             yahooId: id,
             posterUrl: $('#ymvmvf').find('.img a').attr('href'),
             chineseTitle: $movieInfoDiv.find('h4').text(),
@@ -88,7 +80,7 @@ function crawlYahooPage(id) {
             summary: $('.text.full>p').html() || $('.text.show>p').html()
         };
         if (!movieInfo.chineseTitle) {
-            var reason = yahooMovieUrl + " can not find chineseTitle, data might got problem.";
+            let reason = `${yahooMovieUrl} can not find chineseTitle, data might got problem.`;
             return defer.reject(reason);
         }
         return defer.resolve(movieInfo);

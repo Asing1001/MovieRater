@@ -1,24 +1,22 @@
 "use strict";
-var mongodb_1 = require('mongodb');
-var Q = require("q");
-var systemSetting_1 = require('../configs/systemSetting');
-var log_1 = require('../helper/log');
-var db = (function () {
-    function db() {
-    }
-    db.openDbConnection = function () {
-        var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongodb_1 = require("mongodb");
+const Q = require("q");
+const systemSetting_1 = require("../configs/systemSetting");
+const log_1 = require("../helper/log");
+class db {
+    static openDbConnection() {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
             if (this.dbConnection == null) {
-                mongodb_1.MongoClient.connect(systemSetting_1.systemSetting.dbUrl, function (err, db) {
+                mongodb_1.MongoClient.connect(systemSetting_1.systemSetting.dbUrl, (err, db) => {
                     if (err) {
                         console.error(err);
                         deferred.reject(err);
                     }
                     console.log("Connected correctly to MongoDB server.");
-                    _this.dbConnection = db;
+                    this.dbConnection = db;
                     deferred.resolve(db);
                 });
             }
@@ -28,21 +26,21 @@ var db = (function () {
         }
         catch (error) {
             console.error(error);
+            deferred.reject(error);
         }
         return deferred.promise;
-    };
-    db.closeDbConnection = function () {
+    }
+    static closeDbConnection() {
         if (this.dbConnection) {
             this.dbConnection.close();
             this.dbConnection = null;
         }
-    };
-    db.updateDocument = function (filter, value, collectionName, options) {
-        if (options === void 0) { options = { upsert: true }; }
+    }
+    static updateDocument(filter, value, collectionName, options = { upsert: true }) {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
-            this.dbConnection.collection(collectionName).updateOne(filter, { $set: value }, options, function (err, result) {
+            this.dbConnection.collection(collectionName).updateOne(filter, { $set: value }, options, (err, result) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);
@@ -54,12 +52,12 @@ var db = (function () {
             console.error(error);
         }
         return deferred.promise;
-    };
-    db.insertDocument = function (document, collectionName) {
+    }
+    static insertDocument(document, collectionName) {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
-            this.dbConnection.collection(collectionName).insertOne(document, function (err, result) {
+            this.dbConnection.collection(collectionName).insertOne(document, (err, result) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);
@@ -71,13 +69,13 @@ var db = (function () {
             console.error(error);
         }
         return deferred.promise;
-    };
-    db.insertCollection = function (collection, collectionName) {
+    }
+    static insertCollection(collection, collectionName) {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
             if (collection && collection.length > 0) {
-                this.dbConnection.collection(collectionName).insert(collection, function (err, result) {
+                this.dbConnection.collection(collectionName).insert(collection, (err, result) => {
                     if (err) {
                         console.error(err);
                         deferred.reject(err);
@@ -93,12 +91,12 @@ var db = (function () {
             console.error(error);
         }
         return deferred.promise;
-    };
-    db.getCollectionCount = function (collectionName) {
+    }
+    static getCollectionCount(collectionName) {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
-            this.dbConnection.collection(collectionName).count(function (err, result) {
+            this.dbConnection.collection(collectionName).count((err, result) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);
@@ -110,12 +108,12 @@ var db = (function () {
             console.error(error);
         }
         return deferred.promise;
-    };
-    db.getCollection = function (collectionName, sort) {
+    }
+    static getCollection(collectionName, sort) {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
-            this.dbConnection.collection(collectionName).find({}).sort(sort).toArray(function (err, items) {
+            this.dbConnection.collection(collectionName).find({}).sort(sort).toArray((err, items) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);
@@ -127,12 +125,12 @@ var db = (function () {
             console.error(error);
         }
         return deferred.promise;
-    };
-    db.getDocument = function (query, collectionName) {
+    }
+    static getDocument(query, collectionName) {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
-            this.dbConnection.collection(collectionName).findOne(query, function (err, document) {
+            this.dbConnection.collection(collectionName).findOne(query, (err, document) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);
@@ -144,9 +142,8 @@ var db = (function () {
             console.error(error);
         }
         return deferred.promise;
-    };
-    db.dbConnection = null;
-    return db;
-}());
+    }
+}
+db.dbConnection = null;
 exports.db = db;
 //# sourceMappingURL=db.js.map

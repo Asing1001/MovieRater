@@ -1,9 +1,6 @@
 "use strict";
-var Article = (function () {
-    function Article() {
-    }
-    return Article;
-}());
 Object.defineProperty(exports, "__esModule", { value: true });
+class Article {
+}
 exports.default = Article;
 //# sourceMappingURL=article.js.map

@@ -1,9 +1,6 @@
 "use strict";
-var YahooMovie = (function () {
-    function YahooMovie() {
-    }
-    return YahooMovie;
-}());
 Object.defineProperty(exports, "__esModule", { value: true });
+class YahooMovie {
+}
 exports.default = YahooMovie;
 //# sourceMappingURL=yahooMovie.js.map

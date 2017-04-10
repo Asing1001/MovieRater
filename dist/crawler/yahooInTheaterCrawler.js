@@ -1,21 +1,22 @@
 "use strict";
-var request = require("request");
-var cheerio = require("cheerio");
-var Q = require("q");
-var inTheaterUrl = 'https://tw.movies.yahoo.com/';
+Object.defineProperty(exports, "__esModule", { value: true });
+const request = require("request");
+const cheerio = require("cheerio");
+const Q = require("q");
+const inTheaterUrl = 'https://tw.movies.yahoo.com/';
 function crawlInTheater() {
-    var defer = Q.defer();
-    var req = request({ url: inTheaterUrl, followRedirect: false }, function (error, res, body) {
+    const defer = Q.defer();
+    var req = request({ url: inTheaterUrl, followRedirect: false }, (error, res, body) => {
         if (error) {
-            var reason = "error occur when request " + inTheaterUrl + ", error:" + error;
+            let reason = `error occur when request ${inTheaterUrl}, error:${error}`;
             return defer.reject(reason);
         }
         if (res.headers.location) {
-            var reason = inTheaterUrl + " 404 not found";
+            let reason = `${inTheaterUrl} 404 not found`;
             return defer.reject(reason);
         }
-        var $ = cheerio.load(body);
-        var yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]').map(function (index, ele) { return parseInt($(ele).val()); }));
+        const $ = cheerio.load(body);
+        let yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]').map((index, ele) => parseInt($(ele).val())));
         return defer.resolve(yahooIds);
     });
     return defer.promise;

@@ -1,157 +1,186 @@
 "use strict";
-var graphql_1 = require('graphql');
-var cacheManager_1 = require('../data/cacheManager');
-var ArticleType = new graphql_1.GraphQLObjectType({
+Object.defineProperty(exports, "__esModule", { value: true });
+const graphql_1 = require("graphql");
+const cacheManager_1 = require("../data/cacheManager");
+const ArticleType = new graphql_1.GraphQLObjectType({
     name: 'article',
     description: 'ptt articles',
-    fields: function () { return ({
+    fields: () => ({
         title: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.title; },
+            resolve: obj => obj.title,
         },
         push: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.push; },
+            resolve: obj => obj.push,
         },
         url: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.url; },
+            resolve: obj => obj.url,
         },
         date: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.date; },
+            resolve: obj => obj.date,
         },
         author: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.author; },
+            resolve: obj => obj.author,
         },
-    }); }
+    })
 });
-var MovieType = new graphql_1.GraphQLObjectType({
+const MovieType = new graphql_1.GraphQLObjectType({
     name: 'Movie',
     description: '...',
-    fields: function () { return ({
+    fields: () => ({
         yahooId: {
             type: graphql_1.GraphQLInt,
             description: 'yahoo movie id',
-            resolve: function (obj) { return obj.yahooId; },
+            resolve: obj => obj.yahooId,
         },
         posterUrl: {
             type: graphql_1.GraphQLString,
             description: 'poster image url',
-            resolve: function (obj) { return obj.posterUrl; },
+            resolve: obj => obj.posterUrl,
         },
         summary: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.summary; },
+            resolve: obj => obj.summary,
         },
         briefSummary: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.summary && obj.summary.length > 300 ? obj.summary.substr(0, 300) + '...' : obj.summary; },
+            resolve: obj => obj.summary && obj.summary.length > 300 ? obj.summary.substr(0, 300) + '...' : obj.summary,
         },
         chineseTitle: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.chineseTitle; },
+            resolve: obj => obj.chineseTitle,
         },
         englishTitle: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.englishTitle; },
+            resolve: obj => obj.englishTitle,
         },
         releaseDate: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.releaseDate; },
+            resolve: obj => obj.releaseDate,
         },
         type: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.type; },
+            resolve: obj => obj.type,
         },
         runTime: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.runTime; },
+            resolve: obj => obj.runTime,
         },
         director: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.director; },
+            resolve: obj => obj.director,
         },
         actor: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.actor; },
+            resolve: obj => obj.actor,
         },
         launchCompany: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.launchCompany; },
+            resolve: obj => obj.launchCompany,
         },
         companyUrl: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.companyUrl; },
+            resolve: obj => obj.companyUrl,
         },
         sourceUrl: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.sourceUrl; },
+            resolve: obj => obj.sourceUrl,
         },
         goodRateArticles: {
             type: new graphql_1.GraphQLList(ArticleType),
-            resolve: function (obj) { return obj.goodRateArticles; },
+            resolve: obj => obj.goodRateArticles,
         },
         normalRateArticles: {
             type: new graphql_1.GraphQLList(ArticleType),
-            resolve: function (obj) { return obj.normalRateArticles; },
+            resolve: obj => obj.normalRateArticles,
         },
         badRateArticles: {
             type: new graphql_1.GraphQLList(ArticleType),
-            resolve: function (obj) { return obj.badRateArticles; },
+            resolve: obj => obj.badRateArticles,
         },
         otherArticles: {
             type: new graphql_1.GraphQLList(ArticleType),
-            resolve: function (obj) { return obj.otherArticles; },
+            resolve: obj => obj.otherArticles,
         },
         relatedArticles: {
             type: new graphql_1.GraphQLList(ArticleType),
-            resolve: function (obj) { return obj.relatedArticles; },
+            resolve: obj => obj.relatedArticles,
         },
         imdbID: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.imdbID; },
+            resolve: obj => obj.imdbID,
         },
         yahooRating: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.yahooRating; },
+            resolve: obj => obj.yahooRating,
         },
         imdbRating: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.imdbRating; },
+            resolve: obj => obj.imdbRating,
         },
         tomatoRating: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.tomatoRating; },
+            resolve: obj => obj.tomatoRating,
         },
         tomatoURL: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.tomatoURL; },
+            resolve: obj => obj.tomatoURL,
         },
-    }); }
+        schedule: {
+            type: new graphql_1.GraphQLList(scheduleType),
+            resolve: obj => {
+                return cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES)
+                    .filter((schedule) => schedule.yahooId == obj.yahooId);
+            },
+        }
+    })
 });
-var autoCompleteType = new graphql_1.GraphQLObjectType({
+const autoCompleteType = new graphql_1.GraphQLObjectType({
     name: "autoCompleteType",
-    fields: function () { return ({
+    fields: () => ({
         value: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.value; },
+            resolve: obj => obj.value,
         },
         text: {
             type: graphql_1.GraphQLString,
-            resolve: function (obj) { return obj.text; },
+            resolve: obj => obj.text,
         },
-    }); }
+    })
 });
-var QueryType = new graphql_1.GraphQLObjectType({
+const scheduleType = new graphql_1.GraphQLObjectType({
+    name: "scheduleType",
+    fields: () => ({
+        theaterName: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.theaterName,
+        },
+        yahooId: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.yahooId,
+        },
+        timesValues: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: obj => obj.timesValues,
+        },
+        timesStrings: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: obj => obj.timesStrings,
+        },
+    })
+});
+const QueryType = new graphql_1.GraphQLObjectType({
     name: 'Query',
     description: 'query...',
-    fields: function () { return ({
+    fields: () => ({
         allMovies: {
             type: new graphql_1.GraphQLList(MovieType),
             description: 'every movies',
-            resolve: function (root, args) { return cacheManager_1.default.get("allMovies"); }
+            resolve: (root, args) => cacheManager_1.default.get("allMovies")
         },
         movie: {
             type: MovieType,
@@ -159,27 +188,25 @@ var QueryType = new graphql_1.GraphQLObjectType({
             args: {
                 yahooId: { type: graphql_1.GraphQLInt }
             },
-            resolve: function (root, _a) {
-                var yahooId = _a.yahooId, chineseTitle = _a.chineseTitle;
-                var allMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES);
-                return allMovies.find(function (movie) { return movie.yahooId === yahooId; });
+            resolve: (root, { yahooId, chineseTitle }) => {
+                let allMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES);
+                return allMovies.find((movie) => { return movie.yahooId === yahooId; });
             },
         },
         allMoviesNames: {
             type: new graphql_1.GraphQLList(autoCompleteType),
             description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
-            resolve: function (root, args) { return cacheManager_1.default.get(cacheManager_1.default.All_MOVIES_NAMES); }
+            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.All_MOVIES_NAMES)
         },
         movies: {
             type: new graphql_1.GraphQLList(MovieType),
             args: {
                 yahooIds: { type: new graphql_1.GraphQLList(graphql_1.GraphQLInt) }
             },
-            resolve: function (root, _a) {
-                var yahooIds = _a.yahooIds;
-                var allMovies = cacheManager_1.default.get("allMovies");
-                var result = [];
-                allMovies.forEach(function (movie) {
+            resolve: (root, { yahooIds }) => {
+                let allMovies = cacheManager_1.default.get("allMovies");
+                let result = [];
+                allMovies.forEach((movie) => {
                     if (yahooIds.indexOf(movie.yahooId) !== -1) {
                         result.push(movie);
                     }
@@ -190,11 +217,10 @@ var QueryType = new graphql_1.GraphQLObjectType({
         recentMovies: {
             type: new graphql_1.GraphQLList(MovieType),
             description: 'recent movies',
-            resolve: function (root, args) { return cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES); }
+            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES)
         },
-    }); },
+    }),
 });
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = new graphql_1.GraphQLSchema({
     query: QueryType,
 });
