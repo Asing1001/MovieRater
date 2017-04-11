@@ -16,7 +16,11 @@ describe('task', () => {
     sandbox = sinon.sandbox.create();
     stubUpdateDocument = sandbox.stub(db, 'updateDocument');
     stubGetCollection = sandbox.stub(db, 'getCollection');
-  })
+  });
+
+  after(() => {
+    sandbox.restore();
+  });
 
   describe('updateImdbInfo', () => {
     it("should get yahooMovies then update nearly movies' imdb info", async function () {
@@ -31,9 +35,5 @@ describe('task', () => {
       await updateImdbInfo();
       sandbox.assert.calledOnce(stubUpdateDocument);
     });
-  });
-
-  after(() => {
-    sandbox.restore();
   });
 });
