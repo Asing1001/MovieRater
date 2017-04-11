@@ -1,38 +1,40 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai = require("chai");
-const chaiAsPromised = require("chai-as-promised");
+const sinon = require("sinon");
+const sinonChai = require("sinon-chai");
 const cacheManager_1 = require("../data/cacheManager");
-const memoryCache = require("memory-cache");
-const Q = require("q");
+const db_1 = require("../data/db");
+const yahooInTheaterCrawler = require("../crawler/yahooInTheaterCrawler");
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 chai.should();
-chai.use(chaiAsPromised);
-class mockCacheManager extends cacheManager_1.default {
-    static init() {
-        let defer = Q.defer();
-        memoryCache.put(cacheManager_1.default.All_MOVIES, [1]);
-        defer.resolve();
-        return defer.promise;
-    }
-}
+chai.use(sinonChai);
 describe('cacheManager', () => {
+    let sandbox, stubGetCollection;
+    before(() => {
+        sandbox = sinon.sandbox.create();
+        stubGetCollection = sandbox.stub(db_1.db, 'getCollection');
+    });
+    after(() => {
+        sandbox.restore();
+    });
     describe('init cacheManager', () => {
         it('should init complete', function () {
-            return mockCacheManager.init().should.eventually.fulfilled;
-        });
-    });
-    describe('get', () => {
-        it('cacheManager', function () {
-            return mockCacheManager.get(cacheManager_1.default.All_MOVIES).should.have.length.above(0);
-        });
-    });
-    describe('setRecentMoviesCache', () => {
-        it('should.eventually.fulfilled', function () {
-            this.timeout(10000);
-            return mockCacheManager.setRecentMoviesCache().should.eventually.fulfilled;
+            return __awaiter(this, void 0, void 0, function* () {
+                stubGetCollection.returns([]);
+                sandbox.stub(yahooInTheaterCrawler, 'crawlInTheater').returns(Promise.resolve([]));
+                yield cacheManager_1.default.init();
+            });
         });
     });
 });

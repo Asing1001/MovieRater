@@ -24,6 +24,9 @@ describe('task', () => {
         stubUpdateDocument = sandbox.stub(db_1.db, 'updateDocument');
         stubGetCollection = sandbox.stub(db_1.db, 'getCollection');
     });
+    after(() => {
+        sandbox.restore();
+    });
     describe('updateImdbInfo', () => {
         it("should get yahooMovies then update nearly movies' imdb info", function () {
             return __awaiter(this, void 0, void 0, function* () {
@@ -39,9 +42,6 @@ describe('task', () => {
                 sandbox.assert.calledOnce(stubUpdateDocument);
             });
         });
-    });
-    after(() => {
-        sandbox.restore();
     });
 });
 //# sourceMappingURL=imdbTask.test.js.map
