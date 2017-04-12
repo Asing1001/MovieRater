@@ -17,7 +17,7 @@ const imdbTask_1 = require("../task/imdbTask");
 const imdbCrawler = require("../crawler/imdbCrawler");
 const should = chai.should();
 chai.use(sinonChai);
-describe('task', () => {
+describe('imdbTask', () => {
     let sandbox, stubUpdateDocument, stubGetCollection;
     before(() => {
         sandbox = sinon.sandbox.create();
