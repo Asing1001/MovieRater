@@ -10,7 +10,7 @@ import Movie from "../models/movie";
 const should = chai.should();
 chai.use(sinonChai);
 
-describe('task', () => {
+describe('imdbTask', () => {
   let sandbox, stubUpdateDocument, stubGetCollection: sinon.SinonStub;
   before(() => {
     sandbox = sinon.sandbox.create();
