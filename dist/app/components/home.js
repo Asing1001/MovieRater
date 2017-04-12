@@ -6,6 +6,7 @@ const movieList_1 = require("./movieList");
 const AutoComplete_1 = require("material-ui/AutoComplete");
 const Paper_1 = require("material-ui/Paper");
 require("isomorphic-fetch");
+const RefreshIndicator_1 = require("material-ui/RefreshIndicator");
 const ALLDATA = `{
             yahooId
             posterUrl
@@ -48,7 +49,7 @@ class Home extends React.Component {
         this.state = {
             searchText: '',
             dataSource: [],
-            resultMovies: []
+            resultMovies: [],
         };
     }
     componentWillMount() {
@@ -101,6 +102,7 @@ class Home extends React.Component {
         this.search(yahooIds);
     }
     requestGraphQL(query) {
+        this.setState({ isLoading: true });
         return fetch('/graphql', {
             method: 'POST',
             headers: {
@@ -111,7 +113,10 @@ class Home extends React.Component {
                 query: query
             }),
             credentials: 'include',
-        }).then(res => res.json());
+        }).then(res => {
+            this.setState({ isLoading: false });
+            return res.json();
+        });
     }
     search(yahooIds) {
         this.requestGraphQL(`
@@ -150,6 +155,8 @@ class Home extends React.Component {
     }
     render() {
         return (React.createElement("div", { className: "container" },
+            React.createElement("div", { className: `backdrop ${this.state.isLoading ? '' : 'hide'}` },
+                React.createElement(RefreshIndicator_1.default, { size: 40, left: -20, top: 0, status: "loading", style: { marginLeft: '50%', marginTop: '25%', zIndex: 3 } })),
             React.createElement("div", { className: "autoCompleteWrapper" },
                 React.createElement(AutoComplete_1.default, { hintText: "電影名稱(中英皆可)", dataSource: this.state.dataSource, floatingLabelText: "找電影", fullWidth: true, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 6, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this) }),
                 React.createElement("button", { className: `clearButton ${this.state.searchText ? '' : 'displayNone'}`, onClick: this.clearSearchText.bind(this) }, "X")),

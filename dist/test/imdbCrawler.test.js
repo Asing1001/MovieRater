@@ -26,6 +26,14 @@ describe('imdbCrawler', () => {
                 movieInfo.should.have.property("imdbRating").above(7);
             });
         });
+        it('getIMDBMovieInfo(" A Silent Voice : The Movie").should.have.property("imdbID","tt5323662"),"imdbRating".above(7)', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(10000);
+                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo(" A Silent Voice : The Movie");
+                movieInfo.should.have.property("imdbID", "tt5323662");
+                movieInfo.should.have.property("imdbRating").above(7);
+            });
+        });
     });
 });
 //# sourceMappingURL=imdbCrawler.test.js.map

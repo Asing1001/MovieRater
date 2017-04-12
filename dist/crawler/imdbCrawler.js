@@ -43,14 +43,24 @@ function getIMDBRating(imdbID) {
     });
 }
 exports.getIMDBRating = getIMDBRating;
-const regexp = /"id":"([\w]*)",/;
-const imdbJsonUrl = "https://v2.sg.media-imdb.com/suggests/w/who_killed_cock_robi.json";
 function getIMDBSuggestId(englishTitle) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield fetch(`https://v2.sg.media-imdb.com/suggests/${englishTitle.trim().charAt(0).toLowerCase()}/${encodeURIComponent(englishTitle)}.json`);
+        let suggestId = "";
+        const imdbSuggestJsonUrl = getIMDBSuggestJsonUrl(englishTitle);
+        const response = yield fetch(imdbSuggestJsonUrl);
         const text = yield response.text();
-        const match = regexp.exec(text);
-        return match ? match[1] : "";
+        const match = /"id":"([\w]*)",/.exec(text);
+        if (match) {
+            suggestId = match[1];
+        }
+        else {
+            console.log(`could not find suggest id at ${imdbSuggestJsonUrl}`);
+        }
+        return suggestId;
     });
+}
+function getIMDBSuggestJsonUrl(englishTitle) {
+    const jsonName = englishTitle.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_").substr(0, 20);
+    return `https://v2.sg.media-imdb.com/suggests/${jsonName.charAt(0)}/${jsonName}.json`;
 }
 //# sourceMappingURL=imdbCrawler.js.map
