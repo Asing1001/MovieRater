@@ -5,7 +5,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
 import 'isomorphic-fetch';
-
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 const ALLDATA = `{
             yahooId
             posterUrl
@@ -50,7 +50,7 @@ class Home extends React.Component<any, any> {
     this.state = {
       searchText: '',
       dataSource: [],
-      resultMovies: []
+      resultMovies: [],
     };
   }
 
@@ -58,7 +58,7 @@ class Home extends React.Component<any, any> {
     if (this.props.params.id) {
       this.search([parseInt(this.props.params.id)]);
     } else {
-      this.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json:any) => {
+      this.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json: any) => {
         this.setState({ resultMovies: json.data.recentMovies.map(movie => this.classifyArticle(movie)) });
       });
     }
@@ -79,7 +79,7 @@ class Home extends React.Component<any, any> {
       body: JSON.stringify({ query: "{allMoviesNames{value,text}}" }),
       credentials: 'include',
     }).then(res => res.json())
-      .then((json:any) => {
+      .then((json: any) => {
         this.setState({ dataSource: json.data.allMoviesNames })
       });
   }
@@ -96,9 +96,9 @@ class Home extends React.Component<any, any> {
     if (index === -1) {
       let searchText = selectItem.toLowerCase();
       if (!filteredList) {
-        yahooIds = this.state.dataSource.filter(({value, text}) => text.toLowerCase().indexOf(searchText) !== -1).map(({value}) => parseInt(value)).slice(0, 6);
+        yahooIds = this.state.dataSource.filter(({ value, text }) => text.toLowerCase().indexOf(searchText) !== -1).map(({ value }) => parseInt(value)).slice(0, 6);
       } else {
-        yahooIds = filteredList.map(({value}) => parseInt(value.key)).slice(0, 6);
+        yahooIds = filteredList.map(({ value }) => parseInt(value.key)).slice(0, 6);
       }
     } else {
       yahooIds.push(parseInt(selectItem.value));
@@ -108,6 +108,7 @@ class Home extends React.Component<any, any> {
   }
 
   private requestGraphQL(query: string) {
+    this.setState({isLoading:true});
     return fetch('/graphql', {
       method: 'POST',
       headers: {
@@ -118,16 +119,19 @@ class Home extends React.Component<any, any> {
         query: query
       }),
       credentials: 'include',
-    }).then(res => res.json())
+    }).then(res => {
+      this.setState({isLoading:false});      
+      return res.json()
+    })
   }
 
-  private search(yahooIds:Number[]) {
+  private search(yahooIds: Number[]) {
     this.requestGraphQL(`
         {
-          movies(yahooIds:${JSON.stringify(yahooIds)})${yahooIds.length===1?ALLDATA:BRIEFDATA}
+          movies(yahooIds:${JSON.stringify(yahooIds)})${yahooIds.length === 1 ? ALLDATA : BRIEFDATA}
         }
     `)
-      .then((json:any) => {
+      .then((json: any) => {
         this.setState({ resultMovies: json.data.movies.map(movie => this.classifyArticle(movie)) });
       });
   }
@@ -156,7 +160,16 @@ class Home extends React.Component<any, any> {
 
   render() {
     return (
-      <div className="container">
+      <div className="container" >
+        <div className={`backdrop ${this.state.isLoading?'':'hide'}`}>
+          <RefreshIndicator
+            size={40}
+            left={-20}
+            top={0}
+            status="loading"
+            style={{ marginLeft: '50%', marginTop: '25%', zIndex: 3 }}            
+          />
+        </div>
         <div className="autoCompleteWrapper">
           <AutoComplete
             hintText="電影名稱(中英皆可)"
@@ -168,7 +181,7 @@ class Home extends React.Component<any, any> {
             onNewRequest={this.onNewRequest.bind(this)}
             searchText={this.state.searchText}
             onUpdateInput={this.handleUpdateInput.bind(this)}
-            />
+          />
           <button className={`clearButton ${this.state.searchText ? '' : 'displayNone'}`} onClick={this.clearSearchText.bind(this)}>X</button>
         </div>
         {
