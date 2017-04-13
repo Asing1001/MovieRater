@@ -3,12 +3,30 @@ import FindResult from './findResult';
 import Movie from '../../models/movie';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
-
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
 import FontIcon from 'material-ui/FontIcon';
+import { classifyArticle, requestGraphQL } from '../helper';
+
 const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
 const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
 const nearbyIcon = <IconLocationOn />;
+
+const BRIEFDATA = `{
+            yahooId
+            posterUrl
+            chineseTitle
+            englishTitle
+            releaseDate
+            type
+            runTime
+            yahooRating
+            imdbID
+            imdbRating
+            tomatoURL            
+            tomatoRating            
+            relatedArticles{title}
+            briefSummary
+          }`;
 
 enum SortType {
   imdb = 0,
@@ -22,34 +40,62 @@ class MovieList extends React.Component<any, any> {
     super(props)
     this.state = {
       selectedIndex: SortType.imdb,
-      sortFunction: this.GetStandardSortFunction('imdbRating')
+      sortFunction: this.getStandardSortFunction('imdbRating'),
+      movies: []
     };
   }
 
+  getData(ids) {
+    if (ids) {
+      const yahooIds = JSON.stringify(ids.split(',').map(id => parseInt(id)));
+      requestGraphQL(`
+        {
+          movies(yahooIds:${yahooIds})${BRIEFDATA}
+        }
+        `)
+        .then((json: any) => {
+          this.setState({ movies: json.data.movies.map(movie => classifyArticle(movie)) });
+        });
+    }
+    else {
+      requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json: any) => {
+        this.setState({ movies: json.data.recentMovies.map(movie => classifyArticle(movie)) });
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.getData(nextProps.params.ids);
+  }
+
+  componentWillMount() {
+    this.getData(this.props.params.ids);
+  }
+
   select = (index) => {
-    if(this.state.selectedIndex === index){
+    if (this.state.selectedIndex === index) {
       return;
     }
     var sortFunction;
     switch (index) {
       case SortType.imdb:
-        sortFunction = this.GetStandardSortFunction('imdbRating');
+        sortFunction = this.getStandardSortFunction('imdbRating');
         break;
       case SortType.ptt:
-        sortFunction = (a, b) => this.GetPttRating(b) - this.GetPttRating(a)
+        sortFunction = (a, b) => this.getPttRating(b) - this.getPttRating(a)
         break;
       case SortType.tomato:
-        sortFunction = this.GetStandardSortFunction('tomatoRating');
+        sortFunction = this.getStandardSortFunction('tomatoRating');
         break;
       case SortType.yahoo:
-        sortFunction = this.GetStandardSortFunction('yahooRating');
+        sortFunction = this.getStandardSortFunction('yahooRating');
         break;
     }
 
     this.setState({ selectedIndex: index, sortFunction: sortFunction });
   }
 
-  GetStandardSortFunction = (propertyName) => {
+  getStandardSortFunction = (propertyName) => {
     return function (a, b) {
       let aValue = a[propertyName] === 'N/A' ? 0 : a[propertyName];
       let bValue = b[propertyName] === 'N/A' ? 0 : b[propertyName];
@@ -57,7 +103,7 @@ class MovieList extends React.Component<any, any> {
     }
   }
 
-  GetPttRating = (movie: Movie) => {
+  getPttRating = (movie: Movie) => {
     return movie.goodRateArticles.length - movie.badRateArticles.length;
   }
 
@@ -70,27 +116,27 @@ class MovieList extends React.Component<any, any> {
               label="IMDB"
               icon={nearbyIcon}
               onTouchTap={() => this.select(SortType.imdb)}
-              />
+            />
             <BottomNavigationItem
               label="YAHOO"
               icon={nearbyIcon}
               onTouchTap={() => this.select(SortType.yahoo)}
-              />
+            />
             <BottomNavigationItem
               label="TOMATO"
               icon={nearbyIcon}
               onTouchTap={() => this.select(SortType.tomato)}
               className="hide"
-              />
+            />
             <BottomNavigationItem
               label="PTT"
               icon={nearbyIcon}
               onTouchTap={() => this.select(SortType.ptt)}
-              />
+            />
           </BottomNavigation>
         </Paper>
         {
-          this.props.movies.sort(this.state.sortFunction).map((movie: Movie) => (
+          this.state.movies.sort(this.state.sortFunction).map((movie: Movie) => (
             <FindResult key={movie.yahooId} movie={movie}></FindResult>
           ))
         }

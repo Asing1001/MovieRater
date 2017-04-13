@@ -2,13 +2,15 @@ import * as React from 'react';
 import { Router } from 'react-router';
 import * as ReactDOM from 'react-dom';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
+import { browserHistory , } from 'react-router';
+
 import routes from './routes';
 import './main.css';
 
 class Root extends React.Component<any, any> {
   render() {
     return (
-      <Router history={createBrowserHistory()}>{routes}</Router>
+      <Router history={browserHistory}>{routes}</Router>
     );
   }
 }
