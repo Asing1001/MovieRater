@@ -1,14 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const findResult_1 = require("./findResult");
 const BottomNavigation_1 = require("material-ui/BottomNavigation");
 const Paper_1 = require("material-ui/Paper");
 const sort_1 = require("material-ui/svg-icons/content/sort");
-const FontIcon_1 = require("material-ui/FontIcon");
+const findResult_1 = require("./findResult");
 const helper_1 = require("../helper");
-const recentsIcon = React.createElement(FontIcon_1.default, { className: "material-icons" }, "restore");
-const favoritesIcon = React.createElement(FontIcon_1.default, { className: "material-icons" }, "favorite");
+const loadingIcon_1 = require("./loadingIcon");
 const nearbyIcon = React.createElement(sort_1.default, null);
 const BRIEFDATA = `{
             yahooId
@@ -70,10 +68,12 @@ class MovieList extends React.Component {
         this.state = {
             selectedIndex: SortType.imdb,
             sortFunction: this.getStandardSortFunction('imdbRating'),
-            movies: []
+            movies: [],
+            isLoading: true
         };
     }
     getData(ids) {
+        this.setState({ isLoading: true });
         if (ids) {
             const yahooIds = JSON.stringify(ids.split(',').map(id => parseInt(id)));
             helper_1.requestGraphQL(`
@@ -82,12 +82,12 @@ class MovieList extends React.Component {
         }
         `)
                 .then((json) => {
-                this.setState({ movies: json.data.movies.map(movie => helper_1.classifyArticle(movie)) });
+                this.setState({ movies: json.data.movies.map(movie => helper_1.classifyArticle(movie)), isLoading: false });
             });
         }
         else {
             helper_1.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json) => {
-                this.setState({ movies: json.data.recentMovies.map(movie => helper_1.classifyArticle(movie)) });
+                this.setState({ movies: json.data.recentMovies.map(movie => helper_1.classifyArticle(movie)), isLoading: false });
             });
         }
     }
@@ -99,6 +99,7 @@ class MovieList extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
+            React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading || true }),
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em' } },
                 React.createElement(BottomNavigation_1.BottomNavigation, { selectedIndex: this.state.selectedIndex },
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "IMDB", icon: nearbyIcon, onTouchTap: () => this.select(SortType.imdb) }),

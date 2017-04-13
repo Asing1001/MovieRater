@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const AutoComplete_1 = require("material-ui/AutoComplete");
 require("isomorphic-fetch");
-const RefreshIndicator_1 = require("material-ui/RefreshIndicator");
 const react_router_1 = require("react-router");
 class Home extends React.Component {
     constructor(props) {
@@ -11,7 +10,6 @@ class Home extends React.Component {
         this.state = {
             searchText: '',
             dataSource: [],
-            resultMovies: [],
         };
     }
     componentDidMount() {
@@ -60,8 +58,6 @@ class Home extends React.Component {
     }
     render() {
         return (React.createElement("div", { className: "container" },
-            React.createElement("div", { className: `backdrop ${this.state.isLoading ? '' : 'hide'}` },
-                React.createElement(RefreshIndicator_1.default, { size: 40, left: -20, top: 0, status: "loading", style: { marginLeft: '50%', marginTop: '25%', zIndex: 3 } })),
             React.createElement("div", { className: "autoCompleteWrapper" },
                 React.createElement(AutoComplete_1.default, { hintText: "電影名稱(中英皆可)", dataSource: this.state.dataSource, floatingLabelText: "找電影", fullWidth: true, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 6, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this) }),
                 React.createElement("button", { className: `clearButton ${this.state.searchText ? '' : 'displayNone'}`, onClick: this.clearSearchText.bind(this) }, "X")),

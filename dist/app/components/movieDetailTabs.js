@@ -7,6 +7,7 @@ const Paper_1 = require("material-ui/Paper");
 const movieDetail_1 = require("./movieDetail");
 const pttArticles_1 = require("./pttArticles");
 const helper_1 = require("../helper");
+const loadingIcon_1 = require("./loadingIcon");
 const ALLDATA = `{
             yahooId
             posterUrl
@@ -32,13 +33,13 @@ class MovieDetailTabs extends React.Component {
         super(props);
         this.handleChange = (value) => {
             this.setState({
-                movie: this.state.movie,
-                slideIndex: value
+                slideIndex: value,
             });
         };
         this.state = {
             movie: {},
-            slideIndex: 0
+            slideIndex: 0,
+            isLoading: true
         };
     }
     componentWillMount() {
@@ -48,6 +49,7 @@ class MovieDetailTabs extends React.Component {
         this.search([parseInt(nextProps.params.id)]);
     }
     search(yahooIds) {
+        this.setState({ isLoading: true });
         helper_1.requestGraphQL(`
         {
           movies(yahooIds:${JSON.stringify(yahooIds)})${ALLDATA}
@@ -55,14 +57,14 @@ class MovieDetailTabs extends React.Component {
     `)
             .then((json) => {
             this.setState({
-                slideIndex: this.state.slideIndex,
-                movie: json.data.movies.map(movie => helper_1.classifyArticle(movie))[0]
+                movie: json.data.movies.map(movie => helper_1.classifyArticle(movie))[0],
+                isLoading: false,
             });
         });
     }
     render() {
         if (!this.state.movie.chineseTitle) {
-            return null;
+            return React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading });
         }
         return (React.createElement(Paper_1.default, { zDepth: 2 },
             React.createElement(Tabs_1.Tabs, { onChange: this.handleChange, value: this.state.slideIndex },
