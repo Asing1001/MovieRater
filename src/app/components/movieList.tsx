@@ -1,14 +1,12 @@
 import * as React from 'react';
-import FindResult from './findResult';
-import Movie from '../../models/movie';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
-import FontIcon from 'material-ui/FontIcon';
+import FindResult from './findResult';
+import Movie from '../../models/movie';
 import { classifyArticle, requestGraphQL } from '../helper';
+import LoadingIcon from './loadingIcon';
 
-const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
-const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
 const nearbyIcon = <IconLocationOn />;
 
 const BRIEFDATA = `{
@@ -41,11 +39,13 @@ class MovieList extends React.Component<any, any> {
     this.state = {
       selectedIndex: SortType.imdb,
       sortFunction: this.getStandardSortFunction('imdbRating'),
-      movies: []
+      movies: [],
+      isLoading: true
     };
   }
 
   getData(ids) {
+    this.setState({isLoading:true});
     if (ids) {
       const yahooIds = JSON.stringify(ids.split(',').map(id => parseInt(id)));
       requestGraphQL(`
@@ -54,12 +54,12 @@ class MovieList extends React.Component<any, any> {
         }
         `)
         .then((json: any) => {
-          this.setState({ movies: json.data.movies.map(movie => classifyArticle(movie)) });
+          this.setState({ movies: json.data.movies.map(movie => classifyArticle(movie)), isLoading:false });
         });
     }
     else {
       requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json: any) => {
-        this.setState({ movies: json.data.recentMovies.map(movie => classifyArticle(movie)) });
+        this.setState({ movies: json.data.recentMovies.map(movie => classifyArticle(movie)), isLoading:false });
       });
     }
   }
@@ -110,6 +110,7 @@ class MovieList extends React.Component<any, any> {
   render() {
     return (
       <div>
+        <LoadingIcon isLoading={this.state.isLoading||true}/>
         <Paper zDepth={2} style={{ marginBottom: '.5em' }}>
           <BottomNavigation selectedIndex={this.state.selectedIndex}>
             <BottomNavigationItem

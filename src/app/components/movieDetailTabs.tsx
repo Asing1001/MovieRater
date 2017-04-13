@@ -7,10 +7,12 @@ import Movie from '../../models/movie';
 import MovieDetail from './movieDetail';
 import PttArticles from './pttArticles';
 import { classifyArticle, requestGraphQL } from '../helper';
+import LoadingIcon from './loadingIcon';
 
 interface MovieDetailState {
-  movie: Movie,
-  slideIndex: number
+  movie?: Movie,
+  slideIndex?: number,
+  isLoading?: boolean
 }
 
 const ALLDATA = `{
@@ -40,7 +42,8 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
     super(props)
     this.state = {
       movie: {},
-      slideIndex: 0
+      slideIndex: 0,
+      isLoading: true
     }
   }
 
@@ -50,8 +53,7 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
 
   handleChange = (value) => {
     this.setState({
-      movie: this.state.movie,
-      slideIndex: value
+      slideIndex: value,
     });
   };
 
@@ -60,6 +62,7 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
   }
 
   private search(yahooIds: Number[]) {
+    this.setState({ isLoading: true });
     requestGraphQL(`
         {
           movies(yahooIds:${JSON.stringify(yahooIds)})${ALLDATA}
@@ -67,17 +70,18 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
     `)
       .then((json: any) => {
         this.setState({
-          slideIndex: this.state.slideIndex,
-          movie: json.data.movies.map(movie => classifyArticle(movie))[0]
+          movie: json.data.movies.map(movie => classifyArticle(movie))[0],
+          isLoading: false,
         });
       });
   }
 
   render() {
-    if (!this.state.movie.chineseTitle) { return null }
+    if (!this.state.movie.chineseTitle) {
+      return <LoadingIcon isLoading={this.state.isLoading} />
+    }
     return (
       <Paper zDepth={2}>
-
         <Tabs
           onChange={this.handleChange}
           value={this.state.slideIndex}

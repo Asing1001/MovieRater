@@ -1,9 +1,7 @@
 import * as React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import 'isomorphic-fetch';
-import RefreshIndicator from 'material-ui/RefreshIndicator';
-import { browserHistory ,  } from 'react-router';
-import createBrowserHistory from 'history/lib/createBrowserHistory'
+import { browserHistory } from 'react-router';
 
 
 class Home extends React.Component<any, any> {
@@ -12,7 +10,6 @@ class Home extends React.Component<any, any> {
     this.state = {
       searchText: '',
       dataSource: [],
-      resultMovies: [],
     };
   }
 
@@ -66,15 +63,6 @@ class Home extends React.Component<any, any> {
   render() {
     return (
       <div className="container" >
-        <div className={`backdrop ${this.state.isLoading?'':'hide'}`}>
-          <RefreshIndicator
-            size={40}
-            left={-20}
-            top={0}
-            status="loading"
-            style={{ marginLeft: '50%', marginTop: '25%', zIndex: 3 }}            
-          />
-        </div>
         <div className="autoCompleteWrapper">
           <AutoComplete
             hintText="電影名稱(中英皆可)"
