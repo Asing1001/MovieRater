@@ -44,7 +44,7 @@ describe('imdbTask', () => {
       await updateImdbInfo();
       sandbox.assert.calledWith(stubUpdateDocument,
         { yahooId: yahooMovie.yahooId },
-        { yahooId: yahooMovie.yahooId, imdbLastCrawlTime: moment().format('YYYY-MM-DDTHH') });
+        { imdbLastCrawlTime: moment().format('YYYY-MM-DDTHH') });
     });
   });
 });

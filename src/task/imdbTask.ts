@@ -5,7 +5,6 @@ import Movie from "../models/movie";
 
 export async function updateImdbInfo() {
     let movieInfos = await getNewImdbInfos();
-    removeEmptyInfos(movieInfos);
     logResult(movieInfos);
     return updateYahooMovies(movieInfos);
 }
@@ -33,13 +32,6 @@ function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }: 
     return shouldCrawl;
 }
 
-function removeEmptyInfos(movieInfos: Movie[]){
-    movieInfos.forEach(info=>{
-        !info.imdbID && delete info.imdbID;
-        !info.imdbRating && delete info.imdbRating;
-    })
-}
-
 function logResult(movieInfos: Movie[]) {
     const foundMovies = movieInfos.filter(movie => movie.imdbID);
     const notfoundMovieIds = movieInfos.filter(movie => !movie.imdbID).map(movie => movie.yahooId);
@@ -48,5 +40,8 @@ function logResult(movieInfos: Movie[]) {
 }
 
 function updateYahooMovies(movieInfos: Movie[]) {
-    return movieInfos.map(imdbInfo => db.updateDocument({ yahooId: imdbInfo.yahooId }, imdbInfo, "yahooMovies"))
+    return movieInfos.map(({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
+        const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime }
+        return db.updateDocument({ yahooId }, newInfo, "yahooMovies")
+    })
 }
