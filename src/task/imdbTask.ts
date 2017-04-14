@@ -4,13 +4,15 @@ import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
 import Movie from "../models/movie";
 
 export async function updateImdbInfo() {
-    const movieInfos = await getNewImdbInfos();
+    let movieInfos = await getNewImdbInfos();
+    removeEmptyInfos(movieInfos);
     logResult(movieInfos);
     return updateYahooMovies(movieInfos);
 }
 
+const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
 async function getNewImdbInfos() {
-    const imdbLastCrawlTime = moment().format('YYYY-MM-DD');
+    const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
     const yahooMovies: Movie[] = await db.getCollection("yahooMovies");
     const promises = yahooMovies.filter(filterNeedCrawlMovie).map(async ({ englishTitle, yahooId }) => {
         const imdbInfo = await getIMDBMovieInfo(englishTitle);
@@ -23,12 +25,19 @@ async function getNewImdbInfos() {
     return Promise.all(promises);
 }
 
-function filterNeedCrawlMovie({ englishTitle, imdbRating, releaseDate, imdbLastCrawlTime }: Movie) {
+function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }: Movie) {
     let now = moment();
     let isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
-    let hasCrawlToday = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime), 'days') === 0);
-    let shouldCrawl = !hasCrawlToday && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
+    let hasCrawlNearly = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime, imdbLastCrawlTimeFormat), 'hours') <= 12);
+    let shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
     return shouldCrawl;
+}
+
+function removeEmptyInfos(movieInfos: Movie[]){
+    movieInfos.forEach(info=>{
+        !info.imdbID && delete info.imdbID;
+        !info.imdbRating && delete info.imdbRating;
+    })
 }
 
 function logResult(movieInfos: Movie[]) {
