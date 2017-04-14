@@ -99,7 +99,7 @@ class MovieList extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading || true }),
+            React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading }),
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em' } },
                 React.createElement(BottomNavigation_1.BottomNavigation, { selectedIndex: this.state.selectedIndex },
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "IMDB", icon: nearbyIcon, onTouchTap: () => this.select(SortType.imdb) }),
