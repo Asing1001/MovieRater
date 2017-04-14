@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Router } from 'react-router';
 import * as ReactDOM from 'react-dom';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
-import { browserHistory , } from 'react-router';
-
+import { browserHistory } from 'react-router';
 import routes from './routes';
 import './main.css';
 
@@ -24,3 +22,8 @@ if (module.hot) {
   module.hot.accept();
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/public/bundles/service-worker.js')
+    .then(reg => console.log('SW registered!', reg))
+    .catch(err => console.log('Error!', err));
+}

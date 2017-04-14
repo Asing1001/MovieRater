@@ -46,7 +46,7 @@ app.use(function (req, res) {
       //for material-ui auto prefixer
       global.navigator = { userAgent: req.headers['user-agent'] };
       var html = renderToString(React.createElement(Router.RouterContext, renderProps));
-      var page = swig.renderFile(path.join(__dirname, 'index.html'), { html: html });
+      var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
       res.status(200).send(page);
     } else {
       res.status(404).send('Page Not Found')
