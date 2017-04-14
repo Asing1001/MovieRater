@@ -4,13 +4,14 @@ import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
 import Movie from "../models/movie";
 
 export async function updateImdbInfo() {
-    const movieInfos = await getNewImdbInfos();
+    let movieInfos = await getNewImdbInfos();
     logResult(movieInfos);
     return updateYahooMovies(movieInfos);
 }
 
+const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
 async function getNewImdbInfos() {
-    const imdbLastCrawlTime = moment().format('YYYY-MM-DD');
+    const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
     const yahooMovies: Movie[] = await db.getCollection("yahooMovies");
     const promises = yahooMovies.filter(filterNeedCrawlMovie).map(async ({ englishTitle, yahooId }) => {
         const imdbInfo = await getIMDBMovieInfo(englishTitle);
@@ -23,11 +24,11 @@ async function getNewImdbInfos() {
     return Promise.all(promises);
 }
 
-function filterNeedCrawlMovie({ englishTitle, imdbRating, releaseDate, imdbLastCrawlTime }: Movie) {
+function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }: Movie) {
     let now = moment();
     let isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
-    let hasCrawlToday = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime), 'days') === 0);
-    let shouldCrawl = !hasCrawlToday && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
+    let hasCrawlNearly = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime, imdbLastCrawlTimeFormat), 'hours') <= 12);
+    let shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
     return shouldCrawl;
 }
 
@@ -39,5 +40,8 @@ function logResult(movieInfos: Movie[]) {
 }
 
 function updateYahooMovies(movieInfos: Movie[]) {
-    return movieInfos.map(imdbInfo => db.updateDocument({ yahooId: imdbInfo.yahooId }, imdbInfo, "yahooMovies"))
+    return movieInfos.map(({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
+        const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime }
+        return db.updateDocument({ yahooId }, newInfo, "yahooMovies")
+    })
 }

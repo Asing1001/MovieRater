@@ -6,6 +6,15 @@ body {
     margin: 0;
 }
 
+.backdrop {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+}
+
 @media (min-width: 992px) {
     /*prevent scrollbar vibarate content */
     body {

@@ -33,11 +33,21 @@ export async function getIMDBRating(imdbID) {
     return rating;
 }
 
-const regexp = /"id":"([\w]*)",/;
-const imdbJsonUrl = "https://v2.sg.media-imdb.com/suggests/w/who_killed_cock_robi.json";
 async function getIMDBSuggestId(englishTitle: string) {
-    const response = await fetch(`https://v2.sg.media-imdb.com/suggests/${englishTitle.trim().charAt(0).toLowerCase()}/${encodeURIComponent(englishTitle)}.json`);
+    let suggestId = "";
+    const imdbSuggestJsonUrl = getIMDBSuggestJsonUrl(englishTitle);
+    const response = await fetch(imdbSuggestJsonUrl);
     const text = await response.text();
-    const match = regexp.exec(text);
-    return match ? match[1] : "";
+    const match = /"id":"([\w]*)",/.exec(text);
+    if (match) {
+        suggestId = match[1];
+    } else {
+        console.log(`could not find suggest id at ${imdbSuggestJsonUrl}`);
+    }
+    return suggestId;
+}
+
+function getIMDBSuggestJsonUrl(englishTitle: string) {
+    const jsonName = englishTitle.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_").substr(0,20);
+    return `https://v2.sg.media-imdb.com/suggests/${jsonName.charAt(0)}/${jsonName}.json`
 }

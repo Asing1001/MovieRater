@@ -49,7 +49,7 @@ export default class cacheManager {
         memoryCache.put(cacheManager.All_MOVIES, mergedDatas);
     }
 
-     static setRecentMoviesCache() {
+    private static setRecentMoviesCache() {
         console.time('setRecentMoviesCache');
         return crawlInTheater().then((yahooIds: Array<number>) => {
             let today = moment();
