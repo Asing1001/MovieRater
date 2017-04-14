@@ -14,7 +14,6 @@ const imdbCrawler_1 = require("../crawler/imdbCrawler");
 function updateImdbInfo() {
     return __awaiter(this, void 0, void 0, function* () {
         let movieInfos = yield getNewImdbInfos();
-        removeEmptyInfos(movieInfos);
         logResult(movieInfos);
         return updateYahooMovies(movieInfos);
     });
@@ -43,12 +42,6 @@ function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }) 
     let shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
     return shouldCrawl;
 }
-function removeEmptyInfos(movieInfos) {
-    movieInfos.forEach(info => {
-        !info.imdbID && delete info.imdbID;
-        !info.imdbRating && delete info.imdbRating;
-    });
-}
 function logResult(movieInfos) {
     const foundMovies = movieInfos.filter(movie => movie.imdbID);
     const notfoundMovieIds = movieInfos.filter(movie => !movie.imdbID).map(movie => movie.yahooId);
@@ -56,6 +49,9 @@ function logResult(movieInfos) {
     console.log(`Not found YahooIds: ${notfoundMovieIds}`);
 }
 function updateYahooMovies(movieInfos) {
-    return movieInfos.map(imdbInfo => db_1.db.updateDocument({ yahooId: imdbInfo.yahooId }, imdbInfo, "yahooMovies"));
+    return movieInfos.map(({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
+        const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime };
+        return db_1.db.updateDocument({ yahooId }, newInfo, "yahooMovies");
+    });
 }
 //# sourceMappingURL=imdbTask.js.map

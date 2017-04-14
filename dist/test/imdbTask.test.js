@@ -47,7 +47,7 @@ describe('imdbTask', () => {
                 stubGetCollection.returns([yahooMovie]);
                 const stubGetIMDBMovieInfo = sandbox.stub(imdbCrawler, 'getIMDBMovieInfo').returns({ imdbID: "", imdbRating: "" });
                 yield imdbTask_1.updateImdbInfo();
-                sandbox.assert.calledWith(stubUpdateDocument, { yahooId: yahooMovie.yahooId }, { yahooId: yahooMovie.yahooId, imdbLastCrawlTime: moment().format('YYYY-MM-DDTHH') });
+                sandbox.assert.calledWith(stubUpdateDocument, { yahooId: yahooMovie.yahooId }, { imdbLastCrawlTime: moment().format('YYYY-MM-DDTHH') });
             });
         });
     });
