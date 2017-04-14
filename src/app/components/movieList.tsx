@@ -45,7 +45,7 @@ class MovieList extends React.Component<any, any> {
   }
 
   getData(ids) {
-    this.setState({isLoading:true});
+    this.setState({ isLoading: true });
     if (ids) {
       const yahooIds = JSON.stringify(ids.split(',').map(id => parseInt(id)));
       requestGraphQL(`
@@ -54,12 +54,12 @@ class MovieList extends React.Component<any, any> {
         }
         `)
         .then((json: any) => {
-          this.setState({ movies: json.data.movies.map(movie => classifyArticle(movie)), isLoading:false });
+          this.setState({ movies: json.data.movies.map(movie => classifyArticle(movie)), isLoading: false });
         });
     }
     else {
       requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json: any) => {
-        this.setState({ movies: json.data.recentMovies.map(movie => classifyArticle(movie)), isLoading:false });
+        this.setState({ movies: json.data.recentMovies.map(movie => classifyArticle(movie)), isLoading: false });
       });
     }
   }
@@ -110,7 +110,7 @@ class MovieList extends React.Component<any, any> {
   render() {
     return (
       <div>
-        <LoadingIcon isLoading={this.state.isLoading||true}/>
+        <LoadingIcon isLoading={this.state.isLoading} />
         <Paper zDepth={2} style={{ marginBottom: '.5em' }}>
           <BottomNavigation selectedIndex={this.state.selectedIndex}>
             <BottomNavigationItem
