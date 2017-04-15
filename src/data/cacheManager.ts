@@ -13,17 +13,16 @@ export default class cacheManager {
     static All_MOVIES_NAMES = 'allMoviesNames';
     static RECENT_MOVIES = 'recentMovies';
     static MOVIES_SCHEDULES = 'MoviesSchedules';
-    static init() {
-        console.time('get yahooMovies and pttArticles');
-        return Q.spread([db.getCollection("yahooMovies", { yahooId: -1 }),
-        db.getCollection("pttArticles")],
-            function (yahooMovies, pttArticles) {
-                console.timeEnd('get yahooMovies and pttArticles');
-                cacheManager.setAllMoviesNamesCache(yahooMovies);
-                cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
-                cacheManager.setRecentMoviesCache();
-                return;
-            });
+    static async init() {
+        console.time('get yahooMovies');
+        const yahooMovies = await db.getCollection("yahooMovies", { yahooId: -1 })
+        console.timeEnd('get yahooMovies');
+        console.time('get pttArticles');
+        const pttArticles = await db.getCollection("pttArticles")
+        console.timeEnd('get pttArticles');
+        cacheManager.setAllMoviesNamesCache(yahooMovies);
+        cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
+        cacheManager.setRecentMoviesCache();
     }
 
     private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
