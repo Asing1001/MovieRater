@@ -50,10 +50,11 @@ module.exports = webpackMerge(commonConfig, {
         cacheId: 'movie-rater',
         filename: 'service-worker.js',
         maximumFileSizeToCacheInBytes: 4194304,
-        minify: true,
+        minify: false,
         staticFileGlobs: [
-          './public/**/*'
+          './dist/public/**/*'
         ],
+        stripPrefix: './dist',
         staticFileGlobsIgnorePatterns: [/\.map$/],
       }
     ),

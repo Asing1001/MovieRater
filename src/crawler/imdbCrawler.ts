@@ -1,4 +1,3 @@
-import * as Q from "q";
 import * as fetch from "isomorphic-fetch";
 import * as cheerio from "cheerio";
 import Movie from '../models/movie';
@@ -20,19 +19,6 @@ export async function getIMDBMovieInfo(englishTitle) {
     };
 }
 
-const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
-export async function getIMDBRating(imdbID) {
-    const response = await fetch(`${imdbMobileMovieUrl + imdbID}`);
-    const html = await response.text();
-    const $ = cheerio.load(html);
-    let rating = "";
-    let ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
-    if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
-        rating = ratingWrapper.childNodes[0].nodeValue;
-    }
-    return rating;
-}
-
 async function getIMDBSuggestId(englishTitle: string) {
     let suggestId = "";
     const imdbSuggestJsonUrl = getIMDBSuggestJsonUrl(englishTitle);
@@ -50,4 +36,17 @@ async function getIMDBSuggestId(englishTitle: string) {
 function getIMDBSuggestJsonUrl(englishTitle: string) {
     const jsonName = englishTitle.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_").substr(0,20);
     return `https://v2.sg.media-imdb.com/suggests/${jsonName.charAt(0)}/${jsonName}.json`
+}
+
+const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
+export async function getIMDBRating(imdbID) {
+    const response = await fetch(`${imdbMobileMovieUrl + imdbID}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    let rating = "";
+    let ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
+    if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
+        rating = ratingWrapper.childNodes[0].nodeValue;
+    }
+    return rating;
 }
