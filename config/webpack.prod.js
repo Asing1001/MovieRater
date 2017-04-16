@@ -50,18 +50,16 @@ module.exports = webpackMerge(commonConfig, {
         cacheId: 'movie-rater',
         filename: 'service-worker.js',
         maximumFileSizeToCacheInBytes: 4194304,
-        minify: false,
-        staticFileGlobs: [
-          './dist/public/**/*'
-        ],
-        runtimeCaching : [{
+        minify: true,
+        runtimeCaching: [{
           urlPattern: /.*/,
           handler: 'fastest',
           // Currently all browser is not supporting service-worker post
           // method : 'post'          
         }],
-        stripPrefix: './dist',
-        staticFileGlobsIgnorePatterns: [/\.map$/],
+        stripPrefix: helpers.root('dist').replace(/\\/g,'/'),
+        mergeStaticsConfig: true,
+        staticFileGlobsIgnorePatterns: [/\.map$/, /favicons/],
       }
     ),
   ]
