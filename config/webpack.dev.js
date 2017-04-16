@@ -43,6 +43,10 @@ module.exports = webpackMerge(commonConfig, {
       '/graphql': {
         target: 'http://localhost:3003',
         secure: false
+      },
+      '/service-worker.js': {
+        target: 'http://localhost:3003',
+        secure: false
       }
     }
   }

@@ -33,8 +33,9 @@ app.use(bodyParser.json());
 
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot));
+app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js'));
 app.use(favicon(path.join(__dirname, 'public', 'image', 'favicon.ico')));
-app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql,  }))
+app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
 app.use(function (req, res) {
   Router.match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {

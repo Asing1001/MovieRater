@@ -54,6 +54,12 @@ module.exports = webpackMerge(commonConfig, {
         staticFileGlobs: [
           './dist/public/**/*'
         ],
+        runtimeCaching : [{
+          urlPattern: /.*/,
+          handler: 'fastest',
+          // Currently all browser is not supporting service-worker post
+          // method : 'post'          
+        }],
         stripPrefix: './dist',
         staticFileGlobsIgnorePatterns: [/\.map$/],
       }

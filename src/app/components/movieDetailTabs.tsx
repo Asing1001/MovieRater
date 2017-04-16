@@ -16,24 +16,24 @@ interface MovieDetailState {
 }
 
 const ALLDATA = `{
-            yahooId
-            posterUrl
-            chineseTitle
-            englishTitle
-            releaseDate
-            type
-            runTime
-            director
-            actor
-            launchCompany
-            companyUrl
-            yahooRating
-            imdbID
-            imdbRating
-            tomatoURL            
-            tomatoRating
-            relatedArticles{title,push,url,date,author}
-            summary
+            yahooId,
+            posterUrl,
+            chineseTitle,
+            englishTitle,
+            releaseDate,
+            type,
+            runTime,
+            director,
+            actor,
+            launchCompany,
+            companyUrl,
+            yahooRating,
+            imdbID,
+            imdbRating,
+            tomatoURL            ,
+            tomatoRating,
+            relatedArticles{title,push,url,date,author},
+            summary,
           }`;
 
 export default class MovieDetailTabs extends React.Component<any, MovieDetailState> {

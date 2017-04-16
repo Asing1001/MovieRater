@@ -22,18 +22,8 @@ export function classifyArticle(movie: Movie) {
     return movie;
 }
 
- export function requestGraphQL(query: string) {
-    return fetch('/graphql', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: query
-      }),
-      credentials: 'include',
-    }).then(res => {
-      return res.json()
+export function requestGraphQL(query: string) {
+    return fetch(`/graphql?query=${query.replace(/\s+/g,"")}`).then(res => {
+        return res.json()
     })
-  }
+}
