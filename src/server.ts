@@ -14,11 +14,13 @@ import cacheManager from './data/cacheManager';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 import { systemSetting } from './configs/systemSetting';
+import forceSSL from './helper/forceSSL';
 
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 
 const app = express();
 app.use(compression());
+app.use(forceSSL());
 
 app.get('/api/test', (req, res) => {
   res.send('test!');
