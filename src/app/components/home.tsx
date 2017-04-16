@@ -19,15 +19,8 @@ class Home extends React.Component<any, any> {
   }
 
   private getDataSource() {
-    fetch('/graphql', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: "{allMoviesNames{value,text}}" }),
-      credentials: 'include',
-    }).then(res => res.json())
+    fetch('/graphql?query={allMoviesNames{value,text}}')
+      .then(res => res.json())
       .then((json: any) => {
         this.setState({ dataSource: json.data.allMoviesNames })
       });
@@ -53,12 +46,12 @@ class Home extends React.Component<any, any> {
       yahooIds.push(parseInt(selectItem.value));
     }
 
-    if(yahooIds.length === 1){
+    if (yahooIds.length === 1) {
       browserHistory.push(`/movie/${yahooIds}`)
-    }else{
+    } else {
       browserHistory.push(`/movielist/${yahooIds}`)
     }
-  } 
+  }
 
   render() {
     return (
