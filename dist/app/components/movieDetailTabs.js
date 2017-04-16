@@ -9,24 +9,24 @@ const pttArticles_1 = require("./pttArticles");
 const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const ALLDATA = `{
-            yahooId
-            posterUrl
-            chineseTitle
-            englishTitle
-            releaseDate
-            type
-            runTime
-            director
-            actor
-            launchCompany
-            companyUrl
-            yahooRating
-            imdbID
-            imdbRating
-            tomatoURL            
-            tomatoRating
-            relatedArticles{title,push,url,date,author}
-            summary
+            yahooId,
+            posterUrl,
+            chineseTitle,
+            englishTitle,
+            releaseDate,
+            type,
+            runTime,
+            director,
+            actor,
+            launchCompany,
+            companyUrl,
+            yahooRating,
+            imdbID,
+            imdbRating,
+            tomatoURL            ,
+            tomatoRating,
+            relatedArticles{title,push,url,date,author},
+            summary,
           }`;
 class MovieDetailTabs extends React.Component {
     constructor(props) {

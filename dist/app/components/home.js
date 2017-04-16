@@ -17,15 +17,8 @@ class Home extends React.Component {
         document.querySelector('input').focus();
     }
     getDataSource() {
-        fetch('/graphql', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query: "{allMoviesNames{value,text}}" }),
-            credentials: 'include',
-        }).then(res => res.json())
+        fetch('/graphql?query={allMoviesNames{value,text}}')
+            .then(res => res.json())
             .then((json) => {
             this.setState({ dataSource: json.data.allMoviesNames });
         });

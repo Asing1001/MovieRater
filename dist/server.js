@@ -29,7 +29,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot));
-app.use(favicon(path.join(__dirname, 'public', 'image', 'favicon.ico')));
+app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js'));
+app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
 app.use(function (req, res) {
     Router.match({ routes: routes_1.default, location: req.url }, function (err, redirectLocation, renderProps) {
@@ -43,7 +44,7 @@ app.use(function (req, res) {
             //for material-ui auto prefixer
             global.navigator = { userAgent: req.headers['user-agent'] };
             var html = server_1.renderToString(React.createElement(Router.RouterContext, renderProps));
-            var page = swig.renderFile(path.join(__dirname, 'index.html'), { html: html });
+            var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
             res.status(200).send(page);
         }
         else {
