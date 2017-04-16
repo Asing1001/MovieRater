@@ -16,9 +16,11 @@ const cacheManager_1 = require("./data/cacheManager");
 const favicon = require("serve-favicon");
 const compression = require("compression");
 const systemSetting_1 = require("./configs/systemSetting");
+const forceSSL_1 = require("./helper/forceSSL");
 db_1.db.openDbConnection().then(cacheManager_1.default.init).then(scheduler_1.initScheduler);
 const app = express();
 app.use(compression());
+app.use(forceSSL_1.default());
 app.get('/api/test', (req, res) => {
     res.send('test!');
 });
