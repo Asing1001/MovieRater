@@ -18,12 +18,11 @@ const yahooMovieSchduleCrawler_1 = require("../crawler/yahooMovieSchduleCrawler"
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.time('get yahooMovies');
-            const yahooMovies = yield db_1.db.getCollection("yahooMovies", { yahooId: -1 });
-            console.timeEnd('get yahooMovies');
-            console.time('get pttArticles');
-            const pttArticles = yield db_1.db.getCollection("pttArticles");
-            console.timeEnd('get pttArticles');
+            const yahooMoviesPromise = db_1.db.getCollection("yahooMovies", { yahooId: -1 });
+            const pttArticlesPromise = db_1.db.getCollection("pttArticles");
+            console.time('get yahooMovies and pttArticles');
+            const [yahooMovies, pttArticles] = yield Promise.all([yahooMoviesPromise, pttArticlesPromise]);
+            console.timeEnd('get yahooMovies and pttArticles');
             cacheManager.setAllMoviesNamesCache(yahooMovies);
             cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
             cacheManager.setRecentMoviesCache();
@@ -40,14 +39,14 @@ class cacheManager {
                 allMoviesName.push({ value: yahooId, text: englishTitle });
             }
         });
-        memoryCache.put(cacheManager.All_MOVIES_NAMES, allMoviesName);
+        this.set(cacheManager.All_MOVIES_NAMES, allMoviesName);
         console.timeEnd('setAllMoviesNamesCache');
     }
     static setAllMoviesCache(yahooMovies, pttArticles) {
         console.time('mergeData');
         let mergedDatas = mergeData_1.mergeData(yahooMovies, pttArticles);
         console.timeEnd('mergeData');
-        memoryCache.put(cacheManager.All_MOVIES, mergedDatas);
+        this.set(cacheManager.All_MOVIES, mergedDatas);
     }
     static setRecentMoviesCache() {
         console.time('setRecentMoviesCache');
@@ -55,7 +54,7 @@ class cacheManager {
             let today = moment();
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
                 .filter(({ yahooId, releaseDate }) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
-            memoryCache.put(cacheManager.RECENT_MOVIES, recentMovies);
+            this.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
             return this.setMoviesSchedulesCache(yahooIds);
         });
@@ -65,7 +64,7 @@ class cacheManager {
         let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
         return Q.all(schedulesPromise).then(schedules => {
             const allSchedules = [].concat(...schedules);
-            memoryCache.put(cacheManager.MOVIES_SCHEDULES, allSchedules);
+            this.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
             console.timeEnd('setMoviesSchedulesCache');
         });
     }
@@ -75,6 +74,7 @@ class cacheManager {
     }
     static set(key, value) {
         memoryCache.put(key, value);
+        console.log(`${key} size:${roughSizeOfObject(value)}`);
     }
 }
 cacheManager.All_MOVIES = 'allMovies';
@@ -82,4 +82,29 @@ cacheManager.All_MOVIES_NAMES = 'allMoviesNames';
 cacheManager.RECENT_MOVIES = 'recentMovies';
 cacheManager.MOVIES_SCHEDULES = 'MoviesSchedules';
 exports.default = cacheManager;
+function roughSizeOfObject(object) {
+    var objectList = [];
+    var stack = [object];
+    var bytes = 0;
+    while (stack.length) {
+        var value = stack.pop();
+        if (typeof value === 'boolean') {
+            bytes += 4;
+        }
+        else if (typeof value === 'string') {
+            bytes += value.length * 2;
+        }
+        else if (typeof value === 'number') {
+            bytes += 8;
+        }
+        else if (typeof value === 'object'
+            && objectList.indexOf(value) === -1) {
+            objectList.push(value);
+            for (var i in value) {
+                stack.push(value[i]);
+            }
+        }
+    }
+    return bytes;
+}
 //# sourceMappingURL=cacheManager.js.map

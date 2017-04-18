@@ -130,7 +130,7 @@ const MovieType = new graphql_1.GraphQLObjectType({
             type: graphql_1.GraphQLString,
             resolve: obj => obj.tomatoURL,
         },
-        schedule: {
+        schedules: {
             type: new graphql_1.GraphQLList(scheduleType),
             resolve: obj => {
                 return cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES)
