@@ -14,12 +14,11 @@ export default class cacheManager {
     static RECENT_MOVIES = 'recentMovies';
     static MOVIES_SCHEDULES = 'MoviesSchedules';
     static async init() {
-        console.time('get yahooMovies');
-        const yahooMovies = await db.getCollection("yahooMovies", { yahooId: -1 })
-        console.timeEnd('get yahooMovies');
-        console.time('get pttArticles');
-        const pttArticles = await db.getCollection("pttArticles")
-        console.timeEnd('get pttArticles');
+        const yahooMoviesPromise = db.getCollection("yahooMovies", { yahooId: -1 });
+        const pttArticlesPromise = db.getCollection("pttArticles");
+        console.time('get yahooMovies and pttArticles');
+        const [yahooMovies, pttArticles] = await Promise.all([yahooMoviesPromise, pttArticlesPromise]);
+        console.timeEnd('get yahooMovies and pttArticles');
         cacheManager.setAllMoviesNamesCache(yahooMovies);
         cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
         cacheManager.setRecentMoviesCache();
@@ -37,7 +36,7 @@ export default class cacheManager {
             }
         });
 
-        memoryCache.put(cacheManager.All_MOVIES_NAMES, allMoviesName);
+        this.set(cacheManager.All_MOVIES_NAMES, allMoviesName);
         console.timeEnd('setAllMoviesNamesCache');
     }
 
@@ -45,7 +44,7 @@ export default class cacheManager {
         console.time('mergeData');
         let mergedDatas = mergeData(yahooMovies, pttArticles);
         console.timeEnd('mergeData');
-        memoryCache.put(cacheManager.All_MOVIES, mergedDatas);
+        this.set(cacheManager.All_MOVIES, mergedDatas);
     }
 
     private static setRecentMoviesCache() {
@@ -54,9 +53,9 @@ export default class cacheManager {
             let today = moment();
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
                 .filter(({ yahooId, releaseDate }: Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
-            memoryCache.put(cacheManager.RECENT_MOVIES, recentMovies);
+            this.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
-            
+
             return this.setMoviesSchedulesCache(yahooIds);
         })
     }
@@ -67,7 +66,7 @@ export default class cacheManager {
 
         return Q.all(schedulesPromise).then(schedules => {
             const allSchedules = [].concat(...schedules);
-            memoryCache.put(cacheManager.MOVIES_SCHEDULES, allSchedules);
+            this.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
             console.timeEnd('setMoviesSchedulesCache');
         })
     }
@@ -79,5 +78,40 @@ export default class cacheManager {
 
     static set(key, value) {
         memoryCache.put(key, value);
+        console.log(`${key} size:${roughSizeOfObject(value)}` );
     }
+}
+
+function roughSizeOfObject( object ) {
+
+    var objectList = [];
+    var stack = [ object ];
+    var bytes = 0;
+
+    while ( stack.length ) {
+        var value = stack.pop();
+
+        if ( typeof value === 'boolean' ) {
+            bytes += 4;
+        }
+        else if ( typeof value === 'string' ) {
+            bytes += value.length * 2;
+        }
+        else if ( typeof value === 'number' ) {
+            bytes += 8;
+        }
+        else if
+        (
+            typeof value === 'object'
+            && objectList.indexOf( value ) === -1
+        )
+        {
+            objectList.push( value );
+
+            for( var i in value ) {
+                stack.push( value[ i ] );
+            }
+        }
+    }
+    return bytes;
 }
