@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
 import MovieDetail from './movieDetail';
 import PttArticles from './pttArticles';
+import Schedules from './schedules';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
 
@@ -34,6 +35,12 @@ const ALLDATA = `{
             tomatoRating,
             relatedArticles{title,push,url,date,author},
             summary,
+            schedules {
+              theaterName,
+              yahooId,
+              timesValues,
+              timesStrings
+            }
           }`;
 
 export default class MovieDetailTabs extends React.Component<any, MovieDetailState> {
@@ -42,7 +49,7 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
     super(props)
     this.state = {
       movie: {},
-      slideIndex: 0,
+      slideIndex: 3,
       isLoading: true
     }
   }
@@ -89,6 +96,7 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
           <Tab label="Detail" value={0} />
           <Tab label="Ptt" value={1} />
           <Tab label="Summary" value={2} />
+          <Tab label="Time" value={3} />
         </Tabs>
         <SwipeableViews
           index={this.state.slideIndex}
@@ -101,6 +109,9 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
             <PttArticles movie={this.state.movie}></PttArticles>
           </div>
           <div className="col-xs-12" style={{ paddingTop: '1em', height: this.state.slideIndex === 2 ? 'auto' : 0 }} dangerouslySetInnerHTML={{ __html: this.state.movie.summary }}></div>
+          <div style={{ height: this.state.slideIndex === 3 ? 'auto' : 0 }}>
+            <Schedules schedules={this.state.movie.schedules}></Schedules>
+          </div>
         </SwipeableViews>
       </Paper>
     );

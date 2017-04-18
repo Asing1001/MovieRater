@@ -1,5 +1,6 @@
 import YahooMovie from './yahooMovie';
 import Article from './article';
+import Schedule from './schedule';
 
 export default class Movie extends YahooMovie {
     goodRateArticles?: Array<Article>
@@ -13,4 +14,5 @@ export default class Movie extends YahooMovie {
     tomatoRating?: string
     tomatoURL?: string
     briefSummary?: string
+    schedules? : Schedule[]
 }
