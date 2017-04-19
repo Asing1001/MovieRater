@@ -19,9 +19,9 @@ export default class cacheManager {
         console.time('get yahooMovies and pttArticles');
         const [yahooMovies, pttArticles] = await Promise.all([yahooMoviesPromise, pttArticlesPromise]);
         console.timeEnd('get yahooMovies and pttArticles');
-        this.setAllMoviesNamesCache(yahooMovies);
-        this.setAllMoviesCache(yahooMovies, pttArticles);
-        this.setInTheaterMoviesCache();
+        cacheManager.setAllMoviesNamesCache(yahooMovies);
+        cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
+        cacheManager.setInTheaterMoviesCache();
     }
 
     private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
@@ -36,7 +36,7 @@ export default class cacheManager {
             }
         });
 
-        this.set(cacheManager.All_MOVIES_NAMES, allMoviesName);
+        cacheManager.set(cacheManager.All_MOVIES_NAMES, allMoviesName);
         console.timeEnd('setAllMoviesNamesCache');
     }
 
@@ -44,14 +44,14 @@ export default class cacheManager {
         console.time('mergeData');
         let mergedDatas = mergeData(yahooMovies, pttArticles);
         console.timeEnd('mergeData');
-        this.set(cacheManager.All_MOVIES, mergedDatas);
+        cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
     }
 
     public static async setInTheaterMoviesCache() {
         const yahooIds = await getInTheaterYahooIds();
         if (yahooIds.length > 0) {
-            this.setRecentMoviesCache(yahooIds);
-            this.setMoviesSchedulesCache(yahooIds);
+            cacheManager.setRecentMoviesCache(yahooIds);
+            cacheManager.setMoviesSchedulesCache(yahooIds);
         }
     }
 
@@ -60,7 +60,7 @@ export default class cacheManager {
         let today = moment();
         let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
             .filter(({ yahooId, releaseDate }: Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
-        this.set(cacheManager.RECENT_MOVIES, recentMovies);
+        cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
         console.timeEnd('setRecentMoviesCache');
     }
 
@@ -69,7 +69,7 @@ export default class cacheManager {
         let schedulesPromise = yahooIds.map(yahooId => crawlyahooMovieSchdule(yahooId));
         const schedules = await Promise.all(schedulesPromise);
         const allSchedules = [].concat(...schedules);
-        this.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+        cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
         console.timeEnd('setMoviesSchedulesCache');
     }
 
