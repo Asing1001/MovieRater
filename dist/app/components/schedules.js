@@ -7,12 +7,11 @@ class Schedules extends React.Component {
         super(props);
     }
     getSchedules() {
-        return !this.props.schedules ? "no schedules" :
-            this.props.schedules.map(({ timesStrings, theaterName }) => {
-                return (React.createElement("div", { key: theaterName, className: "col-xs-12" },
-                    React.createElement("h4", null, theaterName),
-                    timesStrings.map(time => React.createElement(Chip_1.default, { style: { display: 'inline-block' }, key: time }, time))));
-            });
+        return this.props.schedules.map(({ timesStrings, theaterName }) => {
+            return (React.createElement("div", { key: theaterName, className: "col-xs-12" },
+                React.createElement("h4", null, theaterName),
+                timesStrings.map(time => React.createElement(Chip_1.default, { style: { display: 'inline-block' }, key: time }, time))));
+        });
     }
     render() {
         return (React.createElement("div", null, this.getSchedules()));
