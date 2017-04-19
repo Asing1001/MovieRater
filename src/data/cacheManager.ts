@@ -4,9 +4,9 @@ import * as Q from "q";
 import { mergeData } from '../crawler/mergeData';
 import * as moment from 'moment';
 import Movie from '../models/movie';
-import { crawlInTheater } from '../crawler/yahooInTheaterCrawler';
+import { getInTheaterYahooIds } from '../crawler/yahooInTheaterCrawler';
 import crawlyahooMovieSchdule from '../crawler/yahooMovieSchduleCrawler';
-
+import { roughSizeOfObject } from '../helper/util';
 
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
@@ -19,15 +19,15 @@ export default class cacheManager {
         console.time('get yahooMovies and pttArticles');
         const [yahooMovies, pttArticles] = await Promise.all([yahooMoviesPromise, pttArticlesPromise]);
         console.timeEnd('get yahooMovies and pttArticles');
-        cacheManager.setAllMoviesNamesCache(yahooMovies);
-        cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
-        cacheManager.setRecentMoviesCache();
+        this.setAllMoviesNamesCache(yahooMovies);
+        this.setAllMoviesCache(yahooMovies, pttArticles);
+        this.setInTheaterMoviesCache();
     }
 
     private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
         let allMoviesName = [];
         console.time('setAllMoviesNamesCache');
-        yahooMovies.forEach(({ chineseTitle, englishTitle, yahooId, releaseDate }) => {
+        yahooMovies.forEach(({ chineseTitle, englishTitle, yahooId }) => {
             if (chineseTitle) {
                 allMoviesName.push({ value: yahooId, text: chineseTitle });
             }
@@ -47,28 +47,30 @@ export default class cacheManager {
         this.set(cacheManager.All_MOVIES, mergedDatas);
     }
 
-    private static setRecentMoviesCache() {
-        console.time('setRecentMoviesCache');
-        return crawlInTheater().then((yahooIds: Array<number>) => {
-            let today = moment();
-            let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(({ yahooId, releaseDate }: Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
-            this.set(cacheManager.RECENT_MOVIES, recentMovies);
-            console.timeEnd('setRecentMoviesCache');
-
-            return this.setMoviesSchedulesCache(yahooIds);
-        })
+    public static async setInTheaterMoviesCache() {
+        const yahooIds = await getInTheaterYahooIds();
+        if (yahooIds.length > 0) {
+            this.setRecentMoviesCache(yahooIds);
+            this.setMoviesSchedulesCache(yahooIds);
+        }
     }
 
-    private static setMoviesSchedulesCache(yahooIds: Array<number>) {
-        console.time('setMoviesSchedulesCache');
-        let schedulesPromise = yahooIds.map(yahooId => crawlyahooMovieSchdule(yahooId))
+    private static async setRecentMoviesCache(yahooIds) {
+        console.time('setRecentMoviesCache');
+        let today = moment();
+        let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
+            .filter(({ yahooId, releaseDate }: Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
+        this.set(cacheManager.RECENT_MOVIES, recentMovies);
+        console.timeEnd('setRecentMoviesCache');
+    }
 
-        return Q.all(schedulesPromise).then(schedules => {
-            const allSchedules = [].concat(...schedules);
-            this.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
-            console.timeEnd('setMoviesSchedulesCache');
-        })
+    private static async setMoviesSchedulesCache(yahooIds: Array<number>) {
+        console.time('setMoviesSchedulesCache');
+        let schedulesPromise = yahooIds.map(yahooId => crawlyahooMovieSchdule(yahooId));
+        const schedules = await Promise.all(schedulesPromise);
+        const allSchedules = [].concat(...schedules);
+        this.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+        console.timeEnd('setMoviesSchedulesCache');
     }
 
     static get(key) {
@@ -78,40 +80,6 @@ export default class cacheManager {
 
     static set(key, value) {
         memoryCache.put(key, value);
-        console.log(`${key} size:${roughSizeOfObject(value)}` );
+        console.log(`${key} size:${roughSizeOfObject(value)}`);
     }
-}
-
-function roughSizeOfObject( object ) {
-
-    var objectList = [];
-    var stack = [ object ];
-    var bytes = 0;
-
-    while ( stack.length ) {
-        var value = stack.pop();
-
-        if ( typeof value === 'boolean' ) {
-            bytes += 4;
-        }
-        else if ( typeof value === 'string' ) {
-            bytes += value.length * 2;
-        }
-        else if ( typeof value === 'number' ) {
-            bytes += 8;
-        }
-        else if
-        (
-            typeof value === 'object'
-            && objectList.indexOf( value ) === -1
-        )
-        {
-            objectList.push( value );
-
-            for( var i in value ) {
-                stack.push( value[ i ] );
-            }
-        }
-    }
-    return bytes;
 }

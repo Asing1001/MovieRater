@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { db } from "../data/db";
-import { updateTheaterList, } from '../backgroundService/task';
+import { updateTheaterList, } from '../task/yahooTask';
 import Theater from '../models/theater';
 import * as theaterCrawler from '../crawler/theaterCrawler';
 

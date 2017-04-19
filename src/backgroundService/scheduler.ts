@@ -1,12 +1,8 @@
 import { crawlYahoo } from '../crawler/yahooCrawler';
-import { crawlOmdb } from '../crawler/omdbCrawler';
 import { crawlPtt } from '../crawler/pttCrawler';
 import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import * as fetch from "isomorphic-fetch";
-import { db } from "../data/db";
-import * as Q from 'q';
 import cacheManager from '../data/cacheManager';
-import Movie from "../models/movie";
 import { updateImdbInfo } from '../task/imdbTask';
 
 export function initScheduler() {
@@ -40,4 +36,9 @@ export function initScheduler() {
     setInterval(function () {
         cacheManager.init();
     }, 86400000, null);
+
+    console.log("[initScheduler] Create Schedule for cacheManager.setInTheaterMoviesCache");
+    setInterval(function () {
+        cacheManager.setInTheaterMoviesCache();
+    }, 3600000, null);
 }
