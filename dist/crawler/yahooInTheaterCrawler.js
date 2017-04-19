@@ -15,7 +15,7 @@ function getInTheaterYahooIds() {
         let yahooIds = [];
         try {
             const $ = yield util_1.getCheerio$(inTheaterUrl);
-            yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]')).map((index, ele) => parseInt($(ele).val()));
+            yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]')).map((option) => parseInt($(option).val()));
         }
         catch (error) {
             console.error(error);

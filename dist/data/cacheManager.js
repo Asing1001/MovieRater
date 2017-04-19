@@ -23,9 +23,9 @@ class cacheManager {
             console.time('get yahooMovies and pttArticles');
             const [yahooMovies, pttArticles] = yield Promise.all([yahooMoviesPromise, pttArticlesPromise]);
             console.timeEnd('get yahooMovies and pttArticles');
-            this.setAllMoviesNamesCache(yahooMovies);
-            this.setAllMoviesCache(yahooMovies, pttArticles);
-            this.setInTheaterMoviesCache();
+            cacheManager.setAllMoviesNamesCache(yahooMovies);
+            cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
+            cacheManager.setInTheaterMoviesCache();
         });
     }
     static setAllMoviesNamesCache(yahooMovies) {
@@ -39,21 +39,21 @@ class cacheManager {
                 allMoviesName.push({ value: yahooId, text: englishTitle });
             }
         });
-        this.set(cacheManager.All_MOVIES_NAMES, allMoviesName);
+        cacheManager.set(cacheManager.All_MOVIES_NAMES, allMoviesName);
         console.timeEnd('setAllMoviesNamesCache');
     }
     static setAllMoviesCache(yahooMovies, pttArticles) {
         console.time('mergeData');
         let mergedDatas = mergeData_1.mergeData(yahooMovies, pttArticles);
         console.timeEnd('mergeData');
-        this.set(cacheManager.All_MOVIES, mergedDatas);
+        cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
     }
     static setInTheaterMoviesCache() {
         return __awaiter(this, void 0, void 0, function* () {
             const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
             if (yahooIds.length > 0) {
-                this.setRecentMoviesCache(yahooIds);
-                this.setMoviesSchedulesCache(yahooIds);
+                cacheManager.setRecentMoviesCache(yahooIds);
+                cacheManager.setMoviesSchedulesCache(yahooIds);
             }
         });
     }
@@ -63,7 +63,7 @@ class cacheManager {
             let today = moment();
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
                 .filter(({ yahooId, releaseDate }) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
-            this.set(cacheManager.RECENT_MOVIES, recentMovies);
+            cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
         });
     }
@@ -73,7 +73,7 @@ class cacheManager {
             let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
             const schedules = yield Promise.all(schedulesPromise);
             const allSchedules = [].concat(...schedules);
-            this.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+            cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
             console.timeEnd('setMoviesSchedulesCache');
         });
     }

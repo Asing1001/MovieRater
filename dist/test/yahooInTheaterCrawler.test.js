@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chai = require("chai");
 const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
 const should = chai.should();
+const assert = chai.assert;
 describe('yahooInTheaterCrawler', () => {
     describe('getInTheaterYahooIds', () => {
         it('should.above(0)', function () {
@@ -18,6 +19,7 @@ describe('yahooInTheaterCrawler', () => {
                 this.timeout(30000);
                 const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
                 yahooIds.length.should.above(0);
+                assert.isFalse(isNaN(yahooIds[0]));
             });
         });
     });
