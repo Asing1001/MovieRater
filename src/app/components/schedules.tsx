@@ -15,8 +15,7 @@ class Schedules extends React.Component<MovieDetailProps, {}> {
     }
 
     getSchedules() {
-        return !this.props.schedules ? "no schedules" :
-            this.props.schedules.map(({ timesStrings, theaterName }) => {
+        return this.props.schedules.map(({ timesStrings, theaterName }) => {
                 return (
                     <div key={theaterName} className="col-xs-12">
                         <h4>{theaterName}</h4>
