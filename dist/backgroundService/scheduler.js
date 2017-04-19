@@ -33,6 +33,10 @@ function initScheduler() {
     setInterval(function () {
         cacheManager_1.default.init();
     }, 86400000, null);
+    console.log("[initScheduler] Create Schedule for cacheManager.setInTheaterMoviesCache");
+    setInterval(function () {
+        cacheManager_1.default.setInTheaterMoviesCache();
+    }, 3600000, null);
 }
 exports.initScheduler = initScheduler;
 //# sourceMappingURL=scheduler.js.map

@@ -1,25 +1,27 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const request = require("request");
-const cheerio = require("cheerio");
-const Q = require("q");
-const inTheaterUrl = 'https://tw.movies.yahoo.com/';
-function crawlInTheater() {
-    const defer = Q.defer();
-    var req = request({ url: inTheaterUrl, followRedirect: false }, (error, res, body) => {
-        if (error) {
-            let reason = `error occur when request ${inTheaterUrl}, error:${error}`;
-            return defer.reject(reason);
-        }
-        if (res.headers.location) {
-            let reason = `${inTheaterUrl} 404 not found`;
-            return defer.reject(reason);
-        }
-        const $ = cheerio.load(body);
-        let yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]').map((index, ele) => parseInt($(ele).val())));
-        return defer.resolve(yahooIds);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-    return defer.promise;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = require("../helper/util");
+const inTheaterUrl = 'https://tw.movies.yahoo.com/';
+function getInTheaterYahooIds() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let yahooIds = [];
+        try {
+            const $ = yield util_1.getCheerio$(inTheaterUrl);
+            yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]')).map((index, ele) => parseInt($(ele).val()));
+        }
+        catch (error) {
+            console.error(error);
+        }
+        return yahooIds;
+    });
 }
-exports.crawlInTheater = crawlInTheater;
+exports.getInTheaterYahooIds = getInTheaterYahooIds;
 //# sourceMappingURL=yahooInTheaterCrawler.js.map

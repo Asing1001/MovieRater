@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const memoryCache = require("memory-cache");
 const db_1 = require("../data/db");
-const Q = require("q");
 const mergeData_1 = require("../crawler/mergeData");
 const moment = require("moment");
 const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
 const yahooMovieSchduleCrawler_1 = require("../crawler/yahooMovieSchduleCrawler");
+const util_1 = require("../helper/util");
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,15 +23,15 @@ class cacheManager {
             console.time('get yahooMovies and pttArticles');
             const [yahooMovies, pttArticles] = yield Promise.all([yahooMoviesPromise, pttArticlesPromise]);
             console.timeEnd('get yahooMovies and pttArticles');
-            cacheManager.setAllMoviesNamesCache(yahooMovies);
-            cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
-            cacheManager.setRecentMoviesCache();
+            this.setAllMoviesNamesCache(yahooMovies);
+            this.setAllMoviesCache(yahooMovies, pttArticles);
+            this.setInTheaterMoviesCache();
         });
     }
     static setAllMoviesNamesCache(yahooMovies) {
         let allMoviesName = [];
         console.time('setAllMoviesNamesCache');
-        yahooMovies.forEach(({ chineseTitle, englishTitle, yahooId, releaseDate }) => {
+        yahooMovies.forEach(({ chineseTitle, englishTitle, yahooId }) => {
             if (chineseTitle) {
                 allMoviesName.push({ value: yahooId, text: chineseTitle });
             }
@@ -48,21 +48,30 @@ class cacheManager {
         console.timeEnd('mergeData');
         this.set(cacheManager.All_MOVIES, mergedDatas);
     }
-    static setRecentMoviesCache() {
-        console.time('setRecentMoviesCache');
-        return yahooInTheaterCrawler_1.crawlInTheater().then((yahooIds) => {
+    static setInTheaterMoviesCache() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
+            if (yahooIds.length > 0) {
+                this.setRecentMoviesCache(yahooIds);
+                this.setMoviesSchedulesCache(yahooIds);
+            }
+        });
+    }
+    static setRecentMoviesCache(yahooIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.time('setRecentMoviesCache');
             let today = moment();
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
                 .filter(({ yahooId, releaseDate }) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
             this.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
-            return this.setMoviesSchedulesCache(yahooIds);
         });
     }
     static setMoviesSchedulesCache(yahooIds) {
-        console.time('setMoviesSchedulesCache');
-        let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
-        return Q.all(schedulesPromise).then(schedules => {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.time('setMoviesSchedulesCache');
+            let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
+            const schedules = yield Promise.all(schedulesPromise);
             const allSchedules = [].concat(...schedules);
             this.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
             console.timeEnd('setMoviesSchedulesCache');
@@ -74,7 +83,7 @@ class cacheManager {
     }
     static set(key, value) {
         memoryCache.put(key, value);
-        console.log(`${key} size:${roughSizeOfObject(value)}`);
+        console.log(`${key} size:${util_1.roughSizeOfObject(value)}`);
     }
 }
 cacheManager.All_MOVIES = 'allMovies';
@@ -82,29 +91,4 @@ cacheManager.All_MOVIES_NAMES = 'allMoviesNames';
 cacheManager.RECENT_MOVIES = 'recentMovies';
 cacheManager.MOVIES_SCHEDULES = 'MoviesSchedules';
 exports.default = cacheManager;
-function roughSizeOfObject(object) {
-    var objectList = [];
-    var stack = [object];
-    var bytes = 0;
-    while (stack.length) {
-        var value = stack.pop();
-        if (typeof value === 'boolean') {
-            bytes += 4;
-        }
-        else if (typeof value === 'string') {
-            bytes += value.length * 2;
-        }
-        else if (typeof value === 'number') {
-            bytes += 8;
-        }
-        else if (typeof value === 'object'
-            && objectList.indexOf(value) === -1) {
-            objectList.push(value);
-            for (var i in value) {
-                stack.push(value[i]);
-            }
-        }
-    }
-    return bytes;
-}
 //# sourceMappingURL=cacheManager.js.map
