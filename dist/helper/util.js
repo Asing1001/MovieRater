@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const cheerio = require("cheerio");
+const fetch = require("isomorphic-fetch");
 function getCheerio$(request) {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield fetch(request);
         const html = yield response.text();
-        return cheerio.load(html);
+        return cheerio.load(html, { decodeEntities: false });
     });
 }
 exports.getCheerio$ = getCheerio$;

@@ -25,7 +25,7 @@ class cacheManager {
             console.timeEnd('get yahooMovies and pttArticles');
             cacheManager.setAllMoviesNamesCache(yahooMovies);
             cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
-            cacheManager.setInTheaterMoviesCache();
+            yield cacheManager.setInTheaterMoviesCache();
         });
     }
     static setAllMoviesNamesCache(yahooMovies) {
@@ -52,8 +52,8 @@ class cacheManager {
         return __awaiter(this, void 0, void 0, function* () {
             const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
             if (yahooIds.length > 0) {
-                cacheManager.setRecentMoviesCache(yahooIds);
-                cacheManager.setMoviesSchedulesCache(yahooIds);
+                yield cacheManager.setRecentMoviesCache(yahooIds);
+                yield cacheManager.setMoviesSchedulesCache(yahooIds);
             }
         });
     }
