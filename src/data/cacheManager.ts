@@ -21,7 +21,7 @@ export default class cacheManager {
         console.timeEnd('get yahooMovies and pttArticles');
         cacheManager.setAllMoviesNamesCache(yahooMovies);
         cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
-        cacheManager.setInTheaterMoviesCache();
+        await cacheManager.setInTheaterMoviesCache();
     }
 
     private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
@@ -50,8 +50,8 @@ export default class cacheManager {
     public static async setInTheaterMoviesCache() {
         const yahooIds = await getInTheaterYahooIds();
         if (yahooIds.length > 0) {
-            cacheManager.setRecentMoviesCache(yahooIds);
-            cacheManager.setMoviesSchedulesCache(yahooIds);
+            await cacheManager.setRecentMoviesCache(yahooIds);
+            await cacheManager.setMoviesSchedulesCache(yahooIds);
         }
     }
 
