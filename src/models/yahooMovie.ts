@@ -10,7 +10,6 @@ export default class YahooMovie {
     actor?: string
     launchCompany?: string
     companyUrl?: string
-    sourceUrl?: string
     yahooRating?: string
     summary?: string
 }
