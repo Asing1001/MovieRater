@@ -14,7 +14,7 @@ function crawlPtt(howManyPagePerTime) {
         if (crawlerStatus && crawlerStatus.maxPttIndex) {
             startPttIndex = crawlerStatus.maxPttIndex + 1;
         }
-        return crawlPttRange(startPttIndex, startPttIndex + howManyPagePerTime);
+        return crawlPttRange(startPttIndex, startPttIndex + howManyPagePerTime - 1);
     }).then((pttPages) => {
         updatePttMaxIndex(pttPages);
         let allArticles = [].concat(...pttPages.map(({ articles }) => articles));

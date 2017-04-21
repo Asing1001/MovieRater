@@ -86,10 +86,6 @@ const MovieType = new graphql_1.GraphQLObjectType({
             type: graphql_1.GraphQLString,
             resolve: obj => obj.companyUrl,
         },
-        sourceUrl: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.sourceUrl,
-        },
         goodRateArticles: {
             type: new graphql_1.GraphQLList(ArticleType),
             resolve: obj => obj.goodRateArticles,

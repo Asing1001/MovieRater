@@ -20,7 +20,7 @@ function getYahooMovieInfo(yahooId) {
         const $movieInfoValues = $movieInfoDiv.find('p .dta');
         const movieInfo = {
             yahooId,
-            posterUrl: $('#ymvmvf').find('.img a').attr('href'),
+            posterUrl: $('#ymvmvf').find('.img a').attr('href').split('*')[1],
             chineseTitle: $movieInfoDiv.find('h4').text(),
             englishTitle: $movieInfoDiv.find('h5').text(),
             releaseDate: $movieInfoValues.eq(0).text(),
