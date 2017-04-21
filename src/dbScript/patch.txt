@@ -1,0 +1,19 @@
+//2017/04/22 Remove unused property
+//TODO: excute in production
+db.getCollection('yahooMovies').update(
+  {},
+  { $unset: {'tomatoURL':1}},
+  false, true
+)
+
+db.getCollection('yahooMovies').update(
+  {},
+  { $unset: {'tomatoRating':1}},
+  false, true
+)
+
+db.getCollection('yahooMovies').update(
+  {},
+  { $unset: {'sourceUrl':1}},
+  false, true
+)

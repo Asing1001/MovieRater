@@ -27,7 +27,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/pttCrawler.test.js",
+                "dist/test/cacheManager.test.js",
                 "--no-timeouts"
             ],
             "cwd": "${workspaceRoot}",
@@ -35,6 +35,14 @@
             "env": {
                 "NODE_ENV": "testing"
             },
+            "sourceMaps": true,
+            "outDir": "${workspaceRoot}/dist"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch File",
+            "program": "${file}",
             "sourceMaps": true,
             "outDir": "${workspaceRoot}/dist"
         },
