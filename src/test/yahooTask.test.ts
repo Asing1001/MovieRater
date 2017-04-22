@@ -3,6 +3,9 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { db } from "../data/db";
 import { updateTheaterList, updateYahooMovies } from '../task/yahooTask';
+import * as googleMapApi from '../thirdPartyIntegration/googleMapApi';
+import Location from '../models/location';
+
 import Theater from '../models/theater';
 import YahooMovie from '../models/yahooMovie';
 import * as theaterCrawler from '../crawler/theaterCrawler';
@@ -22,11 +25,14 @@ describe('yahooTask', () => {
   afterEach(() => sandbox.restore());
 
   describe('updateTheaterList', () => {
-    it('should get theater list then updateDocument', async function () {
-      const stubGetTheaterList = sandbox.stub(theaterCrawler, 'getTheaterList').returns([1]);
+    it('should get theater list with location then updateDocument', async function () {
+      const theater = new Theater({ name: "wrongAddress", address: "effdggds" });
+      const theaterList = [theater];
+      const location = new Location();
+      const stubGetTheaterList = sandbox.stub(theaterCrawler, 'getTheaterList').returns(Promise.resolve(theaterList));
+      const stubGetGeoLocation = sandbox.stub(googleMapApi, 'getGeoLocation').returns(Promise.resolve(location));
       await updateTheaterList();
-      sandbox.assert.calledOnce(stubUpdateDocument);
-      sandbox.assert.calledOnce(stubGetTheaterList);
+      sandbox.assert.calledWith(stubUpdateDocument, { name: theater.name }, theater, "theaters");
     });
   });
 

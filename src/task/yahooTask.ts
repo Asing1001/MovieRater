@@ -1,12 +1,28 @@
 import { getTheaterList } from '../crawler/theaterCrawler';
 import { getYahooMovieInfo } from '../crawler/yahooCrawler';
+import { getGeoLocation } from '../thirdPartyIntegration/googleMapApi';
+
 import { db } from '../data/db';
 import Theater from '../models/theater';
 import * as Q from "q";
 
 export async function updateTheaterList() {
     const theaterList = await getTheaterList();
-    return Promise.all(theaterList.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
+    const theaterListWithLocation = await bindingTheaterListWithLocation(theaterList);
+    return Promise.all(theaterListWithLocation.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
+}
+
+function bindingTheaterListWithLocation(theaterList: Theater[]) {
+    return Promise.all(theaterList.map(async (theater) => {
+        const location = await getGeoLocation(theater.address)
+        if (location.lat) {
+            return Object.assign(theater, {
+                location: await getGeoLocation(theater.address)
+            })
+        }
+
+        return theater;
+    }));
 }
 
 export async function updateYahooMovies(howManyPagePerTime) {
