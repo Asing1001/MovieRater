@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("mongodb");
 const Q = require("q");
@@ -6,29 +14,18 @@ const systemSetting_1 = require("../configs/systemSetting");
 const log_1 = require("../helper/log");
 class db {
     static openDbConnection() {
-        var deferred = Q.defer();
-        try {
-            log_1.default.debug(arguments);
-            if (this.dbConnection == null) {
-                mongodb_1.MongoClient.connect(systemSetting_1.systemSetting.dbUrl, (err, db) => {
-                    if (err) {
-                        console.error(err);
-                        deferred.reject(err);
-                    }
-                    console.log("Connected correctly to MongoDB server.");
-                    this.dbConnection = db;
-                    deferred.resolve(db);
-                });
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!this.dbConnection) {
+                    this.dbConnection = yield mongodb_1.MongoClient.connect(systemSetting_1.systemSetting.dbUrl);
+                    console.log('connect to mongodb correctly');
+                }
             }
-            else {
-                deferred.resolve(this.dbConnection);
+            catch (error) {
+                console.error(error);
             }
-        }
-        catch (error) {
-            console.error(error);
-            deferred.reject(error);
-        }
-        return deferred.promise;
+            return this.dbConnection;
+        });
     }
     static closeDbConnection() {
         if (this.dbConnection) {

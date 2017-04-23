@@ -32,7 +32,7 @@ describe('cacheManager', () => {
         it('should init complete', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 stubGetCollection.returns([]);
-                sandbox.stub(yahooInTheaterCrawler, 'crawlInTheater').returns(Promise.resolve([]));
+                sandbox.stub(yahooInTheaterCrawler, 'getInTheaterYahooIds').returns(Promise.resolve([]));
                 yield cacheManager_1.default.init();
             });
         });

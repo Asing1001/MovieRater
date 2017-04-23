@@ -28,21 +28,6 @@ function getIMDBMovieInfo(englishTitle) {
     });
 }
 exports.getIMDBMovieInfo = getIMDBMovieInfo;
-const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
-function getIMDBRating(imdbID) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const response = yield fetch(`${imdbMobileMovieUrl + imdbID}`);
-        const html = yield response.text();
-        const $ = cheerio.load(html);
-        let rating = "";
-        let ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
-        if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
-            rating = ratingWrapper.childNodes[0].nodeValue;
-        }
-        return rating;
-    });
-}
-exports.getIMDBRating = getIMDBRating;
 function getIMDBSuggestId(englishTitle) {
     return __awaiter(this, void 0, void 0, function* () {
         let suggestId = "";
@@ -63,4 +48,19 @@ function getIMDBSuggestJsonUrl(englishTitle) {
     const jsonName = englishTitle.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_").substr(0, 20);
     return `https://v2.sg.media-imdb.com/suggests/${jsonName.charAt(0)}/${jsonName}.json`;
 }
+const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
+function getIMDBRating(imdbID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch(`${imdbMobileMovieUrl + imdbID}`);
+        const html = yield response.text();
+        const $ = cheerio.load(html);
+        let rating = "";
+        let ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
+        if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
+            rating = ratingWrapper.childNodes[0].nodeValue;
+        }
+        return rating;
+    });
+}
+exports.getIMDBRating = getIMDBRating;
 //# sourceMappingURL=imdbCrawler.js.map

@@ -27,17 +27,7 @@ function classifyArticle(movie) {
 }
 exports.classifyArticle = classifyArticle;
 function requestGraphQL(query) {
-    return fetch('/graphql', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            query: query
-        }),
-        credentials: 'include',
-    }).then(res => {
+    return fetch(`/graphql?query=${query.replace(/\s+/g, "")}`).then(res => {
         return res.json();
     });
 }

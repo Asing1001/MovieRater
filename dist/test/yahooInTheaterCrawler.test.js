@@ -1,20 +1,26 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai = require("chai");
-const chaiAsPromised = require("chai-as-promised");
 const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
-const db_1 = require("../data/db");
-const assert = chai.assert;
-const expect = chai.expect;
 const should = chai.should();
-chai.should();
-chai.use(chaiAsPromised);
+const assert = chai.assert;
 describe('yahooInTheaterCrawler', () => {
-    before(() => { return db_1.db.openDbConnection(); });
-    describe('crawlInTheater.', () => {
-        it('should got yahooId list.', function () {
-            this.timeout(30000);
-            return yahooInTheaterCrawler_1.crawlInTheater().should.eventually.have.length.above(0);
+    describe('getInTheaterYahooIds', () => {
+        it('should.above(0)', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
+                yahooIds.length.should.above(0);
+                assert.isFalse(isNaN(yahooIds[0]));
+            });
         });
     });
 });

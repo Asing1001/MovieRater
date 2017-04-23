@@ -16,4 +16,9 @@ ReactDOM.render(React.createElement(Root, null), rootElement);
 if (module.hot) {
     module.hot.accept();
 }
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+        .then(reg => console.log('SW registered!', reg))
+        .catch(err => console.log('Error!', err));
+}
 //# sourceMappingURL=main.js.map

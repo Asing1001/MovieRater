@@ -43,6 +43,7 @@ describe('pttCrawler', () => {
     describe('crawlPtt', () => {
         it('crawlPtt(1).should.eventually.fulfilled', function () {
             this.timeout(10000);
+            const stubGetDocument = sandbox.stub(db_1.db, 'getDocument').returns(Promise.resolve({ maxPttIndex: 9999 }));
             return pttCrawler_1.crawlPtt(1).should.eventually.fulfilled;
         });
     });

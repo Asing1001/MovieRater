@@ -6,27 +6,34 @@ const react_swipeable_views_1 = require("react-swipeable-views");
 const Paper_1 = require("material-ui/Paper");
 const movieDetail_1 = require("./movieDetail");
 const pttArticles_1 = require("./pttArticles");
+const schedules_1 = require("./schedules");
 const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const ALLDATA = `{
-            yahooId
-            posterUrl
-            chineseTitle
-            englishTitle
-            releaseDate
-            type
-            runTime
-            director
-            actor
-            launchCompany
-            companyUrl
-            yahooRating
-            imdbID
-            imdbRating
-            tomatoURL            
-            tomatoRating
-            relatedArticles{title,push,url,date,author}
-            summary
+            yahooId,
+            posterUrl,
+            chineseTitle,
+            englishTitle,
+            releaseDate,
+            type,
+            runTime,
+            director,
+            actor,
+            launchCompany,
+            companyUrl,
+            yahooRating,
+            imdbID,
+            imdbRating,
+            tomatoURL            ,
+            tomatoRating,
+            relatedArticles{title,push,url,date,author},
+            summary,
+            schedules {
+              theaterName,
+              yahooId,
+              timesValues,
+              timesStrings
+            }
           }`;
 class MovieDetailTabs extends React.Component {
     constructor(props) {
@@ -63,20 +70,21 @@ class MovieDetailTabs extends React.Component {
         });
     }
     render() {
-        if (!this.state.movie.chineseTitle) {
-            return React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading });
-        }
-        return (React.createElement(Paper_1.default, { zDepth: 2 },
-            React.createElement(Tabs_1.Tabs, { onChange: this.handleChange, value: this.state.slideIndex },
-                React.createElement(Tabs_1.Tab, { label: "Detail", value: 0 }),
-                React.createElement(Tabs_1.Tab, { label: "Ptt", value: 1 }),
-                React.createElement(Tabs_1.Tab, { label: "Summary", value: 2 })),
-            React.createElement(react_swipeable_views_1.default, { index: this.state.slideIndex, onChangeIndex: this.handleChange },
-                React.createElement("div", { style: { height: this.state.slideIndex === 0 ? 'auto' : 0 } },
-                    React.createElement(movieDetail_1.default, { movie: this.state.movie })),
-                React.createElement("div", { style: { height: this.state.slideIndex === 1 ? 'auto' : 0 } },
-                    React.createElement(pttArticles_1.default, { movie: this.state.movie })),
-                React.createElement("div", { className: "col-xs-12", style: { paddingTop: '1em', height: this.state.slideIndex === 2 ? 'auto' : 0 }, dangerouslySetInnerHTML: { __html: this.state.movie.summary } }))));
+        return this.state.isLoading ? React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading }) :
+            (React.createElement(Paper_1.default, { zDepth: 2 },
+                React.createElement(Tabs_1.Tabs, { onChange: this.handleChange, value: this.state.slideIndex },
+                    React.createElement(Tabs_1.Tab, { label: "Detail", value: 0 }),
+                    React.createElement(Tabs_1.Tab, { label: "Ptt", value: 1 }),
+                    React.createElement(Tabs_1.Tab, { label: "Summary", value: 2 }),
+                    this.state.movie.schedules.length > 0 && React.createElement(Tabs_1.Tab, { label: "Time", value: 3 })),
+                React.createElement(react_swipeable_views_1.default, { index: this.state.slideIndex, onChangeIndex: this.handleChange },
+                    React.createElement("div", { style: { height: this.state.slideIndex === 0 ? 'auto' : 0 } },
+                        React.createElement(movieDetail_1.default, { movie: this.state.movie })),
+                    React.createElement("div", { style: { height: this.state.slideIndex === 1 ? 'auto' : 0 } },
+                        React.createElement(pttArticles_1.default, { movie: this.state.movie })),
+                    React.createElement("div", { className: "col-xs-12", style: { paddingTop: '1em', height: this.state.slideIndex === 2 ? 'auto' : 0 }, dangerouslySetInnerHTML: { __html: this.state.movie.summary } }),
+                    React.createElement("div", { style: { height: this.state.slideIndex === 3 ? 'auto' : 0 } },
+                        React.createElement(schedules_1.default, { schedules: this.state.movie.schedules })))));
     }
 }
 exports.default = MovieDetailTabs;

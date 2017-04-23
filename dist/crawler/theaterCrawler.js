@@ -8,9 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fetch = require("isomorphic-fetch");
-const cheerio = require("cheerio");
 const FormData = require("form-data");
+const util_1 = require("../helper/util");
 const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
 function getTheaterList() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29,7 +28,7 @@ function getTheaterListByRegion({ yahooRegionId }) {
             method: 'POST',
             body: form
         });
-        const $ = yield get$(request);
+        const $ = yield util_1.getCheerio$(request);
         const theaterList = Array.from($('#ymvthl tbody>tr')).map(theaterRow => {
             const $theaterRow = $(theaterRow);
             const theater = {
@@ -46,7 +45,7 @@ function getTheaterListByRegion({ yahooRegionId }) {
 exports.getTheaterListByRegion = getTheaterListByRegion;
 function getRegionList() {
     return __awaiter(this, void 0, void 0, function* () {
-        const $ = yield get$(theaterListUrl);
+        const $ = yield util_1.getCheerio$(theaterListUrl);
         const regionList = Array.from($('#area>option')).map((option) => {
             const $option = $(option);
             return {
@@ -60,11 +59,4 @@ function getRegionList() {
     });
 }
 exports.getRegionList = getRegionList;
-function get$(request) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const response = yield fetch(request);
-        const html = yield response.text();
-        return cheerio.load(html);
-    });
-}
 //# sourceMappingURL=theaterCrawler.js.map

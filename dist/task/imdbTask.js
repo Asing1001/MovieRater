@@ -13,9 +13,9 @@ const db_1 = require("../data/db");
 const imdbCrawler_1 = require("../crawler/imdbCrawler");
 function updateImdbInfo() {
     return __awaiter(this, void 0, void 0, function* () {
-        let movieInfos = yield getNewImdbInfos();
+        const movieInfos = yield getNewImdbInfos();
         logResult(movieInfos);
-        return updateYahooMovies(movieInfos);
+        yield updateNewImdbInfos(movieInfos);
     });
 }
 exports.updateImdbInfo = updateImdbInfo;
@@ -36,10 +36,10 @@ function getNewImdbInfos() {
     });
 }
 function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }) {
-    let now = moment();
-    let isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
-    let hasCrawlNearly = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime, imdbLastCrawlTimeFormat), 'hours') <= 12);
-    let shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
+    const now = moment();
+    const isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
+    const hasCrawlNearly = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime, imdbLastCrawlTimeFormat), 'hours') <= 12);
+    const shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
     return shouldCrawl;
 }
 function logResult(movieInfos) {
@@ -48,10 +48,13 @@ function logResult(movieInfos) {
     console.log(`Found imdbInfos: ${foundMovies.length}, NotFound: ${notfoundMovieIds.length}`);
     console.log(`Not found YahooIds: ${notfoundMovieIds}`);
 }
-function updateYahooMovies(movieInfos) {
-    return movieInfos.map(({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
-        const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime };
-        return db_1.db.updateDocument({ yahooId }, newInfo, "yahooMovies");
+function updateNewImdbInfos(movieInfos) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var promises = movieInfos.map(({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
+            const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime };
+            return db_1.db.updateDocument({ yahooId }, newInfo, "yahooMovies");
+        });
+        yield Promise.all(promises);
     });
 }
 //# sourceMappingURL=imdbTask.js.map

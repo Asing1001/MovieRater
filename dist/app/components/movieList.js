@@ -9,19 +9,19 @@ const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const nearbyIcon = React.createElement(sort_1.default, null);
 const BRIEFDATA = `{
-            yahooId
-            posterUrl
-            chineseTitle
-            englishTitle
-            releaseDate
-            type
-            runTime
-            yahooRating
-            imdbID
-            imdbRating
-            tomatoURL            
-            tomatoRating            
-            relatedArticles{title}
+            yahooId,
+            posterUrl,
+            chineseTitle,
+            englishTitle,
+            releaseDate,
+            type,
+            runTime,
+            yahooRating,
+            imdbID,
+            imdbRating,
+            tomatoURL,            
+            tomatoRating,           
+            relatedArticles{title},
             briefSummary
           }`;
 var SortType;
