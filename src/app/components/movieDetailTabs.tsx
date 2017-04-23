@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper';
 import Movie from '../../models/movie';
 import MovieDetail from './movieDetail';
 import PttArticles from './pttArticles';
+import Schedules from './schedules';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
 
@@ -16,24 +17,30 @@ interface MovieDetailState {
 }
 
 const ALLDATA = `{
-            yahooId
-            posterUrl
-            chineseTitle
-            englishTitle
-            releaseDate
-            type
-            runTime
-            director
-            actor
-            launchCompany
-            companyUrl
-            yahooRating
-            imdbID
-            imdbRating
-            tomatoURL            
-            tomatoRating
-            relatedArticles{title,push,url,date,author}
-            summary
+            yahooId,
+            posterUrl,
+            chineseTitle,
+            englishTitle,
+            releaseDate,
+            type,
+            runTime,
+            director,
+            actor,
+            launchCompany,
+            companyUrl,
+            yahooRating,
+            imdbID,
+            imdbRating,
+            tomatoURL            ,
+            tomatoRating,
+            relatedArticles{title,push,url,date,author},
+            summary,
+            schedules {
+              theaterName,
+              yahooId,
+              timesValues,
+              timesStrings
+            }
           }`;
 
 export default class MovieDetailTabs extends React.Component<any, MovieDetailState> {
@@ -77,11 +84,8 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
   }
 
   render() {
-    if (!this.state.movie.chineseTitle) {
-      return <LoadingIcon isLoading={this.state.isLoading} />
-    }
-    return (
-      <Paper zDepth={2}>
+    return this.state.isLoading ? <LoadingIcon isLoading={this.state.isLoading} /> :
+      (<Paper zDepth={2}>
         <Tabs
           onChange={this.handleChange}
           value={this.state.slideIndex}
@@ -89,6 +93,9 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
           <Tab label="Detail" value={0} />
           <Tab label="Ptt" value={1} />
           <Tab label="Summary" value={2} />
+          {
+            this.state.movie.schedules.length > 0 && <Tab label="Time" value={3} />
+          }
         </Tabs>
         <SwipeableViews
           index={this.state.slideIndex}
@@ -101,8 +108,11 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
             <PttArticles movie={this.state.movie}></PttArticles>
           </div>
           <div className="col-xs-12" style={{ paddingTop: '1em', height: this.state.slideIndex === 2 ? 'auto' : 0 }} dangerouslySetInnerHTML={{ __html: this.state.movie.summary }}></div>
+          <div style={{ height: this.state.slideIndex === 3 ? 'auto' : 0 }}>
+            <Schedules schedules={this.state.movie.schedules}></Schedules>
+          </div>
         </SwipeableViews>
       </Paper>
-    );
+      );
   }
 }

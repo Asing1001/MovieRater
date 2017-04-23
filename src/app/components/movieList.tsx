@@ -10,19 +10,19 @@ import LoadingIcon from './loadingIcon';
 const nearbyIcon = <IconLocationOn />;
 
 const BRIEFDATA = `{
-            yahooId
-            posterUrl
-            chineseTitle
-            englishTitle
-            releaseDate
-            type
-            runTime
-            yahooRating
-            imdbID
-            imdbRating
-            tomatoURL            
-            tomatoRating            
-            relatedArticles{title}
+            yahooId,
+            posterUrl,
+            chineseTitle,
+            englishTitle,
+            releaseDate,
+            type,
+            runTime,
+            yahooRating,
+            imdbID,
+            imdbRating,
+            tomatoURL,            
+            tomatoRating,           
+            relatedArticles{title},
             briefSummary
           }`;
 

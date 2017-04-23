@@ -4,9 +4,9 @@ import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
 import Movie from "../models/movie";
 
 export async function updateImdbInfo() {
-    let movieInfos = await getNewImdbInfos();
+    const movieInfos = await getNewImdbInfos();
     logResult(movieInfos);
-    return updateYahooMovies(movieInfos);
+    await updateNewImdbInfos(movieInfos);
 }
 
 const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
@@ -25,10 +25,10 @@ async function getNewImdbInfos() {
 }
 
 function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }: Movie) {
-    let now = moment();
-    let isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
-    let hasCrawlNearly = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime, imdbLastCrawlTimeFormat), 'hours') <= 12);
-    let shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
+    const now = moment();
+    const isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
+    const hasCrawlNearly = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime, imdbLastCrawlTimeFormat), 'hours') <= 12);
+    const shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
     return shouldCrawl;
 }
 
@@ -39,9 +39,10 @@ function logResult(movieInfos: Movie[]) {
     console.log(`Not found YahooIds: ${notfoundMovieIds}`);
 }
 
-function updateYahooMovies(movieInfos: Movie[]) {
-    return movieInfos.map(({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
+async function updateNewImdbInfos(movieInfos: Movie[]) {
+    var promises = movieInfos.map(({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
         const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime }
         return db.updateDocument({ yahooId }, newInfo, "yahooMovies")
-    })
+    });
+    await Promise.all(promises);
 }

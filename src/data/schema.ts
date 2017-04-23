@@ -7,7 +7,6 @@ import {
     GraphQLString,
     GraphQLInt,
 } from 'graphql';
-import { db } from './db';
 import cacheManager from '../data/cacheManager';
 import Movie from '../models/movie';
 import Schedule from '../models/schedule';
@@ -97,10 +96,6 @@ const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.companyUrl,
         },
-        sourceUrl: {
-            type: GraphQLString,
-            resolve: obj => obj.sourceUrl,
-        },
         goodRateArticles: {
             type: new GraphQLList(ArticleType),
             resolve: obj => obj.goodRateArticles,
@@ -141,7 +136,7 @@ const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.tomatoURL,
         },
-        schedule: {
+        schedules: {
             type: new GraphQLList(scheduleType),
             resolve: obj => {
                 return cacheManager.get(cacheManager.MOVIES_SCHEDULES)

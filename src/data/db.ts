@@ -6,28 +6,16 @@ import log from '../helper/log';
 export class db {
     static dbConnection: Db = null;
 
-    public static openDbConnection() {
-        var deferred = Q.defer();
+    public static async openDbConnection() {
         try {
-            log.debug(arguments);
-            if (this.dbConnection == null) {
-                MongoClient.connect(systemSetting.dbUrl, (err, db) => {
-                    if (err) {
-                        console.error(err);
-                        deferred.reject(err);
-                    }
-                    console.log("Connected correctly to MongoDB server.");
-                    this.dbConnection = db;
-                    deferred.resolve(db);
-                });
-            } else {
-                deferred.resolve(this.dbConnection);
+            if (!this.dbConnection) {
+                this.dbConnection = await MongoClient.connect(systemSetting.dbUrl);
+                console.log('connect to mongodb correctly');                
             }
         } catch (error) {
             console.error(error);
-            deferred.reject(error);
         }
-        return deferred.promise;
+        return this.dbConnection;
     }
 
     public static closeDbConnection() {

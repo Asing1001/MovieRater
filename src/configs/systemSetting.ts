@@ -12,4 +12,9 @@ export const schedulerSetting = {
     yahooPagePerTime: 50
 }
 
+export const googleApiSetting = {
+    directionApiKey: 'AIzaSyDQ7FKQW10TIxKmbe7Tjc6fAXI3OQZh-No',
+    geoApiKey: 'AIzaSyBcj5gbydKX6IdPnSxqDUwTTzlszB7oZVw'
+}
+
 console.log("systemSetting", JSON.stringify(systemSetting));

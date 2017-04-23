@@ -14,11 +14,13 @@ import cacheManager from './data/cacheManager';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 import { systemSetting } from './configs/systemSetting';
+import forceSSL from './helper/forceSSL';
 
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 
 const app = express();
 app.use(compression());
+app.use(forceSSL());
 
 app.get('/api/test', (req, res) => {
   res.send('test!');
@@ -33,8 +35,9 @@ app.use(bodyParser.json());
 
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot));
-app.use(favicon(path.join(__dirname, 'public', 'image', 'favicon.ico')));
-app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql,  }))
+app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js'));
+app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
+app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
 app.use(function (req, res) {
   Router.match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {
@@ -46,7 +49,7 @@ app.use(function (req, res) {
       //for material-ui auto prefixer
       global.navigator = { userAgent: req.headers['user-agent'] };
       var html = renderToString(React.createElement(Router.RouterContext, renderProps));
-      var page = swig.renderFile(path.join(__dirname, 'index.html'), { html: html });
+      var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
       res.status(200).send(page);
     } else {
       res.status(404).send('Page Not Found')

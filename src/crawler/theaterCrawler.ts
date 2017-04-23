@@ -1,8 +1,8 @@
 import * as fetch from 'isomorphic-fetch';
-import * as cheerio from 'cheerio';
 import * as FormData from 'form-data';
 import Region from '../models/region';
 import Theater from '../models/theater';
+import {getCheerio$} from '../helper/util';
 
 const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
 export async function getTheaterList(): Promise<Theater[]> {
@@ -19,7 +19,7 @@ export async function getTheaterListByRegion({ yahooRegionId }) {
         method: 'POST',
         body: form
     });
-    const $ = await get$(request);
+    const $ = await getCheerio$(request);
     const theaterList = Array.from($('#ymvthl tbody>tr')).map(theaterRow => {
         const $theaterRow = $(theaterRow);
         const theater: Theater = {
@@ -34,7 +34,7 @@ export async function getTheaterListByRegion({ yahooRegionId }) {
 }
 
 export async function getRegionList(): Promise<Region[]> {
-    const $ = await get$(theaterListUrl);
+    const $ = await getCheerio$(theaterListUrl);
     const regionList = Array.from($('#area>option')).map((option) => {
         const $option = $(option);
         return {
@@ -46,10 +46,4 @@ export async function getRegionList(): Promise<Region[]> {
     //remove first option "選擇地區"
     regionList.shift();
     return regionList;
-}
-
-async function get$(request: Request | string) {
-    const response = await fetch(request);
-    const html = await response.text();
-    return cheerio.load(html);
 }

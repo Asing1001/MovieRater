@@ -27,7 +27,7 @@ describe('cacheManager', () => {
   describe('init cacheManager', () => {
     it('should init complete', async function () {
       stubGetCollection.returns([]);
-      sandbox.stub(yahooInTheaterCrawler,'crawlInTheater').returns(Promise.resolve([]));
+      sandbox.stub(yahooInTheaterCrawler,'getInTheaterYahooIds').returns(Promise.resolve([]));
       await cacheManager.init()
     });
   });
