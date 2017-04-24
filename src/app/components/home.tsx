@@ -2,28 +2,29 @@ import * as React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
+import { gql, graphql } from 'react-apollo';
 
-
+const allMoviesNamesQuery = gql`
+   query {
+     allMoviesNames{
+      value
+      text
+     }
+   }
+ `;
+console.log(allMoviesNamesQuery)
+@graphql(allMoviesNamesQuery,{options:{}})
 class Home extends React.Component<any, any> {
   constructor(props) {
     super(props)
     this.state = {
       searchText: '',
-      dataSource: [],
     };
   }
 
   componentDidMount() {
-    this.getDataSource();
+    console.log(this.props)
     document.querySelector('input').focus();
-  }
-
-  private getDataSource() {
-    fetch('/graphql?query={allMoviesNames{value,text}}')
-      .then(res => res.json())
-      .then((json: any) => {
-        this.setState({ dataSource: json.data.allMoviesNames })
-      });
   }
 
   private handleUpdateInput(text) { this.setState({ searchText: text }) }
@@ -33,12 +34,12 @@ class Home extends React.Component<any, any> {
     document.querySelector('input').focus();
   }
 
-  private onNewRequest(selectItem, index, filteredList) {
+  private onNewRequest(selectItem, index, filteredList) {    
     let yahooIds = [];
     if (index === -1) {
       let searchText = selectItem.toLowerCase();
       if (!filteredList) {
-        yahooIds = this.state.dataSource.filter(({ value, text }) => text.toLowerCase().indexOf(searchText) !== -1).map(({ value }) => parseInt(value)).slice(0, 6);
+        yahooIds = this.props.data.allMoviesNames.filter(({ value, text }) => text.toLowerCase().indexOf(searchText) !== -1).map(({ value }) => parseInt(value)).slice(0, 6);
       } else {
         yahooIds = filteredList.map(({ value }) => parseInt(value.key)).slice(0, 6);
       }
@@ -53,13 +54,14 @@ class Home extends React.Component<any, any> {
     }
   }
 
+
   render() {
     return (
       <div className="container" >
         <div className="autoCompleteWrapper">
           <AutoComplete
             hintText="電影名稱(中英皆可)"
-            dataSource={this.state.dataSource}
+            dataSource={this.props.data.allMoviesNames||[]}
             floatingLabelText="找電影"
             fullWidth={true}
             filter={AutoComplete.caseInsensitiveFilter}
