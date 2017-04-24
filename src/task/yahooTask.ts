@@ -17,10 +17,9 @@ function bindingTheaterListWithLocation(theaterList: Theater[]) {
         const location = await getGeoLocation(theater.address)
         if (location.lat) {
             return Object.assign(theater, {
-                location: await getGeoLocation(theater.address)
+                location
             })
         }
-
         return theater;
     }));
 }
