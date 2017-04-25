@@ -28,17 +28,15 @@ export function requestGraphQL(query: string) {
     })
 }
 
-export function getClientGeoLocation() {
+export function getClientGeoLocation(): Promise<Coordinates> {
     return new Promise((reslove, reject) => window.navigator.geolocation.getCurrentPosition(
         function (pos) {
-            reslove(pos);
-            var lat = pos.coords.latitude;
-            var lon = pos.coords.longitude;
+            reslove(pos.coords);
         }, reject
     ));
 }
 
-export function distanceInKM(lon1, lat1, lon2, lat2) {
+export function getDistanceInKM(lon1, lat1, lon2, lat2) {
     var R = 6371; // Radius of the earth in km
     var dLat = getRadians(lat2 - lat1);  // Javascript functions in radians
     var dLon = getRadians(lon2 - lon1);
@@ -47,7 +45,7 @@ export function distanceInKM(lon1, lat1, lon2, lat2) {
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
-    return d;
+    return Math.round(d * 10) / 10;
 }
 
 function getRadians(num) {

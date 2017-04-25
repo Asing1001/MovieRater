@@ -14,7 +14,7 @@ export async function getTheaterList(): Promise<Theater[]> {
     return theaterList;
 }
 
-export async function getTheaterListByRegion({ yahooRegionId }) {
+export async function getTheaterListByRegion({ name: regionName, yahooRegionId }) {
     var form = new FormData();
     form.append('area', yahooRegionId);
     const request = new Request(theaterListUrl, {
@@ -26,9 +26,10 @@ export async function getTheaterListByRegion({ yahooRegionId }) {
         const $theaterRow = $(theaterRow);
         const theater: Theater = {
             name: $theaterRow.find('a').text(),
-            url: $theaterRow.find('a').attr('href'),
+            url: $theaterRow.find('a').attr('href').split('*')[1],
             address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
             phone: $theaterRow.find('em').text(),
+            region: regionName
         };
         return theater;
     });
