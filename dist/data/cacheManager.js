@@ -13,8 +13,8 @@ const db_1 = require("../data/db");
 const mergeData_1 = require("../crawler/mergeData");
 const moment = require("moment");
 const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
-const yahooMovieSchduleCrawler_1 = require("../crawler/yahooMovieSchduleCrawler");
 const util_1 = require("../helper/util");
+const yahooTask_1 = require("../task/yahooTask");
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,8 +53,15 @@ class cacheManager {
             const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
             if (yahooIds.length > 0) {
                 yield cacheManager.setRecentMoviesCache(yahooIds);
-                yield cacheManager.setMoviesSchedulesCache(yahooIds);
+                yield cacheManager.setMoviesSchedulesWithLocationCache(yahooIds);
             }
+        });
+    }
+    static setMoviesSchedulesWithLocationCache(yahooIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const allSchedules = yield yahooTask_1.getMoviesSchedules(yahooIds);
+            const allSchedulesWithLocation = yield yahooTask_1.getMoviesSchedulesWithLocation(allSchedules);
+            cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedulesWithLocation);
         });
     }
     static setRecentMoviesCache(yahooIds) {
@@ -65,16 +72,6 @@ class cacheManager {
                 .filter(({ yahooId, releaseDate }) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
             cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
-        });
-    }
-    static setMoviesSchedulesCache(yahooIds) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.time('setMoviesSchedulesCache');
-            let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
-            const schedules = yield Promise.all(schedulesPromise);
-            const allSchedules = [].concat(...schedules);
-            cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
-            console.timeEnd('setMoviesSchedulesCache');
         });
     }
     static get(key) {

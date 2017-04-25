@@ -11,5 +11,9 @@ exports.schedulerSetting = {
     pttPagePerTime: 50,
     yahooPagePerTime: 50
 };
+exports.googleApiSetting = {
+    directionApiKey: 'AIzaSyDQ7FKQW10TIxKmbe7Tjc6fAXI3OQZh-No',
+    geoApiKey: 'AIzaSyBcj5gbydKX6IdPnSxqDUwTTzlszB7oZVw'
+};
 console.log("systemSetting", JSON.stringify(exports.systemSetting));
 //# sourceMappingURL=systemSetting.js.map
