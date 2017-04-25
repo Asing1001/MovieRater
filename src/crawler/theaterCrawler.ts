@@ -2,13 +2,15 @@ import * as fetch from 'isomorphic-fetch';
 import * as FormData from 'form-data';
 import Region from '../models/region';
 import Theater from '../models/theater';
-import {getCheerio$} from '../helper/util';
+import { getCheerio$ } from '../helper/util';
 
 const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
 export async function getTheaterList(): Promise<Theater[]> {
+    console.time('getTheaterList');
     const regionList = await getRegionList();
     const promises = regionList.map(getTheaterListByRegion);
     const theaterList = [].concat(...(await Promise.all(promises)));
+    console.timeEnd('getTheaterList');
     return theaterList;
 }
 

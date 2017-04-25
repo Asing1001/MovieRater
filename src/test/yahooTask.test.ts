@@ -2,14 +2,14 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { db } from "../data/db";
-import { updateTheaterList, updateYahooMovies } from '../task/yahooTask';
+import { getMoviesSchedulesWithLocation, updateYahooMovies } from '../task/yahooTask';
 import * as googleMapApi from '../thirdPartyIntegration/googleMapApi';
 import Location from '../models/location';
-
 import Theater from '../models/theater';
 import YahooMovie from '../models/yahooMovie';
 import * as theaterCrawler from '../crawler/theaterCrawler';
 import * as yahooCrawler from '../crawler/yahooCrawler';
+import Schedule from '../models/schedule';
 
 const should = chai.should();
 chai.use(sinonChai);
@@ -24,15 +24,24 @@ describe('yahooTask', () => {
 
   afterEach(() => sandbox.restore());
 
-  describe('updateTheaterList', () => {
-    it('should get theater list with location then updateDocument', async function () {
-      const theater = new Theater({ name: "wrongAddress", address: "effdggds" });
-      const theaterList = [theater];
-      const location = new Location();
-      const stubGetTheaterList = sandbox.stub(theaterCrawler, 'getTheaterList').returns(Promise.resolve(theaterList));
-      const stubGetGeoLocation = sandbox.stub(googleMapApi, 'getGeoLocation').returns(Promise.resolve(location));
-      await updateTheaterList();
-      sandbox.assert.calledWith(stubUpdateDocument, { name: theater.name }, theater, "theaters");
+  describe('getTheaterWithLocationList', () => {
+    it('should has binding theaterExtension', async function () {
+      //Arrange
+      const allSchedules: Schedule[] = new Array<Schedule>(new Schedule(0, "京站威秀影城", ));
+      const expetedTheater = new Theater("京站威秀影城", "台北市大同區市民大道一段209號5樓");
+      const expetedLocation = new Location("123", "456", "789");
+
+      sandbox.stub(theaterCrawler, 'getTheaterList').returns(Promise.resolve([expetedTheater]));
+      sandbox.stub(googleMapApi, 'getGeoLocation').returns(Promise.resolve(expetedLocation));
+
+      //Act
+      const allSchedulesWithLocation = await getMoviesSchedulesWithLocation(allSchedules);
+
+      //Assert
+      const validateResult: Schedule[] = allSchedulesWithLocation;
+      validateResult[0].theaterExtension.should.eql(expetedTheater);
+      validateResult[0].theaterExtension.location.should.eql(expetedLocation);
+
     });
   });
 

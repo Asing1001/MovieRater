@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as sinonChai  from 'sinon-chai';
 import * as sinon from 'sinon';
-import { getTheaterList, getRegionList, getTheaterListByRegion } from '../crawler/theaterCrawler';
+import { getRegionList, getTheaterListByRegion } from '../crawler/theaterCrawler';
 import Theater from "../models/theater";
 
 chai.use(sinonChai);

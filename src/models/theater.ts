@@ -1,7 +1,7 @@
 import Location from '../models/location';
 
 export default class Theater {
-    constructor({ name = "", address = "" }) {
+    constructor(name = "", address = "") {
         this.name = name;
         this.address = address;
     }

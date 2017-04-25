@@ -7,6 +7,7 @@ import Movie from '../models/movie';
 import { getInTheaterYahooIds } from '../crawler/yahooInTheaterCrawler';
 import crawlyahooMovieSchdule from '../crawler/yahooMovieSchduleCrawler';
 import { roughSizeOfObject } from '../helper/util';
+import { getMoviesSchedules, getMoviesSchedulesWithLocation } from '../task/yahooTask';
 
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
@@ -51,8 +52,14 @@ export default class cacheManager {
         const yahooIds = await getInTheaterYahooIds();
         if (yahooIds.length > 0) {
             await cacheManager.setRecentMoviesCache(yahooIds);
-            await cacheManager.setMoviesSchedulesCache(yahooIds);
+            await cacheManager.setMoviesSchedulesWithLocationCache(yahooIds)
         }
+    }
+
+    public static async setMoviesSchedulesWithLocationCache(yahooIds) {
+        const allSchedules = await getMoviesSchedules(yahooIds);
+        const allSchedulesWithLocation = await getMoviesSchedulesWithLocation(allSchedules);
+        cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedulesWithLocation);
     }
 
     private static async setRecentMoviesCache(yahooIds) {
@@ -64,14 +71,6 @@ export default class cacheManager {
         console.timeEnd('setRecentMoviesCache');
     }
 
-    private static async setMoviesSchedulesCache(yahooIds: Array<number>) {
-        console.time('setMoviesSchedulesCache');
-        let schedulesPromise = yahooIds.map(yahooId => crawlyahooMovieSchdule(yahooId));
-        const schedules = await Promise.all(schedulesPromise);
-        const allSchedules = [].concat(...schedules);
-        cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
-        console.timeEnd('setMoviesSchedulesCache');
-    }
 
     static get(key) {
         let data = memoryCache.get(key);

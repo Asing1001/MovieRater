@@ -1,15 +1,38 @@
 import { getTheaterList } from '../crawler/theaterCrawler';
 import { getYahooMovieInfo } from '../crawler/yahooCrawler';
-import { getGeoLocation } from '../thirdPartyIntegration/googleMapApi';
-
+import crawlyahooMovieSchdule from '../crawler/yahooMovieSchduleCrawler';
 import { db } from '../data/db';
 import Theater from '../models/theater';
 import * as Q from "q";
+import Schedule from '../models/schedule';
+import { getGeoLocation } from '../thirdPartyIntegration/googleMapApi';
 
-export async function updateTheaterList() {
+export async function getMoviesSchedules(yahooIds: Array<number>) {
+    console.time('setMoviesSchedulesCache');
+    let schedulesPromise = yahooIds.map(yahooId => crawlyahooMovieSchdule(yahooId));
+    const schedules = await Promise.all(schedulesPromise);
+    const allSchedules: Schedule[] = [].concat(...schedules);
+    console.timeEnd('setMoviesSchedulesCache');
+    return allSchedules;
+}
+
+export async function getMoviesSchedulesWithLocation(allSchedules: Schedule[]) {
+    const theaterListWithLocation = await getTheaterWithLocationList();
+    updateTheaterList(theaterListWithLocation);
+    const allSchedulesWithLocation = allSchedules.map(schdule => {
+        const findTheaterExtension = theaterListWithLocation.find(({ name }) => name === schdule.theaterName)
+        schdule.theaterExtension = findTheaterExtension ? findTheaterExtension : new Theater();
+        return schdule
+    });
+    return allSchedulesWithLocation;
+}
+
+async function getTheaterWithLocationList() {
     const theaterList = await getTheaterList();
+    console.time('bindingTheaterListWithLocation');
     const theaterListWithLocation = await bindingTheaterListWithLocation(theaterList);
-    return Promise.all(theaterListWithLocation.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
+    console.timeEnd('bindingTheaterListWithLocation');
+    return theaterListWithLocation;
 }
 
 function bindingTheaterListWithLocation(theaterList: Theater[]) {
@@ -22,6 +45,10 @@ function bindingTheaterListWithLocation(theaterList: Theater[]) {
         }
         return theater;
     }));
+}
+
+export async function updateTheaterList(theaterListWithLocation) {
+    return Promise.all(theaterListWithLocation.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
 }
 
 export async function updateYahooMovies(howManyPagePerTime) {
