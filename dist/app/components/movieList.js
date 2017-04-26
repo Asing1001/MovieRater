@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
+const moment = require("moment");
 const BottomNavigation_1 = require("material-ui/BottomNavigation");
 const Paper_1 = require("material-ui/Paper");
 const sort_1 = require("material-ui/svg-icons/content/sort");
@@ -30,6 +31,7 @@ var SortType;
     SortType[SortType["yahoo"] = 1] = "yahoo";
     SortType[SortType["tomato"] = 2] = "tomato";
     SortType[SortType["ptt"] = 3] = "ptt";
+    SortType[SortType["releaseDate"] = 4] = "releaseDate";
 })(SortType || (SortType = {}));
 class MovieList extends React.Component {
     constructor(props) {
@@ -51,6 +53,9 @@ class MovieList extends React.Component {
                     break;
                 case SortType.yahoo:
                     sortFunction = this.getStandardSortFunction('yahooRating');
+                    break;
+                case SortType.releaseDate:
+                    sortFunction = ({ releaseDate: releaseDateA }, { releaseDate: releaseDateB }) => moment(releaseDateB).diff(releaseDateA);
                     break;
             }
             this.setState({ selectedIndex: index, sortFunction: sortFunction });
@@ -105,7 +110,8 @@ class MovieList extends React.Component {
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "IMDB", icon: nearbyIcon, onTouchTap: () => this.select(SortType.imdb) }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "YAHOO", icon: nearbyIcon, onTouchTap: () => this.select(SortType.yahoo) }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "TOMATO", icon: nearbyIcon, onTouchTap: () => this.select(SortType.tomato), className: "hide" }),
-                    React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "PTT", icon: nearbyIcon, onTouchTap: () => this.select(SortType.ptt) }))),
+                    React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "PTT", icon: nearbyIcon, onTouchTap: () => this.select(SortType.ptt) }),
+                    React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "上映日", icon: nearbyIcon, onTouchTap: () => this.select(SortType.releaseDate) }))),
             this.state.movies.sort(this.state.sortFunction).map((movie) => (React.createElement(findResult_1.default, { key: movie.yahooId, movie: movie })))));
     }
 }
