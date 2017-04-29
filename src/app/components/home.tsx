@@ -2,6 +2,11 @@ import * as React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
+import Drawer from 'material-ui/Drawer';
+import ActionSearch from 'material-ui/svg-icons/action/search';
+import AvMovie from 'material-ui/svg-icons/av/movie';
+import AppBar from 'material-ui/AppBar';
+import { List, ListItem } from 'material-ui/List';
 
 
 class Home extends React.Component<any, any> {
@@ -53,26 +58,49 @@ class Home extends React.Component<any, any> {
     }
   }
 
+  handleToggle = () => this.setState({ open: !this.state.open });
+
+  handleClose = () => { this.setState({ open: false }); browserHistory.push(`/`) };
+
   render() {
     return (
-      <div className="container" >
-        <div className="autoCompleteWrapper">
-          <AutoComplete
-            hintText="電影名稱(中英皆可)"
-            dataSource={this.state.dataSource}
-            floatingLabelText="找電影"
-            fullWidth={true}
-            filter={AutoComplete.caseInsensitiveFilter}
-            maxSearchResults={6}
-            onNewRequest={this.onNewRequest.bind(this)}
-            searchText={this.state.searchText}
-            onUpdateInput={this.handleUpdateInput.bind(this)}
-          />
-          <button className={`clearButton ${this.state.searchText ? '' : 'displayNone'}`} onClick={this.clearSearchText.bind(this)}>X</button>
+      <div>
+        <AppBar
+          onLeftIconButtonTouchTap={this.handleToggle}
+          iconStyleLeft={{ marginTop: "0px" }}
+          className="appBar"
+          style={{ height: "48px" }}
+          children={
+            <AutoComplete
+              hintText={<span>搜尋電影名稱(中英皆可)</span>}
+              dataSource={this.state.dataSource}
+              fullWidth={true}
+              filter={AutoComplete.caseInsensitiveFilter}
+              maxSearchResults={6}
+              onNewRequest={this.onNewRequest.bind(this)}
+              searchText={this.state.searchText}
+              onUpdateInput={this.handleUpdateInput.bind(this)}
+              menuStyle={{ minWidth: '500px' }}
+            />}
+        >
+        </AppBar>
+
+        <div className="container" style={{marginTop:'.5em'}} >
+          {
+            this.props.children
+          }
+          <Drawer
+            docked={false}
+            width={300}
+            containerStyle={{ maxWidth: '75%' }}
+            open={this.state.open}
+            onRequestChange={(open) => this.setState({ open })}
+          >
+            <List>
+              <ListItem onTouchTap={this.handleClose} leftIcon={<AvMovie />}>現正上映</ListItem>
+            </List>
+          </Drawer>
         </div>
-        {
-          this.props.children
-        }
       </div>
     );
   }

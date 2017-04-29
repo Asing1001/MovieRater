@@ -3,6 +3,9 @@ import Schedule from '../../models/schedule';
 import { Link } from 'react-router';
 import Chip from 'material-ui/Chip';
 import { getClientGeoLocation, getDistanceInKM } from '../helper';
+import CommunicationLocationOn from 'material-ui/svg-icons/communication/location-on';
+import CommunicationCall from 'material-ui/svg-icons/communication/call';
+
 
 interface MovieDetailProps {
     schedules: Schedule[]
