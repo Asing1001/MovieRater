@@ -6,6 +6,10 @@ body {
     margin: 0;
 }
 
+.appBar hr {
+    border-bottom: none !important; 
+}
+
 .backdrop {
     position: fixed;
     height: 100%;
