@@ -4,7 +4,8 @@ export const systemSetting = {
     dbUrl: process.env.DB_URL || 'mongodb://acmLab1001:6RsEeqp9FfKJ@ds145415.mlab.com:45415/movierater',
     //dbUrl : 'mongodb://localhost:27017/movierater'
     websiteUrl: process.env.WEBSITE_URL,
-    enableGraphiql: process.env.ENABLE_GRAPHIQL
+    enableGraphiql: process.env.ENABLE_GRAPHIQL,
+    REDIS_URL: 'redis://h:pb1d6015e875c2a0e81aa7129a47435b4a9e53305eec1a3e36626ffcae875d44b@ec2-34-206-56-226.compute-1.amazonaws.com:28819'
 }
 
 export const schedulerSetting = {

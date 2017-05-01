@@ -15,7 +15,6 @@
         "types": [
             "mocha",
             "core-js",
-            "typed-graphql",
             "react-dom"
         ],
         "lib": [

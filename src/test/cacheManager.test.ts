@@ -31,4 +31,12 @@ describe('cacheManager', () => {
       await cacheManager.init()
     });
   });
+
+  describe('cacheManager get allMoviesCache null should call reinit cache', () => {
+    it('should init complete', async function () {
+      stubGetCollection.returns([]);
+      sandbox.stub(yahooInTheaterCrawler,'getInTheaterYahooIds').returns(Promise.resolve([]));
+      await cacheManager.init()
+    });
+  });
 });
