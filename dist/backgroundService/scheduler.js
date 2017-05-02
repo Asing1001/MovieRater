@@ -41,6 +41,9 @@ function initScheduler() {
     setInterval(function () {
         cacheManager_1.default.setInTheaterMoviesCache();
     }, 3600000, null);
+    setInterval(function () {
+        yahooTask_1.updateTheaterWithLocationList();
+    }, 86400000, null);
 }
 exports.initScheduler = initScheduler;
 //# sourceMappingURL=scheduler.js.map

@@ -28,8 +28,7 @@ function getMoviesSchedules(yahooIds) {
 exports.getMoviesSchedules = getMoviesSchedules;
 function getMoviesSchedulesWithLocation(allSchedules) {
     return __awaiter(this, void 0, void 0, function* () {
-        const theaterListWithLocation = yield getTheaterWithLocationList();
-        updateTheaterList(theaterListWithLocation);
+        const theaterListWithLocation = yield db_1.db.getCollection("theaters");
         const allSchedulesWithLocation = allSchedules.map(schdule => {
             const findTheaterExtension = theaterListWithLocation.find(({ name }) => name === schdule.theaterName);
             schdule.theaterExtension = findTheaterExtension ? findTheaterExtension : new theater_1.default();
@@ -39,15 +38,16 @@ function getMoviesSchedulesWithLocation(allSchedules) {
     });
 }
 exports.getMoviesSchedulesWithLocation = getMoviesSchedulesWithLocation;
-function getTheaterWithLocationList() {
+function updateTheaterWithLocationList() {
     return __awaiter(this, void 0, void 0, function* () {
         const theaterList = yield theaterCrawler_1.getTheaterList();
         console.time('bindingTheaterListWithLocation');
         const theaterListWithLocation = yield bindingTheaterListWithLocation(theaterList);
         console.timeEnd('bindingTheaterListWithLocation');
-        return theaterListWithLocation;
+        return Promise.all(theaterListWithLocation.map(theater => db_1.db.updateDocument({ name: theater.name }, theater, 'theaters')));
     });
 }
+exports.updateTheaterWithLocationList = updateTheaterWithLocationList;
 function bindingTheaterListWithLocation(theaterList) {
     return Promise.all(theaterList.map((theater) => __awaiter(this, void 0, void 0, function* () {
         const location = yield googleMapApi_1.getGeoLocation(theater.address);
@@ -59,12 +59,6 @@ function bindingTheaterListWithLocation(theaterList) {
         return theater;
     })));
 }
-function updateTheaterList(theaterListWithLocation) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return Promise.all(theaterListWithLocation.map(theater => db_1.db.updateDocument({ name: theater.name }, theater, 'theaters')));
-    });
-}
-exports.updateTheaterList = updateTheaterList;
 function updateYahooMovies(howManyPagePerTime) {
     return __awaiter(this, void 0, void 0, function* () {
         const range = yield getCurrentCrawlRange(howManyPagePerTime);
