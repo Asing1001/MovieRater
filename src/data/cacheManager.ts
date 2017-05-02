@@ -57,9 +57,11 @@ export default class cacheManager {
     }
 
     public static async setMoviesSchedulesWithLocationCache(yahooIds) {
+        console.time('setMoviesSchedulesWithLocationCache');
         const allSchedules = await getMoviesSchedules(yahooIds);
         const allSchedulesWithLocation = await getMoviesSchedulesWithLocation(allSchedules);
         cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedulesWithLocation);
+        console.timeEnd('setMoviesSchedulesWithLocationCache');
     }
 
     private static async setRecentMoviesCache(yahooIds) {

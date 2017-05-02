@@ -19,15 +19,23 @@ body {
     z-index: 2;
 }
 
-@media (min-width: 992px) {
-    /*prevent scrollbar vibarate content */
+/*@media (min-width: 992px) {
+    prevent scrollbar vibarate content 
     body {
         width: calc(100vw - 34px);
     }
-}
+}*/
 
 div * {
     font-family: Noto Sans TC, Sans-Serif;
+}
+
+.autoComplete {
+    height: 42px;
+}
+
+.autoComplete>div {
+    bottom: 7px !important;
 }
 
 .autoCompleteWrapper {
@@ -180,10 +188,15 @@ a.pttArticleTitle:visited {
     .resultInfo>span {
         padding-right: .5em
     }
-    .container,
+    
     [class*="col-"] {
         padding-left: .5em;
         padding-right: .5em;
+    }
+
+    .container {
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 

@@ -4,10 +4,11 @@ import 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 import Drawer from 'material-ui/Drawer';
 import ActionSearch from 'material-ui/svg-icons/action/search';
+import SVGBackSpace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import AvMovie from 'material-ui/svg-icons/av/movie';
 import AppBar from 'material-ui/AppBar';
 import { List, ListItem } from 'material-ui/List';
-
+import IconButton from 'material-ui/IconButton';
 
 class Home extends React.Component<any, any> {
   constructor(props) {
@@ -15,6 +16,7 @@ class Home extends React.Component<any, any> {
     this.state = {
       searchText: '',
       dataSource: [],
+      showSearchingAppBar: false,
     };
   }
 
@@ -62,30 +64,75 @@ class Home extends React.Component<any, any> {
 
   handleClose = () => { this.setState({ open: false }); browserHistory.push(`/`) };
 
+  handleSearchIcon = () => { this.setState({ showSearchingAppBar: !this.state.showSearchingAppBar }); };
+
   render() {
     return (
       <div>
-        <AppBar
-          onLeftIconButtonTouchTap={this.handleToggle}
-          iconStyleLeft={{ marginTop: "0px" }}
-          className="appBar"
-          style={{ height: "48px" }}
-          children={
-            <AutoComplete
-              hintText={<span>搜尋電影名稱(中英皆可)</span>}
-              dataSource={this.state.dataSource}
-              fullWidth={true}
-              filter={AutoComplete.caseInsensitiveFilter}
-              maxSearchResults={6}
-              onNewRequest={this.onNewRequest.bind(this)}
-              searchText={this.state.searchText}
-              onUpdateInput={this.handleUpdateInput.bind(this)}
-              menuStyle={{ minWidth: '500px' }}
-            />}
-        >
-        </AppBar>
+        {
+          this.state.showSearchingAppBar ?
+            <AppBar
+              iconElementLeft={<IconButton><SVGBackSpace color="black"/></IconButton>}
+              onLeftIconButtonTouchTap={this.handleSearchIcon}
+              iconStyleLeft={{ marginTop: "4px"}}
+              className="appBar"
+              style={{ height: "56px", backgroundColor: "white" }}
+              zDepth={2}
+              children={
+                <div style={{ backgroundColor: 'white', width: "100%", margin: '10px auto' }}>
+                  <AutoComplete
+                    className="autoComplete"
+                    hintText={<span>搜尋電影名稱(中英皆可)</span>}
+                    dataSource={this.state.dataSource}
+                    filter={AutoComplete.caseInsensitiveFilter}
+                    maxSearchResults={6}
+                    onNewRequest={this.onNewRequest.bind(this)}
+                    searchText={this.state.searchText}
+                    onUpdateInput={this.handleUpdateInput.bind(this)}
+                    menuStyle={{ minWidth: '500px' }}
+                    style={{ height: '36px', width: "auto" }}
+                    textFieldStyle={{ position: 'absolute', height: "36px" }}
+                    textareaStyle={{ top: "7px" }}
+                  />
+                </div>
+              }
+            >
+            </AppBar> :
+            <AppBar
+              title={<span>現正上映</span>}
+              titleStyle={{ fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px" }}
+              onLeftIconButtonTouchTap={this.handleToggle}
+              iconStyleLeft={{ marginTop: "4px" }}
+              iconElementRight={<ActionSearch className="visible-xs" color="white" />}
+              iconStyleRight={{ marginRight: "0px", marginTop: "16px" }}
+              onRightIconButtonTouchTap={this.handleSearchIcon}
+              className={`appBar`}
+              style={{ height: "56px" }}
+              zDepth={2}
+              children={
+                <div className="hidden-xs" style={{ backgroundColor: 'white', width: "100%", paddingLeft: '1em', margin: '10px auto' }}>
+                  <ActionSearch style={{ height: "36px" }} />
+                  <AutoComplete
+                    className="autoComplete"
+                    hintText={<span>搜尋電影名稱(中英皆可)</span>}
+                    dataSource={this.state.dataSource}
+                    filter={AutoComplete.caseInsensitiveFilter}
+                    maxSearchResults={6}
+                    onNewRequest={this.onNewRequest.bind(this)}
+                    searchText={this.state.searchText}
+                    onUpdateInput={this.handleUpdateInput.bind(this)}
+                    menuStyle={{ minWidth: '500px' }}
+                    style={{ height: '36px', paddingLeft: "1em", width: "auto" }}
+                    textFieldStyle={{ position: 'absolute', height: "36px" }}
+                    textareaStyle={{ top: "7px" }}
+                  />
+                </div>
+              }
+            >
+            </AppBar>
+        }
 
-        <div className="container" style={{marginTop:'.5em'}} >
+        <div className="container" style={{ marginTop: '.5em' }} >
           {
             this.props.children
           }
