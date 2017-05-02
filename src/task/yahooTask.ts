@@ -17,8 +17,7 @@ export async function getMoviesSchedules(yahooIds: Array<number>) {
 }
 
 export async function getMoviesSchedulesWithLocation(allSchedules: Schedule[]) {
-    const theaterListWithLocation = await getTheaterWithLocationList();
-    updateTheaterList(theaterListWithLocation);
+    const theaterListWithLocation = await db.getCollection("theaters");
     const allSchedulesWithLocation = allSchedules.map(schdule => {
         const findTheaterExtension = theaterListWithLocation.find(({ name }) => name === schdule.theaterName)
         schdule.theaterExtension = findTheaterExtension ? findTheaterExtension : new Theater();
@@ -27,12 +26,12 @@ export async function getMoviesSchedulesWithLocation(allSchedules: Schedule[]) {
     return allSchedulesWithLocation;
 }
 
-async function getTheaterWithLocationList() {
+export async function updateTheaterWithLocationList() {
     const theaterList = await getTheaterList();
     console.time('bindingTheaterListWithLocation');
     const theaterListWithLocation = await bindingTheaterListWithLocation(theaterList);
     console.timeEnd('bindingTheaterListWithLocation');
-    return theaterListWithLocation;
+    return Promise.all(theaterListWithLocation.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
 }
 
 function bindingTheaterListWithLocation(theaterList: Theater[]) {
@@ -45,10 +44,6 @@ function bindingTheaterListWithLocation(theaterList: Theater[]) {
         }
         return theater;
     }));
-}
-
-export async function updateTheaterList(theaterListWithLocation) {
-    return Promise.all(theaterListWithLocation.map(theater => db.updateDocument({ name: theater.name }, theater, 'theaters')));
 }
 
 export async function updateYahooMovies(howManyPagePerTime) {

@@ -24,23 +24,31 @@ describe('yahooTask', () => {
 
   afterEach(() => sandbox.restore());
 
-  describe('getTheaterWithLocationList', () => {
-    it('should has binding theaterExtension', async function () {
+  describe('getMoviesSchedulesWithLocation', () => {
+    it('should has binding theaterExtension', async function () {      
       //Arrange
-      const allSchedules: Schedule[] = new Array<Schedule>(new Schedule(0, "京站威秀影城", ));
-      const expetedTheater = new Theater("京站威秀影城", "台北市大同區市民大道一段209號5樓");
-      const expetedLocation = new Location("123", "456", "789");
+      const allSchedules: Schedule[] = new Array<Schedule>(new Schedule(0, "台南新光影城", ));
+      const theaterWithLocation = {
+        "name": "台南新光影城",
+        "url": "https://tw.movies.yahoo.com/theater_result.html/id=69",
+        "address": "台南市中西區西門路一段658號8樓",
+        "phone": "06-3031260",
+        "location": {
+          "lat": 22.9868277,
+          "lng": 120.1977034,
+          "place_id": "ChIJGyl13nt2bjQRgqfRajWQWC8"
+        },
+        "region": "台南"
+      }
 
-      sandbox.stub(theaterCrawler, 'getTheaterList').returns(Promise.resolve([expetedTheater]));
-      sandbox.stub(googleMapApi, 'getGeoLocation').returns(Promise.resolve(expetedLocation));
+      sandbox.stub(db, 'getCollection').returns(Promise.resolve([theaterWithLocation]));
 
       //Act
       const allSchedulesWithLocation = await getMoviesSchedulesWithLocation(allSchedules);
 
       //Assert
       const validateResult: Schedule[] = allSchedulesWithLocation;
-      validateResult[0].theaterExtension.should.eql(expetedTheater);
-      validateResult[0].theaterExtension.location.should.eql(expetedLocation);
+      validateResult[0].theaterExtension.should.eql(theaterWithLocation);
 
     });
   });

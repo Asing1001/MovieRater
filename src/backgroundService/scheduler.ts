@@ -1,4 +1,4 @@
-import { updateYahooMovies } from '../task/yahooTask';
+import { updateYahooMovies, updateTheaterWithLocationList } from '../task/yahooTask';
 import { crawlPtt } from '../crawler/pttCrawler';
 import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import * as fetch from "isomorphic-fetch";
@@ -35,4 +35,8 @@ export function initScheduler() {
     setInterval(function () {
         cacheManager.setInTheaterMoviesCache();
     }, 3600000, null);
+
+    setInterval(function () {
+        updateTheaterWithLocationList();
+    }, 86400000, null);    
 }
