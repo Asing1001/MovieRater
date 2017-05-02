@@ -59,9 +59,11 @@ class cacheManager {
     }
     static setMoviesSchedulesWithLocationCache(yahooIds) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.time('setMoviesSchedulesWithLocationCache');
             const allSchedules = yield yahooTask_1.getMoviesSchedules(yahooIds);
             const allSchedulesWithLocation = yield yahooTask_1.getMoviesSchedulesWithLocation(allSchedules);
             cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedulesWithLocation);
+            console.timeEnd('setMoviesSchedulesWithLocationCache');
         });
     }
     static setRecentMoviesCache(yahooIds) {
