@@ -4,11 +4,13 @@ import 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 import Drawer from 'material-ui/Drawer';
 import ActionSearch from 'material-ui/svg-icons/action/search';
+import SVGContentClear from 'material-ui/svg-icons/content/clear';
 import SVGBackSpace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import AvMovie from 'material-ui/svg-icons/av/movie';
 import AppBar from 'material-ui/AppBar';
 import { List, ListItem } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
+import { grey100 } from 'material-ui/styles/colors';
 
 class Home extends React.Component<any, any> {
   constructor(props) {
@@ -22,7 +24,6 @@ class Home extends React.Component<any, any> {
 
   componentDidMount() {
     this.getDataSource();
-    document.querySelector('input').focus();
   }
 
   private getDataSource() {
@@ -64,7 +65,7 @@ class Home extends React.Component<any, any> {
 
   handleClose = () => { this.setState({ open: false }); browserHistory.push(`/`) };
 
-  handleSearchIcon = () => { this.setState({ showSearchingAppBar: !this.state.showSearchingAppBar }); };
+  handleSearchToggle = () => { this.setState({ showSearchingAppBar: !this.state.showSearchingAppBar }); };
 
   render() {
     return (
@@ -72,14 +73,17 @@ class Home extends React.Component<any, any> {
         {
           this.state.showSearchingAppBar ?
             <AppBar
-              iconElementLeft={<IconButton><SVGBackSpace color="black"/></IconButton>}
-              onLeftIconButtonTouchTap={this.handleSearchIcon}
-              iconStyleLeft={{ marginTop: "4px"}}
-              className="appBar"
-              style={{ height: "56px", backgroundColor: "white" }}
+              title={<span>上一步</span>}
+              titleStyle={{ fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px", color: 'black' }}
+              iconElementLeft={<IconButton><SVGBackSpace color="black" /></IconButton>}
+              onLeftIconButtonTouchTap={this.handleSearchToggle}
+              iconStyleLeft={{ marginTop: "4px" }}
+              className="appBar searching"
+              style={{ height: "56px", backgroundColor: grey100 }}
               zDepth={2}
               children={
-                <div style={{ backgroundColor: 'white', width: "100%", margin: '10px auto' }}>
+                <div className="searchArea">
+                  <span className="hidden-xs" style={{ paddingRight: "1em", }}><ActionSearch style={{ height: "36px", color: 'inherit' }} /></span>
                   <AutoComplete
                     className="autoComplete"
                     hintText={<span>搜尋電影名稱(中英皆可)</span>}
@@ -103,18 +107,19 @@ class Home extends React.Component<any, any> {
               titleStyle={{ fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px" }}
               onLeftIconButtonTouchTap={this.handleToggle}
               iconStyleLeft={{ marginTop: "4px" }}
-              iconElementRight={<ActionSearch className="visible-xs" color="white" />}
-              iconStyleRight={{ marginRight: "0px", marginTop: "16px" }}
-              onRightIconButtonTouchTap={this.handleSearchIcon}
+              iconElementRight={<IconButton className="visible-xs" ><ActionSearch /></IconButton>}
+              iconStyleRight={{ marginTop: "4px", marginRight: '0' }}
+              onRightIconButtonTouchTap={this.handleSearchToggle}
               className={`appBar`}
               style={{ height: "56px" }}
               zDepth={2}
               children={
-                <div className="hidden-xs" style={{ backgroundColor: 'white', width: "100%", paddingLeft: '1em', margin: '10px auto' }}>
-                  <ActionSearch style={{ height: "36px" }} />
+                <div onClick={this.handleSearchToggle} className="hidden-xs searchArea" style={{ color: 'white', backgroundColor: '#4DD0E1' }}>
+                  <span className="hidden-xs" style={{ paddingRight: "1em", }}><ActionSearch style={{ height: "36px", color: 'inherit' }} /></span>
                   <AutoComplete
                     className="autoComplete"
                     hintText={<span>搜尋電影名稱(中英皆可)</span>}
+                    hintStyle={{ color: 'inherit' }}
                     dataSource={this.state.dataSource}
                     filter={AutoComplete.caseInsensitiveFilter}
                     maxSearchResults={6}
@@ -122,7 +127,7 @@ class Home extends React.Component<any, any> {
                     searchText={this.state.searchText}
                     onUpdateInput={this.handleUpdateInput.bind(this)}
                     menuStyle={{ minWidth: '500px' }}
-                    style={{ height: '36px', paddingLeft: "1em", width: "auto" }}
+                    style={{ height: '36px', width: "auto" }}
                     textFieldStyle={{ position: 'absolute', height: "36px" }}
                     textareaStyle={{ top: "7px" }}
                   />

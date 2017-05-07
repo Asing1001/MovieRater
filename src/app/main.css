@@ -10,6 +10,24 @@ body {
     border-bottom: none !important; 
 }
 
+@media (max-width: 767px){
+    .appBar.searching > div:nth-child(2){
+        display: none!important;
+    }
+}
+
+.searchArea {
+    width: 100%; 
+    margin:10px auto; 
+    padding-left: 1em;
+}
+
+@media (min-width: 767px){
+    .searchArea{
+        background-color: white;
+    }
+}
+
 .backdrop {
     position: fixed;
     height: 100%;
