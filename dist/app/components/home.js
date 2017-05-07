@@ -11,12 +11,13 @@ const movie_1 = require("material-ui/svg-icons/av/movie");
 const AppBar_1 = require("material-ui/AppBar");
 const List_1 = require("material-ui/List");
 const IconButton_1 = require("material-ui/IconButton");
+const colors_1 = require("material-ui/styles/colors");
 class Home extends React.Component {
     constructor(props) {
         super(props);
         this.handleToggle = () => this.setState({ open: !this.state.open });
         this.handleClose = () => { this.setState({ open: false }); react_router_1.browserHistory.push(`/`); };
-        this.handleSearchIcon = () => { this.setState({ showSearchingAppBar: !this.state.showSearchingAppBar }); };
+        this.handleSearchToggle = () => { this.setState({ showSearchingAppBar: !this.state.showSearchingAppBar }); };
         this.state = {
             searchText: '',
             dataSource: [],
@@ -25,7 +26,6 @@ class Home extends React.Component {
     }
     componentDidMount() {
         this.getDataSource();
-        document.querySelector('input').focus();
     }
     getDataSource() {
         fetch('/graphql?query={allMoviesNames{value,text}}')
@@ -63,12 +63,16 @@ class Home extends React.Component {
     render() {
         return (React.createElement("div", null,
             this.state.showSearchingAppBar ?
-                React.createElement(AppBar_1.default, { iconElementLeft: React.createElement(IconButton_1.default, null,
-                        React.createElement(keyboard_backspace_1.default, { color: "black" })), onLeftIconButtonTouchTap: this.handleSearchIcon, iconStyleLeft: { marginTop: "4px" }, className: "appBar", style: { height: "56px", backgroundColor: "white" }, zDepth: 2, children: React.createElement("div", { style: { backgroundColor: 'white', width: "100%", margin: '10px auto' } },
+                React.createElement(AppBar_1.default, { title: React.createElement("span", null, "\u4E0A\u4E00\u6B65"), titleStyle: { fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px", color: 'black' }, iconElementLeft: React.createElement(IconButton_1.default, null,
+                        React.createElement(keyboard_backspace_1.default, { color: "black" })), onLeftIconButtonTouchTap: this.handleSearchToggle, iconStyleLeft: { marginTop: "4px" }, className: "appBar searching", style: { height: "56px", backgroundColor: colors_1.grey100 }, zDepth: 2, children: React.createElement("div", { className: "searchArea" },
+                        React.createElement("span", { className: "hidden-xs", style: { paddingRight: "1em", } },
+                            React.createElement(search_1.default, { style: { height: "36px", color: 'inherit' } })),
                         React.createElement(AutoComplete_1.default, { className: "autoComplete", hintText: React.createElement("span", null, "\u641C\u5C0B\u96FB\u5F71\u540D\u7A31(\u4E2D\u82F1\u7686\u53EF)"), dataSource: this.state.dataSource, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 6, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this), menuStyle: { minWidth: '500px' }, style: { height: '36px', width: "auto" }, textFieldStyle: { position: 'absolute', height: "36px" }, textareaStyle: { top: "7px" } })) }) :
-                React.createElement(AppBar_1.default, { title: React.createElement("span", null, "\u73FE\u6B63\u4E0A\u6620"), titleStyle: { fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px" }, onLeftIconButtonTouchTap: this.handleToggle, iconStyleLeft: { marginTop: "4px" }, iconElementRight: React.createElement(search_1.default, { className: "visible-xs", color: "white" }), iconStyleRight: { marginRight: "0px", marginTop: "16px" }, onRightIconButtonTouchTap: this.handleSearchIcon, className: `appBar`, style: { height: "56px" }, zDepth: 2, children: React.createElement("div", { className: "hidden-xs", style: { backgroundColor: 'white', width: "100%", paddingLeft: '1em', margin: '10px auto' } },
-                        React.createElement(search_1.default, { style: { height: "36px" } }),
-                        React.createElement(AutoComplete_1.default, { className: "autoComplete", hintText: React.createElement("span", null, "\u641C\u5C0B\u96FB\u5F71\u540D\u7A31(\u4E2D\u82F1\u7686\u53EF)"), dataSource: this.state.dataSource, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 6, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this), menuStyle: { minWidth: '500px' }, style: { height: '36px', paddingLeft: "1em", width: "auto" }, textFieldStyle: { position: 'absolute', height: "36px" }, textareaStyle: { top: "7px" } })) }),
+                React.createElement(AppBar_1.default, { title: React.createElement("span", null, "\u73FE\u6B63\u4E0A\u6620"), titleStyle: { fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px" }, onLeftIconButtonTouchTap: this.handleToggle, iconStyleLeft: { marginTop: "4px" }, iconElementRight: React.createElement(IconButton_1.default, { className: "visible-xs" },
+                        React.createElement(search_1.default, null)), iconStyleRight: { marginTop: "4px", marginRight: '0' }, onRightIconButtonTouchTap: this.handleSearchToggle, className: `appBar`, style: { height: "56px" }, zDepth: 2, children: React.createElement("div", { onClick: this.handleSearchToggle, className: "hidden-xs searchArea", style: { color: 'white', backgroundColor: '#4DD0E1' } },
+                        React.createElement("span", { className: "hidden-xs", style: { paddingRight: "1em", } },
+                            React.createElement(search_1.default, { style: { height: "36px", color: 'inherit' } })),
+                        React.createElement(AutoComplete_1.default, { className: "autoComplete", hintText: React.createElement("span", null, "\u641C\u5C0B\u96FB\u5F71\u540D\u7A31(\u4E2D\u82F1\u7686\u53EF)"), hintStyle: { color: 'inherit' }, dataSource: this.state.dataSource, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 6, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this), menuStyle: { minWidth: '500px' }, style: { height: '36px', width: "auto" }, textFieldStyle: { position: 'absolute', height: "36px" }, textareaStyle: { top: "7px" } })) }),
             React.createElement("div", { className: "container", style: { marginTop: '.5em' } },
                 this.props.children,
                 React.createElement(Drawer_1.default, { docked: false, width: 300, containerStyle: { maxWidth: '75%' }, open: this.state.open, onRequestChange: (open) => this.setState({ open }) },
