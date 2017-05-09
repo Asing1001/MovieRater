@@ -1,22 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
+const AutoComplete_1 = require("material-ui/AutoComplete");
 require("isomorphic-fetch");
 const react_router_1 = require("react-router");
-const appAutoComplete_1 = require("./appAutoComplete");
 const search_1 = require("material-ui/svg-icons/action/search");
+const clear_1 = require("material-ui/svg-icons/content/clear");
 const keyboard_backspace_1 = require("material-ui/svg-icons/hardware/keyboard-backspace");
-const AppBar_1 = require("material-ui/AppBar");
 const IconButton_1 = require("material-ui/IconButton");
-const colors_1 = require("material-ui/styles/colors");
+const Paper_1 = require("material-ui/Paper");
 class AppBarSearching extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             searchText: '',
-            dataSource: [],
+            dataSource: []
         };
     }
+    clearSearchText() {
+        this.setState({ searchText: '' });
+        setTimeout(() => document.querySelector('input').focus(), 100);
+    }
+    handleUpdateInput(text) { this.setState({ searchText: text }); }
     componentDidMount() {
         this.getDataSource();
     }
@@ -49,11 +54,15 @@ class AppBarSearching extends React.Component {
         }
     }
     render() {
-        return (React.createElement(AppBar_1.default, { title: React.createElement("span", null, "\u4E0A\u4E00\u6B65"), titleStyle: { fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px", color: 'black' }, iconElementLeft: React.createElement(IconButton_1.default, null,
-                React.createElement(keyboard_backspace_1.default, { color: "black" })), onLeftIconButtonTouchTap: this.props.onBackSpaceIconClick, iconStyleLeft: { marginTop: "4px" }, className: `appBar searching ${this.props.className}`, style: { height: "56px", backgroundColor: colors_1.grey100 }, zDepth: 2, children: React.createElement("div", { className: "searchArea" },
-                React.createElement("span", { className: "hidden-xs", style: { paddingRight: "1em", } },
-                    React.createElement(search_1.default, { style: { height: "36px", color: 'inherit' } })),
-                React.createElement(appAutoComplete_1.default, { dataSource: this.state.dataSource, onNewRequest: this.onNewRequest.bind(this) })) }));
+        return (React.createElement(Paper_1.default, { zDepth: 2, className: `appBar searching ${this.props.className}` },
+            React.createElement(IconButton_1.default, { className: "leftBtn", onTouchTap: this.props.onBackSpaceIconClick },
+                React.createElement(keyboard_backspace_1.default, null)),
+            React.createElement("span", { className: "hidden-xs barTitle" }, "\u4E0A\u4E00\u6B65"),
+            React.createElement("span", { className: "searchArea" },
+                React.createElement(search_1.default, { className: "hidden-xs searchIcon" }),
+                React.createElement(AutoComplete_1.default, { hintText: React.createElement("span", null, "\u641C\u5C0B\u96FB\u5F71\u540D\u7A31(\u4E2D\u82F1\u7686\u53EF)"), dataSource: this.state.dataSource, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 8, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this), menuStyle: { minWidth: "500px" }, fullWidth: true })),
+            React.createElement(IconButton_1.default, { onTouchTap: this.clearSearchText.bind(this), className: "visible-xs rightBtn" },
+                React.createElement(clear_1.default, null))));
     }
 }
 exports.default = AppBarSearching;

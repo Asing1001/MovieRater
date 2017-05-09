@@ -16,8 +16,8 @@ class Home extends React.Component {
     }
     render() {
         return (React.createElement("div", null,
-            React.createElement(appBarSearching_1.default, { className: !this.state.searching && "hidden", onBackSpaceIconClick: this.handleSearchToggle }),
-            React.createElement(appBarNormal_1.default, { className: this.state.searching && "hidden", onSearchIconClick: this.handleSearchToggle }, " >"),
+            React.createElement(appBarNormal_1.default, { className: this.state.searching && "vanish", onSearchIconClick: this.handleSearchToggle }, " >"),
+            React.createElement(appBarSearching_1.default, { className: !this.state.searching && "vanish", onBackSpaceIconClick: this.handleSearchToggle }),
             React.createElement("div", { className: "container", style: { marginTop: '.5em' } }, this.props.children)));
     }
 }
