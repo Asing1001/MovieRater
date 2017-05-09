@@ -18,14 +18,14 @@ class Home extends React.Component<any, any> {
   render() {
     return (
       <div>
-        <AppBarSearching
-          className={!this.state.searching && "hidden"}
-          onBackSpaceIconClick={this.handleSearchToggle}>
-        </AppBarSearching>
         <AppBarNormal
-          className={this.state.searching && "hidden"}
+          className={this.state.searching && "vanish"}
           onSearchIconClick={this.handleSearchToggle}> >
         </AppBarNormal>
+        <AppBarSearching
+          className={!this.state.searching && "vanish"}
+          onBackSpaceIconClick={this.handleSearchToggle}>
+        </AppBarSearching>
         <div className="container" style={{ marginTop: '.5em' }} >
           {
             this.props.children

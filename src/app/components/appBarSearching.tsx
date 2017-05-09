@@ -2,22 +2,27 @@ import * as React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
-import AppAutoComplete from './appAutoComplete';
 import SVGActionSearch from 'material-ui/svg-icons/action/search';
 import SVGContentClear from 'material-ui/svg-icons/content/clear';
 import SVGBackSpace from 'material-ui/svg-icons/hardware/keyboard-backspace';
-import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import { grey100 } from 'material-ui/styles/colors';
+import Paper from 'material-ui/Paper';
 
 class AppBarSearching extends React.Component<any, any> {
   constructor(props) {
     super(props)
     this.state = {
       searchText: '',
-      dataSource: [],
+      dataSource: []
     };
   }
+
+  private clearSearchText() {
+    this.setState({ searchText: '' });
+    setTimeout(() => document.querySelector('input').focus(), 100);
+  }
+
+  private handleUpdateInput(text) { this.setState({ searchText: text }) }
 
   componentDidMount() {
     this.getDataSource();
@@ -53,26 +58,25 @@ class AppBarSearching extends React.Component<any, any> {
 
   render() {
     return (
-            <AppBar
-              title={<span>上一步</span>}
-              titleStyle={{ fontSize: "19.5px", lineHeight: "56px", flex: 'none', width: "126px", color: 'black' }}
-              iconElementLeft={<IconButton><SVGBackSpace color="black" /></IconButton>}
-              onLeftIconButtonTouchTap={this.props.onBackSpaceIconClick}
-              iconStyleLeft={{ marginTop: "4px" }}
-              className={`appBar searching ${this.props.className}`}
-              style={{ height: "56px", backgroundColor: grey100 }}
-              zDepth={2}
-              children={
-                <div className="searchArea">
-                  <span className="hidden-xs" style={{ paddingRight: "1em", }}><SVGActionSearch style={{ height: "36px", color: 'inherit' }} /></span>
-                  <AppAutoComplete
-                    dataSource={this.state.dataSource}
-                    onNewRequest={this.onNewRequest.bind(this)}
-                  />
-                </div>
-              }
-            >
-            </AppBar> 
+      <Paper zDepth={2} className={`appBar searching ${this.props.className}`}>
+        <IconButton className="leftBtn" onTouchTap={this.props.onBackSpaceIconClick}><SVGBackSpace /></IconButton>
+        <span className="hidden-xs barTitle">上一步</span>
+        <span className="searchArea">
+          <SVGActionSearch className="hidden-xs searchIcon" />
+          <AutoComplete
+            hintText={<span>搜尋電影名稱(中英皆可)</span>}
+            dataSource={this.state.dataSource}
+            filter={AutoComplete.caseInsensitiveFilter}
+            maxSearchResults={8}
+            onNewRequest={this.onNewRequest.bind(this)}
+            searchText={this.state.searchText}
+            onUpdateInput={this.handleUpdateInput.bind(this)}
+            menuStyle={{ minWidth: "500px" }}
+            fullWidth={true}
+          />
+        </span>
+        <IconButton onTouchTap={this.clearSearchText.bind(this)} className="visible-xs rightBtn"><SVGContentClear /></IconButton>
+      </Paper>
     );
   }
 }

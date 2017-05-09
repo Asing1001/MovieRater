@@ -1,30 +1,70 @@
 @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
-html,
-body {
+html, body {
     height: 100%;
     width: 100%;
     margin: 0;
 }
 
+div * {
+    font-family: Noto Sans TC, Sans-Serif;
+}
+
+input::-ms-clear {
+    width: 0;
+    height: 0;
+}
+
+.appBar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.appBar.vanish {
+    position: absolute !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    top: 0;
+}
+
 .appBar hr {
-    border-bottom: none !important; 
+    border-bottom: none !important;
 }
 
-@media (max-width: 767px){
-    .appBar.searching > div:nth-child(2){
-        display: none!important;
+.appBar .barTitle {
+    width: 150px;
+    font-size: 1.4em;
+}
+
+.appBar .rightBtn {
+    margin-left: auto !important;
+}
+
+.appBar .searchArea {
+    flex: 0.9;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    height: 36px
+}
+
+.appBar .searchArea .searchIcon {
+    width: 56px !important;
+}
+
+@media (min-width: 767px) {
+    .appBar .leftBtn {
+        width: 72px !important;
     }
-}
-
-.searchArea {
-    width: 100%; 
-    margin:10px auto; 
-    padding-left: 1em;
-}
-
-@media (min-width: 767px){
-    .searchArea{
-        background-color: white;
+    .appBar .searchArea {
+        flex: 0.8;
+    }
+    .appBar.searching {
+        background-color: #F5F5F5 !important;
+    }
+    .appBar.searching .searchArea {
+        background-color: white !important;
     }
 }
 
@@ -35,62 +75,6 @@ body {
     top: 0px;
     left: 0px;
     z-index: 2;
-}
-
-/*@media (min-width: 992px) {
-    prevent scrollbar vibarate content 
-    body {
-        width: calc(100vw - 34px);
-    }
-}*/
-
-div * {
-    font-family: Noto Sans TC, Sans-Serif;
-}
-
-.autoComplete {
-    height: 42px;
-}
-
-.autoComplete>div {
-    bottom: 7px !important;
-}
-
-.autoCompleteWrapper {
-    position: relative;
-}
-
-input::-ms-clear {
-    width: 0;
-    height: 0;
-}
-
-.clearButton {
-    cursor: pointer;
-    background-color: inherit;
-    border: 0;
-    font-size: 16px;
-    position: absolute;
-    padding: 10px;
-    bottom: 0;
-    left: 100%;
-    margin-left: -35px;
-    outline: none;
-    color: #26C6DA;
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .clearButton {
-        display: block;
-    }
-    .autoCompleteWrapper {
-        margin-top: -.8em;
-    }
-}
-
-.displayNone {
-    display: none;
 }
 
 .movieDetail {
@@ -127,8 +111,7 @@ input::-ms-clear {
     padding-right: 1em;
 }
 
-.ratingWrapper>img,
-.ratingWrapper>pttLogo {
+.ratingWrapper>img, .ratingWrapper>pttLogo {
     margin-right: .2em;
 }
 
@@ -206,18 +189,12 @@ a.pttArticleTitle:visited {
     .resultInfo>span {
         padding-right: .5em
     }
-    
     [class*="col-"] {
         padding-left: .5em;
         padding-right: .5em;
     }
-
     .container {
         padding-left: 0;
         padding-right: 0;
     }
-}
-
-.pointer {
-    cursor: pointer;
 }
