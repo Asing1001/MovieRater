@@ -1,5 +1,5 @@
 import { updateYahooMovies, updateTheaterWithLocationList } from '../task/yahooTask';
-import { crawlPtt } from '../crawler/pttCrawler';
+import { updatePttArticles } from '../task/pttTask';
 import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import * as fetch from "isomorphic-fetch";
 import cacheManager from '../data/cacheManager';
@@ -21,11 +21,10 @@ export function initScheduler() {
         console.timeEnd('[Scheduler] updateImdbInfo');
     }, 900000, null);
 
-    setInterval(function () {
+    setInterval(async function () {
         console.time('[Scheduler] crawlPtt');
-        crawlPtt(schedulerSetting.pttPagePerTime).then(() => {
-            console.timeEnd('[Scheduler] crawlPtt');
-        });
+        await updatePttArticles(schedulerSetting.pttPagePerTime);
+        console.timeEnd('[Scheduler] crawlPtt');
     }, 900000, null);
 
     setInterval(function () {
@@ -38,5 +37,5 @@ export function initScheduler() {
 
     setInterval(function () {
         updateTheaterWithLocationList();
-    }, 86400000, null);    
+    }, 86400000, null);
 }

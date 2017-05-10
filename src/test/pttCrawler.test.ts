@@ -1,42 +1,25 @@
 import * as chai from 'chai';
-import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import { getMatchedYahooId, crawlPttPage, crawlPttRange, crawlPtt } from '../crawler/pttCrawler';
-import { db } from "../data/db";
+import { getMatchedYahooId, getPttPage } from '../crawler/pttCrawler';
 import cacheManager from '../data/cacheManager';
-chai.use(sinonChai);
 
-const assert = chai.assert;
-const expect = chai.expect;
-const should = chai.should();
-chai.should();
 chai.use(chaiAsPromised);
-
-const testMoviesData = [{
-    "yahooId": 6571,
-    "chineseTitle": "羅根",
-    "englishTitle": "Logan",
-    "releaseDate": "2017-02-28",
-}, {
-    "yahooId": 999999,
-    "chineseTitle": "chineseTitle",
-    "englishTitle": "englishTitle",
-    "releaseDate": "2013-02-28",
-}]
+chai.should();
 
 describe('pttCrawler', () => {
-    let sandbox, stubUpdateDocument;
-
-    before(() => {
-        sandbox = sinon.sandbox.create();
-        stubUpdateDocument = sandbox.stub(db, 'updateDocument');
-    });
-
-    after(() => sandbox.restore());
-
     describe('getMatchedYahooId', () => {
         before(() => {
+            const testMoviesData = [{
+                "yahooId": 6571,
+                "chineseTitle": "羅根",
+                "englishTitle": "Logan",
+                "releaseDate": "2017-02-28",
+            }, {
+                "yahooId": 999999,
+                "chineseTitle": "chineseTitle",
+                "englishTitle": "englishTitle",
+                "releaseDate": "2013-02-28",
+            }]
             cacheManager.set(cacheManager.All_MOVIES, testMoviesData)
             return;
         })
@@ -45,32 +28,18 @@ describe('pttCrawler', () => {
         });
     });
 
-    describe('crawlPtt', () => {
-        it('crawlPtt(1).should.eventually.fulfilled', function () {
-            this.timeout(10000);
-            const stubGetDocument = sandbox.stub(db, 'getDocument').returns(Promise.resolve({ maxPttIndex: 9999 }));
-            return crawlPtt(1).should.eventually.fulfilled;
-        });
-    });
-
-    describe('crawlPttRange', () => {
-        it('crawlPttRange(4000,4001).should.eventually.have.length.equal(2)', function () {
-            this.timeout(10000);
-            return crawlPttRange(4000, 4001).should.eventually.have.property('length', 2);
-        });
-    });
-
-    describe('crawlPttPage', () => {
+    describe('getPttPage', () => {
         it('should reject when Pttid not exist', function () {
             this.timeout(5000);
             let pageIndex = 99999
-            return crawlPttPage(pageIndex).should.eventually
+            return getPttPage(pageIndex).should.eventually
                 .rejectedWith(`index${pageIndex} not exist, server return:500 - Internal Server Error / Server Too Busy.`);
         });
 
-        it('should resolve when Pttid exist', function () {
+        it('should resolve when Pttid exist', async function () {
             this.timeout(5000);
-            return crawlPttPage(4000).should.eventually.fulfilled;
+            const pttPage = await getPttPage(4000);
+            pttPage.articles.length.should.greaterThan(0);
         });
     });
 });
