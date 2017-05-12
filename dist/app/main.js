@@ -13,9 +13,11 @@ class Root extends React.Component {
 }
 const rootElement = document.getElementById('app');
 ReactDOM.render(React.createElement(Root, null), rootElement);
-if (module.hot) {
-    module.hot.accept();
-}
+// //for hot module reload
+// declare var module;
+// if (module.hot) {
+//   module.hot.accept();
+// }
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
         .then(reg => console.log('SW registered!', reg))

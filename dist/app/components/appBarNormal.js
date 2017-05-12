@@ -17,7 +17,7 @@ class AppBarNormal extends React.Component {
         this.drawerToggle = null;
     }
     render() {
-        return (React.createElement(Paper_1.default, { zDepth: 2, className: `appBar normal ${this.props.className}`, style: Object.assign({}, normalStyles) },
+        return (React.createElement(Paper_1.default, { zDepth: 2, className: `appBar normal ${this.props.className}`, style: normalStyles },
             React.createElement(IconButton_1.default, { className: "leftBtn", onTouchTap: () => this.drawerToggle() },
                 React.createElement(menu_1.default, { color: normalStyles.color })),
             React.createElement("span", { className: "barTitle" }, "\u73FE\u6B63\u4E0A\u6620"),
