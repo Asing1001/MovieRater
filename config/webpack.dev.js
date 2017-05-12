@@ -5,9 +5,7 @@ var helpers = require('./helpers');
 
 module.exports = webpackMerge(commonConfig, {
   devtool: 'cheap-module-eval-source-map',
-
   entry: {
-    'hotserver' :'webpack/hot/only-dev-server',
     'main': './src/app/main.tsx',
     'vendor': './src/app/vendor.ts',
   },
@@ -20,15 +18,16 @@ module.exports = webpackMerge(commonConfig, {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
-        loader: 'style!css'
-      }
-    ]
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
   },
 
   devServer: {
+    open:true,
     historyApiFallback: true,
     stats: 'minimal',
     proxy: {

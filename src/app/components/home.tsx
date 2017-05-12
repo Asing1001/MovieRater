@@ -20,11 +20,11 @@ class Home extends React.Component<any, any> {
       <div>
         <AppBarNormal
           className={this.state.searching && "vanish"}
-          onSearchIconClick={this.handleSearchToggle}> >
+          onSearchIconClick={this.handleSearchToggle.bind(this)}> >
         </AppBarNormal>
         <AppBarSearching
           className={!this.state.searching && "vanish"}
-          onBackSpaceIconClick={this.handleSearchToggle}>
+          onBackSpaceIconClick={this.handleSearchToggle.bind(this)}>
         </AppBarSearching>
         <div className="container" style={{ marginTop: '.5em' }} >
           {

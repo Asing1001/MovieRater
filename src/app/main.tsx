@@ -16,11 +16,11 @@ class Root extends React.Component<any, any> {
 const rootElement = document.getElementById('app');
 ReactDOM.render(<Root></Root>, rootElement);
 
-//for hot module reload
-declare var module;
-if (module.hot) {
-  module.hot.accept();
-}
+// //for hot module reload
+// declare var module;
+// if (module.hot) {
+//   module.hot.accept();
+// }
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js', { scope: '/' })

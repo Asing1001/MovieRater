@@ -20,7 +20,7 @@ class AppBarNormal extends React.Component<any, any> {
 
     render() {
         return (
-            <Paper zDepth={2} className={`appBar normal ${this.props.className}`} style={{ ...normalStyles }}>
+            <Paper zDepth={2} className={`appBar normal ${this.props.className}`} style={normalStyles}>
                 <IconButton className="leftBtn" onTouchTap={() => this.drawerToggle()}><SVGNavigationMenu color={normalStyles.color} /></IconButton>
                 <span className="barTitle">現正上映</span>
                 <span onClick={this.props.onSearchIconClick} className="hidden-xs searchArea" style={{ backgroundColor: cyan300 }}>
