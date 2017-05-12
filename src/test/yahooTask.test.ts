@@ -2,14 +2,14 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { db } from "../data/db";
-import { updateTheaterList, updateYahooMovies } from '../task/yahooTask';
+import { getMoviesSchedulesWithLocation, updateYahooMovies } from '../task/yahooTask';
 import * as googleMapApi from '../thirdPartyIntegration/googleMapApi';
 import Location from '../models/location';
-
 import Theater from '../models/theater';
 import YahooMovie from '../models/yahooMovie';
 import * as theaterCrawler from '../crawler/theaterCrawler';
 import * as yahooCrawler from '../crawler/yahooCrawler';
+import Schedule from '../models/schedule';
 
 const should = chai.should();
 chai.use(sinonChai);
@@ -24,15 +24,32 @@ describe('yahooTask', () => {
 
   afterEach(() => sandbox.restore());
 
-  describe('updateTheaterList', () => {
-    it('should get theater list with location then updateDocument', async function () {
-      const theater = new Theater({ name: "wrongAddress", address: "effdggds" });
-      const theaterList = [theater];
-      const location = new Location();
-      const stubGetTheaterList = sandbox.stub(theaterCrawler, 'getTheaterList').returns(Promise.resolve(theaterList));
-      const stubGetGeoLocation = sandbox.stub(googleMapApi, 'getGeoLocation').returns(Promise.resolve(location));
-      await updateTheaterList();
-      sandbox.assert.calledWith(stubUpdateDocument, { name: theater.name }, theater, "theaters");
+  describe('getMoviesSchedulesWithLocation', () => {
+    it('should has binding theaterExtension', async function () {      
+      //Arrange
+      const allSchedules: Schedule[] = new Array<Schedule>(new Schedule(0, "台南新光影城", ));
+      const theaterWithLocation = {
+        "name": "台南新光影城",
+        "url": "https://tw.movies.yahoo.com/theater_result.html/id=69",
+        "address": "台南市中西區西門路一段658號8樓",
+        "phone": "06-3031260",
+        "location": {
+          "lat": 22.9868277,
+          "lng": 120.1977034,
+          "place_id": "ChIJGyl13nt2bjQRgqfRajWQWC8"
+        },
+        "region": "台南"
+      }
+
+      sandbox.stub(db, 'getCollection').returns(Promise.resolve([theaterWithLocation]));
+
+      //Act
+      const allSchedulesWithLocation = await getMoviesSchedulesWithLocation(allSchedules);
+
+      //Assert
+      const validateResult: Schedule[] = allSchedulesWithLocation;
+      validateResult[0].theaterExtension.should.eql(theaterWithLocation);
+
     });
   });
 

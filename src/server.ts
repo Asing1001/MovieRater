@@ -2,19 +2,20 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as path from 'path';
 import * as graphqlHTTP from 'express-graphql';
-import { db } from './data/db';
-import { initScheduler } from './backgroundService/scheduler';
-import schema from './data/schema';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server'
 import * as Router from 'react-router';
 import * as swig from 'swig';
-import routes from './app/routes';
-import cacheManager from './data/cacheManager';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
+import routes from './app/routes';
+import cacheManager from './data/cacheManager';
 import { systemSetting } from './configs/systemSetting';
 import forceSSL from './helper/forceSSL';
+import { db } from './data/db';
+import { initScheduler } from './backgroundService/scheduler';
+import schema from './data/schema';
+
 
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 

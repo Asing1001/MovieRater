@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as moment from 'moment';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
@@ -31,6 +32,7 @@ enum SortType {
   yahoo = 1,
   tomato = 2,
   ptt = 3,
+  releaseDate = 4
 }
 
 class MovieList extends React.Component<any, any> {
@@ -90,6 +92,9 @@ class MovieList extends React.Component<any, any> {
       case SortType.yahoo:
         sortFunction = this.getStandardSortFunction('yahooRating');
         break;
+      case SortType.releaseDate:
+        sortFunction = ({releaseDate:releaseDateA}, {releaseDate:releaseDateB}) => moment(releaseDateB).diff(releaseDateA)
+        break;
     }
 
     this.setState({ selectedIndex: index, sortFunction: sortFunction });
@@ -133,6 +138,11 @@ class MovieList extends React.Component<any, any> {
               label="PTT"
               icon={nearbyIcon}
               onTouchTap={() => this.select(SortType.ptt)}
+            />
+            <BottomNavigationItem
+              label="上映日"
+              icon={nearbyIcon}
+              onTouchTap={() => this.select(SortType.releaseDate)}
             />
           </BottomNavigation>
         </Paper>
