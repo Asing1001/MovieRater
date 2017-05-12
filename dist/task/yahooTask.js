@@ -10,23 +10,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const theaterCrawler_1 = require("../crawler/theaterCrawler");
 const yahooCrawler_1 = require("../crawler/yahooCrawler");
-const googleMapApi_1 = require("../thirdPartyIntegration/googleMapApi");
+const yahooMovieSchduleCrawler_1 = require("../crawler/yahooMovieSchduleCrawler");
 const db_1 = require("../data/db");
+const theater_1 = require("../models/theater");
 const Q = require("q");
-function updateTheaterList() {
+const googleMapApi_1 = require("../thirdPartyIntegration/googleMapApi");
+function getMoviesSchedules(yahooIds) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.time('setMoviesSchedulesCache');
+        let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
+        const schedules = yield Promise.all(schedulesPromise);
+        const allSchedules = [].concat(...schedules);
+        console.timeEnd('setMoviesSchedulesCache');
+        return allSchedules;
+    });
+}
+exports.getMoviesSchedules = getMoviesSchedules;
+function getMoviesSchedulesWithLocation(allSchedules) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const theaterListWithLocation = yield db_1.db.getCollection("theaters");
+        const allSchedulesWithLocation = allSchedules.map(schdule => {
+            const findTheaterExtension = theaterListWithLocation.find(({ name }) => name === schdule.theaterName);
+            schdule.theaterExtension = findTheaterExtension ? findTheaterExtension : new theater_1.default();
+            return schdule;
+        });
+        return allSchedulesWithLocation;
+    });
+}
+exports.getMoviesSchedulesWithLocation = getMoviesSchedulesWithLocation;
+function updateTheaterWithLocationList() {
     return __awaiter(this, void 0, void 0, function* () {
         const theaterList = yield theaterCrawler_1.getTheaterList();
+        console.time('bindingTheaterListWithLocation');
         const theaterListWithLocation = yield bindingTheaterListWithLocation(theaterList);
+        console.timeEnd('bindingTheaterListWithLocation');
         return Promise.all(theaterListWithLocation.map(theater => db_1.db.updateDocument({ name: theater.name }, theater, 'theaters')));
     });
 }
-exports.updateTheaterList = updateTheaterList;
+exports.updateTheaterWithLocationList = updateTheaterWithLocationList;
 function bindingTheaterListWithLocation(theaterList) {
     return Promise.all(theaterList.map((theater) => __awaiter(this, void 0, void 0, function* () {
         const location = yield googleMapApi_1.getGeoLocation(theater.address);
         if (location.lat) {
             return Object.assign(theater, {
-                location: yield googleMapApi_1.getGeoLocation(theater.address)
+                location
             });
         }
         return theater;

@@ -30,9 +30,15 @@ const ALLDATA = `{
             summary,
             schedules {
               theaterName,
-              yahooId,
-              timesValues,
-              timesStrings
+              timesStrings,
+              theaterExtension {
+                phone,
+                region,
+                location {
+                  lat,
+                  lng,
+                }
+              }
             }
           }`;
 class MovieDetailTabs extends React.Component {

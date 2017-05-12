@@ -13,11 +13,8 @@ const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
 const db_1 = require("../data/db");
 const yahooTask_1 = require("../task/yahooTask");
-const googleMapApi = require("../thirdPartyIntegration/googleMapApi");
-const location_1 = require("../models/location");
-const theater_1 = require("../models/theater");
-const theaterCrawler = require("../crawler/theaterCrawler");
 const yahooCrawler = require("../crawler/yahooCrawler");
+const schedule_1 = require("../models/schedule");
 const should = chai.should();
 chai.use(sinonChai);
 describe('yahooTask', () => {
@@ -27,16 +24,29 @@ describe('yahooTask', () => {
         stubUpdateDocument = sandbox.stub(db_1.db, 'updateDocument');
     });
     afterEach(() => sandbox.restore());
-    describe('updateTheaterList', () => {
-        it('should get theater list with location then updateDocument', function () {
+    describe('getMoviesSchedulesWithLocation', () => {
+        it('should has binding theaterExtension', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                const theater = new theater_1.default({ name: "wrongAddress", address: "effdggds" });
-                const theaterList = [theater];
-                const location = new location_1.default();
-                const stubGetTheaterList = sandbox.stub(theaterCrawler, 'getTheaterList').returns(Promise.resolve(theaterList));
-                const stubGetGeoLocation = sandbox.stub(googleMapApi, 'getGeoLocation').returns(Promise.resolve(location));
-                yield yahooTask_1.updateTheaterList();
-                sandbox.assert.calledWith(stubUpdateDocument, { name: theater.name }, theater, "theaters");
+                //Arrange
+                const allSchedules = new Array(new schedule_1.default(0, "台南新光影城"));
+                const theaterWithLocation = {
+                    "name": "台南新光影城",
+                    "url": "https://tw.movies.yahoo.com/theater_result.html/id=69",
+                    "address": "台南市中西區西門路一段658號8樓",
+                    "phone": "06-3031260",
+                    "location": {
+                        "lat": 22.9868277,
+                        "lng": 120.1977034,
+                        "place_id": "ChIJGyl13nt2bjQRgqfRajWQWC8"
+                    },
+                    "region": "台南"
+                };
+                sandbox.stub(db_1.db, 'getCollection').returns(Promise.resolve([theaterWithLocation]));
+                //Act
+                const allSchedulesWithLocation = yield yahooTask_1.getMoviesSchedulesWithLocation(allSchedules);
+                //Assert
+                const validateResult = allSchedulesWithLocation;
+                validateResult[0].theaterExtension.should.eql(theaterWithLocation);
             });
         });
     });

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const yahooTask_1 = require("../task/yahooTask");
-const pttCrawler_1 = require("../crawler/pttCrawler");
+const pttTask_1 = require("../task/pttTask");
 const systemSetting_1 = require("../configs/systemSetting");
 const fetch = require("isomorphic-fetch");
 const cacheManager_1 = require("../data/cacheManager");
@@ -30,8 +30,9 @@ function initScheduler() {
         });
     }, 900000, null);
     setInterval(function () {
-        console.time('[Scheduler] crawlPtt');
-        pttCrawler_1.crawlPtt(systemSetting_1.schedulerSetting.pttPagePerTime).then(() => {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.time('[Scheduler] crawlPtt');
+            yield pttTask_1.updatePttArticles(systemSetting_1.schedulerSetting.pttPagePerTime);
             console.timeEnd('[Scheduler] crawlPtt');
         });
     }, 900000, null);
@@ -41,6 +42,9 @@ function initScheduler() {
     setInterval(function () {
         cacheManager_1.default.setInTheaterMoviesCache();
     }, 3600000, null);
+    setInterval(function () {
+        yahooTask_1.updateTheaterWithLocationList();
+    }, 86400000, null);
 }
 exports.initScheduler = initScheduler;
 //# sourceMappingURL=scheduler.js.map

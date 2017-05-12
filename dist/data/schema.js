@@ -1,32 +1,62 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const cacheManager_1 = require("../data/cacheManager");
-const ArticleType = new graphql_1.GraphQLObjectType({
-    name: 'article',
-    description: 'ptt articles',
+const QueryType = new graphql_1.GraphQLObjectType({
+    name: 'Query',
+    description: 'query...',
     fields: () => ({
-        title: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.title,
+        allMovies: {
+            type: new graphql_1.GraphQLList(MovieType),
+            description: 'every movies',
+            resolve: (root, args) => cacheManager_1.default.get("allMovies")
         },
-        push: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.push,
+        movie: {
+            type: MovieType,
+            description: "[deprecated] query single movie, please use movies(yahooIds) instead",
+            args: {
+                yahooId: { type: graphql_1.GraphQLInt }
+            },
+            resolve: (root, { yahooId, chineseTitle }) => __awaiter(this, void 0, void 0, function* () {
+                const allMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES);
+                return allMovies.find((movie) => { return movie.yahooId === yahooId; });
+            }),
         },
-        url: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.url,
+        allMoviesNames: {
+            type: new graphql_1.GraphQLList(autoCompleteType),
+            description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
+            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.All_MOVIES_NAMES)
         },
-        date: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.date,
+        movies: {
+            type: new graphql_1.GraphQLList(MovieType),
+            args: {
+                yahooIds: { type: new graphql_1.GraphQLList(graphql_1.GraphQLInt) }
+            },
+            resolve: (root, { yahooIds }) => __awaiter(this, void 0, void 0, function* () {
+                let allMovies = cacheManager_1.default.get("allMovies");
+                let result = [];
+                allMovies.forEach((movie) => {
+                    if (yahooIds.indexOf(movie.yahooId) !== -1) {
+                        result.push(movie);
+                    }
+                });
+                return result;
+            }),
         },
-        author: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.author,
+        recentMovies: {
+            type: new graphql_1.GraphQLList(MovieType),
+            description: 'recent movies',
+            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES)
         },
-    })
+    }),
 });
 const MovieType = new graphql_1.GraphQLObjectType({
     name: 'Movie',
@@ -128,11 +158,37 @@ const MovieType = new graphql_1.GraphQLObjectType({
         },
         schedules: {
             type: new graphql_1.GraphQLList(scheduleType),
-            resolve: obj => {
-                return cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES)
-                    .filter((schedule) => schedule.yahooId == obj.yahooId);
-            },
+            resolve: (obj) => __awaiter(this, void 0, void 0, function* () {
+                const moviesSchedules = cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES);
+                return moviesSchedules.filter((schedule) => schedule.yahooId == obj.yahooId);
+            }),
         }
+    })
+});
+const ArticleType = new graphql_1.GraphQLObjectType({
+    name: 'article',
+    description: 'ptt articles',
+    fields: () => ({
+        title: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.title,
+        },
+        push: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.push,
+        },
+        url: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.url,
+        },
+        date: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.date,
+        },
+        author: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.author,
+        },
     })
 });
 const autoCompleteType = new graphql_1.GraphQLObjectType({
@@ -167,55 +223,59 @@ const scheduleType = new graphql_1.GraphQLObjectType({
             type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
             resolve: obj => obj.timesStrings,
         },
+        theaterExtension: {
+            type: TheaterType,
+            resolve: obj => obj.theaterExtension,
+        }
     })
 });
-const QueryType = new graphql_1.GraphQLObjectType({
-    name: 'Query',
-    description: 'query...',
+const TheaterType = new graphql_1.GraphQLObjectType({
+    name: 'Theater',
+    description: 'Theater in Taiwan with google location',
     fields: () => ({
-        allMovies: {
-            type: new graphql_1.GraphQLList(MovieType),
-            description: 'every movies',
-            resolve: (root, args) => cacheManager_1.default.get("allMovies")
+        name: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.name,
         },
-        movie: {
-            type: MovieType,
-            description: "[deprecated] query single movie, please use movies(yahooIds) instead",
-            args: {
-                yahooId: { type: graphql_1.GraphQLInt }
-            },
-            resolve: (root, { yahooId, chineseTitle }) => {
-                let allMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES);
-                return allMovies.find((movie) => { return movie.yahooId === yahooId; });
-            },
+        address: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.address,
         },
-        allMoviesNames: {
-            type: new graphql_1.GraphQLList(autoCompleteType),
-            description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
-            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.All_MOVIES_NAMES)
+        url: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.url,
         },
-        movies: {
-            type: new graphql_1.GraphQLList(MovieType),
-            args: {
-                yahooIds: { type: new graphql_1.GraphQLList(graphql_1.GraphQLInt) }
-            },
-            resolve: (root, { yahooIds }) => {
-                let allMovies = cacheManager_1.default.get("allMovies");
-                let result = [];
-                allMovies.forEach((movie) => {
-                    if (yahooIds.indexOf(movie.yahooId) !== -1) {
-                        result.push(movie);
-                    }
-                });
-                return result;
-            },
+        phone: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.phone,
         },
-        recentMovies: {
-            type: new graphql_1.GraphQLList(MovieType),
-            description: 'recent movies',
-            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES)
+        region: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.region,
         },
-    }),
+        location: {
+            type: LocationType,
+            resolve: obj => obj.location
+        }
+    })
+});
+const LocationType = new graphql_1.GraphQLObjectType({
+    name: 'location',
+    description: 'geo location from google',
+    fields: () => ({
+        lat: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.lat,
+        },
+        lng: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.lng,
+        },
+        place_id: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.place_id,
+        },
+    })
 });
 exports.default = new graphql_1.GraphQLSchema({
     query: QueryType,

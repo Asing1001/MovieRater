@@ -13,14 +13,16 @@ const util_1 = require("../helper/util");
 const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
 function getTheaterList() {
     return __awaiter(this, void 0, void 0, function* () {
+        console.time('getTheaterList');
         const regionList = yield getRegionList();
         const promises = regionList.map(getTheaterListByRegion);
         const theaterList = [].concat(...(yield Promise.all(promises)));
+        console.timeEnd('getTheaterList');
         return theaterList;
     });
 }
 exports.getTheaterList = getTheaterList;
-function getTheaterListByRegion({ yahooRegionId }) {
+function getTheaterListByRegion({ name: regionName, yahooRegionId }) {
     return __awaiter(this, void 0, void 0, function* () {
         var form = new FormData();
         form.append('area', yahooRegionId);
@@ -33,9 +35,10 @@ function getTheaterListByRegion({ yahooRegionId }) {
             const $theaterRow = $(theaterRow);
             const theater = {
                 name: $theaterRow.find('a').text(),
-                url: $theaterRow.find('a').attr('href'),
+                url: $theaterRow.find('a').attr('href').split('*')[1],
                 address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
                 phone: $theaterRow.find('em').text(),
+                region: regionName
             };
             return theater;
         });
