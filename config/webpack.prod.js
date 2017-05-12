@@ -5,11 +5,8 @@ var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
-const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
-
 module.exports = webpackMerge(commonConfig, {
   devtool: 'source-map',
-
   entry: {
     'main': './src/app/main.tsx',
     'vendor': './src/app/vendor.ts'
@@ -23,26 +20,23 @@ module.exports = webpackMerge(commonConfig, {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader",
+        })
       }
     ]
   },
 
-  htmlLoader: {
-    minimize: true
-  },
-
   plugins: [
-    new webpack.NoErrorsPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new ExtractTextPlugin('[name].[hash].css'),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify(ENV)
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }
     }),
     new SWPrecacheWebpackPlugin(
@@ -57,7 +51,7 @@ module.exports = webpackMerge(commonConfig, {
           // Currently all browser is not supporting service-worker post
           // method : 'post'          
         }],
-        stripPrefix: helpers.root('dist').replace(/\\/g,'/'),
+        stripPrefix: helpers.root('dist').replace(/\\/g, '/'),
         mergeStaticsConfig: true,
         staticFileGlobsIgnorePatterns: [/\.map$/, /favicons/],
       }
