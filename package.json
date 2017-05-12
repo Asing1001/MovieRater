@@ -10,7 +10,7 @@
     "test": "mocha dist/test/*.js",
     "nodemon": "concurrently \"npm run tsc:w \" \"nodemon dist/server.js\"",
     "webpack": "webpack-dev-server --hot --inline --progress --port 3004",
-    "webpack:prod": "NODE_ENV=production webpack -p --config config/webpack.prod.js --progress",
+    "webpack:prod": "webpack -p --config config/webpack.prod.js --progress",
     "build": "rimraf dist && tsc && npm run webpack:prod",
     "tsc:w": "tsc -w",
     "dev": "concurrently \"npm run tsc:w\" \"tsc && npm start\" \"npm run webpack\""
