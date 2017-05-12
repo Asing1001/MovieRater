@@ -10,7 +10,7 @@
     "test": "mocha dist/test/*.js",
     "nodemon": "concurrently \"npm run tsc:w \" \"nodemon dist/server.js\"",
     "webpack": "webpack-dev-server --hot --inline --progress --port 3004",
-    "webpack:prod": "webpack --config config/webpack.prod.js --progress --profile --bail",
+    "webpack:prod": "NODE_ENV=production webpack -p --config config/webpack.prod.js --progress",
     "build": "rimraf dist && tsc && npm run webpack:prod",
     "tsc:w": "tsc -w",
     "dev": "concurrently \"npm run tsc:w\" \"tsc && npm start\" \"npm run webpack\""
@@ -55,7 +55,7 @@
     "@types/google-maps": "^3.2.0",
     "@types/history": "^2.0.39",
     "@types/isomorphic-fetch": "0.0.34",
-    "@types/material-ui": "^0.16.60",
+    "@types/material-ui": "^0.17.6",
     "@types/memory-cache": "0.0.29",
     "@types/mocha": "^2.2.32",
     "@types/mongodb": "^2.1.34",
@@ -82,11 +82,10 @@
     "concurrently": "^3.1.0",
     "copy-webpack-plugin": "^4.0.0",
     "css-loader": "^0.23.1",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.9.0",
     "html-loader": "^0.4.3",
     "html-webpack-plugin": "^2.15.0",
-    "json-loader": "^0.5.4",
     "mocha": "^3.0.2",
     "nodemon": "^1.10.2",
     "rimraf": "^2.5.4",
@@ -98,8 +97,8 @@
     "ts-loader": "^1.3.3",
     "typed-graphql": "^1.0.2",
     "typescript": "^2.3.2",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.2",
-    "webpack-merge": "^0.14.1"
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5",
+    "webpack-merge": "^4.1.0"
   }
 }
