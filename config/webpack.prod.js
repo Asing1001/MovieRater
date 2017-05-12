@@ -5,6 +5,8 @@ var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
+process.env.NODE_ENV = "production";
+
 module.exports = webpackMerge(commonConfig, {
   devtool: 'source-map',
   entry: {
