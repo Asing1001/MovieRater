@@ -8,16 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongodb_1 = require("mongodb");
-const systemSetting_1 = require("../configs/systemSetting");
+const yahooTask_1 = require("../task/yahooTask");
+const db_1 = require("../data/db");
 setup();
-let db;
+let dbConnection;
 //It Will not override any exist collection, document and index, so don't be afraid if accidently excute it.
 function setup() {
     return __awaiter(this, void 0, void 0, function* () {
-        db = yield mongodb_1.MongoClient.connect(systemSetting_1.systemSetting.dbUrl);
+        dbConnection = yield db_1.db.openDbConnection();
         yield ensureCollectionAndIndex();
         yield ensureCrawlerStatus();
+        yield yahooTask_1.updateTheaterWithLocationList();
         console.log('db setup done');
     });
 }
@@ -26,8 +27,9 @@ function ensureCollectionAndIndex() {
         //It will 
         //1. create collection if collection not exist
         //2. create index if index not exist
-        yield db.collection('yahooMovies').createIndex({ "yahooId": -1 });
-        yield db.collection('pttArticles').createIndex({ "url": -1 });
+        yield dbConnection.collection('yahooMovies').createIndex({ "yahooId": -1 });
+        yield dbConnection.collection('pttArticles').createIndex({ "url": -1 });
+        yield dbConnection.collection('theaters').createIndex({ "name": 1 });
     });
 }
 function ensureCrawlerStatus() {
@@ -37,8 +39,8 @@ function ensureCrawlerStatus() {
             maxYahooId: 1,
             maxPttIndex: 1
         };
-        const isCrawlerStatusExist = yield db.collection("configs").count({ name: defaultCrawlerStatus.name });
-        isCrawlerStatusExist || (yield db.collection("configs").insert(defaultCrawlerStatus));
+        const isCrawlerStatusExist = yield dbConnection.collection("configs").count({ name: defaultCrawlerStatus.name });
+        isCrawlerStatusExist || (yield dbConnection.collection("configs").insert(defaultCrawlerStatus));
     });
 }
 //# sourceMappingURL=firstTimeSetup.js.map
