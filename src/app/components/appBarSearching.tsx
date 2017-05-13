@@ -38,8 +38,9 @@ class AppBarSearching extends React.Component<any, any> {
 
   private onNewRequest(selectItem, index, filteredList) {
     let yahooIds = [];
+    let searchText = '';
     if (index === -1) {
-      let searchText = selectItem.toLowerCase();
+      searchText = selectItem.toLowerCase();
       if (!filteredList) {
         yahooIds = this.state.dataSource.filter(({ value, text }) => text.toLowerCase().indexOf(searchText) !== -1).map(({ value }) => parseInt(value)).slice(0, 6);
       } else {
@@ -49,7 +50,10 @@ class AppBarSearching extends React.Component<any, any> {
       yahooIds.push(parseInt(selectItem.value));
     }
 
-    if (yahooIds.length === 1) {
+    if (yahooIds.length === 0) {
+      browserHistory.push(`/movienotfound/${searchText}`)
+    }
+    else if (yahooIds.length === 1) {
       browserHistory.push(`/movie/${yahooIds}`)
     } else {
       browserHistory.push(`/movielist/${yahooIds}`)
@@ -73,7 +77,7 @@ class AppBarSearching extends React.Component<any, any> {
             onUpdateInput={this.handleUpdateInput.bind(this)}
             menuStyle={{ minWidth: "500px" }}
             fullWidth={true}
-          />
+            />
         </span>
         <IconButton onTouchTap={this.clearSearchText.bind(this)} className="visible-xs rightBtn"><SVGContentClear /></IconButton>
       </Paper>

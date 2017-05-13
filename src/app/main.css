@@ -147,6 +147,10 @@ a.pttArticleTitle:visited {
     color: #888 !important;
 }
 
+.swipeViewWrapper [role='option']:nth-child(2) {
+    background-color: black;
+}
+
 .pttArticles::before {
     content: "";
     position: fixed;
