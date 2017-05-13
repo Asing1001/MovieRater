@@ -151,6 +151,16 @@ a.pttArticleTitle:visited {
     background-color: black;
 }
 
+.pttArticles::before {
+    content: "";
+    position: fixed;
+    top: 0px;
+    bottom: 0;
+    background-color: black;
+    width: 100%;
+    z-index: -1;
+}
+
 .no-padding {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -191,8 +201,4 @@ a.pttArticleTitle:visited {
         padding-left: 0;
         padding-right: 0;
     }
-}
-
-.autoHeight {
-    height: auto !important;
 }
