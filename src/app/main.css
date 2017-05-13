@@ -147,14 +147,8 @@ a.pttArticleTitle:visited {
     color: #888 !important;
 }
 
-.pttArticles::before {
-    content: "";
-    position: fixed;
-    top: 0px;
-    bottom: 0;
+.swipeViewWrapper [role='option']:nth-child(2) {
     background-color: black;
-    width: 100%;
-    z-index: -1;
 }
 
 .no-padding {
@@ -197,4 +191,8 @@ a.pttArticleTitle:visited {
         padding-left: 0;
         padding-right: 0;
     }
+}
+
+.autoHeight {
+    height: auto !important;
 }

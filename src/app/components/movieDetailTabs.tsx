@@ -60,21 +60,15 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.search([parseInt(this.props.params.id)]);
   }
-
-  handleChange = (value) => {
-    this.setState({
-      slideIndex: value,
-    });
-  };
 
   componentWillReceiveProps(nextProps) {
     this.search([parseInt(nextProps.params.id)]);
   }
 
-  private search(yahooIds: Number[]) {
+  search(yahooIds: Number[]) {
     this.setState({ isLoading: true });
     requestGraphQL(`
         {
@@ -89,13 +83,30 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
       });
   }
 
+  handleChange = (value) => {
+    this.setState({
+      slideIndex: value,
+    });
+  };
+
+  handleSlideHeight = () => {
+    const slides = document.querySelectorAll("[role='option']") as NodeListOf<HTMLDivElement>;
+    Array.from(slides).forEach((slide, index) => {
+      slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
+    })
+  }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    this.handleSlideHeight()
+  };
+
   render() {
     return this.state.isLoading ? <LoadingIcon isLoading={this.state.isLoading} /> :
       (<Paper zDepth={2}>
         <Tabs
-          onChange={this.handleChange}
+          onChange={this.handleChange.bind(this)}
           value={this.state.slideIndex}
-        >
+          >
           <Tab label="Detail" value={0} />
           <Tab label="Ptt" value={1} />
           <Tab label="Summary" value={2} />
@@ -103,21 +114,19 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
             this.state.movie.schedules.length > 0 && <Tab label="Time" value={3} />
           }
         </Tabs>
-        <SwipeableViews
-          index={this.state.slideIndex}
-          onChangeIndex={this.handleChange}
-        >
-          <div style={{ height: this.state.slideIndex === 0 ? 'auto' : 0 }}>
+        <div className="swipeViewWrapper">
+          <SwipeableViews
+            slideStyle={{ height: '500px' }}
+            index={this.state.slideIndex}
+            onChangeIndex={this.handleChange.bind(this)}
+            threshold={6}
+            >
             <MovieDetail movie={this.state.movie}></MovieDetail>
-          </div>
-          <div style={{ height: this.state.slideIndex === 1 ? 'auto' : 0 }}>
             <PttArticles movie={this.state.movie}></PttArticles>
-          </div>
-          <div className="col-xs-12" style={{ paddingTop: '1em', height: this.state.slideIndex === 2 ? 'auto' : 0 }} dangerouslySetInnerHTML={{ __html: this.state.movie.summary }}></div>
-          <div style={{ height: this.state.slideIndex === 3 ? 'auto' : 0 }}>
+            <div className="col-xs-12" style={{ paddingTop: '1em' }} dangerouslySetInnerHTML={{ __html: this.state.movie.summary }}></div>
             <Schedules schedules={this.state.movie.schedules}></Schedules>
-          </div>
-        </SwipeableViews>
+          </SwipeableViews>
+        </div>
       </Paper>
       );
   }
