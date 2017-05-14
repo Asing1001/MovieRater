@@ -47,7 +47,16 @@ const QueryType = new graphql_1.GraphQLObjectType({
         },
         theaters: {
             type: new graphql_1.GraphQLList(TheaterType),
-            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.THEATERS)
+            args: {
+                name: { type: graphql_1.GraphQLString }
+            },
+            resolve: (root, { name: queryTheaterName }) => {
+                let theaters = cacheManager_1.default.get(cacheManager_1.default.THEATERS);
+                if (queryTheaterName) {
+                    return theaters.filter(({ name }) => name === queryTheaterName);
+                }
+                return theaters;
+            }
         },
     }),
 });
@@ -204,9 +213,10 @@ const scheduleType = new graphql_1.GraphQLObjectType({
             type: graphql_1.GraphQLString,
             resolve: obj => obj.theaterName,
         },
-        yahooId: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.yahooId,
+        movie: {
+            type: MovieType,
+            resolve: obj => cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES)
+                .find(({ yahooId }) => obj.yahooId === yahooId),
         },
         timesValues: {
             type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
