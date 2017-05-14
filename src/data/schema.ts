@@ -20,17 +20,6 @@ const QueryType = new GraphQLObjectType({
             description: 'every movies',
             resolve: (root, args) => cacheManager.get("allMovies")
         },
-        movie: {
-            type: MovieType,
-            description: "[deprecated] query single movie, please use movies(yahooIds) instead",
-            args: {
-                yahooId: { type: GraphQLInt }
-            },
-            resolve: async (root, { yahooId, chineseTitle }) => {
-                const allMovies = cacheManager.get(cacheManager.All_MOVIES);
-                return allMovies.find((movie) => { return movie.yahooId === yahooId; })
-            },
-        },
         allMoviesNames: {
             type: new GraphQLList(autoCompleteType),
             description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
@@ -56,6 +45,10 @@ const QueryType = new GraphQLObjectType({
             type: new GraphQLList(MovieType),
             description: 'recent movies',
             resolve: (root, args) => cacheManager.get(cacheManager.RECENT_MOVIES)
+        },
+        theaters: {
+            type: new GraphQLList(TheaterType),
+            resolve: (root, args) => cacheManager.get(cacheManager.THEATERS)
         },
     }),
 });
@@ -230,7 +223,9 @@ const scheduleType = new GraphQLObjectType({
         },
         theaterExtension: {
             type: TheaterType,
-            resolve: obj => obj.theaterExtension,
+            resolve: obj => {
+                return cacheManager.get(cacheManager.THEATERS).find(({ name }) => name === obj.theaterName)
+            }
         }
     })
 })
