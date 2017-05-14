@@ -13,13 +13,13 @@ class AppDrawer extends React.Component<any, any> {
         };
     }
 
-    handleClose = () => {
-        this.setState({ open: false }); 
-        browserHistory.push(`/`);
+    handleClose = (url) => {
+        this.setState({ open: false });
+        browserHistory.push(url);
     };
-    
-    toggle = () =>{
-        this.setState({ open: !this.state.open });         
+
+    toggle = () => {
+        this.setState({ open: !this.state.open });
     }
 
     render() {
@@ -32,8 +32,8 @@ class AppDrawer extends React.Component<any, any> {
                 onRequestChange={(open) => this.setState({ open })}
             >
                 <List>
-                    <ListItem onTouchTap={this.handleClose.bind(this)} leftIcon={<SVGAvMovie />}>現正上映</ListItem>
-                    <ListItem onTouchTap={this.handleClose.bind(this)} leftIcon={<SVGActionTheaters />}>戲院總覽</ListItem>
+                    <ListItem onTouchTap={() => this.handleClose('/')} leftIcon={<SVGAvMovie />}>現正上映</ListItem>
+                    <ListItem onTouchTap={() => this.handleClose('theaterlist')} leftIcon={<SVGActionTheaters />}>戲院總覽</ListItem>
                 </List>
             </Drawer>
         );
