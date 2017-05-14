@@ -6,6 +6,7 @@ import MovieDetailTabs from './components/movieDetailTabs';
 import MovieList from './components/movieList';
 import MovieNotFound from './components/movieNotFound';
 import TheaterList from './components/theaterList';
+import TheaterDetail from './components/theaterDetail';
 
 export default (
   <Route component={App}>
@@ -15,6 +16,7 @@ export default (
         <Route path="/movielist/:ids" component={MovieList}/>
         <Route path="/movienotfound/:query" component={MovieNotFound}/>
         <Route path="/theaterlist" component={TheaterList}/>
+        <Route path="/theater/:name" component={TheaterDetail}/>
     </Route>
   </Route>
 );

@@ -27,12 +27,6 @@ const theaterQuery = `{
     location {
       lat,
       lng,
-    },
-    schedules {
-      yahooId,
-      timesValues,
-      timesStrings,
-      roomTypes
     }
   } 
 }`;
