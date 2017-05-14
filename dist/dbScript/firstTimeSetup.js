@@ -29,7 +29,7 @@ function ensureCollectionAndIndex() {
         //2. create index if index not exist
         yield dbConnection.collection('yahooMovies').createIndex({ "yahooId": -1 });
         yield dbConnection.collection('pttArticles').createIndex({ "url": -1 });
-        yield dbConnection.collection('theaters').createIndex({ "name": 1 });
+        yield dbConnection.collection('theaters').createIndex({ "regionIndex": 1 });
     });
 }
 function ensureCrawlerStatus() {

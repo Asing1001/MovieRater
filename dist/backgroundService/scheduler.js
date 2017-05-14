@@ -15,6 +15,9 @@ const fetch = require("isomorphic-fetch");
 const cacheManager_1 = require("../data/cacheManager");
 const imdbTask_1 = require("../task/imdbTask");
 function initScheduler() {
+    if (!systemSetting_1.systemSetting.enableScheduler) {
+        return;
+    }
     console.log("[initScheduler]");
     setInterval(function () {
         fetch(systemSetting_1.systemSetting.websiteUrl).then(res => console.log(`[Scheduler] Access to website:${systemSetting_1.systemSetting.websiteUrl}, status:${res.status}`));

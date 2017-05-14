@@ -19,17 +19,6 @@ const QueryType = new graphql_1.GraphQLObjectType({
             description: 'every movies',
             resolve: (root, args) => cacheManager_1.default.get("allMovies")
         },
-        movie: {
-            type: MovieType,
-            description: "[deprecated] query single movie, please use movies(yahooIds) instead",
-            args: {
-                yahooId: { type: graphql_1.GraphQLInt }
-            },
-            resolve: (root, { yahooId, chineseTitle }) => __awaiter(this, void 0, void 0, function* () {
-                const allMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES);
-                return allMovies.find((movie) => { return movie.yahooId === yahooId; });
-            }),
-        },
         allMoviesNames: {
             type: new graphql_1.GraphQLList(autoCompleteType),
             description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
@@ -55,6 +44,10 @@ const QueryType = new graphql_1.GraphQLObjectType({
             type: new graphql_1.GraphQLList(MovieType),
             description: 'recent movies',
             resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES)
+        },
+        theaters: {
+            type: new graphql_1.GraphQLList(TheaterType),
+            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.THEATERS)
         },
     }),
 });
@@ -223,9 +216,15 @@ const scheduleType = new graphql_1.GraphQLObjectType({
             type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
             resolve: obj => obj.timesStrings,
         },
+        roomTypes: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: obj => obj.roomTypes,
+        },
         theaterExtension: {
             type: TheaterType,
-            resolve: obj => obj.theaterExtension,
+            resolve: obj => {
+                return cacheManager_1.default.get(cacheManager_1.default.THEATERS).find(({ name }) => name === obj.theaterName);
+            }
         }
     })
 });
@@ -253,9 +252,23 @@ const TheaterType = new graphql_1.GraphQLObjectType({
             type: graphql_1.GraphQLString,
             resolve: obj => obj.region,
         },
+        regionIndex: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.regionIndex,
+        },
+        subRegion: {
+            type: graphql_1.GraphQLString,
+            resolve: obj => obj.subRegion,
+        },
         location: {
             type: LocationType,
             resolve: obj => obj.location
+        },
+        schedules: {
+            type: new graphql_1.GraphQLList(scheduleType),
+            resolve: obj => cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES).filter(({ theaterName }) => {
+                return theaterName === obj.name;
+            })
         }
     })
 });

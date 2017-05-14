@@ -25,6 +25,7 @@ class cacheManager {
             console.timeEnd('get yahooMovies and pttArticles');
             cacheManager.setAllMoviesNamesCache(yahooMovies);
             cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
+            cacheManager.setTheatersCache();
             yield cacheManager.setInTheaterMoviesCache();
         });
     }
@@ -48,22 +49,29 @@ class cacheManager {
         console.timeEnd('mergeData');
         cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
     }
+    static setTheatersCache() {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.time('mergeData');
+            const theaterListWithLocation = yield db_1.db.getCollection("theaters", { "regionIndex": 1 });
+            console.timeEnd('mergeData');
+            cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
+        });
+    }
     static setInTheaterMoviesCache() {
         return __awaiter(this, void 0, void 0, function* () {
             const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
             if (yahooIds.length > 0) {
                 yield cacheManager.setRecentMoviesCache(yahooIds);
-                yield cacheManager.setMoviesSchedulesWithLocationCache(yahooIds);
+                yield cacheManager.setMoviesSchedulesCache(yahooIds);
             }
         });
     }
-    static setMoviesSchedulesWithLocationCache(yahooIds) {
+    static setMoviesSchedulesCache(yahooIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.time('setMoviesSchedulesWithLocationCache');
+            console.time('setMoviesSchedulesCache');
             const allSchedules = yield yahooTask_1.getMoviesSchedules(yahooIds);
-            const allSchedulesWithLocation = yield yahooTask_1.getMoviesSchedulesWithLocation(allSchedules);
-            cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedulesWithLocation);
-            console.timeEnd('setMoviesSchedulesWithLocationCache');
+            cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+            console.timeEnd('setMoviesSchedulesCache');
         });
     }
     static setRecentMoviesCache(yahooIds) {
@@ -89,5 +97,6 @@ cacheManager.All_MOVIES = 'allMovies';
 cacheManager.All_MOVIES_NAMES = 'allMoviesNames';
 cacheManager.RECENT_MOVIES = 'recentMovies';
 cacheManager.MOVIES_SCHEDULES = 'MoviesSchedules';
+cacheManager.THEATERS = 'theaters';
 exports.default = cacheManager;
 //# sourceMappingURL=cacheManager.js.map

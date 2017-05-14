@@ -31,9 +31,11 @@ const ALLDATA = `{
             schedules {
               theaterName,
               timesStrings,
+              roomTypes,
               theaterExtension {
                 phone,
                 region,
+                regionIndex,
                 location {
                   lat,
                   lng,
@@ -93,7 +95,7 @@ class MovieDetailTabs extends React.Component {
                     React.createElement(Tabs_1.Tab, { label: "Summary", value: 2 }),
                     this.state.movie.schedules.length > 0 && React.createElement(Tabs_1.Tab, { label: "Time", value: 3 })),
                 React.createElement("div", { className: "swipeViewWrapper" },
-                    React.createElement(react_swipeable_views_1.default, { slideStyle: { height: '500px' }, index: this.state.slideIndex, onChangeIndex: this.handleChange.bind(this), threshold: 6 },
+                    React.createElement(react_swipeable_views_1.default, { slideStyle: { height: '500px', paddingBottom: '1em' }, index: this.state.slideIndex, onChangeIndex: this.handleChange.bind(this), threshold: 6 },
                         React.createElement(movieDetail_1.default, { movie: this.state.movie }),
                         React.createElement(pttArticles_1.default, { movie: this.state.movie }),
                         React.createElement("div", { className: "col-xs-12", style: { paddingTop: '1em' }, dangerouslySetInnerHTML: { __html: this.state.movie.summary } }),
