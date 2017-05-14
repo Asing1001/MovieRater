@@ -70,7 +70,7 @@ class MovieList extends React.Component<any, any> {
     this.getData(nextProps.params.ids);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getData(this.props.params.ids);
   }
 

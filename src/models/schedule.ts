@@ -13,5 +13,6 @@ export default class Schedule {
     theaterName?: string
     timesValues?: string[]
     timesStrings?: string[]
+    roomTypes?: string[]
     theaterExtension?: theater
 }

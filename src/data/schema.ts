@@ -221,6 +221,10 @@ const scheduleType = new GraphQLObjectType({
             type: new GraphQLList(GraphQLString),
             resolve: obj => obj.timesStrings,
         },
+        roomTypes: {
+            type: new GraphQLList(GraphQLString),
+            resolve: obj => obj.roomTypes,
+        },
         theaterExtension: {
             type: TheaterType,
             resolve: obj => {
@@ -254,9 +258,23 @@ const TheaterType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.region,
         },
-        location:{
+        regionIndex: {
+            type: GraphQLString,
+            resolve: obj => obj.regionIndex,
+        },
+        subRegion: {
+            type: GraphQLString,
+            resolve: obj => obj.subRegion,
+        },
+        location: {
             type: LocationType,
             resolve: obj => obj.location
+        },
+        schedules: {
+            type: new GraphQLList(scheduleType),
+            resolve: obj => cacheManager.get(cacheManager.MOVIES_SCHEDULES).filter(({theaterName}:Schedule)=>{
+                return theaterName === obj.name
+            })
         }
     })
 })

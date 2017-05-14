@@ -38,9 +38,11 @@ const ALLDATA = `{
             schedules {
               theaterName,
               timesStrings,
+              roomTypes,
               theaterExtension {
                 phone,
                 region,
+                regionIndex,
                 location {
                   lat,
                   lng,
@@ -106,7 +108,7 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
         <Tabs
           onChange={this.handleChange.bind(this)}
           value={this.state.slideIndex}
-          >
+        >
           <Tab label="Detail" value={0} />
           <Tab label="Ptt" value={1} />
           <Tab label="Summary" value={2} />
@@ -116,11 +118,11 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
         </Tabs>
         <div className="swipeViewWrapper">
           <SwipeableViews
-            slideStyle={{ height: '500px' }}
+            slideStyle={{ height: '500px', paddingBottom: '1em' }}
             index={this.state.slideIndex}
             onChangeIndex={this.handleChange.bind(this)}
             threshold={6}
-            >
+          >
             <MovieDetail movie={this.state.movie}></MovieDetail>
             <PttArticles movie={this.state.movie}></PttArticles>
             <div className="col-xs-12" style={{ paddingTop: '1em' }} dangerouslySetInnerHTML={{ __html: this.state.movie.summary }}></div>

@@ -14,28 +14,6 @@ export async function getTheaterList(): Promise<Theater[]> {
     return theaterList;
 }
 
-export async function getTheaterListByRegion({ name: regionName, yahooRegionId }) {
-    var form = new FormData();
-    form.append('area', yahooRegionId);
-    const request = new Request(theaterListUrl, {
-        method: 'POST',
-        body: form
-    });
-    const $ = await getCheerio$(request);
-    const theaterList = Array.from($('#ymvthl tbody>tr')).map(theaterRow => {
-        const $theaterRow = $(theaterRow);
-        const theater: Theater = {
-            name: $theaterRow.find('a').text(),
-            url: $theaterRow.find('a').attr('href').split('*')[1],
-            address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
-            phone: $theaterRow.find('em').text(),
-            region: regionName
-        };
-        return theater;
-    });
-    return theaterList;
-}
-
 export async function getRegionList(): Promise<Region[]> {
     const $ = await getCheerio$(theaterListUrl);
     const regionList = Array.from($('#area>option')).map((option) => {
@@ -49,4 +27,34 @@ export async function getRegionList(): Promise<Region[]> {
     //remove first option "選擇地區"
     regionList.shift();
     return regionList;
+}
+
+export async function getTheaterListByRegion({ name: regionName, yahooRegionId }, index) {
+    var form = new FormData();
+    form.append('area', yahooRegionId);
+    const request = new Request(theaterListUrl, {
+        method: 'POST',
+        body: form
+    });
+    const $ = await getCheerio$(request);
+    let theaterList = [];
+    Array.from($('#ymvthl .group')).forEach(theaterGroup => {
+        const $theaterGroup = $(theaterGroup);
+        const subRegion = $theaterGroup.find('.hd').text();
+        theaterList = theaterList.concat(Array.from($theaterGroup.find('tbody>tr')).map(theaterRow => {
+            const $theaterRow = $(theaterRow);
+            const theater: Theater = {
+                name: $theaterRow.find('a').text(),
+                url: $theaterRow.find('a').attr('href').split('*')[1],
+                address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
+                phone: $theaterRow.find('em').text(),
+                region: regionName,
+                regionIndex : index,
+                subRegion
+            };
+            return theater;
+        }));
+    });
+
+    return theaterList;
 }

@@ -6,6 +6,9 @@ import cacheManager from '../data/cacheManager';
 import { updateImdbInfo } from '../task/imdbTask';
 
 export function initScheduler() {
+    if (!systemSetting.enableScheduler) {
+        return;        
+    }
     console.log("[initScheduler]");
     setInterval(function () {
         fetch(systemSetting.websiteUrl).then(res =>

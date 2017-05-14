@@ -12,7 +12,7 @@ describe('theaterCrawler', () => {
   describe('getTheaterListByRegion(18)', () => {
     it('length.should.eq(1)', async function () {
       this.timeout(10000);
-      let theaterList = await getTheaterListByRegion({ yahooRegionId: 18, name: "" });
+      let theaterList = await getTheaterListByRegion({ yahooRegionId: 18, name: "" }, 1);
       theaterList.length.should.eq(1);
     });
   });

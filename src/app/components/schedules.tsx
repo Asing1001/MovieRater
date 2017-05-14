@@ -7,6 +7,12 @@ import SVGCommunicationLocationOn from 'material-ui/svg-icons/communication/loca
 import SVGCommunicationCall from 'material-ui/svg-icons/communication/call';
 import { grey500 } from 'material-ui/styles/colors';
 
+const theaterInfoStyle: React.CSSProperties = {
+    marginRight: '0.5em',
+    fontSize: 'small',
+    alignItems: 'center',
+    display: 'inline-flex'
+}
 
 interface MovieDetailProps {
     schedules: Schedule[]
@@ -16,7 +22,8 @@ class Schedules extends React.Component<MovieDetailProps, any> {
     constructor(props) {
         super(props)
         this.state = {
-            schedulesWithDistance: this.props.schedules,
+            schedulesWithDistance: this.props.schedules
+                .sort(({ theaterExtension: { regionIndex: a } }, { theaterExtension: { regionIndex: b } }) => a - b),
         };
     }
 
@@ -30,28 +37,33 @@ class Schedules extends React.Component<MovieDetailProps, any> {
         });
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.getSchedulesWithDistance();
     }
 
     render() {
         return (
             <div className="col-xs-12">
-                {this.state.schedulesWithDistance.map(({ timesStrings, theaterName, distance, theaterExtension: { phone } }) => {
+                {this.state.schedulesWithDistance.map(({ timesStrings, theaterName, roomTypes, distance, theaterExtension: { phone } }, index) => {
                     return (
-                        <div key={theaterName} style={{ padding: ".6em 1em 0em 1em" }}>
+                        <div key={index} style={{ padding: ".6em 1em 0em 1em" }}>
                             <h5 style={{ marginBottom: "-.2em", fontSize: "16px" }}>
                                 {theaterName}
                             </h5>
-                            <a href={`tel:${phone}`}
-                                style={{ marginRight: '0.5em', marginTop: '0.5em', fontSize: 'small', alignItems: 'center', display: 'inline-flex' }}>
-                                <SVGCommunicationCall color={grey500} viewBox={'0 0 30 24'} />{phone}
-                            </a>
-                            {distance &&
-                                (<a href={`https://maps.google.com?q=${theaterName}`}
-                                    style={{ fontSize: 'small', alignItems: 'center', display: 'inline-flex' }}>
-                                    <SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} />{distance} km
+                            <div style={{ paddingTop: '0.5em', display: 'flex', alignItems: 'center' }}>
+                                <span style={theaterInfoStyle}>
+                                    {roomTypes.map(roomType => <img key={roomType} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
+                                </span>
+                                <a href={`tel:${phone}`}
+                                    style={theaterInfoStyle}>
+                                    <SVGCommunicationCall color={grey500} viewBox={'0 0 30 24'} />{phone}
+                                </a>
+                                {distance &&
+                                    (<a href={`https://maps.google.com?q=${theaterName}`}
+                                        style={theaterInfoStyle}>
+                                        <SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} />{distance} km
                                 </a>)}
+                            </div>
                             <div style={{ color: 'grey' }}>
                                 {timesStrings.map(time => <span style={{ marginRight: "1em", display: "inline-block" }} key={time}>{time}</span>)}
                             </div>

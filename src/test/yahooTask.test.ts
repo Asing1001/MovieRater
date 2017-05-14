@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { db } from "../data/db";
-import { getMoviesSchedulesWithLocation, updateYahooMovies } from '../task/yahooTask';
+import { updateYahooMovies } from '../task/yahooTask';
 import * as googleMapApi from '../thirdPartyIntegration/googleMapApi';
 import Location from '../models/location';
 import Theater from '../models/theater';
@@ -22,36 +22,7 @@ describe('yahooTask', () => {
     stubUpdateDocument = sandbox.stub(db, 'updateDocument');
   });
 
-  afterEach(() => sandbox.restore());
-
-  describe('getMoviesSchedulesWithLocation', () => {
-    it('should has binding theaterExtension', async function () {      
-      //Arrange
-      const allSchedules: Schedule[] = new Array<Schedule>(new Schedule(0, "台南新光影城", ));
-      const theaterWithLocation = {
-        "name": "台南新光影城",
-        "url": "https://tw.movies.yahoo.com/theater_result.html/id=69",
-        "address": "台南市中西區西門路一段658號8樓",
-        "phone": "06-3031260",
-        "location": {
-          "lat": 22.9868277,
-          "lng": 120.1977034,
-          "place_id": "ChIJGyl13nt2bjQRgqfRajWQWC8"
-        },
-        "region": "台南"
-      }
-
-      sandbox.stub(db, 'getCollection').returns(Promise.resolve([theaterWithLocation]));
-
-      //Act
-      const allSchedulesWithLocation = await getMoviesSchedulesWithLocation(allSchedules);
-
-      //Assert
-      const validateResult: Schedule[] = allSchedulesWithLocation;
-      validateResult[0].theaterExtension.should.eql(theaterWithLocation);
-
-    });
-  });
+  afterEach(() => sandbox.restore());  
 
   describe('updateYahooMovies', () => {
     it('should get newYahooMovies then updateDocument', async function () {
