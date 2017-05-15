@@ -13,4 +13,5 @@ export default class Theater {
     subRegion?: string
     regionIndex?: number
     location?: Location
+    distance?: string
 }

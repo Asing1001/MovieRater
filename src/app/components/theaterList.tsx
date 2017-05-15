@@ -43,15 +43,15 @@ class TheaterList extends React.Component<any, any> {
         super(props)
         this.state = {
             theaters: [],
-            isLoading: true,
             subRegions: [],
+            isLoading: true,
             selectedSubRegion: defaultSubRegion
         };
     }
 
     getData(ids) {
-        requestGraphQL(`${theaterQuery}`).then((json: any) => {
-            this.setState({
+        return requestGraphQL(`${theaterQuery}`).then((json: any) => {
+            return this.setState({
                 theaters: json.data.theaters,
                 subRegions: [...new Set(json.data.theaters.map(({ subRegion }) => subRegion))],
                 isLoading: false
@@ -59,21 +59,17 @@ class TheaterList extends React.Component<any, any> {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.getData(nextProps.params.ids);
-    }
-
     componentDidMount() {
-        this.getData(this.props.params.ids);
+        this.getData(this.props.params.ids).then(this.getTheatersWithDistance);
     }
 
-    gettheatersWithDistance() {
+    getTheatersWithDistance = () => {
         getClientGeoLocation().then(({ latitude, longitude }) => {
-            const theatersWithDistance = this.props.schedules.map((schedule) => {
-                const { theaterExtension: { location: { lat, lng } } } = schedule;
-                return Object.assign({ distance: getDistanceInKM(lng, lat, longitude, latitude) }, schedule);
+            const theatersWithDistance = this.state.theaters.map((theater: Theater) => {
+                const { location: { lat, lng } } = theater;
+                return Object.assign({ distance: getDistanceInKM(lng, lat, longitude, latitude) }, theater);
             }).sort(({ distance: distanceA }, { distance: distanceB }) => distanceA - distanceB);
-            this.setState({ theatersWithDistance })
+            this.setState({ theaters: theatersWithDistance })
         });
     }
 
@@ -89,14 +85,13 @@ class TheaterList extends React.Component<any, any> {
                         onChange={this.handleChange}
                     >
                         <MenuItem value={defaultSubRegion} primaryText={defaultSubRegion} />
-                        {this.state.subRegions.map(subRegion => <MenuItem value={subRegion} primaryText={subRegion} />)}
+                        {this.state.subRegions.map((subRegion, index) => <MenuItem key={index} value={subRegion} primaryText={subRegion} />)}
                     </SelectField>
                 </div>
                 {
                     this.state.theaters.filter(({ subRegion }) => this.state.selectedSubRegion === defaultSubRegion || subRegion === this.state.selectedSubRegion)
-                        .map(({ name, address, phone, }: Theater) => (
-
-                            <Paper zDepth={1} className="col-xs-12" style={{ paddingBottom: '.5em' }}>
+                        .map(({ name, address, phone, distance }: Theater, index) => (
+                            <Paper zDepth={2} className="col-xs-12" style={{ paddingBottom: '.5em' }} key={index}>
                                 <div style={{ paddingTop: '.5em', paddingBottom: '.5em' }}>
                                     <Link style={{ color: 'inherit' }} to={`/theater/${name}`}><h5 style={{ marginBottom: "-.2em", fontSize: "16px" }}>
                                         {name}
@@ -108,8 +103,8 @@ class TheaterList extends React.Component<any, any> {
                                         </a>
                                         <a href={`https://maps.google.com?q=${name}`}
                                             style={theaterInfoStyle}>
-                                            <SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} />{address} (x.x km)
-                                            </a>
+                                            <SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} />{address} {distance && ` (${distance} km)`}
+                                        </a>
                                     </div>
                                 </div>
                             </Paper>
