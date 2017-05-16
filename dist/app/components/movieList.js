@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const moment = require("moment");
@@ -8,8 +17,11 @@ const sort_1 = require("material-ui/svg-icons/content/sort");
 const findResult_1 = require("./findResult");
 const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
+const react_apollo_1 = require("react-apollo");
 const nearbyIcon = React.createElement(sort_1.default, null);
-const BRIEFDATA = `{
+const recentMoviesQuery = react_apollo_1.gql `
+         query MovieListing($yahooIds:[Int]){
+           movies(yahooIds:$yahooIds) {
             yahooId,
             posterUrl,
             chineseTitle,
@@ -20,20 +32,18 @@ const BRIEFDATA = `{
             yahooRating,
             imdbID,
             imdbRating,
-            tomatoURL,            
-            tomatoRating,           
             relatedArticles{title},
             briefSummary
+            }
           }`;
 var SortType;
 (function (SortType) {
     SortType[SortType["imdb"] = 0] = "imdb";
     SortType[SortType["yahoo"] = 1] = "yahoo";
-    SortType[SortType["tomato"] = 2] = "tomato";
-    SortType[SortType["ptt"] = 3] = "ptt";
-    SortType[SortType["releaseDate"] = 4] = "releaseDate";
+    SortType[SortType["ptt"] = 2] = "ptt";
+    SortType[SortType["releaseDate"] = 3] = "releaseDate";
 })(SortType || (SortType = {}));
-class MovieList extends React.Component {
+let MovieList = class MovieList extends React.Component {
     constructor(props) {
         super(props);
         this.select = (index) => {
@@ -47,9 +57,6 @@ class MovieList extends React.Component {
                     break;
                 case SortType.ptt:
                     sortFunction = (a, b) => this.getPttRating(b) - this.getPttRating(a);
-                    break;
-                case SortType.tomato:
-                    sortFunction = this.getStandardSortFunction('tomatoRating');
                     break;
                 case SortType.yahoo:
                     sortFunction = this.getStandardSortFunction('yahooRating');
@@ -77,43 +84,31 @@ class MovieList extends React.Component {
             isLoading: true
         };
     }
-    getData(ids) {
-        this.setState({ isLoading: true });
-        if (ids) {
-            const yahooIds = JSON.stringify(ids.split(',').map(id => parseInt(id)));
-            helper_1.requestGraphQL(`
-        {
-          movies(yahooIds:${yahooIds})${BRIEFDATA}
-        }
-        `)
-                .then((json) => {
-                this.setState({ movies: json.data.movies.map(movie => helper_1.classifyArticle(movie)), isLoading: false });
-            });
-        }
-        else {
-            helper_1.requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json) => {
-                this.setState({ movies: json.data.recentMovies.map(movie => helper_1.classifyArticle(movie)), isLoading: false });
-            });
-        }
-    }
-    componentWillReceiveProps(nextProps) {
-        this.getData(nextProps.params.ids);
-    }
-    componentDidMount() {
-        this.getData(this.props.params.ids);
-    }
     render() {
+        if (this.props.data.loading) {
+            return React.createElement(loadingIcon_1.default, { isLoading: this.props.data.loading });
+        }
         return (React.createElement("div", null,
-            React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading }),
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em' } },
                 React.createElement(BottomNavigation_1.BottomNavigation, { selectedIndex: this.state.selectedIndex },
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "IMDB", icon: nearbyIcon, onTouchTap: () => this.select(SortType.imdb) }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "YAHOO", icon: nearbyIcon, onTouchTap: () => this.select(SortType.yahoo) }),
-                    React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "TOMATO", icon: nearbyIcon, onTouchTap: () => this.select(SortType.tomato), className: "hide" }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "PTT", icon: nearbyIcon, onTouchTap: () => this.select(SortType.ptt) }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "上映日", icon: nearbyIcon, onTouchTap: () => this.select(SortType.releaseDate) }))),
-            this.state.movies.sort(this.state.sortFunction).map((movie) => (React.createElement(findResult_1.default, { key: movie.yahooId, movie: movie })))));
+            this.props.data.movies.map(movie => helper_1.classifyArticle(movie)).sort(this.state.sortFunction).map((movie) => (React.createElement(findResult_1.default, { key: movie.yahooId, movie: movie })))));
     }
-}
+};
+MovieList = __decorate([
+    react_apollo_1.graphql(recentMoviesQuery, {
+        options: ({ params }) => {
+            return params.ids ? {
+                variables: {
+                    yahooIds: params.ids.split(',').map(id => parseInt(id))
+                }
+            } : {};
+        },
+    }),
+    __metadata("design:paramtypes", [Object])
+], MovieList);
 exports.default = MovieList;
 //# sourceMappingURL=movieList.js.map

@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function classifyArticle(movie) {
     if (!movie.relatedArticles)
         return movie;
+    const movieWithClassifyArticles = Object.assign({}, movie);
     var [goodRateArticles, normalRateArticles, badRateArticles, otherArticles] = [[], [], [], []];
-    movie.relatedArticles.forEach((article) => {
+    movieWithClassifyArticles.relatedArticles.forEach((article) => {
         let title = article.title;
         if (title.indexOf('好雷') !== -1 || title.indexOf('好無雷') !== -1) {
             goodRateArticles.push(article);
@@ -19,11 +20,11 @@ function classifyArticle(movie) {
             otherArticles.push(article);
         }
     });
-    movie.goodRateArticles = goodRateArticles;
-    movie.normalRateArticles = normalRateArticles;
-    movie.badRateArticles = badRateArticles;
-    movie.otherArticles = otherArticles;
-    return movie;
+    movieWithClassifyArticles.goodRateArticles = goodRateArticles;
+    movieWithClassifyArticles.normalRateArticles = normalRateArticles;
+    movieWithClassifyArticles.badRateArticles = badRateArticles;
+    movieWithClassifyArticles.otherArticles = otherArticles;
+    return movieWithClassifyArticles;
 }
 exports.classifyArticle = classifyArticle;
 function requestGraphQL(query) {

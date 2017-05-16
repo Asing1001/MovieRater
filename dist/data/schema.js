@@ -30,14 +30,11 @@ const QueryType = new graphql_1.GraphQLObjectType({
                 yahooIds: { type: new graphql_1.GraphQLList(graphql_1.GraphQLInt) }
             },
             resolve: (root, { yahooIds }) => __awaiter(this, void 0, void 0, function* () {
-                let allMovies = cacheManager_1.default.get("allMovies");
-                let result = [];
-                allMovies.forEach((movie) => {
-                    if (yahooIds.indexOf(movie.yahooId) !== -1) {
-                        result.push(movie);
-                    }
-                });
-                return result;
+                if (yahooIds) {
+                    const allMovies = cacheManager_1.default.get("allMovies");
+                    return allMovies.filter(({ yahooId }) => yahooIds.indexOf(yahooId) !== -1);
+                }
+                return cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES);
             }),
         },
         recentMovies: {
