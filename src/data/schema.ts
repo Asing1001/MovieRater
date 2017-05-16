@@ -31,14 +31,11 @@ const QueryType = new GraphQLObjectType({
                 yahooIds: { type: new GraphQLList(GraphQLInt) }
             },
             resolve: async (root, { yahooIds }) => {
-                let allMovies: Array<Movie> = cacheManager.get("allMovies");
-                let result = [];
-                allMovies.forEach((movie) => {
-                    if (yahooIds.indexOf(movie.yahooId) !== -1) {
-                        result.push(movie);
-                    }
-                })
-                return result;
+                if (yahooIds) {
+                    const allMovies: Array<Movie> = cacheManager.get("allMovies");
+                    return allMovies.filter(({ yahooId }) => yahooIds.indexOf(yahooId) !== -1);
+                }
+                return cacheManager.get(cacheManager.RECENT_MOVIES);
             },
         },
         recentMovies: {

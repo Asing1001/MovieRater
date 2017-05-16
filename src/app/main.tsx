@@ -1,14 +1,29 @@
 import * as React from 'react';
-import { Router } from 'react-router';
+import { Router, browserHistory } from 'react-router';
 import * as ReactDOM from 'react-dom';
-import { browserHistory } from 'react-router';
 import routes from './routes';
 import './main.css';
+import {
+  ApolloClient,
+  ApolloProvider,
+  createNetworkInterface
+} from 'react-apollo';
+
+const client = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: '/graphql',
+    // opts: { 
+    //   method:'GET'       
+    // } 
+  })
+});
 
 class Root extends React.Component<any, any> {
   render() {
     return (
-      <Router history={browserHistory}>{routes}</Router>
+      <ApolloProvider client={client}>
+        <Router history={browserHistory}>{routes}</Router>
+      </ApolloProvider>
     );
   }
 }

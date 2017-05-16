@@ -3,8 +3,7 @@ import * as bodyParser from "body-parser";
 import * as path from 'path';
 import * as graphqlHTTP from 'express-graphql';
 import * as React from 'react';
-import { renderToString } from 'react-dom/server'
-import * as Router from 'react-router';
+import { match, RouterContext } from 'react-router';
 import * as swig from 'swig';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
@@ -15,7 +14,9 @@ import forceSSL from './helper/forceSSL';
 import { db } from './data/db';
 import { initScheduler } from './backgroundService/scheduler';
 import schema from './data/schema';
-
+import { renderToStringWithData, ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
+import { createLocalInterface } from 'apollo-local-query';
+import * as graphql from 'graphql';
 
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 
@@ -41,7 +42,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
 app.use(function (req, res) {
-  Router.match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {
+  match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {
     if (err) {
       res.status(500).send(err.message)
     } else if (redirectLocation) {
@@ -49,9 +50,25 @@ app.use(function (req, res) {
     } else if (renderProps) {
       //for material-ui auto prefixer
       global.navigator = { userAgent: req.headers['user-agent'] };
-      var html = renderToString(React.createElement(Router.RouterContext, renderProps));
-      var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
-      res.status(200).send(page);
+
+      const client = new ApolloClient({
+        ssrMode: true,
+        // Remember that this is the interface the SSR server will use to connect to the
+        // API server, so we need to ensure it isn't firewalled, etc
+        networkInterface: createLocalInterface(graphql, schema),
+      });
+
+      const app = (
+        <ApolloProvider client={client}>
+          <RouterContext {...renderProps} />
+        </ApolloProvider>
+      );
+
+      renderToStringWithData(app).then(html => {
+        var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
+        res.status(200).send(page);
+      });
+
     } else {
       res.status(404).send('Page Not Found')
     }
