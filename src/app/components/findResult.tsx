@@ -2,7 +2,7 @@ import * as React from 'react';
 import Movie from '../../models/movie';
 import Paper from 'material-ui/Paper';
 import Ratings from './ratings';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 interface MovieDetailProps {
     movie: Movie

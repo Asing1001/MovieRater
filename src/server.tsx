@@ -3,11 +3,11 @@ import * as bodyParser from "body-parser";
 import * as path from 'path';
 import * as graphqlHTTP from 'express-graphql';
 import * as React from 'react';
-import { match, RouterContext } from 'react-router';
+import { StaticRouter } from 'react-router-dom';
 import * as swig from 'swig';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
-import routes from './app/routes';
+import App from './app/components/app';
 import cacheManager from './data/cacheManager';
 import { systemSetting } from './configs/systemSetting';
 import forceSSL from './helper/forceSSL';
@@ -42,37 +42,42 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
 app.use(function (req, res) {
-  match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {
-    if (err) {
-      res.status(500).send(err.message)
-    } else if (redirectLocation) {
-      res.status(302).redirect(redirectLocation.pathname + redirectLocation.search)
-    } else if (renderProps) {
-      //for material-ui auto prefixer
-      global.navigator = { userAgent: req.headers['user-agent'] };
+  // match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {
+  //   if (err) {
+  //     res.status(500).send(err.message)
+  //   } else if (redirectLocation) {
+  //     res.status(302).redirect(redirectLocation.pathname + redirectLocation.search)
+  //   } else if (renderProps) {
+  //for material-ui auto prefixer
+  global.navigator = { userAgent: req.headers['user-agent'] };
 
-      const client = new ApolloClient({
-        ssrMode: true,
-        // Remember that this is the interface the SSR server will use to connect to the
-        // API server, so we need to ensure it isn't firewalled, etc
-        networkInterface: createLocalInterface(graphql, schema),
-      });
-
-      const app = (
-        <ApolloProvider client={client}>
-          <RouterContext {...renderProps} />
-        </ApolloProvider>
-      );
-
-      renderToStringWithData(app).then(html => {
-        var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
-        res.status(200).send(page);
-      });
-
-    } else {
-      res.status(404).send('Page Not Found')
-    }
+  const client = new ApolloClient({
+    ssrMode: true,
+    // Remember that this is the interface the SSR server will use to connect to the
+    // API server, so we need to ensure it isn't firewalled, etc
+    networkInterface: createLocalInterface(graphql, schema),
   });
+
+  const app = (
+    <ApolloProvider client={client}>
+      <StaticRouter
+        location={req.url}
+        context={{}}
+      >
+        <App />
+      </StaticRouter>
+    </ApolloProvider>
+  );
+
+  renderToStringWithData(app).then(html => {
+    var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
+    res.status(200).send(page);
+  });
+
+  // } else {
+  //   res.status(404).send('Page Not Found')
+  // }
+  // });
 });
 
 

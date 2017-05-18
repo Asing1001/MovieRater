@@ -1,7 +1,6 @@
 import * as React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import 'isomorphic-fetch';
-import { browserHistory } from 'react-router';
 import SVGActionSearch from 'material-ui/svg-icons/action/search';
 import SVGContentClear from 'material-ui/svg-icons/content/clear';
 import SVGBackSpace from 'material-ui/svg-icons/hardware/keyboard-backspace';
@@ -15,6 +14,10 @@ class AppBarSearching extends React.Component<any, any> {
       searchText: '',
       dataSource: []
     };
+  }
+
+  static contextTypes = {
+    router: React.PropTypes.object
   }
 
   private clearSearchText() {
@@ -51,16 +54,17 @@ class AppBarSearching extends React.Component<any, any> {
     }
 
     if (yahooIds.length === 0) {
-      browserHistory.push(`/movienotfound/${searchText}`)
+       this.context.router.history.push(`/movienotfound/${searchText}`)
     }
     else if (yahooIds.length === 1) {
-      browserHistory.push(`/movie/${yahooIds}`)
+       this.context.router.history.push(`/movie/${yahooIds}`)
     } else {
-      browserHistory.push(`/movielist/${yahooIds}`)
+       this.context.router.history.push(`/movielist/${yahooIds}`)
     }
   }
 
   render() {
+
     return (
       <Paper zDepth={2} className={`appBar searching ${this.props.className}`}>
         <IconButton className="leftBtn" onTouchTap={this.props.onBackSpaceIconClick}><SVGBackSpace /></IconButton>
@@ -77,7 +81,7 @@ class AppBarSearching extends React.Component<any, any> {
             onUpdateInput={this.handleUpdateInput.bind(this)}
             menuStyle={{ minWidth: "500px" }}
             fullWidth={true}
-            />
+          />
         </span>
         <IconButton onTouchTap={this.clearSearchText.bind(this)} className="visible-xs rightBtn"><SVGContentClear /></IconButton>
       </Paper>

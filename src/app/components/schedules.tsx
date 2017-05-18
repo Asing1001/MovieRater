@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Schedule from '../../models/schedule';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Chip from 'material-ui/Chip';
 import { getClientGeoLocation, getDistanceInKM } from '../helper';
 import SVGCommunicationLocationOn from 'material-ui/svg-icons/communication/location-on';

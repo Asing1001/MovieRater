@@ -8,7 +8,7 @@ import Theater from '../../models/theater';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
 import { getClientGeoLocation, getDistanceInKM } from '../helper';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import SVGCommunicationLocationOn from 'material-ui/svg-icons/communication/location-on';
 import SVGCommunicationCall from 'material-ui/svg-icons/communication/call';
 import { grey500 } from 'material-ui/styles/colors';
@@ -60,7 +60,7 @@ class TheaterList extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        this.getData(this.props.params.ids).then(this.getTheatersWithDistance);
+        this.getData(this.props.match.params.ids).then(this.getTheatersWithDistance);
     }
 
     getTheatersWithDistance = () => {

@@ -63,11 +63,11 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
   }
 
   componentDidMount() {
-    this.search([parseInt(this.props.params.id)]);
+    this.search([parseInt(this.props.match.params.id)]);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.search([parseInt(nextProps.params.id)]);
+    this.search([parseInt(nextProps.match.params.id)]);
   }
 
   search(yahooIds: Number[]) {

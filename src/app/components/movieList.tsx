@@ -37,10 +37,10 @@ enum SortType {
 }
 
 @graphql(recentMoviesQuery, {
-  options: ({ params }) => {
-    return params.ids ? {
+  options: ({ match  }) => {
+    return match.params.ids ? {
       variables: {
-        yahooIds: params.ids.split(',').map(id => parseInt(id))
+        yahooIds: match.params.ids.split(',').map(id => parseInt(id))
       }
     } : {}
   },

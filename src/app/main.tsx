@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Router, browserHistory } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import * as ReactDOM from 'react-dom';
-import routes from './routes';
+import App from './components/app';
 import './main.css';
 import {
   ApolloClient,
@@ -22,7 +22,9 @@ class Root extends React.Component<any, any> {
   render() {
     return (
       <ApolloProvider client={client}>
-        <Router history={browserHistory}>{routes}</Router>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ApolloProvider>
     );
   }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { browserHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
 import SVGAvMovie from 'material-ui/svg-icons/av/movie';
 import SVGActionTheaters from 'material-ui/svg-icons/action/theaters';
@@ -13,9 +13,8 @@ class AppDrawer extends React.Component<any, any> {
         };
     }
 
-    handleClose = (url) => {
+    handleClose = () => {
         this.setState({ open: false });
-        browserHistory.push(url);
     };
 
     toggle = () => {
@@ -32,8 +31,8 @@ class AppDrawer extends React.Component<any, any> {
                 onRequestChange={(open) => this.setState({ open })}
             >
                 <List>
-                    <ListItem onTouchTap={() => this.handleClose('/')} leftIcon={<SVGAvMovie />}>現正上映</ListItem>
-                    <ListItem onTouchTap={() => this.handleClose('theaterlist')} leftIcon={<SVGActionTheaters />}>戲院總覽</ListItem>
+                    <Link to="/"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGAvMovie />}>現正上映</ListItem></Link>
+                    <Link to="/theaterlist"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGActionTheaters />}>戲院總覽</ListItem>                   </Link>
                 </List>
             </Drawer>
         );
