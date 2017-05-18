@@ -7,7 +7,7 @@ class MovieNotFound extends React.Component {
         this.state = {};
     }
     componentWillReceiveProps(nextProps) {
-        // this.getData(nextProps.params.ids);
+        // this.getData(nextProps.match.params.ids);
     }
     render() {
         return (React.createElement("div", { style: {
@@ -17,7 +17,7 @@ class MovieNotFound extends React.Component {
                 justifyContent: 'center',
                 height: '150px',
             } },
-            React.createElement("h4", null, `資料庫還沒有${this.props.params.query}的相關資料唷！`)));
+            React.createElement("h4", null, `資料庫還沒有${this.props.match.params.query}的相關資料唷！`)));
     }
 }
 exports.default = MovieNotFound;

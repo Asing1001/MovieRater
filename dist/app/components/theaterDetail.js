@@ -68,10 +68,10 @@ class TheaterDetail extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        this.getData(nextProps.params.name);
+        this.getData(nextProps.match.params.name);
     }
     componentDidMount() {
-        this.getData(this.props.params.name);
+        this.getData(this.props.match.params.name);
     }
     render() {
         return (React.createElement("div", null,

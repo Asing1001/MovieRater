@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const AutoComplete_1 = require("material-ui/AutoComplete");
 require("isomorphic-fetch");
-const react_router_1 = require("react-router");
 const search_1 = require("material-ui/svg-icons/action/search");
 const clear_1 = require("material-ui/svg-icons/content/clear");
 const keyboard_backspace_1 = require("material-ui/svg-icons/hardware/keyboard-backspace");
@@ -48,13 +47,13 @@ class AppBarSearching extends React.Component {
             yahooIds.push(parseInt(selectItem.value));
         }
         if (yahooIds.length === 0) {
-            react_router_1.browserHistory.push(`/movienotfound/${searchText}`);
+            this.context.router.history.push(`/movienotfound/${searchText}`);
         }
         else if (yahooIds.length === 1) {
-            react_router_1.browserHistory.push(`/movie/${yahooIds}`);
+            this.context.router.history.push(`/movie/${yahooIds}`);
         }
         else {
-            react_router_1.browserHistory.push(`/movielist/${yahooIds}`);
+            this.context.router.history.push(`/movielist/${yahooIds}`);
         }
     }
     render() {
@@ -69,5 +68,8 @@ class AppBarSearching extends React.Component {
                 React.createElement(clear_1.default, null))));
     }
 }
+AppBarSearching.contextTypes = {
+    router: React.PropTypes.object
+};
 exports.default = AppBarSearching;
 //# sourceMappingURL=appBarSearching.js.map

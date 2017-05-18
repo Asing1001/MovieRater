@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Paper_1 = require("material-ui/Paper");
 const ratings_1 = require("./ratings");
-const react_router_1 = require("react-router");
+const react_router_dom_1 = require("react-router-dom");
 const isSmallScreen = typeof window !== 'undefined' && window.matchMedia("only screen and (max-width: 760px)").matches;
 class FindResult extends React.Component {
     constructor(props) {
@@ -15,11 +15,11 @@ class FindResult extends React.Component {
     render() {
         return (React.createElement(Paper_1.default, { zDepth: 2, className: "row no-margin", style: { marginBottom: '.5em' } },
             React.createElement("div", { className: "col-xs-3 col-sm-2 no-padding" },
-                React.createElement(react_router_1.Link, { to: `/movie/${this.props.movie.yahooId}` },
+                React.createElement(react_router_dom_1.Link, { to: `/movie/${this.props.movie.yahooId}` },
                     React.createElement("img", { className: "img-responsive", src: this.getSmallPosterSrc(this.props.movie.posterUrl) }))),
             React.createElement("div", { className: "col-xs-9 col-sm-10", style: { paddingBottom: '.5em' } },
                 React.createElement("div", { style: { paddingTop: '.5em', paddingBottom: '.5em' } },
-                    React.createElement(react_router_1.Link, { style: { color: 'inherit' }, to: `/movie/${this.props.movie.yahooId}` },
+                    React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${this.props.movie.yahooId}` },
                         React.createElement("b", null,
                             this.props.movie.chineseTitle,
                             "(",
@@ -38,7 +38,7 @@ class FindResult extends React.Component {
                 React.createElement(ratings_1.default, { className: "resultRatings", movie: this.props.movie }),
                 React.createElement("div", { className: "hidden-xs" },
                     React.createElement("div", { className: "resultSummary", dangerouslySetInnerHTML: { __html: this.props.movie.briefSummary } }),
-                    React.createElement(react_router_1.Link, { to: `/movie/${this.props.movie.yahooId}` }, "\u7E7C\u7E8C\u95B1\u8B80...")))));
+                    React.createElement(react_router_dom_1.Link, { to: `/movie/${this.props.movie.yahooId}` }, "\u7E7C\u7E8C\u95B1\u8B80...")))));
     }
     ;
 }

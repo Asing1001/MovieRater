@@ -6,7 +6,7 @@ const sort_1 = require("material-ui/svg-icons/content/sort");
 const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const helper_2 = require("../helper");
-const react_router_1 = require("react-router");
+const react_router_dom_1 = require("react-router-dom");
 const location_on_1 = require("material-ui/svg-icons/communication/location-on");
 const call_1 = require("material-ui/svg-icons/communication/call");
 const colors_1 = require("material-ui/styles/colors");
@@ -63,7 +63,7 @@ class TheaterList extends React.Component {
         });
     }
     componentDidMount() {
-        this.getData(this.props.params.ids).then(this.getTheatersWithDistance);
+        this.getData(this.props.match.params.ids).then(this.getTheatersWithDistance);
     }
     render() {
         return (React.createElement("div", null,
@@ -75,7 +75,7 @@ class TheaterList extends React.Component {
             this.state.theaters.filter(({ subRegion }) => this.state.selectedSubRegion === defaultSubRegion || subRegion === this.state.selectedSubRegion)
                 .map(({ name, address, phone, distance }, index) => (React.createElement(Paper_1.default, { zDepth: 2, className: "col-xs-12", style: { paddingBottom: '.5em' }, key: index },
                 React.createElement("div", { style: { paddingTop: '.5em', paddingBottom: '.5em' } },
-                    React.createElement(react_router_1.Link, { style: { color: 'inherit' }, to: `/theater/${name}` },
+                    React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/theater/${name}` },
                         React.createElement("h5", { style: { marginBottom: "-.2em", fontSize: "16px" } }, name)),
                     React.createElement("div", { style: { paddingTop: '0.5em', display: 'flex', alignItems: 'center' } },
                         React.createElement("a", { href: `tel:${phone}`, style: Object.assign({ whiteSpace: 'nowrap' }, theaterInfoStyle) },
