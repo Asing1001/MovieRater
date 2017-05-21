@@ -218,7 +218,7 @@ const scheduleType = new GraphQLObjectType({
         movie: {
             type: MovieType,
             resolve: obj => cacheManager.get(cacheManager.RECENT_MOVIES)
-                .find(({ yahooId }) => obj.yahooId === yahooId),
+                .find(({ yahooId }) => obj.yahooId === yahooId) || { yahooId: obj.yahooId, relatedArticles:[] },
         },
         timesValues: {
             type: new GraphQLList(GraphQLString),

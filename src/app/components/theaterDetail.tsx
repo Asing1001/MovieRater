@@ -1,48 +1,45 @@
 import * as React from 'react';
-import * as moment from 'moment';
-import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
-import IconLocationOn from 'material-ui/svg-icons/content/sort';
-import FindResult from './findResult';
-import Movie from '../../models/movie';
 import Schedule from '../../models/schedule';
-import { classifyArticle, requestGraphQL } from '../helper';
+import { classifyArticle, getClientGeoLocation, getDistanceInKM } from '../helper';
 import LoadingIcon from './loadingIcon';
 import TheaterCard from './theaterCard';
+import FindResult from './findResult';
+import { gql, graphql } from 'react-apollo';
 
-
-const nearbyIcon = <IconLocationOn />;
-
-const theaterQuery = `{
-    name,
-    address,
-    url,
-    phone,
-    subRegion,
-    location {
-      lat,
-      lng,
-    },
-    schedules {
-        movie {
-            yahooId,
-            posterUrl,
-            chineseTitle,
-            englishTitle,
-            releaseDate,
-            runTime,
-            director,
-            actor,
-            imdbID,
-            yahooRating,
-            imdbRating,
-            relatedArticles {
-            title
-         }
-       },
-        timesValues,
-        timesStrings,
-        roomTypes,
+const theaterDetailQuery = gql`
+query TheaterDetail($theaterName:String){
+    theaters(name:$theaterName){
+        name
+        address
+        url
+        phone
+        subRegion
+        location {
+            lat
+            lng
+        }
+        schedules {
+            movie {
+                yahooId
+                posterUrl
+                chineseTitle
+                englishTitle
+                releaseDate
+                runTime
+                director
+                actor
+                imdbID
+                yahooRating
+                imdbRating
+                relatedArticles {
+                    title
+                }
+            }
+            timesValues
+            timesStrings
+            roomTypes
+        }
     }
 }`;
 
@@ -54,47 +51,39 @@ enum SortType {
     releaseDate = 4
 }
 
+@graphql(theaterDetailQuery, {
+    options: ({ match }) => {
+        return {
+            variables: {
+                theaterName: match.params.name
+            }
+        }
+    },
+})
 class TheaterDetail extends React.Component<any, any> {
     constructor(props) {
         super(props)
-        this.state = {
-            isLoading: true,
-            theater: {
-                schedules: []
-            }
-        };
     }
-
-    getData(name) {
-        this.setState({ isLoading: true });
-        fetch(`/graphql?query={theaters(name:"${name}")${theaterQuery.replace(/\s+/g, "")}}`).then(res => {
-            return res.json()
-        })
-            .then((json: any) => {
-                this.setState({ theater: json.data.theaters[0], isLoading: false });
-            });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.getData(nextProps.match.params.name);
-    }
-
-    componentDidMount() {
-        this.getData(this.props.match.params.name);
-    }
+    
 
     render() {
+        const { data: { loading, theaters } } = this.props;
+        if (loading) {
+            return <LoadingIcon isLoading={loading} />
+        }
+        let theater = theaters[0];        
         return (
             <div>
-                <LoadingIcon isLoading={this.state.isLoading} />
-                <TheaterCard theater={this.state.theater}></TheaterCard>
+                <Paper zDepth={2} style={{ marginBottom: '.5em', padding: ".5em 1em" }}>
+                    <TheaterCard theater={theater}></TheaterCard>
+                </Paper>
                 {
-                    this.state.theater.schedules && this.state.theater.schedules.map((schedule: Schedule, index) => (
+                    theater.schedules && theater.schedules.map((schedule: Schedule, index) => (
                         <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
                             <div>
                                 <FindResult movie={classifyArticle(schedule.movie)}></FindResult>
                             </div>
-                            <div className="col-xs-12" style={{ color: 'grey' }}>
+                            <div className="col-xs-9" style={{ color: 'grey' }}>
                                 {schedule.timesStrings.map(time => <span style={{ marginRight: "1em", display: "inline-block" }} key={time}>{time}</span>)}
                             </div>
                         </Paper>

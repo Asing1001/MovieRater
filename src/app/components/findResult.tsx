@@ -15,12 +15,12 @@ class FindResult extends React.Component<MovieDetailProps, {}> {
     }
 
     private getSmallPosterSrc(posterUrl: string) {
-        return isSmallScreen && posterUrl ? posterUrl.replace('mpost', 'mpost4') : posterUrl;
+        return isSmallScreen && posterUrl ? posterUrl.replace('mpost', 'mpost3') : posterUrl;
     }
 
     render() {
         return (
-            <div className="clearfix">
+            <div>
                 <div className="col-xs-3 col-sm-2 no-padding">
                     <Link to={`/movie/${this.props.movie.yahooId}`} >
                         <img className="img-responsive" src={this.getSmallPosterSrc(this.props.movie.posterUrl)} />
@@ -36,10 +36,11 @@ class FindResult extends React.Component<MovieDetailProps, {}> {
                         </div>
                     </div>
                     <Ratings className="resultRatings" movie={this.props.movie}></Ratings>
-                    <div className="hidden-xs">
+                    {this.props.movie.briefSummary && <div className="hidden-xs">
                         <div className="resultSummary" dangerouslySetInnerHTML={{ __html: this.props.movie.briefSummary }}></div>
                         <Link to={`/movie/${this.props.movie.yahooId}`} >繼續閱讀...</Link>
-                    </div>
+                    </div>}
+
                 </div>
             </div>
         );
