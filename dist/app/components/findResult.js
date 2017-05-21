@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const Paper_1 = require("material-ui/Paper");
 const ratings_1 = require("./ratings");
 const react_router_dom_1 = require("react-router-dom");
 const isSmallScreen = typeof window !== 'undefined' && window.matchMedia("only screen and (max-width: 760px)").matches;
@@ -13,18 +12,17 @@ class FindResult extends React.Component {
         return isSmallScreen && posterUrl ? posterUrl.replace('mpost', 'mpost4') : posterUrl;
     }
     render() {
-        return (React.createElement(Paper_1.default, { zDepth: 2, className: "row no-margin", style: { marginBottom: '.5em' } },
+        return (React.createElement("div", { className: "clearfix" },
             React.createElement("div", { className: "col-xs-3 col-sm-2 no-padding" },
                 React.createElement(react_router_dom_1.Link, { to: `/movie/${this.props.movie.yahooId}` },
                     React.createElement("img", { className: "img-responsive", src: this.getSmallPosterSrc(this.props.movie.posterUrl) }))),
             React.createElement("div", { className: "col-xs-9 col-sm-10", style: { paddingBottom: '.5em' } },
                 React.createElement("div", { style: { paddingTop: '.5em', paddingBottom: '.5em' } },
                     React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${this.props.movie.yahooId}` },
-                        React.createElement("b", null,
-                            this.props.movie.chineseTitle,
-                            "(",
-                            this.props.movie.englishTitle,
-                            ")")),
+                        React.createElement("b", null, this.props.movie.chineseTitle),
+                        React.createElement("br", null),
+                        React.createElement("small", null, this.props.movie.englishTitle),
+                        " "),
                     React.createElement("div", { className: "resultInfo" },
                         React.createElement("span", null,
                             "\u4E0A\u6620\u65E5:",

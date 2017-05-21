@@ -95,7 +95,8 @@ let MovieList = class MovieList extends React.Component {
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "YAHOO", icon: nearbyIcon, onTouchTap: () => this.select(SortType.yahoo) }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "PTT", icon: nearbyIcon, onTouchTap: () => this.select(SortType.ptt) }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "上映日", icon: nearbyIcon, onTouchTap: () => this.select(SortType.releaseDate) }))),
-            this.props.data.movies.map(movie => helper_1.classifyArticle(movie)).sort(this.state.sortFunction).map((movie) => (React.createElement(findResult_1.default, { key: movie.yahooId, movie: movie })))));
+            this.props.data.movies.map(movie => helper_1.classifyArticle(movie)).sort(this.state.sortFunction).map((movie, index) => (React.createElement(Paper_1.default, { zDepth: 2, className: "row no-margin", style: { marginBottom: '.5em' }, key: index },
+                React.createElement(findResult_1.default, { key: movie.yahooId, movie: movie }))))));
     }
 };
 MovieList = __decorate([

@@ -1,8 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
+const Paper_1 = require("material-ui/Paper");
 const sort_1 = require("material-ui/svg-icons/content/sort");
+const findResult_1 = require("./findResult");
+const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
+const theaterCard_1 = require("./theaterCard");
 const nearbyIcon = React.createElement(sort_1.default, null);
 const theaterQuery = `{
     name,
@@ -28,15 +32,11 @@ const theaterQuery = `{
             yahooRating,
             imdbRating,
             relatedArticles {
-            title,
-            push,
-            url,
-            date,
-            author,
+            title
          }
-       }
+       },
         timesValues,
-        timesStrings   ,
+        timesStrings,
         roomTypes,
     }
 }`;
@@ -76,7 +76,11 @@ class TheaterDetail extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement(loadingIcon_1.default, { isLoading: this.state.isLoading }),
-            this.state.theater.schedules && this.state.theater.schedules.map((schedule) => (React.createElement("div", null, JSON.stringify(schedule))))));
+            React.createElement(theaterCard_1.default, { theater: this.state.theater }),
+            this.state.theater.schedules && this.state.theater.schedules.map((schedule, index) => (React.createElement(Paper_1.default, { zDepth: 2, key: index, className: "row no-margin", style: { marginBottom: '.5em' } },
+                React.createElement("div", null,
+                    React.createElement(findResult_1.default, { movie: helper_1.classifyArticle(schedule.movie) })),
+                React.createElement("div", { className: "col-xs-12", style: { color: 'grey' } }, schedule.timesStrings.map(time => React.createElement("span", { style: { marginRight: "1em", display: "inline-block" }, key: time }, time))))))));
     }
 }
 exports.default = TheaterDetail;
