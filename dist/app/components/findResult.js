@@ -9,10 +9,10 @@ class FindResult extends React.Component {
         super(props);
     }
     getSmallPosterSrc(posterUrl) {
-        return isSmallScreen && posterUrl ? posterUrl.replace('mpost', 'mpost4') : posterUrl;
+        return isSmallScreen && posterUrl ? posterUrl.replace('mpost', 'mpost3') : posterUrl;
     }
     render() {
-        return (React.createElement("div", { className: "clearfix" },
+        return (React.createElement("div", null,
             React.createElement("div", { className: "col-xs-3 col-sm-2 no-padding" },
                 React.createElement(react_router_dom_1.Link, { to: `/movie/${this.props.movie.yahooId}` },
                     React.createElement("img", { className: "img-responsive", src: this.getSmallPosterSrc(this.props.movie.posterUrl) }))),
@@ -34,7 +34,7 @@ class FindResult extends React.Component {
                             "\u7247\u9577:",
                             this.props.movie.runTime))),
                 React.createElement(ratings_1.default, { className: "resultRatings", movie: this.props.movie }),
-                React.createElement("div", { className: "hidden-xs" },
+                this.props.movie.briefSummary && React.createElement("div", { className: "hidden-xs" },
                     React.createElement("div", { className: "resultSummary", dangerouslySetInnerHTML: { __html: this.props.movie.briefSummary } }),
                     React.createElement(react_router_dom_1.Link, { to: `/movie/${this.props.movie.yahooId}` }, "\u7E7C\u7E8C\u95B1\u8B80...")))));
     }
