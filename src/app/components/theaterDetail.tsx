@@ -8,6 +8,8 @@ import Movie from '../../models/movie';
 import Schedule from '../../models/schedule';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
+import TheaterCard from './theaterCard';
+
 
 const nearbyIcon = <IconLocationOn />;
 
@@ -35,15 +37,11 @@ const theaterQuery = `{
             yahooRating,
             imdbRating,
             relatedArticles {
-            title,
-            push,
-            url,
-            date,
-            author,
+            title
          }
-       }
+       },
         timesValues,
-        timesStrings   ,
+        timesStrings,
         roomTypes,
     }
 }`;
@@ -89,9 +87,17 @@ class TheaterDetail extends React.Component<any, any> {
         return (
             <div>
                 <LoadingIcon isLoading={this.state.isLoading} />
+                <TheaterCard theater={this.state.theater}></TheaterCard>
                 {
-                    this.state.theater.schedules && this.state.theater.schedules.map((schedule: Schedule) => (
-                        <div>{JSON.stringify(schedule)}</div>
+                    this.state.theater.schedules && this.state.theater.schedules.map((schedule: Schedule, index) => (
+                        <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
+                            <div>
+                                <FindResult movie={classifyArticle(schedule.movie)}></FindResult>
+                            </div>
+                            <div className="col-xs-12" style={{ color: 'grey' }}>
+                                {schedule.timesStrings.map(time => <span style={{ marginRight: "1em", display: "inline-block" }} key={time}>{time}</span>)}
+                            </div>
+                        </Paper>
                     ))
                 }
             </div>

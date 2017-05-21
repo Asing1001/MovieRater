@@ -1,3 +1,4 @@
+import Movie from '../models/movie';
 import Location from '../models/location';
 import theater from '../models/theater';
 
@@ -10,6 +11,7 @@ export default class Schedule {
         this.theaterExtension = theaterExtension;
     }
     yahooId?: number
+    movie?: Movie
     theaterName?: string
     timesValues?: string[]
     timesStrings?: string[]

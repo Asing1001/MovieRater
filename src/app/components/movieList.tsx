@@ -37,7 +37,7 @@ enum SortType {
 }
 
 @graphql(recentMoviesQuery, {
-  options: ({ match  }) => {
+  options: ({ match }) => {
     return match.params.ids ? {
       variables: {
         yahooIds: match.params.ids.split(',').map(id => parseInt(id))
@@ -122,8 +122,10 @@ class MovieList extends React.Component<any, any> {
           </BottomNavigation>
         </Paper>
         {
-          this.props.data.movies.map(movie => classifyArticle(movie)).sort(this.state.sortFunction).map((movie: Movie) => (
-            <FindResult key={movie.yahooId} movie={movie}></FindResult>
+          this.props.data.movies.map(movie => classifyArticle(movie)).sort(this.state.sortFunction).map((movie: Movie, index) => (
+            <Paper zDepth={2} className="row no-margin" style={{ marginBottom: '.5em' }} key={index}>
+              <FindResult key={movie.yahooId} movie={movie}></FindResult>
+            </Paper>
           ))
         }
       </div>

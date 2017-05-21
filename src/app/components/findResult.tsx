@@ -20,7 +20,7 @@ class FindResult extends React.Component<MovieDetailProps, {}> {
 
     render() {
         return (
-            <Paper zDepth={2} className="row no-margin" style={{ marginBottom: '.5em' }}>
+            <div className="clearfix">
                 <div className="col-xs-3 col-sm-2 no-padding">
                     <Link to={`/movie/${this.props.movie.yahooId}`} >
                         <img className="img-responsive" src={this.getSmallPosterSrc(this.props.movie.posterUrl)} />
@@ -28,7 +28,7 @@ class FindResult extends React.Component<MovieDetailProps, {}> {
                 </div>
                 <div className="col-xs-9 col-sm-10" style={{ paddingBottom: '.5em' }}>
                     <div style={{ paddingTop: '.5em', paddingBottom: '.5em' }}>
-                        <Link style={{ color: 'inherit' }} to={`/movie/${this.props.movie.yahooId}`}><b>{this.props.movie.chineseTitle}({this.props.movie.englishTitle})</b></Link>
+                        <Link style={{ color: 'inherit' }} to={`/movie/${this.props.movie.yahooId}`}><b>{this.props.movie.chineseTitle}</b><br /><small>{this.props.movie.englishTitle}</small> </Link>
                         <div className="resultInfo">
                             <span>上映日:{this.props.movie.releaseDate}</span>
                             <span className="hidden-xs">類型:{this.props.movie.type}</span>
@@ -41,7 +41,7 @@ class FindResult extends React.Component<MovieDetailProps, {}> {
                         <Link to={`/movie/${this.props.movie.yahooId}`} >繼續閱讀...</Link>
                     </div>
                 </div>
-            </Paper>
+            </div>
         );
     };
 }

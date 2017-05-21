@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
-import FindResult from './findResult';
+import TheaterCard from './theaterCard';
 import Theater from '../../models/theater';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
@@ -90,24 +90,8 @@ class TheaterList extends React.Component<any, any> {
                 </div>
                 {
                     this.state.theaters.filter(({ subRegion }) => this.state.selectedSubRegion === defaultSubRegion || subRegion === this.state.selectedSubRegion)
-                        .map(({ name, address, phone, distance }: Theater, index) => (
-                            <Paper zDepth={2} className="col-xs-12" style={{ paddingBottom: '.5em' }} key={index}>
-                                <div style={{ paddingTop: '.5em', paddingBottom: '.5em' }}>
-                                    <Link style={{ color: 'inherit' }} to={`/theater/${name}`}><h5 style={{ marginBottom: "-.2em", fontSize: "16px" }}>
-                                        {name}
-                                    </h5></Link>
-                                    <div style={{ paddingTop: '0.5em', display: 'flex', alignItems: 'center' }}>
-                                        <a href={`tel:${phone}`}
-                                            style={{ whiteSpace: 'nowrap', ...theaterInfoStyle }}>
-                                            <SVGCommunicationCall color={grey500} viewBox={'0 0 30 24'} />{phone}
-                                        </a>
-                                        <a href={`https://maps.google.com?q=${name}`}
-                                            style={theaterInfoStyle}>
-                                            <SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} />{address} {distance && ` (${distance} km)`}
-                                        </a>
-                                    </div>
-                                </div>
-                            </Paper>
+                        .map((theater: Theater, index) => (
+                            <TheaterCard key={index} theater={theater}></TheaterCard>
                         ))}
             </div>
         );
