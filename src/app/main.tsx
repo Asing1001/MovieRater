@@ -9,19 +9,20 @@ import {
   createNetworkInterface
 } from 'react-apollo';
 
-const client = new ApolloClient({
-  networkInterface: createNetworkInterface({
-    uri: '/graphql',
-    // opts: { 
-    //   method:'GET'       
-    // } 
-  })
-});
-
 class Root extends React.Component<any, any> {
+  createClient() {
+    return new ApolloClient({
+      initialState: window["__APOLLO_STATE__"] || {},
+      ssrForceFetchDelay: 100,
+      networkInterface: createNetworkInterface({
+        uri: '/graphql'
+      })
+    });
+  }
+
   render() {
     return (
-      <ApolloProvider client={client}>
+      <ApolloProvider client={this.createClient()}>
         <BrowserRouter>
           <App />
         </BrowserRouter>

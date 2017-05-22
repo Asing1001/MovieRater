@@ -42,42 +42,35 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
 app.use(function (req, res) {
-  // match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {
-  //   if (err) {
-  //     res.status(500).send(err.message)
-  //   } else if (redirectLocation) {
-  //     res.status(302).redirect(redirectLocation.pathname + redirectLocation.search)
-  //   } else if (renderProps) {
-  //for material-ui auto prefixer
   global.navigator = { userAgent: req.headers['user-agent'] };
 
   const client = new ApolloClient({
     ssrMode: true,
-    // Remember that this is the interface the SSR server will use to connect to the
-    // API server, so we need to ensure it isn't firewalled, etc
     networkInterface: createLocalInterface(graphql, schema),
   });
+
+  const context = {}
 
   const app = (
     <ApolloProvider client={client}>
       <StaticRouter
         location={req.url}
-        context={{}}
+        context={context}
       >
         <App />
       </StaticRouter>
     </ApolloProvider>
   );
 
-  renderToStringWithData(app).then(html => {
-    var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
+  renderToStringWithData(app).then(content => {
+    const initialState = { apollo: client.getInitialState() };
+    const page = swig.renderFile(staticRoot + 'bundles/index.html',
+      {
+        html: content,
+        apolloState: `<script>window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};</script>`
+      });
     res.status(200).send(page);
   });
-
-  // } else {
-  //   res.status(404).send('Page Not Found')
-  // }
-  // });
 });
 
 

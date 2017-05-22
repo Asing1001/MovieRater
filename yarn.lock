@@ -5091,7 +5091,7 @@ react-addons-transition-group@^15.4.0:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-apollo@^1.1.0:
+react-apollo@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-apollo/-/react-apollo-1.2.0.tgz#4dc3f61bad9b2fe2c450bc7fbd4fab52004de474"
   dependencies:
