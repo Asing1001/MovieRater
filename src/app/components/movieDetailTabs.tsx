@@ -87,10 +87,10 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
   };
 
   handleSlideHeight = () => {
-    const slides = document.querySelectorAll("[role='option']") as NodeListOf<HTMLDivElement>;
-    Array.from(slides).forEach((slide, index) => {
-      slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
-    })
+    // const slides = document.querySelectorAll("[role='option']") as NodeListOf<HTMLDivElement>;
+    // Array.from(slides).forEach((slide, index) => {
+    //   slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
+    // })
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -117,7 +117,7 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
       </Tabs>
       <div className="swipeViewWrapper">
         <SwipeableViews
-          slideStyle={{ height: '500px', paddingBottom: '1em' }}
+          slideStyle={{ height: 'calc(100vh - 111px)', paddingBottom: '1em' }}
           index={this.state.slideIndex}
           onChangeIndex={this.handleChange.bind(this)}
           threshold={6}
