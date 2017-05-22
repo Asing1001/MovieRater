@@ -102,11 +102,11 @@ let MovieList = class MovieList extends React.Component {
 MovieList = __decorate([
     react_apollo_1.graphql(recentMoviesQuery, {
         options: ({ match }) => {
-            return match.params.ids ? {
+            return {
                 variables: {
-                    yahooIds: match.params.ids.split(',').map(id => parseInt(id))
-                }
-            } : {};
+                    yahooIds: match.params.ids && match.params.ids.split(',').map(id => parseInt(id))
+                },
+            };
         },
     }),
     __metadata("design:paramtypes", [Object])

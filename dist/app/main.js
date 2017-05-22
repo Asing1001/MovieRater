@@ -6,14 +6,18 @@ const ReactDOM = require("react-dom");
 const app_1 = require("./components/app");
 require("./main.css");
 const react_apollo_1 = require("react-apollo");
-const client = new react_apollo_1.ApolloClient({
-    networkInterface: react_apollo_1.createNetworkInterface({
-        uri: '/graphql',
-    })
-});
 class Root extends React.Component {
+    createClient() {
+        return new react_apollo_1.ApolloClient({
+            initialState: window["__APOLLO_STATE__"] || {},
+            ssrForceFetchDelay: 100,
+            networkInterface: react_apollo_1.createNetworkInterface({
+                uri: '/graphql'
+            })
+        });
+    }
     render() {
-        return (React.createElement(react_apollo_1.ApolloProvider, { client: client },
+        return (React.createElement(react_apollo_1.ApolloProvider, { client: this.createClient() },
             React.createElement(react_router_dom_1.BrowserRouter, null,
                 React.createElement(app_1.default, null))));
     }

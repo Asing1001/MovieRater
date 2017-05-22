@@ -37,31 +37,23 @@ app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worke
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
 app.use(function (req, res) {
-    // match({ routes: routes, location: req.url }, function (err, redirectLocation, renderProps) {
-    //   if (err) {
-    //     res.status(500).send(err.message)
-    //   } else if (redirectLocation) {
-    //     res.status(302).redirect(redirectLocation.pathname + redirectLocation.search)
-    //   } else if (renderProps) {
-    //for material-ui auto prefixer
     global.navigator = { userAgent: req.headers['user-agent'] };
     const client = new react_apollo_1.ApolloClient({
         ssrMode: true,
-        // Remember that this is the interface the SSR server will use to connect to the
-        // API server, so we need to ensure it isn't firewalled, etc
         networkInterface: apollo_local_query_1.createLocalInterface(graphql, schema_1.default),
     });
+    const context = {};
     const app = (React.createElement(react_apollo_1.ApolloProvider, { client: client },
-        React.createElement(react_router_dom_1.StaticRouter, { location: req.url, context: {} },
+        React.createElement(react_router_dom_1.StaticRouter, { location: req.url, context: context },
             React.createElement(app_1.default, null))));
-    react_apollo_1.renderToStringWithData(app).then(html => {
-        var page = swig.renderFile(staticRoot + 'bundles/index.html', { html: html });
+    react_apollo_1.renderToStringWithData(app).then(content => {
+        const initialState = { apollo: client.getInitialState() };
+        const page = swig.renderFile(staticRoot + 'bundles/index.html', {
+            html: content,
+            apolloState: `<script>window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};</script>`
+        });
         res.status(200).send(page);
     });
-    // } else {
-    //   res.status(404).send('Page Not Found')
-    // }
-    // });
 });
 let port = process.env.PORT || 3003;
 app.listen(port, function () {
