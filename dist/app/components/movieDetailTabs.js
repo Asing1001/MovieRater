@@ -72,10 +72,10 @@ let MovieDetailTabs = class MovieDetailTabs extends React.Component {
             });
         };
         this.handleSlideHeight = () => {
-            const slides = document.querySelectorAll("[role='option']");
-            Array.from(slides).forEach((slide, index) => {
-                slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
-            });
+            // const slides = document.querySelectorAll("[role='option']") as NodeListOf<HTMLDivElement>;
+            // Array.from(slides).forEach((slide, index) => {
+            //   slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
+            // })
         };
         this.componentDidUpdate = (prevProps, prevState) => {
             this.handleSlideHeight();
@@ -97,7 +97,7 @@ let MovieDetailTabs = class MovieDetailTabs extends React.Component {
                 React.createElement(Tabs_1.Tab, { label: "Summary", value: 2 }),
                 movie.schedules.length > 0 && React.createElement(Tabs_1.Tab, { label: "Time", value: 3 })),
             React.createElement("div", { className: "swipeViewWrapper" },
-                React.createElement(react_swipeable_views_1.default, { slideStyle: { height: '500px', paddingBottom: '1em' }, index: this.state.slideIndex, onChangeIndex: this.handleChange.bind(this), threshold: 6 },
+                React.createElement(react_swipeable_views_1.default, { slideStyle: { height: 'calc(100vh - 111px)', paddingBottom: '1em' }, index: this.state.slideIndex, onChangeIndex: this.handleChange.bind(this), threshold: 6 },
                     React.createElement(movieDetail_1.default, { movie: movie }),
                     React.createElement(pttArticles_1.default, { movie: movie }),
                     React.createElement("div", { className: "col-xs-12", style: { paddingTop: '1em' }, dangerouslySetInnerHTML: { __html: movie.summary } }),
