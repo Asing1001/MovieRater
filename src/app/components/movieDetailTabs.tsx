@@ -49,6 +49,7 @@ const movieDetailQuery = gql`
       roomTypes
       theaterExtension {
         name
+        address
         phone
         region
         regionIndex

@@ -30,15 +30,15 @@ class TheaterCard extends React.Component<any, any> {
                 <div style={{ paddingTop: '0.5em', display: 'flex', alignItems: 'center' }}>
                     {roomTypes && roomTypes.length > 0 && <span style={theaterCardStyle}>
                         {roomTypes.map(roomType => <img key={roomType} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
-                    </span>}
-                    <a href={`https://maps.google.com?q=${name}`}
-                        style={theaterCardStyle}>
-                        <SVGCommunicationLocationOn color={grey500} viewBox={'0 0 30 24'} />{distance ? ` ${distance} km` : address}
-                    </a>
+                    </span>}                    
                     {phone && <a href={`tel:${phone}`}
                         style={{ whiteSpace: 'nowrap', ...theaterCardStyle }}>
-                        <SVGCommunicationCall color={grey500} viewBox={'0 0 30 24'} />{phone}
+                        <span><SVGCommunicationCall color={grey500} viewBox={'0 0 30 24'} /></span>{phone}
                     </a>}
+                    <a href={`https://maps.google.com?q=${name}`}
+                        style={theaterCardStyle}>
+                        <span><SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} /></span>{distance ? ` ${distance} km` : address}
+                    </a>
                 </div>
             </div>
         );
