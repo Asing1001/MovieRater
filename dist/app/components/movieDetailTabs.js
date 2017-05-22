@@ -51,6 +51,7 @@ const movieDetailQuery = react_apollo_1.gql `
       roomTypes
       theaterExtension {
         name
+        address
         phone
         region
         regionIndex

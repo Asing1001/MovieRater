@@ -34,9 +34,7 @@ function requestGraphQL(query) {
 }
 exports.requestGraphQL = requestGraphQL;
 function getClientGeoLocation() {
-    return new Promise((reslove, reject) => window.navigator.geolocation.getCurrentPosition(function (pos) {
-        reslove(pos.coords);
-    }, reject));
+    return new Promise((reslove, reject) => window.navigator.geolocation.getCurrentPosition((pos) => reslove(pos.coords), reject, { timeout: 10000 }));
 }
 exports.getClientGeoLocation = getClientGeoLocation;
 function getDistanceInKM(lon1, lat1, lon2, lat2) {

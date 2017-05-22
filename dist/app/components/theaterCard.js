@@ -23,12 +23,14 @@ class TheaterCard extends React.Component {
                 React.createElement("h5", { style: { marginBottom: "-.2em", fontSize: "16px" } }, name)),
             React.createElement("div", { style: { paddingTop: '0.5em', display: 'flex', alignItems: 'center' } },
                 roomTypes && roomTypes.length > 0 && React.createElement("span", { style: theaterCardStyle }, roomTypes.map(roomType => React.createElement("img", { key: roomType, src: `https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif` }))),
-                React.createElement("a", { href: `https://maps.google.com?q=${name}`, style: theaterCardStyle },
-                    React.createElement(location_on_1.default, { color: colors_1.grey500, viewBox: '0 0 30 24' }),
-                    distance ? ` ${distance} km` : address),
                 phone && React.createElement("a", { href: `tel:${phone}`, style: Object.assign({ whiteSpace: 'nowrap' }, theaterCardStyle) },
-                    React.createElement(call_1.default, { color: colors_1.grey500, viewBox: '0 0 30 24' }),
-                    phone))));
+                    React.createElement("span", null,
+                        React.createElement(call_1.default, { color: colors_1.grey500, viewBox: '0 0 30 24' })),
+                    phone),
+                React.createElement("a", { href: `https://maps.google.com?q=${name}`, style: theaterCardStyle },
+                    React.createElement("span", null,
+                        React.createElement(location_on_1.default, { color: colors_1.grey500, viewBox: '-3 0 30 24' })),
+                    distance ? ` ${distance} km` : address))));
     }
 }
 exports.default = TheaterCard;
