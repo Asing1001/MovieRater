@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const staticRoot = path.join(__dirname, 'public/');
-app.use('/public', express.static(staticRoot));
+app.use('/public', express.static(staticRoot, { maxAge: '1d' }));
 app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js'));
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))

@@ -4,7 +4,7 @@ import Schedule from '../../models/schedule';
 import { classifyArticle, getClientGeoLocation, getDistanceInKM } from '../helper';
 import LoadingIcon from './loadingIcon';
 import TheaterCard from './theaterCard';
-import FindResult from './findResult';
+import MovieCard from './movieCard';
 import { gql, graphql } from 'react-apollo';
 
 const theaterDetailQuery = gql`
@@ -81,7 +81,7 @@ class TheaterDetail extends React.Component<any, any> {
                     theater.schedules && theater.schedules.map((schedule: Schedule, index) => (
                         <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
                             <div>
-                                <FindResult movie={classifyArticle(schedule.movie)}></FindResult>
+                                <MovieCard movie={classifyArticle(schedule.movie)}></MovieCard>
                             </div>
                             <div className="col-xs-9" style={{ color: 'grey' }}>
                                 {schedule.timesStrings.map(time => <span style={{ marginRight: "1em", display: "inline-block" }} key={time}>{time}</span>)}

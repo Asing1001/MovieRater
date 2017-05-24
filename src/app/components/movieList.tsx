@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
-import FindResult from './findResult';
+import MovieCard from './movieCard';
 import Movie from '../../models/movie';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
@@ -124,7 +124,7 @@ class MovieList extends React.Component<any, any> {
         {
           this.props.data.movies.map(movie => classifyArticle(movie)).sort(this.state.sortFunction).map((movie: Movie, index) => (
             <Paper zDepth={2} className="row no-margin" style={{ marginBottom: '.5em' }} key={index}>
-              <FindResult key={movie.yahooId} movie={movie}></FindResult>
+              <MovieCard key={movie.yahooId} movie={movie}></MovieCard>
             </Paper>
           ))
         }

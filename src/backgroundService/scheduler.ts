@@ -13,7 +13,7 @@ export function initScheduler() {
     setInterval(function () {
         fetch(systemSetting.websiteUrl).then(res =>
             console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
-    }, 600000, null);
+    }, 600000);
 
     setInterval(async function () {
         console.time('[Scheduler] crawlYahoo');
@@ -22,23 +22,23 @@ export function initScheduler() {
         console.time('[Scheduler] updateImdbInfo');
         await updateImdbInfo()
         console.timeEnd('[Scheduler] updateImdbInfo');
-    }, 900000, null);
+    }, 3600000);
 
     setInterval(async function () {
         console.time('[Scheduler] crawlPtt');
         await updatePttArticles(schedulerSetting.pttPagePerTime);
         console.timeEnd('[Scheduler] crawlPtt');
-    }, 900000, null);
+    }, 3600000);
 
     setInterval(function () {
         cacheManager.init();
-    }, 86400000, null);
+    }, 86400000);
 
     setInterval(function () {
         cacheManager.setInTheaterMoviesCache();
-    }, 3600000, null);
+    }, 3600000);
 
     setInterval(function () {
         updateTheaterWithLocationList();
-    }, 86400000, null);
+    }, 86400000);
 }
