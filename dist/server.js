@@ -32,7 +32,7 @@ app.get('/api/crawlerStatus', (req, res) => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const staticRoot = path.join(__dirname, 'public/');
-app.use('/public', express.static(staticRoot));
+app.use('/public', express.static(staticRoot, { maxAge: '1d' }));
 app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js'));
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));

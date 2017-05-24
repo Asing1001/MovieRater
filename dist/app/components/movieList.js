@@ -14,7 +14,7 @@ const moment = require("moment");
 const BottomNavigation_1 = require("material-ui/BottomNavigation");
 const Paper_1 = require("material-ui/Paper");
 const sort_1 = require("material-ui/svg-icons/content/sort");
-const findResult_1 = require("./findResult");
+const movieCard_1 = require("./movieCard");
 const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const react_apollo_1 = require("react-apollo");
@@ -96,7 +96,7 @@ let MovieList = class MovieList extends React.Component {
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "PTT", icon: nearbyIcon, onTouchTap: () => this.select(SortType.ptt) }),
                     React.createElement(BottomNavigation_1.BottomNavigationItem, { label: "上映日", icon: nearbyIcon, onTouchTap: () => this.select(SortType.releaseDate) }))),
             this.props.data.movies.map(movie => helper_1.classifyArticle(movie)).sort(this.state.sortFunction).map((movie, index) => (React.createElement(Paper_1.default, { zDepth: 2, className: "row no-margin", style: { marginBottom: '.5em' }, key: index },
-                React.createElement(findResult_1.default, { key: movie.yahooId, movie: movie }))))));
+                React.createElement(movieCard_1.default, { key: movie.yahooId, movie: movie }))))));
     }
 };
 MovieList = __decorate([

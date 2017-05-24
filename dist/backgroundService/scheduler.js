@@ -21,7 +21,7 @@ function initScheduler() {
     console.log("[initScheduler]");
     setInterval(function () {
         fetch(systemSetting_1.systemSetting.websiteUrl).then(res => console.log(`[Scheduler] Access to website:${systemSetting_1.systemSetting.websiteUrl}, status:${res.status}`));
-    }, 600000, null);
+    }, 600000);
     setInterval(function () {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] crawlYahoo');
@@ -31,23 +31,23 @@ function initScheduler() {
             yield imdbTask_1.updateImdbInfo();
             console.timeEnd('[Scheduler] updateImdbInfo');
         });
-    }, 900000, null);
+    }, 3600000);
     setInterval(function () {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] crawlPtt');
             yield pttTask_1.updatePttArticles(systemSetting_1.schedulerSetting.pttPagePerTime);
             console.timeEnd('[Scheduler] crawlPtt');
         });
-    }, 900000, null);
+    }, 3600000);
     setInterval(function () {
         cacheManager_1.default.init();
-    }, 86400000, null);
+    }, 86400000);
     setInterval(function () {
         cacheManager_1.default.setInTheaterMoviesCache();
-    }, 3600000, null);
+    }, 3600000);
     setInterval(function () {
         yahooTask_1.updateTheaterWithLocationList();
-    }, 86400000, null);
+    }, 86400000);
 }
 exports.initScheduler = initScheduler;
 //# sourceMappingURL=scheduler.js.map

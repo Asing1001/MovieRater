@@ -5,7 +5,7 @@ exports.systemSetting = {
     //dbUrl : 'mongodb://localhost:27017/movierater'
     websiteUrl: process.env.WEBSITE_URL,
     enableGraphiql: process.env.ENABLE_GRAPHIQL,
-    enableScheduler: true
+    enableScheduler: process.env.ENABLE_SCHEDULER
 };
 exports.schedulerSetting = {
     pttPagePerTime: 50,

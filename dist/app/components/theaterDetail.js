@@ -14,7 +14,7 @@ const Paper_1 = require("material-ui/Paper");
 const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const theaterCard_1 = require("./theaterCard");
-const findResult_1 = require("./findResult");
+const movieCard_1 = require("./movieCard");
 const react_apollo_1 = require("react-apollo");
 const theaterDetailQuery = react_apollo_1.gql `
 query TheaterDetail($theaterName:String){
@@ -74,7 +74,7 @@ let TheaterDetail = class TheaterDetail extends React.Component {
                 React.createElement(theaterCard_1.default, { theater: theater })),
             theater.schedules && theater.schedules.map((schedule, index) => (React.createElement(Paper_1.default, { zDepth: 2, key: index, className: "row no-margin", style: { marginBottom: '.5em' } },
                 React.createElement("div", null,
-                    React.createElement(findResult_1.default, { movie: helper_1.classifyArticle(schedule.movie) })),
+                    React.createElement(movieCard_1.default, { movie: helper_1.classifyArticle(schedule.movie) })),
                 React.createElement("div", { className: "col-xs-9", style: { color: 'grey' } }, schedule.timesStrings.map(time => React.createElement("span", { style: { marginRight: "1em", display: "inline-block" }, key: time }, time))))))));
     }
 };
