@@ -47,8 +47,8 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
 //request below will be cache
-app.use(device.capture());
-apicache.options({ appendKey:['device','type'], debug: true, enabled: systemSetting.isProduction || true })
+// app.use(device.capture());
+apicache.options({ debug: true, enabled: systemSetting.isProduction })
 app.use(apicache.middleware('1 hour'));
 app.use(function (req, res) {
   global.navigator = { userAgent: req.headers['user-agent'] };
@@ -59,7 +59,7 @@ app.use(function (req, res) {
   });
 
   const context = {
-    device : req["device"].type
+    //device : req["device"].type
   }
 
   const app = (

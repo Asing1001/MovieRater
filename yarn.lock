@@ -322,6 +322,10 @@ anymatch@^1.3.0:
     arrify "^1.0.0"
     micromatch "^2.1.5"
 
+apicache@^0.8.4:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/apicache/-/apicache-0.8.4.tgz#250e3e06c5d9cfb0d941532014bee9f1d5bc5191"
+
 apollo-client@^1.1.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-1.2.2.tgz#5ec656bf19197ebd77156c58d2e0e765bef648a7"
@@ -2166,6 +2170,12 @@ detect-indent@^4.0.0:
   dependencies:
     repeating "^2.0.0"
 
+device@>=0.3.1:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/device/-/device-0.3.8.tgz#f4072ccea3e6599dc01c3a43b203f6af4f8445aa"
+  dependencies:
+    useragent "*"
+
 diff@3.2.0, diff@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.2.0.tgz#c9ce393a4b7cbd0b058a725c93df299027868ff9"
@@ -2452,6 +2462,13 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
+express-device@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/express-device/-/express-device-0.4.2.tgz#597c822fd4204d46b22faf2ad69ec85936bcb6a3"
+  dependencies:
+    device ">=0.3.1"
+    express-partials "0.3.0"
+
 express-graphql@^0.6.4:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/express-graphql/-/express-graphql-0.6.4.tgz#e51c6281d075613feac72b3fb569440602d3dfe4"
@@ -2460,6 +2477,10 @@ express-graphql@^0.6.4:
     content-type "^1.0.2"
     http-errors "^1.3.0"
     raw-body "^2.1.0"
+
+express-partials@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/express-partials/-/express-partials-0.3.0.tgz#88b9c40164afd9a55278629b2948e6ace7bff45f"
 
 express-session@~1.11.3:
   version "1.11.3"
@@ -3930,6 +3951,10 @@ lowercase-keys@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.0.tgz#4e3366b39e7f5457e35f1324bdf6f88d0bfc7306"
 
+lru-cache@2.2.x:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-2.2.4.tgz#6c658619becf14031d0d0b594b16042ce4dc063d"
+
 lru-cache@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.0.2.tgz#1d17679c069cda5d040991a09dbc2c0db377e55e"
@@ -4482,7 +4507,7 @@ os-locale@^1.4.0:
   dependencies:
     lcid "^1.0.0"
 
-os-tmpdir@^1.0.0, os-tmpdir@^1.0.1:
+os-tmpdir@^1.0.0, os-tmpdir@^1.0.1, os-tmpdir@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
 
@@ -6218,6 +6243,12 @@ timers-browserify@^2.0.2:
   dependencies:
     setimmediate "^1.0.4"
 
+tmp@0.0.x:
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.31.tgz#8f38ab9438e17315e5dbd8b3657e8bfb277ae4a7"
+  dependencies:
+    os-tmpdir "~1.0.1"
+
 tmpl@1.0.x:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
@@ -6446,6 +6477,13 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+useragent@*:
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/useragent/-/useragent-2.1.13.tgz#bba43e8aa24d5ceb83c2937473e102e21df74c10"
+  dependencies:
+    lru-cache "2.2.x"
+    tmp "0.0.x"
 
 util-deprecate@1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"

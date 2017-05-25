@@ -25,7 +25,6 @@ const recentMoviesQuery = gql`
             imdbID,
             imdbRating,
             relatedArticles{title},
-            briefSummary
             }
           }`;
 

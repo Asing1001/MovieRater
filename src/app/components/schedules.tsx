@@ -3,6 +3,7 @@ import Schedule from '../../models/schedule';
 import { getClientGeoLocation, getDistanceInKM } from '../helper';
 import { grey500 } from 'material-ui/styles/colors';
 import TheaterCard from './theaterCard';
+import TimeList from './timeList';
 
 const theaterInfoStyle: React.CSSProperties = {
     marginRight: '0.5em',
@@ -49,9 +50,7 @@ class Schedules extends React.Component<MovieDetailProps, any> {
                     return (
                         <div key={index} style={{ padding: ".6em 1em 0em 1em" }}>
                             <TheaterCard theater={theaterExtension} roomTypes={roomTypes}></TheaterCard>
-                            <div style={{ color: 'grey' }}>
-                                {timesStrings.map(time => <span style={{ marginRight: "1em", display: "inline-block" }} key={time}>{time}</span>)}
-                            </div>
+                            <TimeList timesStrings={timesStrings}></TimeList>
                         </div>
                     )
                 })}
