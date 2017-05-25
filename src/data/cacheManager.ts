@@ -7,13 +7,14 @@ import Movie from '../models/movie';
 import { getInTheaterYahooIds } from '../crawler/yahooInTheaterCrawler';
 import crawlyahooMovieSchdule from '../crawler/yahooMovieSchduleCrawler';
 import { roughSizeOfObject } from '../helper/util';
-import { getMoviesSchedules, getMoviesSchedulesWithLocation } from '../task/yahooTask';
+import { getMoviesSchedules } from '../task/yahooTask';
 
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
     static All_MOVIES_NAMES = 'allMoviesNames';
     static RECENT_MOVIES = 'recentMovies';
     static MOVIES_SCHEDULES = 'MoviesSchedules';
+    static THEATERS = 'theaters';
     static async init() {
         const yahooMoviesPromise = db.getCollection("yahooMovies", { yahooId: -1 });
         const pttArticlesPromise = db.getCollection("pttArticles");
@@ -22,6 +23,7 @@ export default class cacheManager {
         console.timeEnd('get yahooMovies and pttArticles');
         cacheManager.setAllMoviesNamesCache(yahooMovies);
         cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
+        cacheManager.setTheatersCache();
         await cacheManager.setInTheaterMoviesCache();
     }
 
@@ -48,20 +50,26 @@ export default class cacheManager {
         cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
     }
 
+    private static async setTheatersCache() {
+        console.time('mergeData');
+        const theaterListWithLocation = await db.getCollection("theaters", { "regionIndex": 1 });
+        console.timeEnd('mergeData');
+        cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
+    }
+
     public static async setInTheaterMoviesCache() {
         const yahooIds = await getInTheaterYahooIds();
         if (yahooIds.length > 0) {
             await cacheManager.setRecentMoviesCache(yahooIds);
-            await cacheManager.setMoviesSchedulesWithLocationCache(yahooIds)
+            await cacheManager.setMoviesSchedulesCache(yahooIds)
         }
     }
 
-    public static async setMoviesSchedulesWithLocationCache(yahooIds) {
-        console.time('setMoviesSchedulesWithLocationCache');
+    public static async setMoviesSchedulesCache(yahooIds) {
+        console.time('setMoviesSchedulesCache');
         const allSchedules = await getMoviesSchedules(yahooIds);
-        const allSchedulesWithLocation = await getMoviesSchedulesWithLocation(allSchedules);
-        cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedulesWithLocation);
-        console.timeEnd('setMoviesSchedulesWithLocationCache');
+        cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+        console.timeEnd('setMoviesSchedulesCache');
     }
 
     private static async setRecentMoviesCache(yahooIds) {

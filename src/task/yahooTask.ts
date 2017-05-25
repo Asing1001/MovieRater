@@ -8,22 +8,10 @@ import Schedule from '../models/schedule';
 import { getGeoLocation } from '../thirdPartyIntegration/googleMapApi';
 
 export async function getMoviesSchedules(yahooIds: Array<number>) {
-    console.time('setMoviesSchedulesCache');
     let schedulesPromise = yahooIds.map(yahooId => crawlyahooMovieSchdule(yahooId));
     const schedules = await Promise.all(schedulesPromise);
     const allSchedules: Schedule[] = [].concat(...schedules);
-    console.timeEnd('setMoviesSchedulesCache');
     return allSchedules;
-}
-
-export async function getMoviesSchedulesWithLocation(allSchedules: Schedule[]) {
-    const theaterListWithLocation = await db.getCollection("theaters");
-    const allSchedulesWithLocation = allSchedules.map(schdule => {
-        const findTheaterExtension = theaterListWithLocation.find(({ name }) => name === schdule.theaterName)
-        schdule.theaterExtension = findTheaterExtension ? findTheaterExtension : new Theater();
-        return schdule
-    });
-    return allSchedulesWithLocation;
 }
 
 export async function updateTheaterWithLocationList() {

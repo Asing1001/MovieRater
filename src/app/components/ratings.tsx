@@ -4,6 +4,7 @@ import Movie from '../../models/movie';
 interface MovieDetailProps {
     movie: Movie
     className?: string
+    style?: React.CSSProperties
 }
 
 class Ratings extends React.Component<MovieDetailProps, {}> {
@@ -13,7 +14,7 @@ class Ratings extends React.Component<MovieDetailProps, {}> {
 
     render() {
         return (
-            <div className={this.props.className}>
+            <div className={this.props.className} style={this.props.style}>
                 <div className="ratingWrapper"><img src="/public/image/imdb.png" />
                     {this.props.movie.imdbID ? <a href={"http://www.imdb.com/title/" + this.props.movie.imdbID}>{this.props.movie.imdbRating ? this.props.movie.imdbRating : 'N/A'}</a>
                         : <span>{this.props.movie.imdbRating ? this.props.movie.imdbRating : 'N/A'}</span>

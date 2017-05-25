@@ -10,5 +10,8 @@ export default class Theater {
     address?: string
     phone?: string
     region?: string
+    subRegion?: string
+    regionIndex?: number
     location?: Location
+    distance?: number
 }

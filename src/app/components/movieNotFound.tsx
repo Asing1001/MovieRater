@@ -9,7 +9,7 @@ class MovieNotFound extends React.Component<any, any> {
     }
 
     componentWillReceiveProps(nextProps) {
-        // this.getData(nextProps.params.ids);
+        // this.getData(nextProps.match.params.ids);
     }
 
     render() {
@@ -22,7 +22,7 @@ class MovieNotFound extends React.Component<any, any> {
                 height: '150px',
             }}>
                 <h4>
-                    {`資料庫還沒有${this.props.params.query}的相關資料唷！`}
+                    {`資料庫還沒有${this.props.match.params.query}的相關資料唷！`}
                 </h4>
             </div>
         );

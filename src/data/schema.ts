@@ -15,22 +15,6 @@ const QueryType = new GraphQLObjectType({
     name: 'Query',
     description: 'query...',
     fields: () => ({
-        allMovies: {
-            type: new GraphQLList(MovieType),
-            description: 'every movies',
-            resolve: (root, args) => cacheManager.get("allMovies")
-        },
-        movie: {
-            type: MovieType,
-            description: "[deprecated] query single movie, please use movies(yahooIds) instead",
-            args: {
-                yahooId: { type: GraphQLInt }
-            },
-            resolve: async (root, { yahooId, chineseTitle }) => {
-                const allMovies = cacheManager.get(cacheManager.All_MOVIES);
-                return allMovies.find((movie) => { return movie.yahooId === yahooId; })
-            },
-        },
         allMoviesNames: {
             type: new GraphQLList(autoCompleteType),
             description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
@@ -42,20 +26,30 @@ const QueryType = new GraphQLObjectType({
                 yahooIds: { type: new GraphQLList(GraphQLInt) }
             },
             resolve: async (root, { yahooIds }) => {
-                let allMovies: Array<Movie> = cacheManager.get("allMovies");
-                let result = [];
-                allMovies.forEach((movie) => {
-                    if (yahooIds.indexOf(movie.yahooId) !== -1) {
-                        result.push(movie);
-                    }
-                })
-                return result;
+                if (yahooIds) {
+                    const allMovies: Array<Movie> = cacheManager.get("allMovies");
+                    return allMovies.filter(({ yahooId }) => yahooIds.indexOf(yahooId) !== -1);
+                }
+                return cacheManager.get(cacheManager.RECENT_MOVIES);
             },
         },
         recentMovies: {
             type: new GraphQLList(MovieType),
             description: 'recent movies',
             resolve: (root, args) => cacheManager.get(cacheManager.RECENT_MOVIES)
+        },
+        theaters: {
+            type: new GraphQLList(TheaterType),
+            args: {
+                name: { type: GraphQLString }
+            },
+            resolve: (root, { name: queryTheaterName }) => {
+                let theaters = cacheManager.get(cacheManager.THEATERS);
+                if (queryTheaterName) {
+                    return theaters.filter(({ name }) => name === queryTheaterName);
+                }
+                return theaters;
+            }
         },
     }),
 });
@@ -80,7 +74,7 @@ const MovieType = new GraphQLObjectType({
         },
         briefSummary: {
             type: GraphQLString,
-            resolve: obj => obj.summary && obj.summary.length > 300 ? obj.summary.substr(0, 300) + '...' : obj.summary,
+            resolve: obj => obj.summary && obj.summary.length > 300 ? obj.summary.substr(0, 150) + '...' : obj.summary,
         },
         chineseTitle: {
             type: GraphQLString,
@@ -216,9 +210,10 @@ const scheduleType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.theaterName,
         },
-        yahooId: {
-            type: GraphQLString,
-            resolve: obj => obj.yahooId,
+        movie: {
+            type: MovieType,
+            resolve: obj => cacheManager.get(cacheManager.RECENT_MOVIES)
+                .find(({ yahooId }) => obj.yahooId === yahooId) || { yahooId: obj.yahooId, relatedArticles:[] },
         },
         timesValues: {
             type: new GraphQLList(GraphQLString),
@@ -228,9 +223,15 @@ const scheduleType = new GraphQLObjectType({
             type: new GraphQLList(GraphQLString),
             resolve: obj => obj.timesStrings,
         },
+        roomTypes: {
+            type: new GraphQLList(GraphQLString),
+            resolve: obj => obj.roomTypes,
+        },
         theaterExtension: {
             type: TheaterType,
-            resolve: obj => obj.theaterExtension,
+            resolve: obj => {
+                return cacheManager.get(cacheManager.THEATERS).find(({ name }) => name === obj.theaterName)
+            }
         }
     })
 })
@@ -259,9 +260,23 @@ const TheaterType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.region,
         },
-        location:{
+        regionIndex: {
+            type: GraphQLString,
+            resolve: obj => obj.regionIndex,
+        },
+        subRegion: {
+            type: GraphQLString,
+            resolve: obj => obj.subRegion,
+        },
+        location: {
             type: LocationType,
             resolve: obj => obj.location
+        },
+        schedules: {
+            type: new GraphQLList(scheduleType),
+            resolve: obj => cacheManager.get(cacheManager.MOVIES_SCHEDULES).filter(({ theaterName }: Schedule) => {
+                return theaterName === obj.name
+            })
         }
     })
 })

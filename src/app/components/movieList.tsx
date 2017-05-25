@@ -3,14 +3,17 @@ import * as moment from 'moment';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
-import FindResult from './findResult';
+import MovieCard from './movieCard';
 import Movie from '../../models/movie';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
+import { gql, graphql } from 'react-apollo';
 
 const nearbyIcon = <IconLocationOn />;
 
-const BRIEFDATA = `{
+const recentMoviesQuery = gql`
+         query MovieListing($yahooIds:[Int]){
+           movies(yahooIds:$yahooIds) {
             yahooId,
             posterUrl,
             chineseTitle,
@@ -21,20 +24,26 @@ const BRIEFDATA = `{
             yahooRating,
             imdbID,
             imdbRating,
-            tomatoURL,            
-            tomatoRating,           
             relatedArticles{title},
-            briefSummary
+            }
           }`;
 
 enum SortType {
   imdb = 0,
   yahoo = 1,
-  tomato = 2,
-  ptt = 3,
-  releaseDate = 4
+  ptt = 2,
+  releaseDate = 3
 }
 
+@graphql(recentMoviesQuery, {
+  options: ({ match }) => {
+    return {
+      variables: {
+        yahooIds: match.params.ids && match.params.ids.split(',').map(id => parseInt(id))
+      },
+    } 
+  },
+})
 class MovieList extends React.Component<any, any> {
   constructor(props) {
     super(props)
@@ -44,34 +53,6 @@ class MovieList extends React.Component<any, any> {
       movies: [],
       isLoading: true
     };
-  }
-
-  getData(ids) {
-    this.setState({ isLoading: true });
-    if (ids) {
-      const yahooIds = JSON.stringify(ids.split(',').map(id => parseInt(id)));
-      requestGraphQL(`
-        {
-          movies(yahooIds:${yahooIds})${BRIEFDATA}
-        }
-        `)
-        .then((json: any) => {
-          this.setState({ movies: json.data.movies.map(movie => classifyArticle(movie)), isLoading: false });
-        });
-    }
-    else {
-      requestGraphQL(`{recentMovies${BRIEFDATA}}`).then((json: any) => {
-        this.setState({ movies: json.data.recentMovies.map(movie => classifyArticle(movie)), isLoading: false });
-      });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.getData(nextProps.params.ids);
-  }
-
-  componentWillMount() {
-    this.getData(this.props.params.ids);
   }
 
   select = (index) => {
@@ -86,14 +67,11 @@ class MovieList extends React.Component<any, any> {
       case SortType.ptt:
         sortFunction = (a, b) => this.getPttRating(b) - this.getPttRating(a)
         break;
-      case SortType.tomato:
-        sortFunction = this.getStandardSortFunction('tomatoRating');
-        break;
       case SortType.yahoo:
         sortFunction = this.getStandardSortFunction('yahooRating');
         break;
       case SortType.releaseDate:
-        sortFunction = ({releaseDate:releaseDateA}, {releaseDate:releaseDateB}) => moment(releaseDateB).diff(releaseDateA)
+        sortFunction = ({ releaseDate: releaseDateA }, { releaseDate: releaseDateB }) => moment(releaseDateB).diff(releaseDateA)
         break;
     }
 
@@ -113,9 +91,11 @@ class MovieList extends React.Component<any, any> {
   }
 
   render() {
+    if (this.props.data.loading) {
+      return <LoadingIcon isLoading={this.props.data.loading} />
+    }
     return (
       <div>
-        <LoadingIcon isLoading={this.state.isLoading} />
         <Paper zDepth={2} style={{ marginBottom: '.5em' }}>
           <BottomNavigation selectedIndex={this.state.selectedIndex}>
             <BottomNavigationItem
@@ -127,12 +107,6 @@ class MovieList extends React.Component<any, any> {
               label="YAHOO"
               icon={nearbyIcon}
               onTouchTap={() => this.select(SortType.yahoo)}
-            />
-            <BottomNavigationItem
-              label="TOMATO"
-              icon={nearbyIcon}
-              onTouchTap={() => this.select(SortType.tomato)}
-              className="hide"
             />
             <BottomNavigationItem
               label="PTT"
@@ -147,8 +121,10 @@ class MovieList extends React.Component<any, any> {
           </BottomNavigation>
         </Paper>
         {
-          this.state.movies.sort(this.state.sortFunction).map((movie: Movie) => (
-            <FindResult key={movie.yahooId} movie={movie}></FindResult>
+          this.props.data.movies.map(movie => classifyArticle(movie)).sort(this.state.sortFunction).map((movie: Movie, index) => (
+            <Paper zDepth={2} className="row no-margin" style={{ marginBottom: '.5em' }} key={index}>
+              <MovieCard key={movie.yahooId} movie={movie}></MovieCard>
+            </Paper>
           ))
         }
       </div>

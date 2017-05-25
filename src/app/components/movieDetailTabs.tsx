@@ -9,6 +9,7 @@ import PttArticles from './pttArticles';
 import Schedules from './schedules';
 import { classifyArticle, requestGraphQL } from '../helper';
 import LoadingIcon from './loadingIcon';
+import { gql, graphql } from 'react-apollo';
 
 interface MovieDetailState {
   movie?: Movie,
@@ -16,71 +17,67 @@ interface MovieDetailState {
   isLoading?: boolean
 }
 
-const ALLDATA = `{
-            yahooId,
-            posterUrl,
-            chineseTitle,
-            englishTitle,
-            releaseDate,
-            type,
-            runTime,
-            director,
-            actor,
-            launchCompany,
-            companyUrl,
-            yahooRating,
-            imdbID,
-            imdbRating,
-            tomatoURL            ,
-            tomatoRating,
-            relatedArticles{title,push,url,date,author},
-            summary,
-            schedules {
-              theaterName,
-              timesStrings,
-              theaterExtension {
-                phone,
-                region,
-                location {
-                  lat,
-                  lng,
-                }
-              }
-            }
-          }`;
+const movieDetailQuery = gql`
+ query MovieListing($yahooIds:[Int]){
+  movies(yahooIds:$yahooIds) {
+    yahooId
+    posterUrl
+    chineseTitle
+    englishTitle
+    releaseDate
+    type
+    runTime
+    director
+    actor
+    launchCompany
+    companyUrl
+    yahooRating
+    imdbID
+    imdbRating
+    tomatoURL            
+    tomatoRating
+    relatedArticles{
+      title
+      push
+      url
+      date
+      author
+    }
+    summary
+    schedules {              
+      timesStrings
+      roomTypes
+      theaterExtension {
+        name
+        address
+        phone
+        region
+        regionIndex
+        location {
+          lat
+          lng
+        }
+      }
+    }
+  }
+}`;
 
+@graphql(movieDetailQuery, {
+  options: ({ match }) => {
+    return {
+      variables: {
+        yahooIds: match.params.id
+      }
+    }
+  },
+})
 export default class MovieDetailTabs extends React.Component<any, MovieDetailState> {
 
   constructor(props) {
     super(props)
     this.state = {
-      movie: {},
       slideIndex: 0,
-      isLoading: true
     }
-  }
-
-  componentDidMount() {
-    this.search([parseInt(this.props.params.id)]);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.search([parseInt(nextProps.params.id)]);
-  }
-
-  search(yahooIds: Number[]) {
-    this.setState({ isLoading: true });
-    requestGraphQL(`
-        {
-          movies(yahooIds:${JSON.stringify(yahooIds)})${ALLDATA}
-        }
-    `)
-      .then((json: any) => {
-        this.setState({
-          movie: json.data.movies.map(movie => classifyArticle(movie))[0],
-          isLoading: false,
-        });
-      });
   }
 
   handleChange = (value) => {
@@ -90,44 +87,47 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
   };
 
   handleSlideHeight = () => {
-    const slides = document.querySelectorAll("[role='option']") as NodeListOf<HTMLDivElement>;
-    Array.from(slides).forEach((slide, index) => {
-      slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
-    })
+    // const slides = document.querySelectorAll("[role='option']") as NodeListOf<HTMLDivElement>;
+    // Array.from(slides).forEach((slide, index) => {
+    //   slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
+    // })
   }
 
   componentDidUpdate = (prevProps, prevState) => {
     this.handleSlideHeight()
   };
-
+  
   render() {
-    return this.state.isLoading ? <LoadingIcon isLoading={this.state.isLoading} /> :
-      (<Paper zDepth={2}>
-        <Tabs
-          onChange={this.handleChange.bind(this)}
-          value={this.state.slideIndex}
-          >
-          <Tab label="Detail" value={0} />
-          <Tab label="Ptt" value={1} />
-          <Tab label="Summary" value={2} />
-          {
-            this.state.movie.schedules.length > 0 && <Tab label="Time" value={3} />
-          }
-        </Tabs>
-        <div className="swipeViewWrapper">
-          <SwipeableViews
-            slideStyle={{ height: '500px' }}
-            index={this.state.slideIndex}
-            onChangeIndex={this.handleChange.bind(this)}
-            threshold={6}
-            >
-            <MovieDetail movie={this.state.movie}></MovieDetail>
-            <PttArticles movie={this.state.movie}></PttArticles>
-            <div className="col-xs-12" style={{ paddingTop: '1em' }} dangerouslySetInnerHTML={{ __html: this.state.movie.summary }}></div>
-            <Schedules schedules={this.state.movie.schedules}></Schedules>
-          </SwipeableViews>
-        </div>
-      </Paper>
-      );
+    const { data: { loading, movies } } = this.props;
+    if (loading) {
+      return <LoadingIcon isLoading={loading} />
+    }
+    const movie = classifyArticle(movies[0]);
+    return <Paper zDepth={2}>
+      <Tabs
+        onChange={this.handleChange.bind(this)}
+        value={this.state.slideIndex}
+      >
+        <Tab label="Detail" value={0} />
+        <Tab label="Ptt" value={1} />
+        <Tab label="Summary" value={2} />
+        {
+          movie.schedules.length > 0 && <Tab label="Time" value={3} />
+        }
+      </Tabs>
+      <div className="swipeViewWrapper">
+        <SwipeableViews
+          slideStyle={{ height: 'calc(100vh - 111px)', paddingBottom: '1em' }}
+          index={this.state.slideIndex}
+          onChangeIndex={this.handleChange.bind(this)}
+          threshold={6}
+        >
+          <MovieDetail movie={movie}></MovieDetail>
+          <PttArticles movie={movie}></PttArticles>
+          <div className="col-xs-12" style={{ paddingTop: '1em' }} dangerouslySetInnerHTML={{ __html: movie.summary }}></div>
+          <Schedules schedules={movie.schedules}></Schedules>
+        </SwipeableViews>
+      </div>
+    </Paper>
   }
 }

@@ -39,5 +39,7 @@ module.exports = {
             }]
         ),
         new webpack.ProvidePlugin({}),
+
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ]
 };

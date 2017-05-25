@@ -5,7 +5,7 @@
             "name": "啟動",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/src/server.ts",
+            "program": "${workspaceRoot}/src/server.tsx",
             "stopOnEntry": false,
             "args": [],
             "cwd": "${workspaceRoot}",

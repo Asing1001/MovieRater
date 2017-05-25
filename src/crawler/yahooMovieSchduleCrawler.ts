@@ -13,7 +13,12 @@ export default async function crawlyahooMovieSchdule(yahooId) {
                 yahooId,
                 theaterName: $ele.find('a').text(),
                 timesValues: Array.from($ele.find('.tmt')).map((time) => $(time).attr('title')),
-                timesStrings: Array.from($ele.find('.tmt')).map((time) => $(time).text())
+                timesStrings: Array.from($ele.find('.tmt')).map((time) => $(time).text()),
+                roomTypes: Array.from($ele.find('.mvtype>img')).map((img) => {
+                    const imgSrc = $(img).attr('src');
+                    const match = /icon_([\w]*).gif/.exec(imgSrc);
+                    return match ? match[1] : '';
+                }),
             }
             return schedule;
         });

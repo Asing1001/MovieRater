@@ -1,14 +1,32 @@
 import * as React from 'react';
-import { Router } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import * as ReactDOM from 'react-dom';
-import { browserHistory } from 'react-router';
-import routes from './routes';
+import App from './components/app';
 import './main.css';
+import {
+  ApolloClient,
+  ApolloProvider,
+  createNetworkInterface
+} from 'react-apollo';
 
 class Root extends React.Component<any, any> {
+  createClient() {
+    return new ApolloClient({
+      initialState: window["__APOLLO_STATE__"] || {},
+      ssrForceFetchDelay: 100,
+      networkInterface: createNetworkInterface({
+        uri: '/graphql'
+      })
+    });
+  }
+
   render() {
     return (
-      <Router history={browserHistory}>{routes}</Router>
+      <ApolloProvider client={this.createClient()}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ApolloProvider>
     );
   }
 }
@@ -23,7 +41,7 @@ ReactDOM.render(<Root></Root>, rootElement);
 // }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-    .then(reg => console.log('SW registered!', reg))
-    .catch(err => console.log('Error!', err));
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/service-worker.js');
+  });
 }
