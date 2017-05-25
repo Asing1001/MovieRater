@@ -41,7 +41,7 @@ ReactDOM.render(<Root></Root>, rootElement);
 // }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-    .then(reg => console.log('SW registered!', reg))
-    .catch(err => console.log('Error!', err));
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/service-worker.js');
+  });
 }

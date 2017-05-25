@@ -48,10 +48,20 @@ module.exports = webpackMerge(commonConfig, {
         maximumFileSizeToCacheInBytes: 4194304,
         minify: true,
         runtimeCaching: [{
-          urlPattern: /.*/,
-          handler: 'fastest',
-          // Currently all browser is not supporting service-worker post
-          // method : 'post'          
+          urlPattern: /herokuapp.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              name: '__movierater__',
+              maxAgeSeconds: 60 * 60
+            }
+          }
+        }, {
+          urlPattern: /^https:\/\/s.yimg.com\//,
+          handler: 'cacheFirst',
+        }, {
+          urlPattern: /^https:\/\/fonts./,
+          handler: 'cacheFirst',
         }],
         stripPrefix: helpers.root('dist').replace(/\\/g, '/'),
         mergeStaticsConfig: true,
