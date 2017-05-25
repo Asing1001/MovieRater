@@ -14,11 +14,6 @@ const QueryType = new graphql_1.GraphQLObjectType({
     name: 'Query',
     description: 'query...',
     fields: () => ({
-        allMovies: {
-            type: new graphql_1.GraphQLList(MovieType),
-            description: 'every movies',
-            resolve: (root, args) => cacheManager_1.default.get("allMovies")
-        },
         allMoviesNames: {
             type: new graphql_1.GraphQLList(autoCompleteType),
             description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',

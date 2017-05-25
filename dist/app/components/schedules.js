@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const helper_1 = require("../helper");
 const theaterCard_1 = require("./theaterCard");
+const timeList_1 = require("./timeList");
 const theaterInfoStyle = {
     marginRight: '0.5em',
     fontSize: 'small',
@@ -37,7 +38,7 @@ class Schedules extends React.Component {
         return (React.createElement("div", { className: "col-xs-12" }, this.state.schedulesWithDistance.map(({ timesStrings, theaterName, roomTypes, distance, theaterExtension }, index) => {
             return (React.createElement("div", { key: index, style: { padding: ".6em 1em 0em 1em" } },
                 React.createElement(theaterCard_1.default, { theater: theaterExtension, roomTypes: roomTypes }),
-                React.createElement("div", { style: { color: 'grey' } }, timesStrings.map(time => React.createElement("span", { style: { marginRight: "1em", display: "inline-block" }, key: time }, time)))));
+                React.createElement(timeList_1.default, { timesStrings: timesStrings })));
         })));
     }
     ;

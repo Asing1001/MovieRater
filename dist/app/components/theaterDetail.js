@@ -73,9 +73,7 @@ let TheaterDetail = class TheaterDetail extends React.Component {
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em', padding: ".5em 1em" } },
                 React.createElement(theaterCard_1.default, { theater: theater })),
             theater.schedules && theater.schedules.map((schedule, index) => (React.createElement(Paper_1.default, { zDepth: 2, key: index, className: "row no-margin", style: { marginBottom: '.5em' } },
-                React.createElement("div", null,
-                    React.createElement(movieCard_1.default, { movie: helper_1.classifyArticle(schedule.movie) })),
-                React.createElement("div", { className: "col-xs-9", style: { color: 'grey' } }, schedule.timesStrings.map(time => React.createElement("span", { style: { marginRight: "1em", display: "inline-block" }, key: time }, time))))))));
+                React.createElement(movieCard_1.default, { movie: helper_1.classifyArticle(schedule.movie), timesStrings: schedule.timesStrings }))))));
     }
 };
 TheaterDetail = __decorate([
