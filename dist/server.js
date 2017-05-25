@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
+const bodyParser = require("body-parser");
 const path = require("path");
 const graphqlHTTP = require("express-graphql");
 const React = require("react");
@@ -35,14 +36,20 @@ app.get('/api/cache/index', (req, res) => {
 //static content
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot, { maxAge: '1d' }));
-app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js'));
+app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js', { maxAge: '1d' }));
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
-app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
 //request below will be cache
 // app.use(device.capture());
-apicache.options({ debug: true, enabled: systemSetting_1.systemSetting.isProduction });
-app.use(apicache.middleware('1 hour'));
-app.use(function (req, res) {
+const basicCacheOption = { debug: true, enabled: systemSetting_1.systemSetting.isProduction };
+const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
+const graphqlCache = apicache.newInstance(Object.assign({}, basicCacheOption, { appendKey: ["cacheKey"] })).middleware('1 hour');
+app.use(bodyParser.json());
+app.use('/graphql', (req, res, next) => {
+    req['cacheKey'] = req.body.operationName + JSON.stringify(req.body.variables);
+    next();
+});
+app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
+app.use(basicCache, function (req, res) {
     global.navigator = { userAgent: req.headers['user-agent'] };
     const client = new react_apollo_1.ApolloClient({
         ssrMode: true,

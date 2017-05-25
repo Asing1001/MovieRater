@@ -30,8 +30,8 @@ ReactDOM.render(React.createElement(Root, null), rootElement);
 //   module.hot.accept();
 // }
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-        .then(reg => console.log('SW registered!', reg))
-        .catch(err => console.log('Error!', err));
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service-worker.js');
+    });
 }
 //# sourceMappingURL=main.js.map
