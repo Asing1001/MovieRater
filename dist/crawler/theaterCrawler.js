@@ -22,30 +22,6 @@ function getTheaterList() {
     });
 }
 exports.getTheaterList = getTheaterList;
-function getTheaterListByRegion({ name: regionName, yahooRegionId }) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var form = new FormData();
-        form.append('area', yahooRegionId);
-        const request = new Request(theaterListUrl, {
-            method: 'POST',
-            body: form
-        });
-        const $ = yield util_1.getCheerio$(request);
-        const theaterList = Array.from($('#ymvthl tbody>tr')).map(theaterRow => {
-            const $theaterRow = $(theaterRow);
-            const theater = {
-                name: $theaterRow.find('a').text(),
-                url: $theaterRow.find('a').attr('href').split('*')[1],
-                address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
-                phone: $theaterRow.find('em').text(),
-                region: regionName
-            };
-            return theater;
-        });
-        return theaterList;
-    });
-}
-exports.getTheaterListByRegion = getTheaterListByRegion;
 function getRegionList() {
     return __awaiter(this, void 0, void 0, function* () {
         const $ = yield util_1.getCheerio$(theaterListUrl);
@@ -62,4 +38,35 @@ function getRegionList() {
     });
 }
 exports.getRegionList = getRegionList;
+function getTheaterListByRegion({ name: regionName, yahooRegionId }, index) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var form = new FormData();
+        form.append('area', yahooRegionId);
+        const request = new Request(theaterListUrl, {
+            method: 'POST',
+            body: form
+        });
+        const $ = yield util_1.getCheerio$(request);
+        let theaterList = [];
+        Array.from($('#ymvthl .group')).forEach(theaterGroup => {
+            const $theaterGroup = $(theaterGroup);
+            const subRegion = $theaterGroup.find('.hd').text();
+            theaterList = theaterList.concat(Array.from($theaterGroup.find('tbody>tr')).map(theaterRow => {
+                const $theaterRow = $(theaterRow);
+                const theater = {
+                    name: $theaterRow.find('a').text(),
+                    url: $theaterRow.find('a').attr('href').split('*')[1],
+                    address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
+                    phone: $theaterRow.find('em').text(),
+                    region: regionName,
+                    regionIndex: index,
+                    subRegion
+                };
+                return theater;
+            }));
+        });
+        return theaterList;
+    });
+}
+exports.getTheaterListByRegion = getTheaterListByRegion;
 //# sourceMappingURL=theaterCrawler.js.map

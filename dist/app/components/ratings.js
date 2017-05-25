@@ -6,7 +6,7 @@ class Ratings extends React.Component {
         super(props);
     }
     render() {
-        return (React.createElement("div", { className: this.props.className },
+        return (React.createElement("div", { className: this.props.className, style: this.props.style },
             React.createElement("div", { className: "ratingWrapper" },
                 React.createElement("img", { src: "/public/image/imdb.png" }),
                 this.props.movie.imdbID ? React.createElement("a", { href: "http://www.imdb.com/title/" + this.props.movie.imdbID }, this.props.movie.imdbRating ? this.props.movie.imdbRating : 'N/A')

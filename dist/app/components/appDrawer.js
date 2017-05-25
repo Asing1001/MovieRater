@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const react_router_1 = require("react-router");
+const react_router_dom_1 = require("react-router-dom");
 const Drawer_1 = require("material-ui/Drawer");
 const movie_1 = require("material-ui/svg-icons/av/movie");
 const theaters_1 = require("material-ui/svg-icons/action/theaters");
@@ -11,7 +11,6 @@ class AppDrawer extends React.Component {
         super(props);
         this.handleClose = () => {
             this.setState({ open: false });
-            react_router_1.browserHistory.push(`/`);
         };
         this.toggle = () => {
             this.setState({ open: !this.state.open });
@@ -23,8 +22,11 @@ class AppDrawer extends React.Component {
     render() {
         return (React.createElement(Drawer_1.default, { docked: false, width: 300, containerStyle: { maxWidth: '75%' }, open: this.state.open, onRequestChange: (open) => this.setState({ open }) },
             React.createElement(List_1.List, null,
-                React.createElement(List_1.ListItem, { onTouchTap: this.handleClose.bind(this), leftIcon: React.createElement(movie_1.default, null) }, "\u73FE\u6B63\u4E0A\u6620"),
-                React.createElement(List_1.ListItem, { onTouchTap: this.handleClose.bind(this), leftIcon: React.createElement(theaters_1.default, null) }, "\u6232\u9662\u7E3D\u89BD"))));
+                React.createElement(react_router_dom_1.Link, { to: "/" },
+                    React.createElement(List_1.ListItem, { onTouchTap: () => this.handleClose(), leftIcon: React.createElement(movie_1.default, null) }, "\u73FE\u6B63\u4E0A\u6620")),
+                React.createElement(react_router_dom_1.Link, { to: "/theaterlist" },
+                    React.createElement(List_1.ListItem, { onTouchTap: () => this.handleClose(), leftIcon: React.createElement(theaters_1.default, null) }, "\u6232\u9662\u7E3D\u89BD"),
+                    "                   "))));
     }
 }
 exports.default = AppDrawer;

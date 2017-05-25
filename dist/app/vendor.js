@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("material-ui");
 require("react");
 require("react-router");
 require("react-dom");
