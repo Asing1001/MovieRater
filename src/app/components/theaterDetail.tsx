@@ -64,14 +64,14 @@ class TheaterDetail extends React.Component<any, any> {
     constructor(props) {
         super(props)
     }
-    
+
 
     render() {
         const { data: { loading, theaters } } = this.props;
         if (loading) {
             return <LoadingIcon isLoading={loading} />
         }
-        let theater = theaters[0];        
+        let theater = theaters[0];
         return (
             <div>
                 <Paper zDepth={2} style={{ marginBottom: '.5em', padding: ".5em 1em" }}>
@@ -80,12 +80,7 @@ class TheaterDetail extends React.Component<any, any> {
                 {
                     theater.schedules && theater.schedules.map((schedule: Schedule, index) => (
                         <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
-                            <div>
-                                <MovieCard movie={classifyArticle(schedule.movie)}></MovieCard>
-                            </div>
-                            <div className="col-xs-9" style={{ color: 'grey' }}>
-                                {schedule.timesStrings.map(time => <span style={{ marginRight: "1em", display: "inline-block" }} key={time}>{time}</span>)}
-                            </div>
+                            <MovieCard movie={classifyArticle(schedule.movie)} timesStrings={schedule.timesStrings}></MovieCard>
                         </Paper>
                     ))
                 }

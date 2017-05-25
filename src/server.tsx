@@ -7,6 +7,8 @@ import { StaticRouter } from 'react-router-dom';
 import * as swig from 'swig';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
+import * as apicache from 'apicache';
+import * as device from 'express-device';
 import App from './app/components/app';
 import cacheManager from './data/cacheManager';
 import { systemSetting } from './configs/systemSetting';
@@ -21,8 +23,8 @@ import * as graphql from 'graphql';
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 
 const app = express();
-app.use(compression());
 app.use(forceSSL());
+app.use(compression());
 
 app.get('/api/test', (req, res) => {
   res.send('test!');
@@ -32,15 +34,22 @@ app.get('/api/crawlerStatus', (req, res) => {
   db.getDocument({ name: "crawlerStatus" }, "configs").then(c => res.send(c));
 });
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.get('/api/cache/index', (req, res) => {
+  res.json(apicache.getIndex())
+})
 
+//static content
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot, { maxAge: '1d' }));
 app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js'));
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
+
 app.use('/graphql', graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
+//request below will be cache
+app.use(device.capture());
+apicache.options({ appendKey:['device','type'], debug: true, enabled: systemSetting.isProduction || true })
+app.use(apicache.middleware('1 hour'));
 app.use(function (req, res) {
   global.navigator = { userAgent: req.headers['user-agent'] };
 
@@ -49,7 +58,9 @@ app.use(function (req, res) {
     networkInterface: createLocalInterface(graphql, schema),
   });
 
-  const context = {}
+  const context = {
+    device : req["device"].type
+  }
 
   const app = (
     <ApolloProvider client={client}>

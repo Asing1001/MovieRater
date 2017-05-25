@@ -5,7 +5,8 @@ import Ratings from './ratings';
 import { Link } from 'react-router-dom';
 
 interface MovieDetailProps {
-    movie: Movie
+    movie: Movie,
+    timesStrings?: String[],
 }
 
 const isSmallScreen = typeof window !== 'undefined' && window.matchMedia("only screen and (max-width: 760px)").matches;
@@ -14,8 +15,13 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         super(props)
     }
 
+    static contextTypes = {
+        router: React.PropTypes.object
+    }
+
     private getSmallPosterSrc(posterUrl: string) {
-        return posterUrl && posterUrl.replace('mpost', isSmallScreen ? 'mpost3' : 'mpost2');
+        const device = this.context.router.staticContext ? this.context.router.staticContext.device : 'phone';
+        return posterUrl && posterUrl.replace('mpost', isSmallScreen || (device === 'phone') ? 'mpost3' : 'mpost2');
     }
 
     render() {
@@ -34,11 +40,16 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                         </div>
                     </header>
                     <Ratings className="resultRatings" movie={this.props.movie}></Ratings>
-                    {this.props.movie.briefSummary && <div className="hidden-xs">
-                        <p className="resultSummary" dangerouslySetInnerHTML={{ __html: this.props.movie.briefSummary }}></p>
-                        <Link to={`/movie/${this.props.movie.yahooId}`} >繼續閱讀...</Link>
-                    </div>}
-
+                    {this.props.movie.briefSummary &&
+                        <div className="hidden-xs">
+                            <p className="resultSummary" dangerouslySetInnerHTML={{ __html: this.props.movie.briefSummary }}></p>
+                            <Link to={`/movie/${this.props.movie.yahooId}`} >繼續閱讀...</Link>
+                        </div>
+                    }
+                    {this.props.timesStrings && <div className="col-xs-9" style={{ color: 'grey' }}>
+                        {this.props.timesStrings.map((time, index) => <span style={{ marginRight: "1em", display: "inline-block" }} key={index}>{time}</span>)}
+                    </div>
+                    }
                 </div>
             </article>
         );
