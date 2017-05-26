@@ -21,7 +21,6 @@ const react_apollo_1 = require("react-apollo");
 const apollo_local_query_1 = require("apollo-local-query");
 const graphql = require("graphql");
 const redis = require("redis");
-db_1.db.openDbConnection().then(cacheManager_1.default.init).then(scheduler_1.initScheduler);
 const app = express();
 app.use(forceSSL_1.default());
 app.use(compression());
@@ -44,7 +43,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 const redisClient = redis.createClient(process.env.REDIS_URL).on("error", function (err) {
     console.log("Error " + err);
 });
-const basicCacheOption = { debug: true, enabled: systemSetting_1.systemSetting.isProduction, redisClient };
+const basicCacheOption = { debug: true, enabled: systemSetting_1.systemSetting.isProduction || true, redisClient };
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 const graphqlCache = apicache.newInstance(Object.assign({}, basicCacheOption, { appendKey: ["cacheKey"] })).middleware('1 hour');
 app.use(bodyParser.json());
@@ -72,8 +71,11 @@ app.use(basicCache, function (req, res) {
         res.status(200).send(page);
     });
 });
-let port = process.env.PORT || 3003;
-app.listen(port, function () {
+const port = process.env.PORT || 3003;
+db_1.db.openDbConnection()
+    .then(cacheManager_1.default.init)
+    .then(() => app.listen(port, function () {
     console.log('app running on port', port);
-});
+}))
+    .then(scheduler_1.initScheduler);
 //# sourceMappingURL=server.js.map
