@@ -56,7 +56,7 @@ const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 const graphqlCache = apicache.newInstance({ ...basicCacheOption, appendKey: ["cacheKey"] }).middleware('1 hour');
 app.use(bodyParser.json());
 app.use('/graphql', (req, res, next) => {
-  req['cacheKey'] = req.body.operationName + JSON.stringify(req.body.variables)
+  req['cacheKey'] = req.body.operationName + (req.body.variables ? req.body.variables[Object.keys(req.body.variables)[0]] : '');
   next();
 })
 app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))

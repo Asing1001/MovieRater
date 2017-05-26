@@ -18,7 +18,9 @@ const allMoviesNamesQuery = gql`
   }
 `;
 
-@graphql(allMoviesNamesQuery)
+@graphql(allMoviesNamesQuery, {
+  options: { ssr: false }
+})
 class AppBarSearching extends React.Component<any, any> {
   constructor(props) {
     super(props)
