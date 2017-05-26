@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import { red500 } from 'material-ui/styles/colors';
 
 interface TimeListProps {
     timesStrings: String[],
@@ -17,7 +18,7 @@ class TimeList extends React.Component<TimeListProps, {}> {
             <div style={this.props.style}>
                 {this.props.timesStrings.map((time, index) => {
                     if (index === nearestTimeIndex)
-                        return <small style={{ display: "inline-block", width: "66px", color: 'red' }} key={index}><strong>{time}</strong></small>
+                        return <small style={{ display: "inline-block", width: "66px", color: red500 }} key={index}><strong>{time}</strong></small>
                     else
                         return <small style={{ display: "inline-block", width: "66px", color: 'grey' }} key={index}>{time}</small>
                 })}
