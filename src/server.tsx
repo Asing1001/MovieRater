@@ -19,6 +19,7 @@ import schema from './data/schema';
 import { renderToStringWithData, ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
 import { createLocalInterface } from 'apollo-local-query';
 import * as graphql from 'graphql';
+import * as redis from 'redis';
 
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 
@@ -47,12 +48,15 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 
 //request below will be cache
 // app.use(device.capture());
-const basicCacheOption = { debug: true, enabled: systemSetting.isProduction };
+const redisClient = redis.createClient(process.env.REDIS_URL).on("error", function (err) {
+  console.log("Error " + err);
+});
+const basicCacheOption = { debug: true, enabled: systemSetting.isProduction || true, redisClient };
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 const graphqlCache = apicache.newInstance({ ...basicCacheOption, appendKey: ["cacheKey"] }).middleware('1 hour');
 app.use(bodyParser.json());
 app.use('/graphql', (req, res, next) => {
-  req['cacheKey'] = req.body.operationName + JSON.stringify(req.body.variables)
+  req['cacheKey'] = req.body.operationName + (req.body.variables ? req.body.variables[Object.keys(req.body.variables)[0]] : '');
   next();
 })
 app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
