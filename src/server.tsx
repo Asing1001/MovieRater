@@ -21,6 +21,8 @@ import { createLocalInterface } from 'apollo-local-query';
 import * as graphql from 'graphql';
 import * as redis from 'redis';
 
+db.openDbConnection().then(cacheManager.init).then(initScheduler);
+
 const app = express();
 app.use(forceSSL());
 app.use(compression());
@@ -93,10 +95,8 @@ app.use(basicCache, function (req, res) {
   });
 });
 
-const port = process.env.PORT || 3003;
-db.openDbConnection()
-  .then(cacheManager.init)
-  .then(() => app.listen(port, function () {
-    console.log('app running on port', port);
-  }))
-  .then(initScheduler);
+
+let port = process.env.PORT || 3003;
+app.listen(port, function () {
+  console.log('app running on port', port);
+});
