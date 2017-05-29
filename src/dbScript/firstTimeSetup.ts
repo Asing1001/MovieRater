@@ -23,6 +23,7 @@ async function ensureCollectionAndIndex() {
     await dbConnection.collection('yahooMovies').createIndex({ "yahooId": -1 })
     await dbConnection.collection('pttArticles').createIndex({ "url": -1 })
     await dbConnection.collection('theaters').createIndex({ "regionIndex": 1 })
+    await dbConnection.collection('theaters').createIndex({ "name": 1 })
 }
 
 async function ensureCrawlerStatus() {

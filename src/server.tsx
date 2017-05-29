@@ -51,7 +51,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 const redisClient = redis.createClient(process.env.REDIS_URL).on("error", function (err) {
   console.log("Error " + err);
 });
-const basicCacheOption = { debug: true, enabled: systemSetting.isProduction || true, redisClient };
+const basicCacheOption = { debug: true, enabled: systemSetting.isProduction, redisClient };
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 const graphqlCache = apicache.newInstance({ ...basicCacheOption, appendKey: ["cacheKey"] }).middleware('1 hour');
 app.use(bodyParser.json());
