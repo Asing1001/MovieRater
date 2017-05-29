@@ -83,7 +83,9 @@ AppBarSearching.contextTypes = {
     router: React.PropTypes.object
 };
 AppBarSearching = __decorate([
-    react_apollo_1.graphql(allMoviesNamesQuery),
+    react_apollo_1.graphql(allMoviesNamesQuery, {
+        options: { ssr: false }
+    }),
     __metadata("design:paramtypes", [Object])
 ], AppBarSearching);
 exports.default = AppBarSearching;

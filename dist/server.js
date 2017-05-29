@@ -20,6 +20,7 @@ const schema_1 = require("./data/schema");
 const react_apollo_1 = require("react-apollo");
 const apollo_local_query_1 = require("apollo-local-query");
 const graphql = require("graphql");
+const redis = require("redis");
 db_1.db.openDbConnection().then(cacheManager_1.default.init).then(scheduler_1.initScheduler);
 const app = express();
 app.use(forceSSL_1.default());
@@ -40,12 +41,15 @@ app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worke
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 //request below will be cache
 // app.use(device.capture());
-const basicCacheOption = { debug: true, enabled: systemSetting_1.systemSetting.isProduction };
+const redisClient = redis.createClient(process.env.REDIS_URL).on("error", function (err) {
+    console.log("Error " + err);
+});
+const basicCacheOption = { debug: true, enabled: systemSetting_1.systemSetting.isProduction || true, redisClient };
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 const graphqlCache = apicache.newInstance(Object.assign({}, basicCacheOption, { appendKey: ["cacheKey"] })).middleware('1 hour');
 app.use(bodyParser.json());
 app.use('/graphql', (req, res, next) => {
-    req['cacheKey'] = req.body.operationName + JSON.stringify(req.body.variables);
+    req['cacheKey'] = req.body.operationName + (req.body.variables ? req.body.variables[Object.keys(req.body.variables)[0]] : '');
     next();
 });
 app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
