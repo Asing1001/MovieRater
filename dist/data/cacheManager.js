@@ -51,9 +51,9 @@ class cacheManager {
     }
     static setTheatersCache() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.time('mergeData');
+            console.time('setTheatersCache');
             const theaterListWithLocation = yield db_1.db.getCollection("theaters", { "regionIndex": 1 });
-            console.timeEnd('mergeData');
+            console.timeEnd('setTheatersCache');
             cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
         });
     }
