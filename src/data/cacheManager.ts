@@ -51,9 +51,9 @@ export default class cacheManager {
     }
 
     private static async setTheatersCache() {
-        console.time('mergeData');
+        console.time('setTheatersCache');
         const theaterListWithLocation = await db.getCollection("theaters", { "regionIndex": 1 });
-        console.timeEnd('mergeData');
+        console.timeEnd('setTheatersCache');
         cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
     }
 

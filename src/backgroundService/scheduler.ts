@@ -7,7 +7,7 @@ import { updateImdbInfo } from '../task/imdbTask';
 
 export function initScheduler() {
     if (!systemSetting.enableScheduler) {
-        return;        
+        return;
     }
     console.log("[initScheduler]");
     setInterval(function () {
@@ -19,10 +19,13 @@ export function initScheduler() {
         console.time('[Scheduler] crawlYahoo');
         await updateYahooMovies(schedulerSetting.yahooPagePerTime)
         console.timeEnd('[Scheduler] crawlYahoo');
+    }, 3600000);
+
+    setInterval(async function () {
         console.time('[Scheduler] updateImdbInfo');
         await updateImdbInfo()
         console.timeEnd('[Scheduler] updateImdbInfo');
-    }, 3600000);
+    }, 3600000 * 12);
 
     setInterval(async function () {
         console.time('[Scheduler] crawlPtt');
