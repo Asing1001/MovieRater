@@ -18,9 +18,11 @@ function getYahooMovieInfo(yahooId) {
         const $ = cheerio.load(body, { decodeEntities: false });
         const $movieInfoDiv = $('.text.bulletin');
         const $movieInfoValues = $movieInfoDiv.find('p .dta');
+        const posterOriginalUrl = $('#ymvmvf').find('.img a').attr('href');
+        const posterUrl = posterOriginalUrl ? posterOriginalUrl.split('*')[1] : "";
         const movieInfo = {
             yahooId,
-            posterUrl: $('#ymvmvf').find('.img a').attr('href').split('*')[1],
+            posterUrl,
             chineseTitle: $movieInfoDiv.find('h4').text(),
             englishTitle: $movieInfoDiv.find('h5').text(),
             releaseDate: $movieInfoValues.eq(0).text(),

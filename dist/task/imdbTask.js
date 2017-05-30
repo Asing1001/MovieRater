@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
 const db_1 = require("../data/db");
+const cacheManager_1 = require("../data/cacheManager");
 const imdbCrawler_1 = require("../crawler/imdbCrawler");
 function updateImdbInfo() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -23,8 +24,8 @@ const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
 function getNewImdbInfos() {
     return __awaiter(this, void 0, void 0, function* () {
         const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
-        const yahooMovies = yield db_1.db.getCollection("yahooMovies");
-        const promises = yahooMovies.filter(filterNeedCrawlMovie).map(({ englishTitle, yahooId }) => __awaiter(this, void 0, void 0, function* () {
+        const allMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES);
+        const promises = allMovies.filter(filterNeedCrawlMovie).map(({ englishTitle, yahooId }) => __awaiter(this, void 0, void 0, function* () {
             const imdbInfo = yield imdbCrawler_1.getIMDBMovieInfo(englishTitle);
             const movieInfo = Object.assign(imdbInfo, {
                 yahooId,
