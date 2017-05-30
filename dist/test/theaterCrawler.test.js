@@ -17,7 +17,7 @@ describe('theaterCrawler', () => {
     describe('getTheaterListByRegion(18)', () => {
         it('length.should.eq(1)', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                this.timeout(10000);
+                this.timeout(20000);
                 let theaterList = yield theaterCrawler_1.getTheaterListByRegion({ yahooRegionId: 18, name: "" }, 1);
                 theaterList.length.should.eq(1);
             });
@@ -26,7 +26,7 @@ describe('theaterCrawler', () => {
     describe('getRegionList()', () => {
         it('length.should.above(0)', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                this.timeout(10000);
+                this.timeout(20000);
                 let regionList = yield theaterCrawler_1.getRegionList();
                 regionList.length.should.above(0);
             });

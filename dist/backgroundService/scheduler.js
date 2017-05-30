@@ -27,11 +27,15 @@ function initScheduler() {
             console.time('[Scheduler] crawlYahoo');
             yield yahooTask_1.updateYahooMovies(systemSetting_1.schedulerSetting.yahooPagePerTime);
             console.timeEnd('[Scheduler] crawlYahoo');
+        });
+    }, 3600000);
+    setInterval(function () {
+        return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] updateImdbInfo');
             yield imdbTask_1.updateImdbInfo();
             console.timeEnd('[Scheduler] updateImdbInfo');
         });
-    }, 3600000);
+    }, 3600000 * 12);
     setInterval(function () {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] crawlPtt');
