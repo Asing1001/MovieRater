@@ -44,17 +44,17 @@ let TheaterList = class TheaterList extends React.Component {
         this.componentWillReceiveProps = (nextprops) => {
             const { data: { loading, theaters } } = nextprops;
             if (!loading) {
-                this.getTheatersWithDistance(theaters);
+                this.setState({ theaters }, () => this.setTheatersWithDistance(theaters));
             }
         };
-        this.getTheatersWithDistance = (theaters) => {
+        this.setTheatersWithDistance = (theaters) => {
             helper_1.getClientGeoLocation().then(({ latitude, longitude }) => {
                 const theatersWithDistance = theaters.map((theater) => {
                     const { location: { lat, lng } } = theater;
                     return Object.assign({ distance: helper_1.getDistanceInKM(lng, lat, longitude, latitude) }, theater);
                 }).sort(({ distance: distanceA }, { distance: distanceB }) => distanceA - distanceB);
                 this.setState({ theaters: theatersWithDistance });
-            }, () => this.setState({ theaters }));
+            });
         };
         this.handleChange = (event, index, selectedSubRegion) => this.setState({ selectedSubRegion });
         this.state = {
