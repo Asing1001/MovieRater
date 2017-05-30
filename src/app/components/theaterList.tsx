@@ -44,18 +44,18 @@ class TheaterList extends React.Component<any, any> {
     componentWillReceiveProps = (nextprops) => {
         const { data: { loading, theaters } } = nextprops;
         if (!loading) {
-            this.getTheatersWithDistance(theaters);
+            this.setState({ theaters }, () => this.setTheatersWithDistance(theaters));
         }
     }
 
-    getTheatersWithDistance = (theaters) => {
+    setTheatersWithDistance = (theaters) => {
         getClientGeoLocation().then(({ latitude, longitude }) => {
             const theatersWithDistance = theaters.map((theater: Theater) => {
                 const { location: { lat, lng } } = theater;
                 return Object.assign({ distance: getDistanceInKM(lng, lat, longitude, latitude) }, theater);
             }).sort(({ distance: distanceA }, { distance: distanceB }) => distanceA - distanceB);
             this.setState({ theaters: theatersWithDistance })
-        }, () => this.setState({ theaters }));
+        });
     }
 
     handleChange = (event, index, selectedSubRegion) => this.setState({ selectedSubRegion });
@@ -68,7 +68,7 @@ class TheaterList extends React.Component<any, any> {
         const subRegions = [...new Set(this.props.data.theaters.map(({ subRegion }) => subRegion))]
         return (
             <div>
-                <div className="col-xs-12" style={{padding:'0 1em'}}>
+                <div className="col-xs-12" style={{ padding: '0 1em' }}>
                     <SelectField
                         value={this.state.selectedSubRegion}
                         onChange={this.handleChange}
