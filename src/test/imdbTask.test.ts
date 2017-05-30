@@ -6,16 +6,17 @@ import { db } from "../data/db";
 import { updateImdbInfo } from '../task/imdbTask';
 import * as imdbCrawler from '../crawler/imdbCrawler';
 import Movie from "../models/movie";
+import cacheManager from '../data/cacheManager';
 
 const should = chai.should();
 chai.use(sinonChai);
 
 describe('imdbTask', () => {
-  let sandbox: sinon.SinonSandbox, stubUpdateDocument: sinon.SinonStub, stubGetCollection: sinon.SinonStub;
+  let sandbox: sinon.SinonSandbox, stubUpdateDocument: sinon.SinonStub, stubGetCache: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
     stubUpdateDocument = sandbox.stub(db, 'updateDocument');
-    stubGetCollection = sandbox.stub(db, 'getCollection');
+    stubGetCache = sandbox.stub(cacheManager, 'get');
   });
 
   afterEach(() => {
@@ -32,14 +33,14 @@ describe('imdbTask', () => {
 
 
     it("One yahooMovie should called GetIMDBMovieInfo Once", async function () {
-      stubGetCollection.returns([yahooMovie]);
+      stubGetCache.returns([yahooMovie]);
       const stubGetIMDBMovieInfo = sandbox.stub(imdbCrawler, 'getIMDBMovieInfo').returns({ imdbID: "", imdbRating: "" });
       await updateImdbInfo();
       sandbox.assert.calledOnce(stubGetIMDBMovieInfo);
     });
 
     it("should update db without info when it's empty", async function () {
-      stubGetCollection.returns([yahooMovie]);
+      stubGetCache.returns([yahooMovie]);
       const stubGetIMDBMovieInfo = sandbox.stub(imdbCrawler, 'getIMDBMovieInfo').returns({ imdbID: "", imdbRating: "" });
       await updateImdbInfo();
       sandbox.assert.calledWith(stubUpdateDocument,

@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { db } from '../data/db';
+import cacheManager from '../data/cacheManager';
 import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
 import Movie from "../models/movie";
 
@@ -12,8 +13,8 @@ export async function updateImdbInfo() {
 const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
 async function getNewImdbInfos() {
     const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
-    const yahooMovies: Movie[] = await db.getCollection("yahooMovies");
-    const promises = yahooMovies.filter(filterNeedCrawlMovie).map(async ({ englishTitle, yahooId }) => {
+    const allMovies: Movie[] = cacheManager.get(cacheManager.All_MOVIES);
+    const promises = allMovies.filter(filterNeedCrawlMovie).map(async ({ englishTitle, yahooId }) => {
         const imdbInfo = await getIMDBMovieInfo(englishTitle);
         const movieInfo: Movie = Object.assign(imdbInfo, {
             yahooId,
