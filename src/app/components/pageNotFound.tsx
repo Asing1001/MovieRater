@@ -1,8 +1,7 @@
 import * as React from 'react';
-import Paper from 'material-ui/Paper';
 import Status from './status';
 
-class MovieNotFound extends React.Component<any, any> {
+class PageNotFound extends React.Component<any, any> {
     constructor(props) {
         super(props)
     }
@@ -18,11 +17,11 @@ class MovieNotFound extends React.Component<any, any> {
                     height: '150px',
                 }}>
                     <h4>
-                        {`資料庫還沒有${this.props.match.params.query}的相關資料唷！`}
+                        {`404 Page not found`}
                     </h4>
                 </div>
             </Status>
         );
     }
 }
-export default MovieNotFound;
+export default PageNotFound;

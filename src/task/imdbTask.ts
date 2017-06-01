@@ -28,8 +28,7 @@ async function getNewImdbInfos() {
 function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }: Movie) {
     const now = moment();
     const isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
-    const hasCrawlNearly = imdbLastCrawlTime && (now.diff(moment(imdbLastCrawlTime, imdbLastCrawlTimeFormat), 'hours') <= 12);
-    const shouldCrawl = !hasCrawlNearly && englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
+    const shouldCrawl = englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
     return shouldCrawl;
 }
 

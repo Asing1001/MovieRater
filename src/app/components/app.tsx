@@ -10,6 +10,7 @@ import MovieList from './movieList';
 import MovieNotFound from './movieNotFound';
 import TheaterList from './theaterList';
 import TheaterDetail from './theaterDetail';
+import PageNotFound from './pageNotFound';
 
 injectTapEventPlugin();
 
@@ -51,6 +52,7 @@ class App extends React.Component<any, any> {
               <Route path="/movienotfound/:query" component={MovieNotFound} />
               <Route path="/theaterlist" component={TheaterList} />
               <Route path="/theater/:name" component={TheaterDetail} />
+              <Route component={PageNotFound} />
             </Switch>
           </div>
         </div>

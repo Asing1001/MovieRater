@@ -24,8 +24,7 @@ class Schedules extends React.Component<MovieDetailProps, any> {
         };
     }
 
-    getSchedulesWithDistance() {
-        let schedulesCopy = JSON.parse(JSON.stringify(this.props.schedules));
+    setSchedulesWithDistance(schedulesCopy) {
         getClientGeoLocation().then(({ latitude, longitude }) => {
             const schedulesWithDistance = schedulesCopy.map((schedule) => {
                 let { theaterExtension, theaterExtension: { location: { lat, lng } } } = schedule;
@@ -33,14 +32,13 @@ class Schedules extends React.Component<MovieDetailProps, any> {
                 return Object.assign(schedule, { theaterExtension });
             }).sort(({ theaterExtension: { distance: distanceA } }, { theaterExtension: { distance: distanceB } }) => distanceA - distanceB);
             this.setState({ schedulesWithDistance })
-        }, () => {
-            schedulesCopy.sort(({ theaterExtension: { regionIndex: a } }, { theaterExtension: { regionIndex: b } }) => a - b)
-            this.setState({ schedulesWithDistance: schedulesCopy })
         });
     }
 
     componentDidMount() {
-        this.getSchedulesWithDistance();
+        let schedulesCopy = JSON.parse(JSON.stringify(this.props.schedules));
+        schedulesCopy.sort(({ theaterExtension: { regionIndex: a } }, { theaterExtension: { regionIndex: b } }) => a - b)
+        this.setState({ schedulesWithDistance: schedulesCopy }, () => this.setSchedulesWithDistance(schedulesCopy));
     }
 
     render() {
