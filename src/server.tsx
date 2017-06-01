@@ -48,9 +48,14 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 
 //request below will be cache
 // app.use(device.capture());
-const redisClient = redis.createClient(process.env.REDIS_URL).on("error", err => console.log("Error " + err));
+const redisClient = redis.createClient(systemSetting.redisUrlForApiCache).on("error", err => console.log("Error " + err));
 redisClient.flushall((err, result) => console.log('redisClient.flushall result:', result));
-const basicCacheOption = { debug: true, enabled: systemSetting.isProduction, redisClient };
+const basicCacheOption = {
+  debug: true, enabled: systemSetting.isProduction, redisClient,
+  statusCodes: {
+    include: [200],
+  }
+};
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 const graphqlCache = apicache.newInstance({ ...basicCacheOption, appendKey: ["cacheKey"] }).middleware('1 hour');
 app.use(bodyParser.json());
@@ -60,7 +65,7 @@ app.use('/graphql', (req, res, next) => {
 })
 app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
-app.use(basicCache, function (req, res) {
+app.use(basicCache, function (req, res, next) {
   global.navigator = { userAgent: req.headers['user-agent'] };
 
   const client = new ApolloClient({
@@ -90,10 +95,14 @@ app.use(basicCache, function (req, res) {
         html: content,
         apolloState: `<script>window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};</script>`
       });
-    res.status(200).send(page);
-  });
+    res.status(context["status"] || 200).send(page);
+  }, error => next(error));
 });
 
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong ! Error: " + err.message);
+});
 
 let port = process.env.PORT || 3003;
 app.listen(port, function () {

@@ -4,7 +4,8 @@ export const systemSetting = {
     websiteUrl: process.env.WEBSITE_URL,
     enableGraphiql: process.env.ENABLE_GRAPHIQL,
     enableScheduler: process.env.ENABLE_SCHEDULER,
-    isProduction: process.env.NODE_ENV === "production"
+    isProduction: process.env.NODE_ENV === "production",
+    redisUrlForApiCache: process.env.REDIS_URL || "redis://redistogo:0682398920455ac9f8d245e5cba8998e@greeneye.redistogo.com:11238/",
 }
 
 export const schedulerSetting = {
