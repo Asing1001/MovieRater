@@ -41,9 +41,8 @@ app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worke
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 //request below will be cache
 // app.use(device.capture());
-const redisClient = redis.createClient(process.env.REDIS_URL).on("error", function (err) {
-    console.log("Error " + err);
-});
+const redisClient = redis.createClient(process.env.REDIS_URL).on("error", err => console.log("Error " + err));
+redisClient.flushall((err, result) => console.log('redisClient.flushall result:', result));
 const basicCacheOption = { debug: true, enabled: systemSetting_1.systemSetting.isProduction, redisClient };
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 const graphqlCache = apicache.newInstance(Object.assign({}, basicCacheOption, { appendKey: ["cacheKey"] })).middleware('1 hour');
