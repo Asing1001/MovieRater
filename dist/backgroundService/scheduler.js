@@ -8,50 +8,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const fetch = require("isomorphic-fetch");
+const node_schedule_1 = require("node-schedule");
+const systemSetting_1 = require("../configs/systemSetting");
 const yahooTask_1 = require("../task/yahooTask");
 const pttTask_1 = require("../task/pttTask");
-const systemSetting_1 = require("../configs/systemSetting");
-const fetch = require("isomorphic-fetch");
-const cacheManager_1 = require("../data/cacheManager");
 const imdbTask_1 = require("../task/imdbTask");
+const cacheManager_1 = require("../data/cacheManager");
 function initScheduler() {
     if (!systemSetting_1.systemSetting.enableScheduler) {
         return;
     }
-    console.log("[initScheduler]");
+    console.log("[Scheduler] init");
     setInterval(function () {
         fetch(systemSetting_1.systemSetting.websiteUrl).then(res => console.log(`[Scheduler] Access to website:${systemSetting_1.systemSetting.websiteUrl}, status:${res.status}`));
     }, 600000);
-    setInterval(function () {
+    node_schedule_1.scheduleJob('10 * * * *', function () {
         return __awaiter(this, void 0, void 0, function* () {
-            console.time('[Scheduler] crawlYahoo');
+            console.time('[Scheduler] updateYahooMovies');
             yield yahooTask_1.updateYahooMovies(systemSetting_1.schedulerSetting.yahooPagePerTime);
-            console.timeEnd('[Scheduler] crawlYahoo');
+            console.timeEnd('[Scheduler] updateYahooMovies');
         });
-    }, 3600000);
-    setInterval(function () {
+    });
+    node_schedule_1.scheduleJob('15 * * * *', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.time('[Scheduler] updatePttArticles');
+            yield pttTask_1.updatePttArticles(systemSetting_1.schedulerSetting.pttPagePerTime);
+            console.timeEnd('[Scheduler] updatePttArticles');
+        });
+    });
+    node_schedule_1.scheduleJob('20 * * * *', function () {
+        cacheManager_1.default.setInTheaterMoviesCache();
+    });
+    node_schedule_1.scheduleJob('30 5 * * *', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.time('[Scheduler] updateTheaterWithLocationList');
+            yield yahooTask_1.updateTheaterWithLocationList();
+            console.timeEnd('[Scheduler] updateTheaterWithLocationList');
+        });
+    });
+    node_schedule_1.scheduleJob('40 5 * * *', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.time('[Scheduler] cacheManager.init');
+            yield cacheManager_1.default.init();
+            console.timeEnd('[Scheduler] cacheManager.init');
+        });
+    });
+    node_schedule_1.scheduleJob('30 6 * * *', function () {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] updateImdbInfo');
             yield imdbTask_1.updateImdbInfo();
             console.timeEnd('[Scheduler] updateImdbInfo');
         });
-    }, 3600000 * 12);
-    setInterval(function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.time('[Scheduler] crawlPtt');
-            yield pttTask_1.updatePttArticles(systemSetting_1.schedulerSetting.pttPagePerTime);
-            console.timeEnd('[Scheduler] crawlPtt');
-        });
-    }, 3600000);
-    setInterval(function () {
-        cacheManager_1.default.init();
-    }, 86400000);
-    setInterval(function () {
-        cacheManager_1.default.setInTheaterMoviesCache();
-    }, 3600000);
-    setInterval(function () {
-        yahooTask_1.updateTheaterWithLocationList();
-    }, 86400000);
+    });
 }
 exports.initScheduler = initScheduler;
 //# sourceMappingURL=scheduler.js.map

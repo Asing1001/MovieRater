@@ -12,6 +12,7 @@ const movieList_1 = require("./movieList");
 const movieNotFound_1 = require("./movieNotFound");
 const theaterList_1 = require("./theaterList");
 const theaterDetail_1 = require("./theaterDetail");
+const pageNotFound_1 = require("./pageNotFound");
 injectTapEventPlugin();
 class App extends React.Component {
     constructor(props) {
@@ -39,7 +40,8 @@ class App extends React.Component {
                         React.createElement(react_router_dom_1.Route, { path: "/movielist/:ids", component: movieList_1.default }),
                         React.createElement(react_router_dom_1.Route, { path: "/movienotfound/:query", component: movieNotFound_1.default }),
                         React.createElement(react_router_dom_1.Route, { path: "/theaterlist", component: theaterList_1.default }),
-                        React.createElement(react_router_dom_1.Route, { path: "/theater/:name", component: theaterDetail_1.default }))))));
+                        React.createElement(react_router_dom_1.Route, { path: "/theater/:name", component: theaterDetail_1.default }),
+                        React.createElement(react_router_dom_1.Route, { component: pageNotFound_1.default }))))));
     }
 }
 exports.default = App;

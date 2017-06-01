@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const status_1 = require("./status");
-class MovieNotFound extends React.Component {
+class PageNotFound extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -15,8 +15,8 @@ class MovieNotFound extends React.Component {
                     justifyContent: 'center',
                     height: '150px',
                 } },
-                React.createElement("h4", null, `資料庫還沒有${this.props.match.params.query}的相關資料唷！`))));
+                React.createElement("h4", null, `404 Page not found`))));
     }
 }
-exports.default = MovieNotFound;
-//# sourceMappingURL=movieNotFound.js.map
+exports.default = PageNotFound;
+//# sourceMappingURL=pageNotFound.js.map
