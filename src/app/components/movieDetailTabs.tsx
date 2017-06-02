@@ -7,7 +7,7 @@ import Movie from '../../models/movie';
 import MovieDetail from './movieDetail';
 import PttArticles from './pttArticles';
 import Schedules from './schedules';
-import { classifyArticle, requestGraphQL } from '../helper';
+import { classifyArticle } from '../helper';
 import LoadingIcon from './loadingIcon';
 import { gql, graphql } from 'react-apollo';
 
