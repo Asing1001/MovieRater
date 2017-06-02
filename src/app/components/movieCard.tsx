@@ -8,6 +8,7 @@ import TimeList from './timeList';
 interface MovieDetailProps {
     movie: Movie,
     timesStrings?: String[],
+    roomTypes?: String[],
 }
 
 class MovieCard extends React.Component<MovieDetailProps, {}> {
@@ -20,25 +21,31 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
     }
 
     render() {
+        const { roomTypes, movie, timesStrings } = this.props;
         return (
             <article style={{ display: 'flex' }}>
-                <Link to={`/movie/${this.props.movie.yahooId}`} >
-                    <img src={this.getSmallPosterSrc(this.props.movie.posterUrl)} />
+                <Link to={`/movie/${movie.yahooId}`} >
+                    <img src={this.getSmallPosterSrc(movie.posterUrl)} />
                 </Link>
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>
-                        <Link style={{ color: 'inherit' }} to={`/movie/${this.props.movie.yahooId}`}>
-                            <strong style={{ display: 'block', lineHeight: '1em' }}>{this.props.movie.chineseTitle}</strong>
-                            <small>{this.props.movie.englishTitle}</small>
+                        <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
+                            <strong style={{ display: 'block', lineHeight: '1em' }}>
+                                {movie.chineseTitle}
+                                {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
+                                    {roomTypes.map(roomType => <img src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
+                                </span>}
+                            </strong>
+                            <small>{movie.englishTitle}</small>
                         </Link>
                     </header>
                     <div className="resultInfo">
-                        <span>上映日:{this.props.movie.releaseDate}</span>
-                        <span className="hidden-xs">類型:{this.props.movie.type}</span>
-                        <span>片長:{this.props.movie.runTime}</span>
+                        <span>上映日:{movie.releaseDate}</span>
+                        <span className="hidden-xs">類型:{movie.type}</span>
+                        <span>片長:{movie.runTime}</span>
                     </div>
-                    <Ratings className="resultRatings" style={{ marginTop: ".3em", marginBottom: ".3em" }} movie={this.props.movie}></Ratings>                    
-                    {this.props.timesStrings && <TimeList timesStrings={this.props.timesStrings}></TimeList>}
+                    <Ratings className="resultRatings" style={{ marginTop: ".3em", marginBottom: ".3em" }} movie={movie}></Ratings>
+                    {timesStrings && <TimeList timesStrings={timesStrings}></TimeList>}
                 </div>
             </article>
         );

@@ -80,7 +80,7 @@ class TheaterDetail extends React.Component<any, any> {
                 {
                     theater.schedules && theater.schedules.map((schedule: Schedule, index) => (
                         <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
-                            <MovieCard movie={classifyArticle(schedule.movie)} timesStrings={schedule.timesStrings}></MovieCard>
+                            <MovieCard movie={classifyArticle(schedule.movie)} timesStrings={schedule.timesStrings} roomTypes={schedule.roomTypes}></MovieCard>
                         </Paper>
                     ))
                 }
