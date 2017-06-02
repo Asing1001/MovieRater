@@ -19,7 +19,7 @@ class MovieCard extends React.Component {
             React.createElement("div", { className: "col-xs-12" },
                 React.createElement("header", { style: { paddingTop: '.5em' } },
                     React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },
-                        React.createElement("strong", { style: { display: 'block', lineHeight: '1em' } },
+                        React.createElement("strong", { style: { display: 'flex', alignItems: 'center', lineHeight: '1em' } },
                             movie.chineseTitle,
                             roomTypes && roomTypes.length > 0 && React.createElement("span", { style: { marginLeft: '.2em' } }, roomTypes.map(roomType => React.createElement("img", { src: `https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif` })))),
                         React.createElement("small", null, movie.englishTitle))),
