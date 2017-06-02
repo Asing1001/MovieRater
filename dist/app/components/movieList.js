@@ -19,7 +19,7 @@ const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const react_apollo_1 = require("react-apollo");
 const nearbyIcon = React.createElement(sort_1.default, null);
-const recentMoviesQuery = react_apollo_1.gql `
+const movieListingQuery = react_apollo_1.gql `
          query MovieListing($yahooIds:[Int]){
            movies(yahooIds:$yahooIds) {
             yahooId,
@@ -99,7 +99,7 @@ let MovieList = class MovieList extends React.Component {
     }
 };
 MovieList = __decorate([
-    react_apollo_1.graphql(recentMoviesQuery, {
+    react_apollo_1.graphql(movieListingQuery, {
         options: ({ match }) => {
             return {
                 variables: {

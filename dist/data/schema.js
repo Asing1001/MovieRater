@@ -32,11 +32,6 @@ const QueryType = new graphql_1.GraphQLObjectType({
                 return cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES);
             }),
         },
-        recentMovies: {
-            type: new graphql_1.GraphQLList(MovieType),
-            description: 'recent movies',
-            resolve: (root, args) => cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES)
-        },
         theaters: {
             type: new graphql_1.GraphQLList(TheaterType),
             args: {
@@ -207,7 +202,7 @@ const scheduleType = new graphql_1.GraphQLObjectType({
         },
         movie: {
             type: MovieType,
-            resolve: obj => cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES)
+            resolve: obj => cacheManager_1.default.get(cacheManager_1.default.All_MOVIES)
                 .find(({ yahooId }) => obj.yahooId === yahooId) || { yahooId: obj.yahooId, relatedArticles: [] },
         },
         timesValues: {
