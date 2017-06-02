@@ -30,7 +30,7 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>
                         <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
-                            <strong style={{ display: 'block', lineHeight: '1em' }}>
+                            <strong style={{ display: 'flex', alignItems: 'center', lineHeight: '1em' }}>
                                 {movie.chineseTitle}
                                 {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
                                     {roomTypes.map(roomType => <img src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
