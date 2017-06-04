@@ -5,13 +5,13 @@ import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
 import MovieCard from './movieCard';
 import Movie from '../../models/movie';
-import { classifyArticle, requestGraphQL } from '../helper';
+import { classifyArticle } from '../helper';
 import LoadingIcon from './loadingIcon';
 import { gql, graphql } from 'react-apollo';
 
 const nearbyIcon = <IconLocationOn />;
 
-const recentMoviesQuery = gql`
+const movieListingQuery = gql`
          query MovieListing($yahooIds:[Int]){
            movies(yahooIds:$yahooIds) {
             yahooId,
@@ -35,7 +35,7 @@ enum SortType {
   releaseDate = 3
 }
 
-@graphql(recentMoviesQuery, {
+@graphql(movieListingQuery, {
   options: ({ match }) => {
     return {
       variables: {

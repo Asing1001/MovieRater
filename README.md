@@ -1,4 +1,6 @@
-# MovieRater ![](https://app.codeship.com/projects/7cdda2d0-8179-0134-0e32-4ac14629b467/status?branch=master)
+# MovieRater 
+[ ![Codeship Status for Asing1001/movieRater.React](https://app.codeship.com/projects/7cdda2d0-8179-0134-0e32-4ac14629b467/status?branch=master)](https://app.codeship.com/projects/182204)
+[![codecov](https://codecov.io/gh/Asing1001/movieRater.React/branch/master/graph/badge.svg)](https://codecov.io/gh/Asing1001/movieRater.React)  
 Crawl and merge ptt/imdb/yahoo movie data, help easy search high rating movie in Chinese and English.
 ![](https://asing1001.github.io/portfolio/index/movierater.jpg)
 

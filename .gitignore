@@ -12,3 +12,6 @@
 # misc
 npm-debug.log
 /typings
+
+/.nyc_output
+/coverage

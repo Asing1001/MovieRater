@@ -23,12 +23,6 @@ export function classifyArticle(movie: Movie) {
     return movieWithClassifyArticles;
 }
 
-export function requestGraphQL(query: string) {
-    return fetch(`/graphql?query=${query.replace(/\s+/g, "")}`).then(res => {
-        return res.json()
-    })
-}
-
 export function getClientGeoLocation(): Promise<Coordinates> {
     return new Promise((reslove, reject) =>
         window.navigator.geolocation.getCurrentPosition(

@@ -12,7 +12,6 @@ import * as device from 'express-device';
 import App from './app/components/app';
 import cacheManager from './data/cacheManager';
 import { systemSetting } from './configs/systemSetting';
-import forceSSL from './helper/forceSSL';
 import { db } from './data/db';
 import { initScheduler } from './backgroundService/scheduler';
 import schema from './data/schema';
@@ -24,7 +23,6 @@ import * as redis from 'redis';
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 
 const app = express();
-app.use(forceSSL());
 app.use(compression());
 
 app.get('/api/test', (req, res) => {
