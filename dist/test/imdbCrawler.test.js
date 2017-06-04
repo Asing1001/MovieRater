@@ -20,7 +20,7 @@ describe('imdbCrawler', () => {
     describe('getIMDBMovieInfo', () => {
         it('getIMDBMovieInfo("Who Killed Cock Robin").should.have.property("imdbID","tt5576318"),"imdbRating".above(7)', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                this.timeout(20000);
+                this.timeout(30000);
                 const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo("Who Killed Cock Robin");
                 movieInfo.should.have.property("imdbID", "tt5576318");
                 movieInfo.should.have.property("imdbRating").above(7);
@@ -28,7 +28,7 @@ describe('imdbCrawler', () => {
         });
         it('getIMDBMovieInfo(" A Silent Voice : The Movie").should.have.property("imdbID","tt5323662"),"imdbRating".above(7)', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                this.timeout(20000);
+                this.timeout(30000);
                 const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo(" A Silent Voice : The Movie");
                 movieInfo.should.have.property("imdbID", "tt5323662");
                 movieInfo.should.have.property("imdbRating").above(7);

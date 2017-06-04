@@ -27,12 +27,6 @@ function classifyArticle(movie) {
     return movieWithClassifyArticles;
 }
 exports.classifyArticle = classifyArticle;
-function requestGraphQL(query) {
-    return fetch(`/graphql?query=${query.replace(/\s+/g, "")}`).then(res => {
-        return res.json();
-    });
-}
-exports.requestGraphQL = requestGraphQL;
 function getClientGeoLocation() {
     return new Promise((reslove, reject) => window.navigator.geolocation.getCurrentPosition((pos) => reslove(pos.coords), reject, { timeout: 10000 }));
 }
