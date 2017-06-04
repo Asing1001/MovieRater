@@ -13,7 +13,6 @@ const apicache = require("apicache");
 const app_1 = require("./app/components/app");
 const cacheManager_1 = require("./data/cacheManager");
 const systemSetting_1 = require("./configs/systemSetting");
-const forceSSL_1 = require("./helper/forceSSL");
 const db_1 = require("./data/db");
 const scheduler_1 = require("./backgroundService/scheduler");
 const schema_1 = require("./data/schema");
@@ -23,7 +22,6 @@ const graphql = require("graphql");
 const redis = require("redis");
 db_1.db.openDbConnection().then(cacheManager_1.default.init).then(scheduler_1.initScheduler);
 const app = express();
-app.use(forceSSL_1.default());
 app.use(compression());
 app.get('/api/test', (req, res) => {
     res.send('test!');
