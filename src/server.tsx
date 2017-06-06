@@ -6,7 +6,7 @@ import * as React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import * as swig from 'swig';
 import * as favicon from 'serve-favicon';
-import * as compression from 'compression';
+// import * as compression from 'compression';
 import * as apicache from 'apicache';
 import * as device from 'express-device';
 import App from './app/components/app';
@@ -23,7 +23,7 @@ import * as redis from 'redis';
 db.openDbConnection().then(cacheManager.init).then(initScheduler);
 
 const app = express();
-app.use(compression());
+// app.use(compression());
 
 app.get('/api/test', (req, res) => {
   res.send('test!');
