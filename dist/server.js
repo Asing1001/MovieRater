@@ -34,8 +34,8 @@ app.get('/api/cache/index', (req, res) => {
 });
 //static content
 const staticRoot = path.join(__dirname, 'public/');
-app.use('/public', express.static(staticRoot, { maxAge: '1d' }));
-app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js', { maxAge: '1d' }));
+app.use('/public', express.static(staticRoot, { maxAge: '7d' }));
+app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js', { maxAge: '7d' }));
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 //request below will be cache
 // app.use(device.capture());
