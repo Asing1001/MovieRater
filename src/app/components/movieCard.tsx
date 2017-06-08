@@ -46,6 +46,12 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                     </div>
                     <Ratings className="resultRatings" style={{ marginTop: ".3em", marginBottom: ".3em" }} movie={movie}></Ratings>
                     {timesStrings && <TimeList timesStrings={timesStrings}></TimeList>}
+                    {movie.briefSummary && <div className="hidden-xs">
+                        <p className="resultSummary">
+                            <span dangerouslySetInnerHTML={{ __html: movie.briefSummary }}></span>
+                            <Link to={`/movie/${movie.yahooId}`} > 繼續閱讀</Link>                            
+                        </p>
+                    </div>}
                 </div>
             </article>
         );

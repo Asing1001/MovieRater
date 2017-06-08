@@ -25,6 +25,7 @@ const movieListingQuery = gql`
             imdbID,
             imdbRating,
             relatedArticles{title},
+            briefSummary
             }
           }`;
 
