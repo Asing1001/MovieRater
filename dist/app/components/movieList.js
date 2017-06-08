@@ -33,6 +33,7 @@ const movieListingQuery = react_apollo_1.gql `
             imdbID,
             imdbRating,
             relatedArticles{title},
+            briefSummary
             }
           }`;
 var SortType;

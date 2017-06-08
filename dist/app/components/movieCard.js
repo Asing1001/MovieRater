@@ -34,7 +34,11 @@ class MovieCard extends React.Component {
                         "\u7247\u9577:",
                         movie.runTime)),
                 React.createElement(ratings_1.default, { className: "resultRatings", style: { marginTop: ".3em", marginBottom: ".3em" }, movie: movie }),
-                timesStrings && React.createElement(timeList_1.default, { timesStrings: timesStrings }))));
+                timesStrings && React.createElement(timeList_1.default, { timesStrings: timesStrings }),
+                movie.briefSummary && React.createElement("div", { className: "hidden-xs" },
+                    React.createElement("p", { className: "resultSummary" },
+                        React.createElement("span", { dangerouslySetInnerHTML: { __html: movie.briefSummary } }),
+                        React.createElement(react_router_dom_1.Link, { to: `/movie/${movie.yahooId}` }, " \u7E7C\u7E8C\u95B1\u8B80"))))));
     }
     ;
 }
