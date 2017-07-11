@@ -11,6 +11,7 @@ import MovieNotFound from './movieNotFound';
 import TheaterList from './theaterList';
 import TheaterDetail from './theaterDetail';
 import PageNotFound from './pageNotFound';
+import { getSortFunction, SortType } from '../sorting';
 
 injectTapEventPlugin();
 
@@ -20,6 +21,7 @@ class App extends React.Component<any, any> {
     super(props);
     this.state = {
       searching: false,
+      sortFunction: getSortFunction(SortType.imdb)
     };
   }
 
@@ -38,20 +40,22 @@ class App extends React.Component<any, any> {
         <div>
           <AppBarNormal
             className={this.state.searching && "vanish"}
-            onSearchIconClick={this.handleSearchToggle.bind(this)}> >
-        </AppBarNormal>
+            onSearchIconClick={this.handleSearchToggle.bind(this)}
+            switchSorting={(sortType) => this.setState({ sortFunction: getSortFunction(sortType) })}
+          >
+          </AppBarNormal>
           <AppBarSearching
             className={!this.state.searching && "vanish"}
             onBackSpaceIconClick={this.handleSearchToggle.bind(this)}>
           </AppBarSearching>
           <div className="container" style={{ marginTop: '.5em' }} >
             <Switch>
-              <Route exact path="/" component={MovieList} />
+              <Route exact path="/" render={(props) => <MovieList {...props} sortFunction={this.state.sortFunction} />} />
               <Route path="/movie/:id" component={MovieDetailTabs} />
               <Route path="/movielist/:ids" component={MovieList} />
               <Route path="/movienotfound/:query" component={MovieNotFound} />
               <Route path="/theaterlist" component={TheaterList} />
-              <Route path="/theater/:name" component={TheaterDetail} />
+              <Route path="/theater/:name" render={(props) => <TheaterDetail {...props} sortFunction={this.state.sortFunction} />} />
               <Route component={PageNotFound} />
             </Switch>
           </div>

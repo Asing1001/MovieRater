@@ -66,6 +66,9 @@ input::-ms-clear {
     .appBar.searching .searchArea {
         background-color: white !important;
     }
+    .appBar .sortingBtn {
+        margin-left: auto !important;
+    }
 }
 
 .backdrop {
