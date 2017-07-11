@@ -27,9 +27,14 @@ const history = createBrowserHistory_1.default();
 history.listen((location, action) => {
     console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`);
     console.log(`The last navigation action was ${action}`);
-    if (typeof window['ga'] === 'function') {
-        window['ga']('set', 'page', location.pathname + location.search);
-        window['ga']('send', 'pageview');
+    const dataLayer = window['dataLayer'];
+    if (dataLayer) {
+        dataLayer.push({
+            'event': 'virtualPageView',
+            'page': {
+                'url': location.pathname
+            }
+        });
     }
 });
 const rootElement = document.getElementById('app');
