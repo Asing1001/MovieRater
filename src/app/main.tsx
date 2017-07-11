@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import * as ReactDOM from 'react-dom';
 import App from './components/app';
+import createBrowserHistory from 'history/createBrowserHistory';
 import './main.css';
 import {
   ApolloClient,
@@ -23,13 +24,23 @@ class Root extends React.Component<any, any> {
   render() {
     return (
       <ApolloProvider client={this.createClient()}>
-        <BrowserRouter>
+        <Router history={history}>
           <App />
-        </BrowserRouter>
+        </Router>
       </ApolloProvider>
     );
   }
 }
+
+const history = createBrowserHistory();
+history.listen((location, action) => {
+  console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`)
+  console.log(`The last navigation action was ${action}`)
+  if (typeof window['ga'] === 'function') {
+    window['ga']('set', 'page', location.pathname + location.search);
+    window['ga']('send', 'pageview');
+  }
+})
 
 const rootElement = document.getElementById('app');
 ReactDOM.render(<Root></Root>, rootElement);

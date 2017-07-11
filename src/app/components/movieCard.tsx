@@ -33,7 +33,7 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                             <strong style={{ display: 'flex', alignItems: 'center', lineHeight: '1em' }}>
                                 {movie.chineseTitle}
                                 {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
-                                    {roomTypes.map(roomType => <img src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
+                                    {roomTypes.map((roomType,index) => <img key={index} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
                                 </span>}
                             </strong>
                             <small>{movie.englishTitle}</small>
