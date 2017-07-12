@@ -48,7 +48,7 @@ module.exports = webpackMerge(commonConfig, {
         maximumFileSizeToCacheInBytes: 4194304,
         minify: true,
         runtimeCaching: [{
-          urlPattern: /herokuapp.com/,
+          urlPattern: /mvrater.com/,
           handler: 'cacheFirst',
           options: {
             cache: {

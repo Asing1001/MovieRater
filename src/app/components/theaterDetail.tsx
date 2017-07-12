@@ -78,11 +78,13 @@ class TheaterDetail extends React.Component<any, any> {
                     <TheaterCard theater={theater}></TheaterCard>
                 </Paper>
                 {
-                    theater.schedules && theater.schedules.map((schedule: Schedule, index) => (
-                        <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
-                            <MovieCard movie={classifyArticle(schedule.movie)} timesStrings={schedule.timesStrings} roomTypes={schedule.roomTypes}></MovieCard>
-                        </Paper>
-                    ))
+                    theater.schedules && theater.schedules.slice()
+                        .sort(({ movie }, { movie: movie2 }) => this.props.sortFunction(classifyArticle(movie), classifyArticle(movie2)))
+                        .map((schedule: Schedule, index) => (
+                            <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
+                                <MovieCard movie={classifyArticle(schedule.movie)} timesStrings={schedule.timesStrings} roomTypes={schedule.roomTypes}></MovieCard>
+                            </Paper>
+                        ))
                 }
             </div>
         );

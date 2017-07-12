@@ -66,6 +66,9 @@ input::-ms-clear {
     .appBar.searching .searchArea {
         background-color: white !important;
     }
+    .appBar .sortingBtn {
+        margin-left: auto !important;
+    }
 }
 
 .backdrop {
@@ -174,7 +177,7 @@ a.pttArticleTitle:visited {
 .resultSummary {
     overflow: hidden;
     max-height: 150px;
-    padding-top: .5em;
+    margin-bottom: .2em;
 }
 
 .resultInfo>span {
