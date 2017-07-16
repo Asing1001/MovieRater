@@ -18,3 +18,10 @@ export async function getShowDatesByCinemaIdAndMovieId(cinemaId, movieId) {
     const showDates = await res.json();
     return showDates.msg;
 }
+
+export async function getShowTimes(cinemaId, movieId, showDate) {
+    const res = await fetch(
+        `${ezApi}?func=findShowingSessionsByCinemaIdAndMovieIdAndShowDate&cinemaId=${cinemaId}&movieId=${movieId}&showDate=${showDate}`, { method: 'POST' });
+    const showTimes = await res.json();
+    return showTimes.msg;
+}
