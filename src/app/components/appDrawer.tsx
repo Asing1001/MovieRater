@@ -32,7 +32,7 @@ class AppDrawer extends React.Component<any, any> {
             >
                 <List>
                     <Link to="/"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGAvMovie />}>現正上映</ListItem></Link>
-                    <Link to="/theaterlist"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGActionTheaters />}>戲院總覽</ListItem>                   </Link>
+                    {/* <Link to="/theaterlist"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGActionTheaters />}>戲院總覽</ListItem>                   </Link> */}
                 </List>
             </Drawer>
         );
