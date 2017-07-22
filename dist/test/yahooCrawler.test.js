@@ -19,9 +19,11 @@ describe('YahooCrawler', () => {
     describe('getYahooMovieInfo(10)', () => {
         it('.should.have.property("chineseTitle")', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                this.timeout(30000);
+                this.timeout(300000);
                 const yahooMovie = yield yahooCrawler_1.getYahooMovieInfo(10);
                 yahooMovie.should.have.property('chineseTitle');
+                assert.isTrue(yahooMovie.summary.length > 0);
+                assert.isTrue(yahooMovie.posterUrl.length > 0);
             });
         });
     });
@@ -29,6 +31,15 @@ describe('YahooCrawler', () => {
         it('.should.eventually.be.rejected', function () {
             this.timeout(30000);
             return yahooCrawler_1.getYahooMovieInfo(9999).should.eventually.be.rejected;
+        });
+    });
+    describe('getYahooMovieInfo(6794)', () => {
+        it('.should.eventually.be.rejected', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const movieInfo = yield yahooCrawler_1.getYahooMovieInfo(6794);
+                assert.isTrue(movieInfo.summary.indexOf('<br>') !== -1);
+            });
         });
     });
 });

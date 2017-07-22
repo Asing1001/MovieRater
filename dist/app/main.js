@@ -4,6 +4,7 @@ const React = require("react");
 const react_router_dom_1 = require("react-router-dom");
 const ReactDOM = require("react-dom");
 const app_1 = require("./components/app");
+const createBrowserHistory_1 = require("history/createBrowserHistory");
 require("./main.css");
 const react_apollo_1 = require("react-apollo");
 class Root extends React.Component {
@@ -18,10 +19,24 @@ class Root extends React.Component {
     }
     render() {
         return (React.createElement(react_apollo_1.ApolloProvider, { client: this.createClient() },
-            React.createElement(react_router_dom_1.BrowserRouter, null,
+            React.createElement(react_router_dom_1.Router, { history: history },
                 React.createElement(app_1.default, null))));
     }
 }
+const history = createBrowserHistory_1.default();
+history.listen((location, action) => {
+    console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`);
+    console.log(`The last navigation action was ${action}`);
+    const dataLayer = window['dataLayer'];
+    if (dataLayer) {
+        dataLayer.push({
+            'event': 'virtualPageView',
+            'page': {
+                'url': location.pathname
+            }
+        });
+    }
+});
 const rootElement = document.getElementById('app');
 ReactDOM.render(React.createElement(Root, null), rootElement);
 // //for hot module reload

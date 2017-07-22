@@ -40,13 +40,11 @@ function initScheduler() {
     node_schedule_1.scheduleJob('20 * * * *', function () {
         cacheManager_1.default.setInTheaterMoviesCache();
     });
-    node_schedule_1.scheduleJob('30 5 * * *', function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.time('[Scheduler] updateTheaterWithLocationList');
-            yield yahooTask_1.updateTheaterWithLocationList();
-            console.timeEnd('[Scheduler] updateTheaterWithLocationList');
-        });
-    });
+    // scheduleJob('30 5 * * *', async function () {
+    //     console.time('[Scheduler] updateTheaterWithLocationList');
+    //     await updateTheaterWithLocationList();
+    //     console.timeEnd('[Scheduler] updateTheaterWithLocationList');
+    // });
     node_schedule_1.scheduleJob('40 5 * * *', function () {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] cacheManager.init');

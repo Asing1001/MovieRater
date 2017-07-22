@@ -14,7 +14,7 @@ const should = chai.should();
 const assert = chai.assert;
 describe('yahooInTheaterCrawler', () => {
     describe('getInTheaterYahooIds', () => {
-        it('should.above(0)', function () {
+        it.skip('should.above(0)', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(30000);
                 const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();

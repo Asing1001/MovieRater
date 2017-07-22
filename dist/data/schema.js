@@ -67,7 +67,7 @@ const MovieType = new graphql_1.GraphQLObjectType({
         },
         briefSummary: {
             type: graphql_1.GraphQLString,
-            resolve: obj => obj.summary && obj.summary.length > 300 ? obj.summary.substr(0, 150) + '...' : obj.summary,
+            resolve: obj => obj.summary && obj.summary.length > 70 ? obj.summary.substr(0, 70) + '...' : obj.summary,
         },
         chineseTitle: {
             type: graphql_1.GraphQLString,
@@ -81,21 +81,21 @@ const MovieType = new graphql_1.GraphQLObjectType({
             type: graphql_1.GraphQLString,
             resolve: obj => obj.releaseDate,
         },
-        type: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.type,
+        types: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: obj => obj.types || [],
         },
         runTime: {
             type: graphql_1.GraphQLString,
             resolve: obj => obj.runTime,
         },
-        director: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.director,
+        directors: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: obj => obj.directors || [],
         },
-        actor: {
-            type: graphql_1.GraphQLString,
-            resolve: obj => obj.actor,
+        actors: {
+            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+            resolve: obj => obj.actors || [],
         },
         launchCompany: {
             type: graphql_1.GraphQLString,

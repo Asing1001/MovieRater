@@ -36,8 +36,8 @@ query TheaterDetail($theaterName:String){
                 englishTitle
                 releaseDate
                 runTime
-                director
-                actor
+                directors
+                actors
                 imdbID
                 yahooRating
                 imdbRating
@@ -72,7 +72,9 @@ let TheaterDetail = class TheaterDetail extends React.Component {
         return (React.createElement("div", null,
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em', padding: ".5em 1em" } },
                 React.createElement(theaterCard_1.default, { theater: theater })),
-            theater.schedules && theater.schedules.map((schedule, index) => (React.createElement(Paper_1.default, { zDepth: 2, key: index, className: "row no-margin", style: { marginBottom: '.5em' } },
+            theater.schedules && theater.schedules.slice()
+                .sort(({ movie }, { movie: movie2 }) => this.props.sortFunction(helper_1.classifyArticle(movie), helper_1.classifyArticle(movie2)))
+                .map((schedule, index) => (React.createElement(Paper_1.default, { zDepth: 2, key: index, className: "row no-margin", style: { marginBottom: '.5em' } },
                 React.createElement(movieCard_1.default, { movie: helper_1.classifyArticle(schedule.movie), timesStrings: schedule.timesStrings, roomTypes: schedule.roomTypes }))))));
     }
 };
