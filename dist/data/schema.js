@@ -91,11 +91,11 @@ const MovieType = new graphql_1.GraphQLObjectType({
         },
         directors: {
             type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
-            resolve: obj => obj.directors,
+            resolve: obj => obj.directors || [],
         },
         actors: {
             type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
-            resolve: obj => obj.actors,
+            resolve: obj => obj.actors || [],
         },
         launchCompany: {
             type: graphql_1.GraphQLString,
