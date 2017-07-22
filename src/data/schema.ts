@@ -83,21 +83,21 @@ const MovieType = new GraphQLObjectType({
             type: GraphQLString,
             resolve: obj => obj.releaseDate,
         },
-        type: {
-            type: GraphQLString,
-            resolve: obj => obj.type,
+        types: {
+            type: new GraphQLList(GraphQLString),
+            resolve: obj => obj.types || [],
         },
         runTime: {
             type: GraphQLString,
             resolve: obj => obj.runTime,
         },
-        director: {
-            type: GraphQLString,
-            resolve: obj => obj.director,
+        directors: {
+            type: new GraphQLList(GraphQLString),
+            resolve: obj => obj.directors || [],
         },
-        actor: {
-            type: GraphQLString,
-            resolve: obj => obj.actor,
+        actors: {
+            type: new GraphQLList(GraphQLString),
+            resolve: obj => obj.actors || [],
         },
         launchCompany: {
             type: GraphQLString,

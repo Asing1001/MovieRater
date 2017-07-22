@@ -14,7 +14,7 @@ chai.use(chaiAsPromised);
 
 describe('yahooMovieSchduleCrawler', () => {
   describe('crawyahooMovieSchdule', () => {
-    it('should correctly get new data from yahoo', function () {
+    it.skip('should correctly get new data from yahoo', function () {
       this.timeout(60000);
       return crawlyahooMovieSchdule("6707").should.eventually.have.length.above(0)
     });

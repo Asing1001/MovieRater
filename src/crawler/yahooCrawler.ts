@@ -18,24 +18,24 @@ export function getYahooMovieInfo(yahooId: number) {
         }
 
         const $ = cheerio.load(body, { decodeEntities: false });
-        const $movieInfoDiv = $('.text.bulletin');
-        const $movieInfoValues = $movieInfoDiv.find('p .dta');
-        const posterOriginalUrl = $('#ymvmvf').find('.img a').attr('href');
-        const posterUrl = posterOriginalUrl ? posterOriginalUrl.split('*')[1] : "";
+        const $movieInfoDiv = $('.movie_intro_info');
+        const $movieInfoValues = $movieInfoDiv.find('span');
+        const posterUrl = $movieInfoDiv.find('.movie_intro_foto>img').attr('src');
+        const fullSummary = $('.gray_infobox_inner>span').attr('title2');
+        const summary = fullSummary || $('.gray_infobox_inner>span').eq(0).html().trim()
         const movieInfo: YahooMovie = {
             yahooId,
             posterUrl,
-            chineseTitle: $movieInfoDiv.find('h4').text(),
-            englishTitle: $movieInfoDiv.find('h5').text(),
-            releaseDate: $movieInfoValues.eq(0).text(),
-            type: $movieInfoValues.eq(1).find('a').text(),
-            runTime: $movieInfoValues.eq(2).text(),
-            director: $movieInfoValues.eq(3).find('a').text(),
-            actor: $movieInfoValues.eq(4).text(),
-            launchCompany: $movieInfoValues.eq(5).text(),
-            companyUrl: $movieInfoValues.eq(3).find('a').attr('href'),
-            yahooRating: $('#ymvis em').text(),
-            summary: $('.text.full>p').html() || $('.text.show>p').html()
+            chineseTitle: $movieInfoDiv.find('h1').text(),
+            englishTitle: $movieInfoDiv.find('h3').eq(0).text(),
+            releaseDate: $movieInfoValues.eq(0).text().split('：')[1],
+            types: Array.from($movieInfoDiv.find('.level_name_box a')).map(a => $(a).text().trim()),
+            runTime: $movieInfoValues.eq(1).text().split('：')[1],
+            directors: Array.from($movieInfoDiv.find('.movie_intro_list').eq(0).children()).map(child => $(child).text().trim()),
+            actors: Array.from($movieInfoDiv.find('.movie_intro_list').eq(1).children()).map(child => $(child).text().trim()),
+            launchCompany: $movieInfoValues.eq(2).text().split('：')[1],
+            yahooRating: $('.score>.score_num').text(),
+            summary
         };
 
         if (!movieInfo.chineseTitle) {

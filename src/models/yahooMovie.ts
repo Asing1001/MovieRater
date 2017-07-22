@@ -4,12 +4,11 @@ export default class YahooMovie {
     chineseTitle?: string
     englishTitle?: string
     releaseDate?: string
-    type?: string
+    types?: string[]
     runTime?: string
-    director?: string
-    actor?: string
+    directors?: string[]
+    actors?: string[]
     launchCompany?: string
-    companyUrl?: string
     yahooRating?: string
     summary?: string
 }

@@ -36,7 +36,7 @@ class MovieDetail extends React.Component<MovieDetailProps, {}> {
                             </TableRow>
                             <TableRow>
                                 <TableRowColumn>類型</TableRowColumn>
-                                <TableRowColumn>{this.props.movie.type}</TableRowColumn>
+                                <TableRowColumn>{this.props.movie.types.join('、')}</TableRowColumn>
                             </TableRow>
                             <TableRow>
                                 <TableRowColumn>片長</TableRowColumn>
@@ -44,11 +44,11 @@ class MovieDetail extends React.Component<MovieDetailProps, {}> {
                             </TableRow>
                             <TableRow>
                                 <TableRowColumn>導演</TableRowColumn>
-                                <TableRowColumn>{this.props.movie.director}</TableRowColumn>
+                                <TableRowColumn>{this.props.movie.directors.join('、')}</TableRowColumn>
                             </TableRow>
                             <TableRow>
                                 <TableRowColumn>演員</TableRowColumn>
-                                <TableRowColumn>{this.props.movie.actor}</TableRowColumn>
+                                <TableRowColumn>{this.props.movie.actors.join('、')}</TableRowColumn>
                             </TableRow>
                             <TableRow>
                                 <TableRowColumn>發行公司</TableRowColumn>

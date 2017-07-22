@@ -25,10 +25,10 @@ const movieDetailQuery = gql`
     chineseTitle
     englishTitle
     releaseDate
-    type
+    types
     runTime
-    director
-    actor
+    directors
+    actors
     launchCompany
     companyUrl
     yahooRating

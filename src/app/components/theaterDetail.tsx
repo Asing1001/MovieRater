@@ -27,8 +27,8 @@ query TheaterDetail($theaterName:String){
                 englishTitle
                 releaseDate
                 runTime
-                director
-                actor
+                directors
+                actors
                 imdbID
                 yahooRating
                 imdbRating
