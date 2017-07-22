@@ -29,7 +29,7 @@ class MovieCard extends React.Component {
                         movie.releaseDate),
                     React.createElement("span", { className: "hidden-xs" },
                         "\u985E\u578B:",
-                        movie.type),
+                        movie.types.join('、')),
                     React.createElement("span", null,
                         "\u7247\u9577:",
                         movie.runTime)),

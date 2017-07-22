@@ -25,7 +25,7 @@ const movieListingQuery = react_apollo_1.gql `
             chineseTitle,
             englishTitle,
             releaseDate,
-            type,
+            types,
             runTime,
             yahooRating,
             imdbID,

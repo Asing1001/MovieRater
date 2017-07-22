@@ -12,9 +12,7 @@ const memoryCache = require("memory-cache");
 const db_1 = require("../data/db");
 const mergeData_1 = require("../crawler/mergeData");
 const moment = require("moment");
-const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
 const util_1 = require("../helper/util");
-const yahooTask_1 = require("../task/yahooTask");
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,17 +57,17 @@ class cacheManager {
     }
     static setInTheaterMoviesCache() {
         return __awaiter(this, void 0, void 0, function* () {
-            const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
-            if (yahooIds.length > 0) {
-                yield cacheManager.setRecentMoviesCache(yahooIds);
-                yield cacheManager.setMoviesSchedulesCache(yahooIds);
-            }
+            // const yahooIds = await getInTheaterYahooIds();
+            // if (yahooIds.length > 0) {
+            yield cacheManager.setRecentMoviesCache([]);
+            yield cacheManager.setMoviesSchedulesCache([]);
+            // }
         });
     }
     static setMoviesSchedulesCache(yahooIds) {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('setMoviesSchedulesCache');
-            const allSchedules = yield yahooTask_1.getMoviesSchedules(yahooIds);
+            const allSchedules = []; //await getMoviesSchedules(yahooIds);
             cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
             console.timeEnd('setMoviesSchedulesCache');
         });
@@ -79,7 +77,7 @@ class cacheManager {
             console.time('setRecentMoviesCache');
             let today = moment();
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(({ yahooId, releaseDate }) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
+                .filter(({ yahooId, releaseDate }) => today.diff(moment(releaseDate), 'days') <= 90);
             cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
         });
