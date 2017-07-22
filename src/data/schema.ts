@@ -85,7 +85,7 @@ const MovieType = new GraphQLObjectType({
         },
         types: {
             type: new GraphQLList(GraphQLString),
-            resolve: obj => obj.types,
+            resolve: obj => obj.types || [],
         },
         runTime: {
             type: GraphQLString,

@@ -19,7 +19,7 @@ const movieListingQuery = gql`
             chineseTitle,
             englishTitle,
             releaseDate,
-            type,
+            types,
             runTime,
             yahooRating,
             imdbID,

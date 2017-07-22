@@ -6,7 +6,7 @@ const assert = chai.assert;
 
 describe('yahooInTheaterCrawler', () => {
   describe('getInTheaterYahooIds', () => {
-    it('should.above(0)', async function () {
+    it.skip('should.above(0)', async function () {
       this.timeout(30000);
       const yahooIds = await getInTheaterYahooIds();
       yahooIds.length.should.above(0);
