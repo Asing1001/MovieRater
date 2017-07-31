@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const cacheManager_1 = require("../data/cacheManager");
+const moment = require("moment");
 const QueryType = new graphql_1.GraphQLObjectType({
     name: 'Query',
     description: 'query...',
@@ -22,14 +23,24 @@ const QueryType = new graphql_1.GraphQLObjectType({
         movies: {
             type: new graphql_1.GraphQLList(MovieType),
             args: {
-                yahooIds: { type: new graphql_1.GraphQLList(graphql_1.GraphQLInt) }
+                yahooIds: { type: new graphql_1.GraphQLList(graphql_1.GraphQLInt) },
+                range: { type: graphql_1.GraphQLString }
             },
-            resolve: (root, { yahooIds }) => __awaiter(this, void 0, void 0, function* () {
+            resolve: (root, { yahooIds, range }) => __awaiter(this, void 0, void 0, function* () {
                 if (yahooIds) {
                     const allMovies = cacheManager_1.default.get("allMovies");
                     return allMovies.filter(({ yahooId }) => yahooIds.indexOf(yahooId) !== -1);
                 }
-                return cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES);
+                else if (range === 'upcoming') {
+                    let today = moment();
+                    let nintyDaysAfter = moment().add(90, 'days');
+                    let futureMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES)
+                        .filter(({ yahooId, releaseDate }) => moment(releaseDate).isBetween(today, nintyDaysAfter, 'day', '()')); // '(' means exclude
+                    return futureMovies;
+                }
+                else {
+                    return cacheManager_1.default.get(cacheManager_1.default.RECENT_MOVIES);
+                }
             }),
         },
         theaters: {

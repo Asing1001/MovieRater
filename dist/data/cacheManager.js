@@ -76,8 +76,9 @@ class cacheManager {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('setRecentMoviesCache');
             let today = moment();
+            let nintyDaysBefore = moment().subtract(90, 'days');
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(({ yahooId, releaseDate }) => today.diff(moment(releaseDate), 'days') <= 90);
+                .filter(({ yahooId, releaseDate }) => moment(releaseDate).isBetween(nintyDaysBefore, today, 'day', '[]'));
             cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
         });

@@ -9,33 +9,24 @@ var SortType;
     SortType[SortType["releaseDate"] = 3] = "releaseDate";
 })(SortType || (SortType = {}));
 exports.SortType = SortType;
+let preSortType;
 const getSortFunction = (sortType) => {
-    let sortFunction;
-    switch (sortType) {
-        case SortType.imdb:
-            sortFunction = getStandardSortFunction('imdbRating');
-            break;
-        case SortType.ptt:
-            sortFunction = (a, b) => getPttRating(b) - getPttRating(a);
-            break;
-        case SortType.yahoo:
-            sortFunction = getStandardSortFunction('yahooRating');
-            break;
-        case SortType.releaseDate:
-            sortFunction = ({ releaseDate: releaseDateA }, { releaseDate: releaseDateB }) => moment(releaseDateB).diff(releaseDateA);
-            break;
-    }
+    let order = sortType === preSortType ? -1 : 1;
+    preSortType = sortType;
+    let sortFunction = (a, b) => (getValue(b, sortType) - getValue(a, sortType)) * order;
     return sortFunction;
 };
 exports.getSortFunction = getSortFunction;
-const getStandardSortFunction = (propertyName) => {
-    return function (a, b) {
-        let aValue = a[propertyName] === 'N/A' ? 0 : a[propertyName];
-        let bValue = b[propertyName] === 'N/A' ? 0 : b[propertyName];
-        return bValue - aValue;
-    };
-};
-const getPttRating = (movie) => {
-    return movie.goodRateArticles.length - movie.badRateArticles.length;
+const getValue = (movie, sortType) => {
+    switch (sortType) {
+        case SortType.imdb:
+            return movie.imdbRating === 'N/A' ? 0 : movie.imdbRating;
+        case SortType.ptt:
+            return movie.goodRateArticles.length - movie.badRateArticles.length;
+        case SortType.yahoo:
+            return movie.yahooRating === 'N/A' ? 0 : movie.yahooRating;
+        case SortType.releaseDate:
+            return moment(movie.releaseDate);
+    }
 };
 //# sourceMappingURL=sorting.js.map
