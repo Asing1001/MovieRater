@@ -19,6 +19,9 @@ const normalStyles = {
 class AppBarNormal extends React.Component<any, any> {
     constructor(props) {
         super(props)
+        this.state = {
+            barTitle: '現正上映'
+        }
     }
 
     drawerToggle = null;
@@ -27,7 +30,7 @@ class AppBarNormal extends React.Component<any, any> {
         return (
             <Paper zDepth={2} className={`appBar normal ${this.props.className}`} style={normalStyles}>
                 <IconButton className="leftBtn" onTouchTap={() => this.drawerToggle()}><SVGNavigationMenu color={normalStyles.color} /></IconButton>
-                <span className="barTitle">現正上映</span>
+                <span className="barTitle">{this.state.barTitle}</span>
                 <span onClick={this.props.onSearchIconClick} className="hidden-xs searchArea" style={{ backgroundColor: cyan300 }}>
                     <SVGActionSearch className="searchIcon" color={normalStyles.color} />
                     <span>搜尋電影名稱(中英皆可)</span>
@@ -46,7 +49,7 @@ class AppBarNormal extends React.Component<any, any> {
                     <MenuItem primaryText="依Ptt排序" onTouchTap={() => this.props.switchSorting(SortType.ptt)} />
                     <MenuItem primaryText="依上映日期排序" onTouchTap={() => this.props.switchSorting(SortType.releaseDate)} />
                 </IconMenu>
-                <AppDrawer ref={instance => this.drawerToggle = instance && instance.toggle} />
+                <AppDrawer changeTitle={barTitle=>this.setState({barTitle})} ref={instance => this.drawerToggle = instance && instance.toggle} />
             </Paper>
         );
     }
