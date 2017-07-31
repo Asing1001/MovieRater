@@ -9,8 +9,10 @@ enum SortType {
 }
 
 let preSortType;
+let preOrder = 1;
 const getSortFunction = (sortType) => {
-    let order = sortType === preSortType ? -1 : 1;
+    let order = sortType === preSortType ? preOrder * -1 : 1;
+    preOrder = order;
     preSortType = sortType;
     let sortFunction = (a, b) => (getValue(b, sortType) - getValue(a, sortType)) * order;
     return sortFunction;
