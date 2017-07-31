@@ -19,12 +19,15 @@ class AppBarNormal extends React.Component {
     constructor(props) {
         super(props);
         this.drawerToggle = null;
+        this.state = {
+            barTitle: '現正上映'
+        };
     }
     render() {
         return (React.createElement(Paper_1.default, { zDepth: 2, className: `appBar normal ${this.props.className}`, style: normalStyles },
             React.createElement(IconButton_1.default, { className: "leftBtn", onTouchTap: () => this.drawerToggle() },
                 React.createElement(menu_1.default, { color: normalStyles.color })),
-            React.createElement("span", { className: "barTitle" }, "\u73FE\u6B63\u4E0A\u6620"),
+            React.createElement("span", { className: "barTitle" }, this.state.barTitle),
             React.createElement("span", { onClick: this.props.onSearchIconClick, className: "hidden-xs searchArea", style: { backgroundColor: colors_1.cyan300 } },
                 React.createElement(search_1.default, { className: "searchIcon", color: normalStyles.color }),
                 React.createElement("span", null, "\u641C\u5C0B\u96FB\u5F71\u540D\u7A31(\u4E2D\u82F1\u7686\u53EF)")),
@@ -36,7 +39,7 @@ class AppBarNormal extends React.Component {
                 React.createElement(MenuItem_1.default, { primaryText: "依Yahoo排序", onTouchTap: () => this.props.switchSorting(sorting_1.SortType.yahoo) }),
                 React.createElement(MenuItem_1.default, { primaryText: "依Ptt排序", onTouchTap: () => this.props.switchSorting(sorting_1.SortType.ptt) }),
                 React.createElement(MenuItem_1.default, { primaryText: "依上映日期排序", onTouchTap: () => this.props.switchSorting(sorting_1.SortType.releaseDate) })),
-            React.createElement(appDrawer_1.default, { ref: instance => this.drawerToggle = instance && instance.toggle })));
+            React.createElement(appDrawer_1.default, { changeTitle: barTitle => this.setState({ barTitle }), ref: instance => this.drawerToggle = instance && instance.toggle })));
     }
 }
 exports.default = AppBarNormal;
