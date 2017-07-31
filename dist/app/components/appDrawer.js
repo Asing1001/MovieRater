@@ -22,7 +22,9 @@ class AppDrawer extends React.Component {
         return (React.createElement(Drawer_1.default, { docked: false, width: 300, containerStyle: { maxWidth: '75%' }, open: this.state.open, onRequestChange: (open) => this.setState({ open }) },
             React.createElement(List_1.List, null,
                 React.createElement(react_router_dom_1.Link, { to: "/" },
-                    React.createElement(List_1.ListItem, { onTouchTap: () => this.handleClose(), leftIcon: React.createElement(movie_1.default, null) }, "\u73FE\u6B63\u4E0A\u6620")))));
+                    React.createElement(List_1.ListItem, { onTouchTap: () => this.handleClose(), leftIcon: React.createElement(movie_1.default, null) }, "\u73FE\u6B63\u4E0A\u6620")),
+                React.createElement(react_router_dom_1.Link, { to: "/upcoming" },
+                    React.createElement(List_1.ListItem, { onTouchTap: () => this.handleClose(), leftIcon: React.createElement(movie_1.default, null) }, "\u5373\u5C07\u4E0A\u6620")))));
     }
 }
 exports.default = AppDrawer;

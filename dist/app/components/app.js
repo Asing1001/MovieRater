@@ -38,10 +38,11 @@ class App extends React.Component {
                 React.createElement("div", { className: "container", style: { marginTop: '.5em' } },
                     React.createElement(react_router_dom_1.Switch, null,
                         React.createElement(react_router_dom_1.Route, { exact: true, path: "/", render: (props) => React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction })) }),
+                        React.createElement(react_router_dom_1.Route, { path: "/upcoming", render: (props) => React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction })) }),
                         React.createElement(react_router_dom_1.Route, { path: "/movie/:id", component: movieDetailTabs_1.default }),
-                        React.createElement(react_router_dom_1.Route, { path: "/movielist/:ids", component: movieList_1.default }),
+                        React.createElement(react_router_dom_1.Route, { path: "/movies/:ids", render: (props) => React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction })) }),
                         React.createElement(react_router_dom_1.Route, { path: "/movienotfound/:query", component: movieNotFound_1.default }),
-                        React.createElement(react_router_dom_1.Route, { path: "/theaterlist", component: theaterList_1.default }),
+                        React.createElement(react_router_dom_1.Route, { path: "/theaters", component: theaterList_1.default }),
                         React.createElement(react_router_dom_1.Route, { path: "/theater/:name", render: (props) => React.createElement(theaterDetail_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction })) }),
                         React.createElement(react_router_dom_1.Route, { component: pageNotFound_1.default }))))));
     }

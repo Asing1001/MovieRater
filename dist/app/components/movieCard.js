@@ -8,14 +8,18 @@ class MovieCard extends React.Component {
     constructor(props) {
         super(props);
     }
-    getSmallPosterSrc(posterUrl) {
-        return posterUrl && posterUrl.replace('mpost', 'mpost3');
+    getSmallPosterSrc(yahooId) {
+        //once it exceed 9999, it need to adjust.
+        var pre = ('0000' + yahooId).slice(-4, -2);
+        var post = ('0000' + yahooId).slice(-2);
+        console.log(`https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`);
+        return `https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`;
     }
     render() {
         const { roomTypes, movie, timesStrings } = this.props;
         return (React.createElement("article", { style: { display: 'flex' } },
             React.createElement(react_router_dom_1.Link, { to: `/movie/${movie.yahooId}` },
-                React.createElement("img", { src: this.getSmallPosterSrc(movie.posterUrl) })),
+                React.createElement("img", { src: this.getSmallPosterSrc(movie.yahooId) })),
             React.createElement("div", { className: "col-xs-12" },
                 React.createElement("header", { style: { paddingTop: '.5em' } },
                     React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },

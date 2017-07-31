@@ -18,8 +18,8 @@ const loadingIcon_1 = require("./loadingIcon");
 const react_apollo_1 = require("react-apollo");
 const nearbyIcon = React.createElement(sort_1.default, null);
 const movieListingQuery = react_apollo_1.gql `
-         query MovieListing($yahooIds:[Int]){
-           movies(yahooIds:$yahooIds) {
+         query MovieListing($yahooIds:[Int],$range:String){
+           movies(yahooIds:$yahooIds, range:$range) {
             yahooId,
             posterUrl,
             chineseTitle,
@@ -55,7 +55,8 @@ MovieList = __decorate([
         options: ({ match }) => {
             return {
                 variables: {
-                    yahooIds: match.params.ids && match.params.ids.split(',').map(id => parseInt(id))
+                    yahooIds: match.params.ids && match.params.ids.split(',').map(id => parseInt(id)),
+                    range: match.path.replace('/', '')
                 },
             };
         },
