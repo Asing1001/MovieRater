@@ -75,10 +75,10 @@ export default class cacheManager {
     private static async setRecentMoviesCache(yahooIds) {
         console.time('setRecentMoviesCache');
         let today = moment();
-        let nintyDaysBefore = moment().subtract(90, 'days');
+        let sixtyDaysBefore = moment().subtract(60, 'days');
         let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
             // .filter(({ yahooId, releaseDate }: Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
-            .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(nintyDaysBefore, today, 'day', '[]'))
+            .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
         cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
         console.timeEnd('setRecentMoviesCache');
     }

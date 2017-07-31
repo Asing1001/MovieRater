@@ -22,11 +22,11 @@ class TheaterCard extends React.Component<any, any> {
         let roomTypes = this.props.roomTypes;
         return (
             <div>
-                <Link style={{ color: 'inherit' }} to={`/theater/${name}`}>
+                {/* <Link style={{ color: 'inherit' }} to={`/theater/${name}`}> */}
                     <h5 style={{ marginBottom: "-.2em", fontSize: "16px" }}>
                         {name}
                     </h5>
-                </Link>
+                {/* </Link> */}
                 <div style={{ paddingTop: '0.5em', display: 'flex', alignItems: 'center' }}>
                     {roomTypes && roomTypes.length > 0 && <span style={theaterCardStyle}>
                         {roomTypes.map(roomType => <img key={roomType} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}

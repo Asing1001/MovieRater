@@ -2,10 +2,16 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
 import SVGAvMovie from 'material-ui/svg-icons/av/movie';
+import SVGImageMovieFilter from 'material-ui/svg-icons/image/movie-filter';
 import SVGActionTheaters from 'material-ui/svg-icons/action/theaters';
 import { List, ListItem } from 'material-ui/List';
 
-class AppDrawer extends React.Component<any, any> {
+const menus = [
+    { url: '/', icon: <SVGImageMovieFilter />, text: '現正上映' },
+    { url: '/upcoming', icon: <SVGAvMovie />, text: '即將上映' },
+    { url: '/theaters', icon: <SVGActionTheaters />, text: '戲院總覽' },
+]
+class AppDrawer extends React.Component<{ changeTitle: Function }, { open: Boolean }> {
     constructor(props) {
         super(props)
         this.state = {
@@ -13,7 +19,8 @@ class AppDrawer extends React.Component<any, any> {
         };
     }
 
-    handleClose = () => {
+    handleTouchTap = (text) => {
+        this.props.changeTitle(text);
         this.setState({ open: false });
     };
 
@@ -31,9 +38,10 @@ class AppDrawer extends React.Component<any, any> {
                 onRequestChange={(open) => this.setState({ open })}
             >
                 <List>
-                    <Link to="/"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGAvMovie />}>現正上映</ListItem></Link>
-                    <Link to="/upcoming"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGAvMovie />}>即將上映</ListItem></Link>
-                    {/* <Link to="/theaters"><ListItem onTouchTap={() => this.handleClose()} leftIcon={<SVGActionTheaters />}>戲院總覽</ListItem>                   </Link> */}
+                    {menus.map(({ url, icon, text }) =>
+                        <Link to={url}>
+                            <ListItem onTouchTap={() => this.handleTouchTap(text)} leftIcon={icon}>{text}</ListItem>
+                        </Link>)}
                 </List>
             </Drawer>
         );
