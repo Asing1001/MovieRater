@@ -18,9 +18,7 @@
                 "NODE_ENV": "development"
             },
             "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/dist"
-            ]
+            "outDir": "${workspaceRoot}/dist"
         },
         {
             "name": "Run mocha",
@@ -29,7 +27,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/yahooCrawler.test.js",
+                "dist/test/ezCrawler.test.js",
                 "--no-timeouts"
             ],
             "cwd": "${workspaceRoot}",

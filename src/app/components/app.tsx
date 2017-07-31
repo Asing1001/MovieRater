@@ -51,10 +51,11 @@ class App extends React.Component<any, any> {
           <div className="container" style={{ marginTop: '.5em' }} >
             <Switch>
               <Route exact path="/" render={(props) => <MovieList {...props} sortFunction={this.state.sortFunction} />} />
+              <Route path="/upcoming" render={(props) => <MovieList {...props} sortFunction={this.state.sortFunction} />} />
               <Route path="/movie/:id" component={MovieDetailTabs} />
-              <Route path="/movielist/:ids" component={MovieList} />
+              <Route path="/movies/:ids" render={(props) => <MovieList {...props} sortFunction={this.state.sortFunction} />} />
               <Route path="/movienotfound/:query" component={MovieNotFound} />
-              <Route path="/theaterlist" component={TheaterList} />
+              <Route path="/theaters" component={TheaterList} />
               <Route path="/theater/:name" render={(props) => <TheaterDetail {...props} sortFunction={this.state.sortFunction} />} />
               <Route component={PageNotFound} />
             </Switch>

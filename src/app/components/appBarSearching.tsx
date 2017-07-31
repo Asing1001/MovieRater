@@ -60,7 +60,7 @@ class AppBarSearching extends React.Component<any, any> {
     else if (yahooIds.length === 1) {
       this.context.router.history.push(`/movie/${yahooIds}`)
     } else {
-      this.context.router.history.push(`/movielist/${yahooIds}`)
+      this.context.router.history.push(`/movies/${yahooIds}`)
     }
   }
 
