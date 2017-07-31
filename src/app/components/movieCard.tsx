@@ -16,8 +16,12 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         super(props)
     }
 
-    private getSmallPosterSrc(posterUrl: string) {
-        return posterUrl && posterUrl.replace('mpost', 'mpost3');
+    private getSmallPosterSrc(yahooId) {
+        //once it exceed 9999, it need to adjust.
+        var pre = ('0000' + yahooId).slice(-4, -2);
+        var post = ('0000' + yahooId).slice(-2);
+        console.log(`https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`)
+        return `https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`
     }
 
     render() {
@@ -25,7 +29,7 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         return (
             <article style={{ display: 'flex' }}>
                 <Link to={`/movie/${movie.yahooId}`} >
-                    <img src={this.getSmallPosterSrc(movie.posterUrl)} />
+                    <img src={this.getSmallPosterSrc(movie.yahooId)} />
                 </Link>
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>
@@ -33,7 +37,7 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                             <strong style={{ display: 'flex', alignItems: 'center', lineHeight: '1em' }}>
                                 {movie.chineseTitle}
                                 {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
-                                    {roomTypes.map((roomType,index) => <img key={index} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
+                                    {roomTypes.map((roomType, index) => <img key={index} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
                                 </span>}
                             </strong>
                             <small>{movie.englishTitle}</small>
@@ -49,7 +53,7 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                     {movie.briefSummary && <div className="hidden-xs">
                         <p className="resultSummary">
                             <span dangerouslySetInnerHTML={{ __html: movie.briefSummary }}></span>
-                            <Link to={`/movie/${movie.yahooId}`} > 繼續閱讀</Link>                            
+                            <Link to={`/movie/${movie.yahooId}`} > 繼續閱讀</Link>
                         </p>
                     </div>}
                 </div>

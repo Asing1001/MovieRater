@@ -60,8 +60,8 @@ export default class cacheManager {
     public static async setInTheaterMoviesCache() {
         // const yahooIds = await getInTheaterYahooIds();
         // if (yahooIds.length > 0) {
-            await cacheManager.setRecentMoviesCache([]);
-            await cacheManager.setMoviesSchedulesCache([])
+        await cacheManager.setRecentMoviesCache([]);
+        await cacheManager.setMoviesSchedulesCache([])
         // }
     }
 
@@ -75,9 +75,10 @@ export default class cacheManager {
     private static async setRecentMoviesCache(yahooIds) {
         console.time('setRecentMoviesCache');
         let today = moment();
+        let nintyDaysBefore = moment().subtract(90, 'days');
         let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
             // .filter(({ yahooId, releaseDate }: Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
-            .filter(({ yahooId, releaseDate }: Movie) => today.diff(moment(releaseDate), 'days') <= 90)
+            .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(nintyDaysBefore, today, 'day', '[]'))
         cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
         console.timeEnd('setRecentMoviesCache');
     }

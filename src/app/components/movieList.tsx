@@ -12,8 +12,8 @@ import { gql, graphql } from 'react-apollo';
 const nearbyIcon = <IconLocationOn />;
 
 const movieListingQuery = gql`
-         query MovieListing($yahooIds:[Int]){
-           movies(yahooIds:$yahooIds) {
+         query MovieListing($yahooIds:[Int],$range:String){
+           movies(yahooIds:$yahooIds, range:$range) {
             yahooId,
             posterUrl,
             chineseTitle,
@@ -33,7 +33,8 @@ const movieListingQuery = gql`
   options: ({ match }) => {
     return {
       variables: {
-        yahooIds: match.params.ids && match.params.ids.split(',').map(id => parseInt(id))
+        yahooIds: match.params.ids && match.params.ids.split(',').map(id => parseInt(id)),
+        range: match.path.replace('/','')
       },
     }
   },

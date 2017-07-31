@@ -10,6 +10,7 @@ import {
 import cacheManager from '../data/cacheManager';
 import Movie from '../models/movie';
 import Schedule from '../models/schedule';
+import * as moment from 'moment';
 
 const QueryType = new GraphQLObjectType({
     name: 'Query',
@@ -23,14 +24,23 @@ const QueryType = new GraphQLObjectType({
         movies: {
             type: new GraphQLList(MovieType),
             args: {
-                yahooIds: { type: new GraphQLList(GraphQLInt) }
+                yahooIds: { type: new GraphQLList(GraphQLInt) },
+                range: { type: GraphQLString }
             },
-            resolve: async (root, { yahooIds }) => {
+            resolve: async (root, { yahooIds, range }) => {
                 if (yahooIds) {
                     const allMovies: Array<Movie> = cacheManager.get("allMovies");
                     return allMovies.filter(({ yahooId }) => yahooIds.indexOf(yahooId) !== -1);
+                } else if (range === 'upcoming') {
+                    let today = moment();
+                    let nintyDaysAfter = moment().add(90, 'days');
+                    let futureMovies = cacheManager.get(cacheManager.All_MOVIES)
+                        .filter(({ yahooId, releaseDate }: Movie) =>
+                            moment(releaseDate).isBetween(today, nintyDaysAfter, 'day', '()')) // '(' means exclude
+                    return futureMovies;
+                } else {
+                    return cacheManager.get(cacheManager.RECENT_MOVIES);
                 }
-                return cacheManager.get(cacheManager.RECENT_MOVIES);
             },
         },
         theaters: {
@@ -208,7 +218,7 @@ const scheduleType = new GraphQLObjectType({
         movie: {
             type: MovieType,
             resolve: obj => cacheManager.get(cacheManager.All_MOVIES)
-                .find(({ yahooId }) => obj.yahooId === yahooId) || { yahooId: obj.yahooId, relatedArticles:[] },
+                .find(({ yahooId }) => obj.yahooId === yahooId) || { yahooId: obj.yahooId, relatedArticles: [] },
         },
         timesValues: {
             type: new GraphQLList(GraphQLString),
