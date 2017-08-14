@@ -34,11 +34,21 @@ describe('YahooCrawler', () => {
         });
     });
     describe('getYahooMovieInfo(6794)', () => {
-        it('.should.eventually.be.rejected', function () {
+        it('.summary should include html <br> tag', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(30000);
                 const movieInfo = yield yahooCrawler_1.getYahooMovieInfo(6794);
                 assert.isTrue(movieInfo.summary.indexOf('<br>') !== -1);
+            });
+        });
+    });
+    describe('getYahooMovieInfo(6884)', () => {
+        it('.should parse actors and directors correctly', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const movieInfo = yield yahooCrawler_1.getYahooMovieInfo(6884);
+                movieInfo.actors.length.should.equal(10);
+                movieInfo.directors.length.should.equal(1);
             });
         });
     });

@@ -29,8 +29,8 @@ function getYahooMovieInfo(yahooId) {
             releaseDate: $movieInfoValues.eq(0).text().split('：')[1],
             types: Array.from($movieInfoDiv.find('.level_name_box a')).map(a => $(a).text().trim()),
             runTime: $movieInfoValues.eq(1).text().split('：')[1],
-            directors: Array.from($movieInfoDiv.find('.movie_intro_list').eq(0).children()).map(child => $(child).text().trim()),
-            actors: Array.from($movieInfoDiv.find('.movie_intro_list').eq(1).children()).map(child => $(child).text().trim()),
+            directors: $movieInfoDiv.find('.movie_intro_list').eq(0).text().split('、').map(director => director.trim()),
+            actors: $movieInfoDiv.find('.movie_intro_list').eq(1).text().split('、').map(director => director.trim()),
             launchCompany: $movieInfoValues.eq(2).text().split('：')[1],
             yahooRating: $('.score>.score_num').text(),
             summary
