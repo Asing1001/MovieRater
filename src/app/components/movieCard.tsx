@@ -20,8 +20,15 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         //once it exceed 9999, it need to adjust.
         var pre = ('0000' + yahooId).slice(-4, -2);
         var post = ('0000' + yahooId).slice(-2);
-        console.log(`https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`)
         return `https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`
+    }
+
+    private getAlternateImg(event, posterUrl) {
+        if(event.target.hasError) {
+            return
+        }
+        event.target.hasError = true;        
+        event.target.src = posterUrl;  //posterUrl is around 200k
     }
 
     render() {
@@ -29,7 +36,7 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         return (
             <article style={{ display: 'flex' }}>
                 <Link to={`/movie/${movie.yahooId}`} >
-                    <img src={this.getSmallPosterSrc(movie.yahooId)} />
+                    <img className="cardPoster" src={this.getSmallPosterSrc(movie.yahooId)} alt="Image not found" onError={(event) => this.getAlternateImg(event, movie.posterUrl)} />
                 </Link>
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>
