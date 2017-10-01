@@ -12,14 +12,20 @@ class MovieCard extends React.Component {
         //once it exceed 9999, it need to adjust.
         var pre = ('0000' + yahooId).slice(-4, -2);
         var post = ('0000' + yahooId).slice(-2);
-        console.log(`https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`);
         return `https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`;
+    }
+    getAlternateImg(event, posterUrl) {
+        if (event.target.hasError) {
+            return;
+        }
+        event.target.hasError = true;
+        event.target.src = posterUrl; //posterUrl is around 200k
     }
     render() {
         const { roomTypes, movie, timesStrings } = this.props;
         return (React.createElement("article", { style: { display: 'flex' } },
             React.createElement(react_router_dom_1.Link, { to: `/movie/${movie.yahooId}` },
-                React.createElement("img", { src: this.getSmallPosterSrc(movie.yahooId) })),
+                React.createElement("img", { className: "cardPoster", src: this.getSmallPosterSrc(movie.yahooId), alt: "Image not found", onError: (event) => this.getAlternateImg(event, movie.posterUrl) })),
             React.createElement("div", { className: "col-xs-12" },
                 React.createElement("header", { style: { paddingTop: '.5em' } },
                     React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },

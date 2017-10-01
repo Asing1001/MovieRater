@@ -22,7 +22,7 @@ describe('ezCrawler', () => {
     //   });
     // });
     describe('getAllTheaters', () => {
-        it('should.above(0)', function () {
+        it.skip('should.above(0)', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(30000);
                 const theaters = yield ezCrawler_1.getAllTheaters();

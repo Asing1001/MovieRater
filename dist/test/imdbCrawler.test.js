@@ -23,7 +23,7 @@ describe('imdbCrawler', () => {
                 this.timeout(30000);
                 const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo("Who Killed Cock Robin");
                 movieInfo.should.have.property("imdbID", "tt5576318");
-                movieInfo.should.have.property("imdbRating").above(7);
+                movieInfo.should.have.property("imdbRating").above(6);
             });
         });
         it('getIMDBMovieInfo(" A Silent Voice : The Movie").should.have.property("imdbID","tt5323662"),"imdbRating".above(7)', function () {
