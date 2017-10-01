@@ -24,6 +24,7 @@ For server developement, server run at http://localhost:3003:
 1. Server start
 2. Load data in cache, include recent movie list, all merged data
 3. Start scheduler for crawl yahoo/imdb/ptt
+![](https://github.com/Asing1001/system-diagrams/blob/master/mvrater.jpg?raw=true)
 
 ## Reference
 The project UI is using [Material-UI](https://github.com/callemall/material-ui)

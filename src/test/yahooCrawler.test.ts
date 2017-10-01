@@ -27,10 +27,19 @@ describe('YahooCrawler', () => {
   });
 
   describe('getYahooMovieInfo(6794)', () => {
-    it('.should.eventually.be.rejected', async function () {
+    it('.summary should include html <br> tag', async function () {
       this.timeout(30000);
       const movieInfo: YahooMovie = await getYahooMovieInfo(6794);
       assert.isTrue(movieInfo.summary.indexOf('<br>') !== -1)
+    });
+  });
+
+  describe('getYahooMovieInfo(6884)', () => {
+    it('.should parse actors and directors correctly', async function () {
+      this.timeout(30000);
+      const movieInfo: YahooMovie = await getYahooMovieInfo(6884);
+      movieInfo.actors.length.should.equal(10)
+      movieInfo.directors.length.should.equal(1)
     });
   });
 });
