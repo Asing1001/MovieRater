@@ -184,6 +184,10 @@ a.pttArticleTitle:visited {
     padding-right: 1em
 }
 
+.cardPoster {
+    width: 150px;
+}
+
 @media (max-width: 768px) {
     .resultRatings .ratingWrapper>img {
         width: 20px;
@@ -203,5 +207,8 @@ a.pttArticleTitle:visited {
     .container {
         padding-left: 0;
         padding-right: 0;
+    }    
+    .cardPoster {
+        width: 100px;
     }
 }

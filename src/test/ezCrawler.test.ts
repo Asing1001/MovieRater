@@ -15,7 +15,7 @@ describe('ezCrawler', () => {
   // });
 
   describe('getAllTheaters', () => {
-    it('should.above(0)', async function () {
+    it.skip('should.above(0)', async function () {
       this.timeout(30000);
       const theaters = await getAllTheaters();
       theaters.length.should.above(0);
