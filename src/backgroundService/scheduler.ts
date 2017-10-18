@@ -11,10 +11,12 @@ export function initScheduler() {
         return;
     }
     console.log("[Scheduler] init");
-    setInterval(function () {
-        fetch(systemSetting.websiteUrl).then(res =>
-            console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
-    }, 600000);
+    if (systemSetting.keepAlive) {
+        setInterval(function () {
+            fetch(systemSetting.websiteUrl).then(res =>
+                console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
+        }, 600000);
+    }
 
     scheduleJob('10 * * * *', async function () {
         console.time('[Scheduler] updateYahooMovies');
