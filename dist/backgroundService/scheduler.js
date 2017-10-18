@@ -20,9 +20,11 @@ function initScheduler() {
         return;
     }
     console.log("[Scheduler] init");
-    setInterval(function () {
-        fetch(systemSetting_1.systemSetting.websiteUrl).then(res => console.log(`[Scheduler] Access to website:${systemSetting_1.systemSetting.websiteUrl}, status:${res.status}`));
-    }, 600000);
+    if (systemSetting_1.systemSetting.keepAlive) {
+        setInterval(function () {
+            fetch(systemSetting_1.systemSetting.websiteUrl).then(res => console.log(`[Scheduler] Access to website:${systemSetting_1.systemSetting.websiteUrl}, status:${res.status}`));
+        }, 600000);
+    }
     node_schedule_1.scheduleJob('10 * * * *', function () {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] updateYahooMovies');
