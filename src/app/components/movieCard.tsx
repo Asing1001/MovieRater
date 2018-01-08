@@ -23,20 +23,12 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         return `https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`
     }
 
-    private getAlternateImg(event, posterUrl) {
-        if(event.target.hasError) {
-            return
-        }
-        event.target.hasError = true;        
-        event.target.src = posterUrl;  //posterUrl is around 200k
-    }
-
     render() {
         const { roomTypes, movie, timesStrings } = this.props;
         return (
             <article style={{ display: 'flex' }}>
                 <Link to={`/movie/${movie.yahooId}`} >
-                    <img className="cardPoster" src={this.getSmallPosterSrc(movie.yahooId)} alt="Image not found" onError={(event) => this.getAlternateImg(event, movie.posterUrl)} />
+                    <img className="cardPoster" src={movie.posterUrl} alt="Image not found" />
                 </Link>
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>

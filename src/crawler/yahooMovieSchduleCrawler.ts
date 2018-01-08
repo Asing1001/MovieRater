@@ -1,7 +1,7 @@
 import { getCheerio$ } from '../helper/util';
 import Schedule from '../models/schedule';
 
-const yahooMovieSchduleUrl = 'https://tw.movies.yahoo.com/movietime_result.html?id=';
+const yahooMovieSchduleUrl = 'https://movies.yahoo.com.tw/movietime_result.html?id=';
 export default async function crawlyahooMovieSchdule(yahooId) {
     let schedules: Schedule[] = [];
     try {
