@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const util_1 = require("../helper/util");
-const yahooMovieSchduleUrl = 'https://tw.movies.yahoo.com/movietime_result.html?id=';
+const yahooMovieSchduleUrl = 'https://movies.yahoo.com.tw/movietime_result.html?id=';
 function crawlyahooMovieSchdule(yahooId) {
     return __awaiter(this, void 0, void 0, function* () {
         let schedules = [];
