@@ -13,7 +13,7 @@ class Ratings extends React.Component {
                     : React.createElement("span", null, this.props.movie.imdbRating ? this.props.movie.imdbRating : 'N/A')),
             React.createElement("div", { className: "ratingWrapper" },
                 React.createElement("img", { src: "/public/image/yahoo.png" }),
-                React.createElement("a", { href: "https://tw.movies.yahoo.com/movieinfo_main.html/id=" + this.props.movie.yahooId }, parseInt(this.props.movie.yahooRating) ? this.props.movie.yahooRating : 'N/A')),
+                React.createElement("a", { href: "https://movies.yahoo.com.tw/movieinfo_main.html/id=" + this.props.movie.yahooId }, parseInt(this.props.movie.yahooRating) ? this.props.movie.yahooRating : 'N/A')),
             React.createElement("div", { className: "ratingWrapper hide" },
                 React.createElement("img", { src: "/public/image/rottentomatoes.png" }),
                 this.props.movie.tomatoURL && this.props.movie.tomatoURL !== 'N/A' ? React.createElement("a", { href: this.props.movie.tomatoURL }, this.props.movie.tomatoRating ? this.props.movie.tomatoRating : 'N/A')

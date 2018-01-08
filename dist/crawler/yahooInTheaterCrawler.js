@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const util_1 = require("../helper/util");
-const inTheaterUrl = 'https://tw.movies.yahoo.com/';
+const inTheaterUrl = 'https://movies.yahoo.com.tw/';
 function getInTheaterYahooIds() {
     return __awaiter(this, void 0, void 0, function* () {
         let yahooIds = [];

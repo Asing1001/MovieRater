@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const FormData = require("form-data");
 const util_1 = require("../helper/util");
-const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
+const theaterListUrl = 'https://movies.yahoo.com.tw/theater_list.html';
 function getTheaterList() {
     return __awaiter(this, void 0, void 0, function* () {
         console.time('getTheaterList');

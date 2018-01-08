@@ -5,7 +5,7 @@ const cheerio = require("cheerio");
 const Q = require("q");
 function getYahooMovieInfo(yahooId) {
     const defer = Q.defer();
-    const yahooMovieUrl = 'https://tw.movies.yahoo.com/movieinfo_main.html/id=' + yahooId;
+    const yahooMovieUrl = 'https://movies.yahoo.com.tw/movieinfo_main.html/id=' + yahooId;
     var req = request({ url: yahooMovieUrl, followRedirect: false }, (error, res, body) => {
         if (error) {
             let reason = `error occur when request ${yahooMovieUrl}, error:${error}`;
