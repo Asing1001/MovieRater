@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "engines": {
-    "node": "^6.10.0"
+    "node": "^8.9.4"
   },
   "scripts": {
     "start": "node dist/server.js",
