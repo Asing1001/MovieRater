@@ -4,7 +4,7 @@ import Region from '../models/region';
 import Theater from '../models/theater';
 import { getCheerio$ } from '../helper/util';
 
-const theaterListUrl = 'https://tw.movies.yahoo.com/theater_list.html';
+const theaterListUrl = 'https://movies.yahoo.com.tw/theater_list.html';
 export async function getTheaterList(): Promise<Theater[]> {
     console.time('getTheaterList');
     const regionList = await getRegionList();

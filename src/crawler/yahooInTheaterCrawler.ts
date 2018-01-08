@@ -1,6 +1,6 @@
 import { getCheerio$ } from '../helper/util';
 
-const inTheaterUrl = 'https://tw.movies.yahoo.com/';
+const inTheaterUrl = 'https://movies.yahoo.com.tw/';
 export async function getInTheaterYahooIds() {
     let yahooIds = [];
     try {
