@@ -3,7 +3,7 @@ import { Router } from 'react-router-dom';
 import * as ReactDOM from 'react-dom';
 import App from './components/app';
 import createBrowserHistory from 'history/createBrowserHistory';
-import './main.css';
+import './main.scss';
 import {
   ApolloClient,
   ApolloProvider,
