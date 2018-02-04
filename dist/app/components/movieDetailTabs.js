@@ -90,7 +90,8 @@ let MovieDetailTabs = class MovieDetailTabs extends React.Component {
             return React.createElement(loadingIcon_1.default, { isLoading: loading });
         }
         const movie = helper_1.classifyArticle(movies[0]);
-        return React.createElement(Paper_1.default, { zDepth: 2 },
+        document.title = `${movie.chineseTitle} | MovieRater`;
+        return (React.createElement(Paper_1.default, { zDepth: 2 },
             React.createElement(Tabs_1.Tabs, { onChange: this.handleChange.bind(this), value: this.state.slideIndex },
                 React.createElement(Tabs_1.Tab, { label: "Detail", value: 0 }),
                 React.createElement(Tabs_1.Tab, { label: "Ptt", value: 1 }),
@@ -101,7 +102,7 @@ let MovieDetailTabs = class MovieDetailTabs extends React.Component {
                     React.createElement(movieDetail_1.default, { movie: movie }),
                     React.createElement(pttArticles_1.default, { movie: movie }),
                     React.createElement("div", { className: "col-xs-12", style: { paddingTop: '1em' }, dangerouslySetInnerHTML: { __html: movie.summary } }),
-                    React.createElement(schedules_1.default, { schedules: movie.schedules }))));
+                    React.createElement(schedules_1.default, { schedules: movie.schedules })))));
     }
 };
 MovieDetailTabs = __decorate([

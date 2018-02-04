@@ -5,7 +5,7 @@ const react_router_dom_1 = require("react-router-dom");
 const ReactDOM = require("react-dom");
 const app_1 = require("./components/app");
 const createBrowserHistory_1 = require("history/createBrowserHistory");
-require("./main.css");
+require("./main.scss");
 const react_apollo_1 = require("react-apollo");
 class Root extends React.Component {
     createClient() {

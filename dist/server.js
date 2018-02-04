@@ -55,6 +55,7 @@ app.use('/graphql', (req, res, next) => {
     next();
 });
 app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
+global.document = { title: "Movie Rater" };
 app.use(basicCache, function (req, res, next) {
     global.navigator = { userAgent: req.headers['user-agent'] };
     const client = new react_apollo_1.ApolloClient({
@@ -68,6 +69,7 @@ app.use(basicCache, function (req, res, next) {
     react_apollo_1.renderToStringWithData(app).then(content => {
         const initialState = { apollo: client.getInitialState() };
         const page = swig.renderFile(staticRoot + 'bundles/index.html', {
+            title: global.document.title,
             html: content,
             apolloState: `<script>window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};</script>`
         });

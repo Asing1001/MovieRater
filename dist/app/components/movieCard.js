@@ -22,32 +22,31 @@ class MovieCard extends React.Component {
     }
     render() {
         const { roomTypes, movie, timesStrings } = this.props;
-        return (React.createElement("article", { style: { display: 'flex' } },
+        return (React.createElement("article", { className: "card", style: { display: 'flex' } },
             React.createElement(react_router_dom_1.Link, { to: `/movie/${movie.yahooId}` },
-                React.createElement("img", { className: "cardPoster", src: this.getSmallPosterSrc(movie), alt: "Image not found" })),
+                React.createElement("img", { className: "poster", src: this.getSmallPosterSrc(movie), alt: "Image not found" })),
             React.createElement("div", { className: "col-xs-12" },
                 React.createElement("header", { style: { paddingTop: '.5em' } },
                     React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },
-                        React.createElement("strong", { style: { display: 'flex', alignItems: 'center', lineHeight: '1em' } },
-                            movie.chineseTitle,
-                            roomTypes && roomTypes.length > 0 && React.createElement("span", { style: { marginLeft: '.2em' } }, roomTypes.map((roomType, index) => React.createElement("img", { key: index, src: `https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif` })))),
+                        React.createElement("h3", { className: "title" }, movie.chineseTitle)),
+                    React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },
                         React.createElement("small", null, movie.englishTitle))),
                 React.createElement("div", { className: "resultInfo" },
-                    React.createElement("span", null,
-                        "\u4E0A\u6620\u65E5:",
-                        movie.releaseDate),
-                    React.createElement("span", { className: "hidden-xs" },
-                        "\u985E\u578B:",
-                        movie.types.join('、')),
-                    React.createElement("span", null,
-                        "\u7247\u9577:",
-                        movie.runTime)),
+                    React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },
+                        React.createElement("div", null,
+                            "\u4E0A\u6620\u65E5\u671F\uFF1A",
+                            movie.releaseDate || '未提供'),
+                        React.createElement("div", { className: "hidden-xs" },
+                            "\u985E\u578B\uFF1A",
+                            movie.types.join('、') || '未提供'),
+                        React.createElement("div", null,
+                            "\u7247\u9577\uFF1A",
+                            movie.runTime))),
                 React.createElement(ratings_1.default, { className: "resultRatings", style: { marginTop: ".3em", marginBottom: ".3em" }, movie: movie }),
                 timesStrings && React.createElement(timeList_1.default, { timesStrings: timesStrings }),
-                movie.briefSummary && React.createElement("div", { className: "hidden-xs" },
+                React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` }, movie.briefSummary && React.createElement("div", { className: "hidden-xs" },
                     React.createElement("p", { className: "resultSummary" },
-                        React.createElement("span", { dangerouslySetInnerHTML: { __html: movie.briefSummary } }),
-                        React.createElement(react_router_dom_1.Link, { to: `/movie/${movie.yahooId}` }, " \u7E7C\u7E8C\u95B1\u8B80"))))));
+                        React.createElement("span", { dangerouslySetInnerHTML: { __html: movie.briefSummary } })))))));
     }
     ;
 }
