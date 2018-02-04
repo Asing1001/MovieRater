@@ -50,9 +50,9 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                         </Link>
                     </header>
                     <div className="resultInfo">
-                        <span>上映日:{movie.releaseDate}</span>
-                        <span className="hidden-xs">類型:{movie.types.join('、')}</span>
-                        <span>片長:{movie.runTime}</span>
+                        <div>上映日期：{movie.releaseDate || '未提供'}</div>
+                        <div className="hidden-xs">類型:{movie.types.join('、')}</div>
+                        <div>片長：{movie.runTime}</div>
                     </div>
                     <Ratings className="resultRatings" style={{ marginTop: ".3em", marginBottom: ".3em" }} movie={movie}></Ratings>
                     {timesStrings && <TimeList timesStrings={timesStrings}></TimeList>}
