@@ -1,5 +1,26 @@
 @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
-html, body {
+$tablet-width: 768px;
+$desktop-width: 1024px;
+@mixin mobile {
+    @media (max-width: #{$tablet-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+        @content;
+    }
+}
+
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -105,8 +126,13 @@ input::-ms-clear {
 
 .ratings {
     padding-top: 1em;
-    padding-bottom: 1em;
-    padding-left: 24px;
+    padding-bottom: 1em;    
+    text-align: center;
+    padding-left: 0;
+    @include desktop{
+        text-align: left;
+        padding-left: 24px;
+    }
 }
 
 .ratingWrapper {
@@ -114,38 +140,27 @@ input::-ms-clear {
     min-width: 66px;
     text-align: left;
     .logo {
-        &.ptt{
+        &.ptt {
             background-color: black;
             color: white;
         }
-        &.imdb{
+        &.imdb {
             background: #E3C436;
             color: black;
         }
-        &.yahoo{
+        &.yahoo {
             background: #720E9E;
             color: white;
         }
-        margin-right: 4px;        
+        margin-right: 4px;
         font-size: 0.8em;
         width: 33px;
         height: 32px;
         line-height: 32px;
-        text-align: center;   
-        display: inline-block;     
+        text-align: center;
+        display: inline-block;
         border-radius: 20%;
         font-weight: bolder;
-    }
-    
-    a {
-        color: inherit;
-    }
-}
-
-@media (max-width: 992px) {
-    .ratings {
-        text-align: center;
-        padding-left: 0;
     }
 }
 
@@ -193,7 +208,7 @@ a.pttArticleTitle:visited {
     margin-bottom: .2em;
 }
 
-.resultSummary p{
+.resultSummary p {
     margin: 0;
 }
 
@@ -201,11 +216,21 @@ a.pttArticleTitle:visited {
     padding-right: 1em
 }
 
-.cardPoster {
-    width: 150px;
+.card {
+    .title {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0;
+    }
+    .poster {
+        width: 150px;
+        @include mobile {
+            width: 100px;
+        }
+    }
 }
 
-@media (max-width: 768px) {    
+@media (max-width: 768px) {
     .resultInfo>span {
         padding-right: .5em
     }
@@ -216,8 +241,5 @@ a.pttArticleTitle:visited {
     .container {
         padding-left: 0;
         padding-right: 0;
-    }    
-    .cardPoster {
-        width: 100px;
     }
 }

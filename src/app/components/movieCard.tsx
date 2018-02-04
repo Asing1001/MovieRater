@@ -33,19 +33,19 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
     render() {
         const { roomTypes, movie, timesStrings } = this.props;
         return (
-            <article style={{ display: 'flex' }}>
+            <article className="card" style={{ display: 'flex' }}>
                 <Link to={`/movie/${movie.yahooId}`} >
-                    <img className="cardPoster" src={this.getSmallPosterSrc(movie)} alt="Image not found" />
+                    <img className="poster" src={this.getSmallPosterSrc(movie)} alt="Image not found" />
                 </Link>
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>
                         <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
-                            <strong style={{ display: 'flex', alignItems: 'center', lineHeight: '1em' }}>
+                            <h3 className="title">
                                 {movie.chineseTitle}
-                                {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
+                                {/* {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
                                     {roomTypes.map((roomType, index) => <img key={index} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
-                                </span>}
-                            </strong>
+                                </span>} */}
+                            </h3>
                         </Link>
                         <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
                             <small>{movie.englishTitle}</small>
