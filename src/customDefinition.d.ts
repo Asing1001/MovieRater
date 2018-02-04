@@ -1,5 +1,6 @@
 declare module NodeJS  {
     interface Global {
-        navigator: any
+        navigator: any,
+        document: any
     }
 }

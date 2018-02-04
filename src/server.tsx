@@ -63,6 +63,7 @@ app.use('/graphql', (req, res, next) => {
 })
 app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
+global.document = { title: "Movie Rater" };
 app.use(basicCache, function (req, res, next) {
   global.navigator = { userAgent: req.headers['user-agent'] };
 
@@ -90,6 +91,7 @@ app.use(basicCache, function (req, res, next) {
     const initialState = { apollo: client.getInitialState() };
     const page = swig.renderFile(staticRoot + 'bundles/index.html',
       {
+        title: global.document.title,
         html: content,
         apolloState: `<script>window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};</script>`
       });

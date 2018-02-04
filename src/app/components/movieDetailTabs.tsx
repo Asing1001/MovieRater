@@ -103,7 +103,8 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
       return <LoadingIcon isLoading={loading} />
     }
     const movie = classifyArticle(movies[0]);
-    return <Paper zDepth={2}>
+    document.title = `${movie.chineseTitle} | MovieRater`;
+    return (<Paper zDepth={2}>
       <Tabs
         onChange={this.handleChange.bind(this)}
         value={this.state.slideIndex}
@@ -128,6 +129,6 @@ export default class MovieDetailTabs extends React.Component<any, MovieDetailSta
           <Schedules schedules={movie.schedules}></Schedules>
         </SwipeableViews>
       </div>
-    </Paper>
+    </Paper>)
   }
 }
