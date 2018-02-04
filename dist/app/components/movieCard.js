@@ -8,17 +8,22 @@ class MovieCard extends React.Component {
     constructor(props) {
         super(props);
     }
-    getSmallPosterSrc(yahooId) {
-        //once it exceed 9999, it need to adjust.
-        var pre = ('0000' + yahooId).slice(-4, -2);
-        var post = ('0000' + yahooId).slice(-2);
-        return `https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`;
+    getSmallPosterSrc({ yahooId, posterUrl }) {
+        // "https://s.yimg.com/vu/movies/fp/mpost/64/01/6401.jpg"
+        // "https://movies.yahoo.com.tw/y/r/w158/vu/movies/fp/mpost/64/01/6401.jpg"
+        // "https://movies.yahoo.com.tw/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
+        // "https://movies.yahoo.com.tw/x/r/w158/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
+        if (!posterUrl)
+            return "";
+        let suffix = posterUrl.split('/').slice(3).join('/');
+        let prefix = yahooId > 6961 ? 'x' : 'y';
+        return `https://movies.yahoo.com.tw/${prefix}/r/w158/${suffix}`;
     }
     render() {
         const { roomTypes, movie, timesStrings } = this.props;
         return (React.createElement("article", { style: { display: 'flex' } },
             React.createElement(react_router_dom_1.Link, { to: `/movie/${movie.yahooId}` },
-                React.createElement("img", { className: "cardPoster", src: movie.posterUrl, alt: "Image not found" })),
+                React.createElement("img", { className: "cardPoster", src: this.getSmallPosterSrc(movie), alt: "Image not found" })),
             React.createElement("div", { className: "col-xs-12" },
                 React.createElement("header", { style: { paddingTop: '.5em' } },
                     React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },
