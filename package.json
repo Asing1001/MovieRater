@@ -38,6 +38,7 @@
     "memory-cache": "^0.1.6",
     "moment": "^2.16.0",
     "mongodb": "^2.2.11",
+    "node-sass": "^4.7.2",
     "node-schedule": "^1.2.3",
     "q": "^1.4.1",
     "react": "^15.5.4",
@@ -49,6 +50,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "redis": "^2.7.1",
     "request": "^2.74.0",
+    "sass-loader": "^6.0.6",
     "serve-favicon": "^2.3.2",
     "swig": "^1.4.2"
   },
