@@ -180,6 +180,10 @@ a.pttArticleTitle:visited {
     margin-bottom: .2em;
 }
 
+.resultSummary p{
+    margin: 0;
+}
+
 .resultInfo>span {
     padding-right: 1em
 }
