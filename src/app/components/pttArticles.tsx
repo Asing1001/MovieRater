@@ -31,10 +31,10 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
         return articleList.length === 0 ?
             <h4 style={{ color: '#aaa', textAlign: "center", paddingTop: '18px' }}>找不到相關文章</h4> :
             <List>
-                {articleList.map((article: Article) => {
+                {articleList.map((article: Article, index) => {
                     return <ListItem
                         innerDivStyle={{ paddingLeft: '56px', cursor: 'initial' }}
-                        key={article.url}
+                        key={index}
                         leftAvatar={<span className="pttPush" style={{ color: this.getPttPushColor(article.push) }}>{article.push}</span>}
                         primaryText={<a target="_blank" className="pttArticleTitle" href={'https://www.ptt.cc' + article.url}>{article.title}</a>}
                         secondaryText={<div style={{ color: '#aaa', lineHeight: '1em' }}>{article.date + ' ' + article.author}</div>} />
@@ -57,7 +57,7 @@ class PttArticles extends React.Component<MovieDetailProps, null> {
                 <Tab label={`其他(${this.props.movie.otherArticles.length})`}>
                     {this.getArticleList(this.props.movie.otherArticles)}
                 </Tab>
-            </Tabs>   
+            </Tabs>
         );
     };
 }

@@ -70,7 +70,7 @@ class AppBarSearching extends React.Component<any, any> {
     }
     return (
       <Paper zDepth={2} className={`appBar searching ${this.props.className}`}>
-        <IconButton className="leftBtn" onTouchTap={this.props.onBackSpaceIconClick}><SVGBackSpace /></IconButton>
+        <IconButton className="leftBtn" onTouchTap={e => { e.preventDefault(); this.props.onBackSpaceIconClick() }}><SVGBackSpace /></IconButton>
         <span className="hidden-xs barTitle">上一步</span>
         <span className="searchArea">
           <SVGActionSearch className="hidden-xs searchIcon" />
@@ -86,7 +86,7 @@ class AppBarSearching extends React.Component<any, any> {
             fullWidth={true}
           />
         </span>
-        <IconButton onTouchTap={this.clearSearchText.bind(this)} className="visible-xs rightBtn"><SVGContentClear /></IconButton>
+        <IconButton onTouchTap={e => { e.preventDefault(); this.clearSearchText() }} className="visible-xs rightBtn"><SVGContentClear /></IconButton>
       </Paper>
     );
   }

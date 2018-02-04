@@ -29,13 +29,13 @@ class AppBarNormal extends React.Component<any, any> {
     render() {
         return (
             <Paper zDepth={2} className={`appBar normal ${this.props.className}`} style={normalStyles}>
-                <IconButton className="leftBtn" onTouchTap={() => this.drawerToggle()}><SVGNavigationMenu color={normalStyles.color} /></IconButton>
+                <IconButton className="leftBtn" onTouchTap={e => { e.preventDefault(); this.drawerToggle() }}><SVGNavigationMenu color={normalStyles.color} /></IconButton>
                 <span className="barTitle">{this.state.barTitle}</span>
                 <span onClick={this.props.onSearchIconClick} className="hidden-xs searchArea" style={{ backgroundColor: cyan300 }}>
                     <SVGActionSearch className="searchIcon" color={normalStyles.color} />
                     <span>搜尋電影名稱(中英皆可)</span>
                 </span>
-                <IconButton onTouchTap={this.props.onSearchIconClick} className="visible-xs rightBtn"><SVGActionSearch color={normalStyles.color} /></IconButton>
+                <IconButton onTouchTap={e => { e.preventDefault(); this.props.onSearchIconClick() }} className="visible-xs rightBtn"><SVGActionSearch color={normalStyles.color} /></IconButton>
                 <IconMenu
                     className="sortingBtn"
                     iconButtonElement={
@@ -44,12 +44,12 @@ class AppBarNormal extends React.Component<any, any> {
                     targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 >
-                    <MenuItem primaryText="依IMDB排序" onTouchTap={() => this.props.switchSorting(SortType.imdb)} />
-                    <MenuItem primaryText="依Yahoo排序" onTouchTap={() => this.props.switchSorting(SortType.yahoo)} />
-                    <MenuItem primaryText="依Ptt排序" onTouchTap={() => this.props.switchSorting(SortType.ptt)} />
-                    <MenuItem primaryText="依上映日期排序" onTouchTap={() => this.props.switchSorting(SortType.releaseDate)} />
+                    <MenuItem primaryText="依IMDB排序" onTouchTap={e => { e.preventDefault(); this.props.switchSorting(SortType.imdb) }} />
+                    <MenuItem primaryText="依Yahoo排序" onTouchTap={e => { e.preventDefault(); this.props.switchSorting(SortType.yahoo) }} />
+                    <MenuItem primaryText="依Ptt排序" onTouchTap={e => { e.preventDefault(); this.props.switchSorting(SortType.ptt) }} />
+                    <MenuItem primaryText="依上映日期排序" onTouchTap={e => { e.preventDefault(); this.props.switchSorting(SortType.releaseDate) }} />
                 </IconMenu>
-                <AppDrawer changeTitle={barTitle=>this.setState({barTitle})} ref={instance => this.drawerToggle = instance && instance.toggle} />
+                <AppDrawer changeTitle={barTitle => this.setState({ barTitle })} ref={instance => this.drawerToggle = instance && instance.toggle} />
             </Paper>
         );
     }

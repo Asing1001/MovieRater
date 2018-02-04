@@ -63,10 +63,16 @@ app.use('/graphql', (req, res, next) => {
 })
 app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema, pretty: systemSetting.enableGraphiql, graphiql: systemSetting.enableGraphiql, }))
 
-global.document = { title: "Movie Rater" };
 app.use(basicCache, function (req, res, next) {
   global.navigator = { userAgent: req.headers['user-agent'] };
-
+  global.document = {
+    title: "Movie Rater",
+    meta: {
+      description: "蒐集了IMDB, YAHOO, PTT的電影評價，一目了然讓你不再踩雷",
+      image: "/public/favicons/android-chrome-384x384.png"
+    }
+  };
+  
   const client = new ApolloClient({
     ssrMode: true,
     networkInterface: createLocalInterface(graphql, schema),
@@ -92,6 +98,7 @@ app.use(basicCache, function (req, res, next) {
     const page = swig.renderFile(staticRoot + 'bundles/index.html',
       {
         title: global.document.title,
+        meta: global.document.meta,
         html: content,
         apolloState: `<script>window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};</script>`
       });
