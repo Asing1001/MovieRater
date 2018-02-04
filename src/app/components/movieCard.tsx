@@ -16,11 +16,17 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         super(props)
     }
 
-    private getSmallPosterSrc(yahooId) {
-        //once it exceed 9999, it need to adjust.
-        var pre = ('0000' + yahooId).slice(-4, -2);
-        var post = ('0000' + yahooId).slice(-2);
-        return `https://s.yimg.com/vu/movies/fp/mpost3/${pre}/${post}/${yahooId}.jpg`
+    private getSmallPosterSrc({yahooId, posterUrl}:Movie) {
+        // "https://s.yimg.com/vu/movies/fp/mpost/64/01/6401.jpg"
+        // "https://movies.yahoo.com.tw/y/r/w158/vu/movies/fp/mpost/64/01/6401.jpg"
+        // "https://movies.yahoo.com.tw/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
+        // "https://movies.yahoo.com.tw/x/r/w158/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
+        if(!posterUrl)
+            return "";
+
+        let suffix = posterUrl.split('/').slice(3).join('/')
+        let prefix = yahooId > 6961 ? 'x' : 'y';
+        return `https://movies.yahoo.com.tw/${prefix}/r/w158/${suffix}`        
     }
 
     render() {
@@ -28,7 +34,7 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         return (
             <article style={{ display: 'flex' }}>
                 <Link to={`/movie/${movie.yahooId}`} >
-                    <img className="cardPoster" src={movie.posterUrl} alt="Image not found" />
+                    <img className="cardPoster" src={this.getSmallPosterSrc(movie)} alt="Image not found" />
                 </Link>
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>
