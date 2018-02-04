@@ -90,7 +90,11 @@ let MovieDetailTabs = class MovieDetailTabs extends React.Component {
             return React.createElement(loadingIcon_1.default, { isLoading: loading });
         }
         const movie = helper_1.classifyArticle(movies[0]);
-        document.title = `${movie.chineseTitle} | MovieRater`;
+        document.title = `${movie.chineseTitle} | Movie Rater`;
+        document["meta"] = {
+            image: movie.posterUrl,
+            description: `IMDb:${movie.imdbRating}, Yahoo:${movie.yahooRating}, PTT好雷/普雷/負雷:${movie.goodRateArticles.length}/${movie.normalRateArticles.length}/${movie.badRateArticles.length}`
+        };
         return (React.createElement(Paper_1.default, { zDepth: 2 },
             React.createElement(Tabs_1.Tabs, { onChange: this.handleChange.bind(this), value: this.state.slideIndex },
                 React.createElement(Tabs_1.Tab, { label: "Detail", value: 0 }),
