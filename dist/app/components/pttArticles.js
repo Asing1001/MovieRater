@@ -27,8 +27,8 @@ class PttArticles extends React.Component {
     getArticleList(articleList) {
         return articleList.length === 0 ?
             React.createElement("h4", { style: { color: '#aaa', textAlign: "center", paddingTop: '18px' } }, "\u627E\u4E0D\u5230\u76F8\u95DC\u6587\u7AE0") :
-            React.createElement(List_1.List, null, articleList.map((article) => {
-                return React.createElement(List_1.ListItem, { innerDivStyle: { paddingLeft: '56px', cursor: 'initial' }, key: article.url, leftAvatar: React.createElement("span", { className: "pttPush", style: { color: this.getPttPushColor(article.push) } }, article.push), primaryText: React.createElement("a", { target: "_blank", className: "pttArticleTitle", href: 'https://www.ptt.cc' + article.url }, article.title), secondaryText: React.createElement("div", { style: { color: '#aaa', lineHeight: '1em' } }, article.date + ' ' + article.author) });
+            React.createElement(List_1.List, null, articleList.map((article, index) => {
+                return React.createElement(List_1.ListItem, { innerDivStyle: { paddingLeft: '56px', cursor: 'initial' }, key: index, leftAvatar: React.createElement("span", { className: "pttPush", style: { color: this.getPttPushColor(article.push) } }, article.push), primaryText: React.createElement("a", { target: "_blank", className: "pttArticleTitle", href: 'https://www.ptt.cc' + article.url }, article.title), secondaryText: React.createElement("div", { style: { color: '#aaa', lineHeight: '1em' } }, article.date + ' ' + article.author) });
             }));
     }
     render() {

@@ -69,13 +69,13 @@ let AppBarSearching = class AppBarSearching extends React.Component {
             return null;
         }
         return (React.createElement(Paper_1.default, { zDepth: 2, className: `appBar searching ${this.props.className}` },
-            React.createElement(IconButton_1.default, { className: "leftBtn", onTouchTap: this.props.onBackSpaceIconClick },
+            React.createElement(IconButton_1.default, { className: "leftBtn", onTouchTap: e => { e.preventDefault(); this.props.onBackSpaceIconClick(); } },
                 React.createElement(keyboard_backspace_1.default, null)),
             React.createElement("span", { className: "hidden-xs barTitle" }, "\u4E0A\u4E00\u6B65"),
             React.createElement("span", { className: "searchArea" },
                 React.createElement(search_1.default, { className: "hidden-xs searchIcon" }),
                 React.createElement(AutoComplete_1.default, { hintText: React.createElement("span", null, "\u641C\u5C0B\u96FB\u5F71\u540D\u7A31(\u4E2D\u82F1\u7686\u53EF)"), dataSource: this.props.data.allMoviesNames, filter: AutoComplete_1.default.caseInsensitiveFilter, maxSearchResults: 8, onNewRequest: this.onNewRequest.bind(this), searchText: this.state.searchText, onUpdateInput: this.handleUpdateInput.bind(this), menuStyle: { minWidth: "500px" }, fullWidth: true })),
-            React.createElement(IconButton_1.default, { onTouchTap: this.clearSearchText.bind(this), className: "visible-xs rightBtn" },
+            React.createElement(IconButton_1.default, { onTouchTap: e => { e.preventDefault(); this.clearSearchText(); }, className: "visible-xs rightBtn" },
                 React.createElement(clear_1.default, null))));
     }
 };

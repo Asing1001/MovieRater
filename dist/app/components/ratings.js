@@ -14,10 +14,6 @@ class Ratings extends React.Component {
             React.createElement("div", { className: "ratingWrapper" },
                 React.createElement("span", { className: "yahoo logo" }, "Y!"),
                 React.createElement("a", { href: "https://movies.yahoo.com.tw/movieinfo_main.html/id=" + this.props.movie.yahooId }, parseInt(this.props.movie.yahooRating) ? this.props.movie.yahooRating : 'N/A')),
-            React.createElement("div", { className: "ratingWrapper hide" },
-                React.createElement("img", { src: "/public/image/rottentomatoes.png" }),
-                this.props.movie.tomatoURL && this.props.movie.tomatoURL !== 'N/A' ? React.createElement("a", { href: this.props.movie.tomatoURL }, this.props.movie.tomatoRating ? this.props.movie.tomatoRating : 'N/A')
-                    : React.createElement("span", null, this.props.movie.tomatoRating ? this.props.movie.tomatoRating : 'N/A')),
             React.createElement("div", { className: "ratingWrapper" },
                 React.createElement("span", { className: "ptt logo" }, "PTT"),
                 React.createElement("span", { className: "hint--bottom", "aria-label": "(好雷/普雷/負雷)" },
