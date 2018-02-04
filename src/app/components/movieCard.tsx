@@ -16,17 +16,18 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         super(props)
     }
 
-    private getSmallPosterSrc({yahooId, posterUrl}:Movie) {
+    private getSmallPosterSrc({ yahooId, posterUrl }: Movie) {
         // "https://s.yimg.com/vu/movies/fp/mpost/64/01/6401.jpg"
         // "https://movies.yahoo.com.tw/y/r/w158/vu/movies/fp/mpost/64/01/6401.jpg"
         // "https://movies.yahoo.com.tw/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
         // "https://movies.yahoo.com.tw/x/r/w158/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
-        if(!posterUrl)
+        if (!posterUrl)
             return "";
 
-        let suffix = posterUrl.split('/').slice(3).join('/')
-        let prefix = yahooId > 6961 ? 'x' : 'y';
-        return `https://movies.yahoo.com.tw/${prefix}/r/w158/${suffix}`        
+        const suffix = posterUrl.split('/').slice(3).join('/');
+        const isOldDomain = posterUrl.indexOf('s.yimg.com') !== -1;
+        const prefix = yahooId < 6962 && isOldDomain ? 'y' : 'x';
+        return `https://movies.yahoo.com.tw/${prefix}/r/w158/${suffix}`
     }
 
     render() {
