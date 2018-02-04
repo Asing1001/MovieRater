@@ -40,7 +40,7 @@ class AppDrawer extends React.Component<{ changeTitle: Function }, { open: Boole
                 <List>
                     {menus.map(({ url, icon, text }, index) =>
                         <Link to={url} key={index}>
-                            <ListItem onTouchTap={(e) => { e.preventDefault(); this.handleTouchTap(text) }} leftIcon={icon}>{text}</ListItem>
+                            <ListItem onTouchTap={e => { this.handleTouchTap(text) }} leftIcon={icon}>{text}</ListItem>
                         </Link>)}
                 </List>
             </Drawer>
