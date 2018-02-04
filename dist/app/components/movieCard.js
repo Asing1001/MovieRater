@@ -15,8 +15,9 @@ class MovieCard extends React.Component {
         // "https://movies.yahoo.com.tw/x/r/w158/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
         if (!posterUrl)
             return "";
-        let suffix = posterUrl.split('/').slice(3).join('/');
-        let prefix = yahooId > 6961 ? 'x' : 'y';
+        const suffix = posterUrl.split('/').slice(3).join('/');
+        const isOldDomain = posterUrl.indexOf('s.yimg.com') !== -1;
+        const prefix = yahooId < 6962 && isOldDomain ? 'y' : 'x';
         return `https://movies.yahoo.com.tw/${prefix}/r/w158/${suffix}`;
     }
     render() {
