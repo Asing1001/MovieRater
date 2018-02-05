@@ -14,4 +14,5 @@ export default class Theater {
     regionIndex?: number
     location?: Location
     distance?: number
+    scheduleUrl?: string
 }

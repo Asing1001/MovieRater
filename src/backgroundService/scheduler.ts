@@ -34,11 +34,11 @@ export function initScheduler() {
         cacheManager.setInTheaterMoviesCache();
     });
 
-    // scheduleJob('30 5 * * *', async function () {
-    //     console.time('[Scheduler] updateTheaterWithLocationList');
-    //     await updateTheaterWithLocationList();
-    //     console.timeEnd('[Scheduler] updateTheaterWithLocationList');
-    // });
+    scheduleJob('30 5 * * *', async function () {
+        console.time('[Scheduler] updateTheaterWithLocationList');
+        await updateTheaterWithLocationList();
+        console.timeEnd('[Scheduler] updateTheaterWithLocationList');
+    });
 
     scheduleJob('40 5 * * *', async function () {
         console.time('[Scheduler] cacheManager.init');
