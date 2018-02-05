@@ -24,14 +24,12 @@ export async function getRegionList(): Promise<Region[]> {
         };
     });
 
-    //remove first option "選擇地區"
-    regionList.shift();
     return regionList;
 }
 
 export async function getTheaterListByRegion({ name: regionName, regionId }, index) {
     const $ = await getCheerio$(`${theaterListUrl}${regionId}/`);
-    let theaterList:Theater[] = [];
+    let theaterList: Theater[] = [];
     let subRegion = regionName;
     Array.from($('#theaterList>li')).forEach(li => {
         const $li = $(li);
@@ -39,12 +37,12 @@ export async function getTheaterListByRegion({ name: regionName, regionId }, ind
             subRegion = $li.text().trim().slice(0, -1);
         }
         else {
-            const theaterInfo = $li.text().trim().replace(/\s+/g,',').split(',');
+            const theaterInfo = $li.text().trim().replace(/\s+/g, ',').split(',');
             theaterList.push({
                 name: theaterInfo[0],
                 url: $li.find('a[target]').attr('href').split('weblink=')[1],
                 scheduleUrl: $li.find('a').attr('href'),
-                address: theaterInfo[3],
+                address: theaterInfo.slice(-2, -1)[0],
                 phone: theaterInfo[1],
                 region: regionName,
                 regionIndex: index,
