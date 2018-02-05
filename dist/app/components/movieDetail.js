@@ -1,16 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
+const share_1 = require("material-ui/svg-icons/social/share");
+const IconButton_1 = require("material-ui/IconButton");
 const Table_1 = require("material-ui/Table");
 const ratings_1 = require("./ratings");
 class MovieDetail extends React.Component {
     constructor(props) {
         super(props);
     }
+    share() {
+        navigator["share"]({
+            title: document.title,
+            text: document["meta"].description,
+            url: location.href,
+        })
+            .then(() => console.log('Successful share'))
+            .catch((error) => console.log('Error sharing', error));
+    }
     render() {
         return (React.createElement("div", null,
             React.createElement("div", { className: "col-md-8 col-xs-12 pull-right" },
-                React.createElement(ratings_1.default, { className: "ratings", movie: this.props.movie }),
+                React.createElement(ratings_1.default, { className: "ratings", movie: this.props.movie }, navigator['share'] || React.createElement(IconButton_1.default, { style: { position: 'absolute', top: '3px', right: 0 }, onTouchTap: e => { e.preventDefault(); this.share(); } },
+                    React.createElement(share_1.default, { color: "#9E9E9E" }))),
                 React.createElement(Table_1.Table, { className: "movieDetail", selectable: false },
                     React.createElement(Table_1.TableBody, { displayRowCheckbox: false },
                         React.createElement(Table_1.TableRow, null,

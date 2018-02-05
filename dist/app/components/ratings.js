@@ -21,7 +21,8 @@ class Ratings extends React.Component {
                     "/",
                     this.props.movie.normalRateArticles.length,
                     "/",
-                    this.props.movie.badRateArticles.length))));
+                    this.props.movie.badRateArticles.length)),
+            this.props.children));
     }
     ;
 }
