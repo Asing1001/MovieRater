@@ -14,17 +14,17 @@ const theaterCrawler_1 = require("../crawler/theaterCrawler");
 chai.use(sinonChai);
 const should = chai.should();
 describe('theaterCrawler', () => {
-    describe('getTheaterListByRegion(18)', () => {
-        it.skip('length.should.eq(1)', function () {
+    describe('getTheaterListByRegion(a02)', () => {
+        it('length.should.eq(1)', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(20000);
-                let theaterList = yield theaterCrawler_1.getTheaterListByRegion({ yahooRegionId: 18, name: "" }, 1);
+                let theaterList = yield theaterCrawler_1.getTheaterListByRegion({ regionId: 'a01', name: "基隆" }, 1);
                 theaterList.length.should.eq(1);
             });
         });
     });
     describe('getRegionList()', () => {
-        it.skip('length.should.above(0)', function () {
+        it('length.should.above(0)', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(20000);
                 let regionList = yield theaterCrawler_1.getRegionList();
