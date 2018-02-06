@@ -29,7 +29,7 @@ class MovieDetail extends React.Component<MovieDetailProps, {}> {
             <div>
                 <div className="col-md-8 col-xs-12 pull-right">
                     <Ratings className="ratings" movie={this.props.movie}>
-                        {navigator['share'] ||<IconButton style={{ position: 'absolute', top: '3px', right: 0 }} onTouchTap={e => { e.preventDefault(); this.share() }}><SVGSocialShare color={"#9E9E9E"} /></IconButton>}
+                        {navigator['share'] && <IconButton style={{ position: 'absolute', top: '3px', right: 0 }} onTouchTap={e => { e.preventDefault(); this.share() }}><SVGSocialShare color={"#9E9E9E"} /></IconButton>}
                     </Ratings>
                     <Table className="movieDetail"
                         selectable={false}
