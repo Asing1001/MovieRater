@@ -9,16 +9,16 @@ const should = chai.should();
 
 
 describe('theaterCrawler', () => {
-  describe('getTheaterListByRegion(18)', () => {
-    it.skip('length.should.eq(1)', async function () {
+  describe('getTheaterListByRegion(a02)', () => {
+    it('length.should.eq(1)', async function () {
       this.timeout(20000);
-      let theaterList = await getTheaterListByRegion({ yahooRegionId: 18, name: "" }, 1);
+      let theaterList = await getTheaterListByRegion({ regionId: 'a01', name: "基隆" }, 1);
       theaterList.length.should.eq(1);
     });
   });
 
   describe('getRegionList()', () => {
-    it.skip('length.should.above(0)', async function () {
+    it('length.should.above(0)', async function () {
       this.timeout(20000);
       let regionList = await getRegionList();
       regionList.length.should.above(0);

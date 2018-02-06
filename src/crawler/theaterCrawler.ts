@@ -4,7 +4,7 @@ import Region from '../models/region';
 import Theater from '../models/theater';
 import { getCheerio$ } from '../helper/util';
 
-const theaterListUrl = 'https://movies.yahoo.com.tw/theater_list.html';
+const theaterListUrl = 'http://www.atmovies.com.tw/showtime/';
 export async function getTheaterList(): Promise<Theater[]> {
     console.time('getTheaterList');
     const regionList = await getRegionList();
@@ -16,44 +16,39 @@ export async function getTheaterList(): Promise<Theater[]> {
 
 export async function getRegionList(): Promise<Region[]> {
     const $ = await getCheerio$(theaterListUrl);
-    const regionList = Array.from($('#area>option')).map((option) => {
-        const $option = $(option);
+    const regionList = Array.from($('map > [shape=rect]')).map((area) => {
+        const $area = $(area);
         return {
-            name: $option.text(),
-            yahooRegionId: $option.val(),
+            name: $area.attr('alt'),
+            regionId: $area.attr('href').substr(10, 3),
         };
     });
 
-    //remove first option "選擇地區"
-    regionList.shift();
     return regionList;
 }
 
-export async function getTheaterListByRegion({ name: regionName, yahooRegionId }, index) {
-    var form = new FormData();
-    form.append('area', yahooRegionId);
-    const request = new Request(theaterListUrl, {
-        method: 'POST',
-        body: form
-    });
-    const $ = await getCheerio$(request);
-    let theaterList = [];
-    Array.from($('#ymvthl .group')).forEach(theaterGroup => {
-        const $theaterGroup = $(theaterGroup);
-        const subRegion = $theaterGroup.find('.hd').text();
-        theaterList = theaterList.concat(Array.from($theaterGroup.find('tbody>tr')).map(theaterRow => {
-            const $theaterRow = $(theaterRow);
-            const theater: Theater = {
-                name: $theaterRow.find('a').text(),
-                url: $theaterRow.find('a').attr('href').split('*')[1],
-                address: $theaterRow.find('td:nth-child(2)').contents()[0].nodeValue,
-                phone: $theaterRow.find('em').text(),
+export async function getTheaterListByRegion({ name: regionName, regionId }, index) {
+    const $ = await getCheerio$(`${theaterListUrl}${regionId}/`);
+    let theaterList: Theater[] = [];
+    let subRegion = regionName;
+    Array.from($('#theaterList>li')).forEach(li => {
+        const $li = $(li);
+        if ($li.hasClass('type0')) {
+            subRegion = $li.text().trim().slice(0, -1);
+        }
+        else {
+            const theaterInfo = $li.text().trim().replace(/\s+/g, ',').split(',');
+            theaterList.push({
+                name: theaterInfo[0],
+                url: $li.find('a[target]').attr('href').split('weblink=')[1],
+                scheduleUrl: $li.find('a').attr('href'),
+                address: theaterInfo.slice(-2, -1)[0],
+                phone: theaterInfo[1],
                 region: regionName,
-                regionIndex : index,
+                regionIndex: index,
                 subRegion
-            };
-            return theater;
-        }));
+            })
+        }
     });
 
     return theaterList;

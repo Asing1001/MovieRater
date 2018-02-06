@@ -33,6 +33,7 @@ class Ratings extends React.Component<MovieDetailProps, {}> {
                         {this.props.movie.goodRateArticles.length}/{this.props.movie.normalRateArticles.length}/{this.props.movie.badRateArticles.length}
                     </span>
                 </div>
+                    {this.props.children}
             </div>
         );
     };

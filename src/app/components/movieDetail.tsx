@@ -1,4 +1,6 @@
 import * as React from 'react';
+import SVGSocialShare from 'material-ui/svg-icons/social/share';
+import IconButton from 'material-ui/IconButton';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Movie from '../../models/movie';
 import Ratings from './ratings';
@@ -12,14 +14,26 @@ class MovieDetail extends React.Component<MovieDetailProps, {}> {
         super(props)
     }
 
+    share() {
+        navigator["share"]({
+            title: document.title,
+            text: document["meta"].description,
+            url: location.href,
+        })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error));
+    }
+
     render() {
         return (
             <div>
-                <div className="col-md-8 col-xs-12 pull-right">                    
-                    <Ratings className="ratings" movie={this.props.movie}></Ratings>                    
+                <div className="col-md-8 col-xs-12 pull-right">
+                    <Ratings className="ratings" movie={this.props.movie}>
+                        {navigator['share'] && <IconButton style={{ position: 'absolute', top: '3px', right: 0 }} onTouchTap={e => { e.preventDefault(); this.share() }}><SVGSocialShare color={"#9E9E9E"} /></IconButton>}
+                    </Ratings>
                     <Table className="movieDetail"
                         selectable={false}
-                        >
+                    >
                         <TableBody
                             displayRowCheckbox={false}>
                             <TableRow>
