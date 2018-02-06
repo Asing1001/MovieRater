@@ -31,6 +31,8 @@ function getRegionList() {
                 regionId: $area.attr('href').substr(10, 3),
             };
         });
+        //remove first option "選擇地區"
+        regionList.shift();
         return regionList;
     });
 }
@@ -51,7 +53,7 @@ function getTheaterListByRegion({ name: regionName, regionId }, index) {
                     name: theaterInfo[0],
                     url: $li.find('a[target]').attr('href').split('weblink=')[1],
                     scheduleUrl: $li.find('a').attr('href'),
-                    address: theaterInfo.slice(-2, -1)[0],
+                    address: theaterInfo[3],
                     phone: theaterInfo[1],
                     region: regionName,
                     regionIndex: index,

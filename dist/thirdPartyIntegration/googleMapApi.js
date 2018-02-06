@@ -12,7 +12,7 @@ function getGeoLocation(address) {
             key: systemSetting_1.googleApiSetting.geoApiKey
         });
         googleMapsClient.geocode({
-            address: address.split('(')[0],
+            address,
             region: 'tw'
         }, function (err, response) {
             if (err) {
