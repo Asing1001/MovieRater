@@ -21,7 +21,7 @@ class MovieDetail extends React.Component {
     render() {
         return (React.createElement("div", null,
             React.createElement("div", { className: "col-md-8 col-xs-12 pull-right" },
-                React.createElement(ratings_1.default, { className: "ratings", movie: this.props.movie }, navigator['share'] || React.createElement(IconButton_1.default, { style: { position: 'absolute', top: '3px', right: 0 }, onTouchTap: e => { e.preventDefault(); this.share(); } },
+                React.createElement(ratings_1.default, { className: "ratings", movie: this.props.movie }, navigator['share'] && React.createElement(IconButton_1.default, { style: { position: 'absolute', top: '3px', right: 0 }, onTouchTap: e => { e.preventDefault(); this.share(); } },
                     React.createElement(share_1.default, { color: "#9E9E9E" }))),
                 React.createElement(Table_1.Table, { className: "movieDetail", selectable: false },
                     React.createElement(Table_1.TableBody, { displayRowCheckbox: false },
