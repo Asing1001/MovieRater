@@ -2,10 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const theater_1 = require("../models/theater");
 class Schedule {
-    constructor(yahooId = 0, theaterName = "", timesValues = [], timesStrings = [], theaterExtension = new theater_1.default()) {
-        this.yahooId = yahooId;
+    constructor(scheduleUrl = "", theaterName = "", timesStrings = [], theaterExtension = new theater_1.default()) {
+        this.scheduleUrl = scheduleUrl;
         this.theaterName = theaterName;
-        this.timesValues = timesValues;
         this.timesStrings = timesStrings;
         this.theaterExtension = theaterExtension;
     }

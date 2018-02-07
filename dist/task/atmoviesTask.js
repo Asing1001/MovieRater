@@ -8,20 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const chai = require("chai");
-const yahooInTheaterCrawler_1 = require("../crawler/yahooInTheaterCrawler");
-const should = chai.should();
-const assert = chai.assert;
-describe('yahooInTheaterCrawler', () => {
-    describe('getInTheaterYahooIds', () => {
-        it.skip('should.above(0)', function () {
-            return __awaiter(this, void 0, void 0, function* () {
-                this.timeout(30000);
-                const yahooIds = yield yahooInTheaterCrawler_1.getInTheaterYahooIds();
-                yahooIds.length.should.above(0);
-                assert.isFalse(isNaN(yahooIds[0]));
-            });
-        });
+const movieSchduleCrawler_1 = require("../crawler/movieSchduleCrawler");
+function getMoviesSchedules(scheduleUrls) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let schedulesPromise = scheduleUrls.map(scheduleUrl => movieSchduleCrawler_1.default(scheduleUrl));
+        const schedules = yield Promise.all(schedulesPromise);
+        const allSchedules = [].concat(...schedules);
+        return allSchedules;
     });
-});
-//# sourceMappingURL=yahooInTheaterCrawler.test.js.map
+}
+exports.getMoviesSchedules = getMoviesSchedules;
+//# sourceMappingURL=atmoviesTask.js.map

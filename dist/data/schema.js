@@ -160,7 +160,7 @@ const MovieType = new graphql_1.GraphQLObjectType({
             type: new graphql_1.GraphQLList(scheduleType),
             resolve: (obj) => __awaiter(this, void 0, void 0, function* () {
                 const moviesSchedules = cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES);
-                return moviesSchedules.filter((schedule) => schedule.yahooId == obj.yahooId);
+                return moviesSchedules.filter((schedule) => schedule.movieName == obj.chineseTitle);
             }),
         }
     })
@@ -213,8 +213,8 @@ const scheduleType = new graphql_1.GraphQLObjectType({
         },
         movie: {
             type: MovieType,
-            resolve: obj => cacheManager_1.default.get(cacheManager_1.default.All_MOVIES)
-                .find(({ yahooId }) => obj.yahooId === yahooId) || { yahooId: obj.yahooId, relatedArticles: [] },
+            resolve: (obj) => cacheManager_1.default.get(cacheManager_1.default.All_MOVIES)
+                .find(({ chineseTitle }) => obj.movieName === chineseTitle),
         },
         timesValues: {
             type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
@@ -230,8 +230,8 @@ const scheduleType = new graphql_1.GraphQLObjectType({
         },
         theaterExtension: {
             type: TheaterType,
-            resolve: obj => {
-                return cacheManager_1.default.get(cacheManager_1.default.THEATERS).find(({ name }) => name === obj.theaterName);
+            resolve: (obj) => {
+                return cacheManager_1.default.get(cacheManager_1.default.THEATERS).find(({ scheduleUrl }) => scheduleUrl === obj.scheduleUrl);
             }
         }
     })
@@ -274,9 +274,13 @@ const TheaterType = new graphql_1.GraphQLObjectType({
         },
         schedules: {
             type: new graphql_1.GraphQLList(scheduleType),
-            resolve: obj => cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES).filter(({ theaterName }) => {
-                return theaterName === obj.name;
-            })
+            resolve: obj => {
+                let movieSchedules = cacheManager_1.default.get(cacheManager_1.default.MOVIES_SCHEDULES);
+                movieSchedules = movieSchedules.filter(({ scheduleUrl }) => {
+                    return scheduleUrl === obj.scheduleUrl;
+                });
+                return movieSchedules;
+            }
         }
     })
 });

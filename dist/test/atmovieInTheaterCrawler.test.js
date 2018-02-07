@@ -8,20 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = require("../helper/util");
-const inTheaterUrl = 'https://movies.yahoo.com.tw/';
-function getInTheaterYahooIds() {
-    return __awaiter(this, void 0, void 0, function* () {
-        let yahooIds = [];
-        try {
-            const $ = yield util_1.getCheerio$(inTheaterUrl);
-            yahooIds = Array.from($('select.auto[name="id"]').find('option[value!=""]')).map((option) => parseInt($(option).val()));
-        }
-        catch (error) {
-            console.error(error);
-        }
-        return yahooIds;
+const chai = require("chai");
+const atmovieInTheaterCrawler_1 = require("../crawler/atmovieInTheaterCrawler");
+const should = chai.should();
+const assert = chai.assert;
+describe('atmovieInTheaterCrawler', () => {
+    describe('getInTheaterMovieNames', () => {
+        it('should.above(0)', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const movieNames = yield atmovieInTheaterCrawler_1.getInTheaterMovieNames();
+                movieNames.length.should.above(0);
+            });
+        });
     });
-}
-exports.getInTheaterYahooIds = getInTheaterYahooIds;
-//# sourceMappingURL=yahooInTheaterCrawler.js.map
+});
+//# sourceMappingURL=atmovieInTheaterCrawler.test.js.map
