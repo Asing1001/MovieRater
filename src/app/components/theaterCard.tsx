@@ -22,15 +22,12 @@ class TheaterCard extends React.Component<any, any> {
         let roomTypes = this.props.roomTypes;
         return (
             <div>
-                {/* <Link style={{ color: 'inherit' }} to={`/theater/${name}`}> */}
+                <Link style={{ color: 'inherit' }} to={`/theater/${name}`}>
                     <h5 style={{ marginBottom: "-.2em", fontSize: "16px" }}>
                         {name}
                     </h5>
-                {/* </Link> */}
-                <div style={{ paddingTop: '0.5em', display: 'flex', alignItems: 'center' }}>
-                    {roomTypes && roomTypes.length > 0 && <span style={theaterCardStyle}>
-                        {roomTypes.map(roomType => <img key={roomType} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
-                    </span>}                    
+                </Link>
+                <div style={{ paddingTop: '0.5em', display: 'flex', alignItems: 'center' }}>                                        
                     {phone && <a href={`tel:${phone}`}
                         style={{ whiteSpace: 'nowrap', ...theaterCardStyle }}>
                         <span><SVGCommunicationCall color={grey500} viewBox={'0 0 30 24'} /></span>{phone}
@@ -39,6 +36,9 @@ class TheaterCard extends React.Component<any, any> {
                         style={theaterCardStyle}>
                         <span><SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} /></span>{distance ? ` ${distance} km` : address}
                     </a>
+                    {roomTypes && roomTypes.length > 0 && <span className="roomType" style={theaterCardStyle}>
+                        {roomTypes.map(roomType => roomType)}
+                    </span>}
                 </div>
             </div>
         );

@@ -161,7 +161,7 @@ const MovieType = new GraphQLObjectType({
             type: new GraphQLList(scheduleType),
             resolve: async (obj) => {
                 const moviesSchedules = cacheManager.get(cacheManager.MOVIES_SCHEDULES);
-                return moviesSchedules.filter((schedule: Schedule) => schedule.yahooId == obj.yahooId);
+                return moviesSchedules.filter((schedule: Schedule) => schedule.movieName == obj.chineseTitle);
             },
         }
     })
@@ -217,8 +217,8 @@ const scheduleType = new GraphQLObjectType({
         },
         movie: {
             type: MovieType,
-            resolve: obj => cacheManager.get(cacheManager.All_MOVIES)
-                .find(({ yahooId }) => obj.yahooId === yahooId) || { yahooId: obj.yahooId, relatedArticles: [] },
+            resolve: (obj: Schedule) => cacheManager.get(cacheManager.All_MOVIES)
+                .find(({ chineseTitle }: Movie) => obj.movieName === chineseTitle),
         },
         timesValues: {
             type: new GraphQLList(GraphQLString),
@@ -234,8 +234,8 @@ const scheduleType = new GraphQLObjectType({
         },
         theaterExtension: {
             type: TheaterType,
-            resolve: obj => {
-                return cacheManager.get(cacheManager.THEATERS).find(({ name }) => name === obj.theaterName)
+            resolve: (obj: Schedule) => {
+                return cacheManager.get(cacheManager.THEATERS).find(({ scheduleUrl }) => scheduleUrl === obj.scheduleUrl)
             }
         }
     })
@@ -279,9 +279,13 @@ const TheaterType = new GraphQLObjectType({
         },
         schedules: {
             type: new GraphQLList(scheduleType),
-            resolve: obj => cacheManager.get(cacheManager.MOVIES_SCHEDULES).filter(({ theaterName }: Schedule) => {
-                return theaterName === obj.name
-            })
+            resolve: obj => {
+                let movieSchedules = cacheManager.get(cacheManager.MOVIES_SCHEDULES);
+                movieSchedules = movieSchedules.filter(({ scheduleUrl }: Schedule) => {
+                    return scheduleUrl === obj.scheduleUrl
+                })
+                return movieSchedules
+            }
         }
     })
 })

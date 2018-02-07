@@ -4,10 +4,10 @@ import * as Q from "q";
 import { mergeData } from '../crawler/mergeData';
 import * as moment from 'moment';
 import Movie from '../models/movie';
-import { getInTheaterYahooIds } from '../crawler/yahooInTheaterCrawler';
-import crawlyahooMovieSchdule from '../crawler/yahooMovieSchduleCrawler';
+import { getInTheaterMovieNames } from '../crawler/atmovieInTheaterCrawler';
+import crawlMovieSchdule from '../crawler/movieSchduleCrawler';
 import { roughSizeOfObject } from '../helper/util';
-import { getMoviesSchedules } from '../task/yahooTask';
+import { getMoviesSchedules } from '../task/atmoviesTask';
 
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
@@ -58,27 +58,34 @@ export default class cacheManager {
     }
 
     public static async setInTheaterMoviesCache() {
-        // const yahooIds = await getInTheaterYahooIds();
-        // if (yahooIds.length > 0) {
-        await cacheManager.setRecentMoviesCache([]);
-        await cacheManager.setMoviesSchedulesCache([])
-        // }
+        const movieNames = await getInTheaterMovieNames();
+        if (movieNames.length > 0) {
+            await cacheManager.setRecentMoviesCache(movieNames);
+        }
+        await cacheManager.setMoviesSchedulesCache()
     }
 
-    public static async setMoviesSchedulesCache(yahooIds) {
+    public static async setMoviesSchedulesCache() {
         console.time('setMoviesSchedulesCache');
-        const allSchedules = []//await getMoviesSchedules(yahooIds);
-        cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+        try {
+            const scheduleUrls = await db.dbConnection.collection("theaters").find({}, { scheduleUrl: 1, _id: 0 }).toArray();
+            const allSchedules = await getMoviesSchedules(scheduleUrls.map(s => s.scheduleUrl));
+            const recentMovieChineseTitles: string[] = cacheManager.get(cacheManager.RECENT_MOVIES).map(movie => movie.chineseTitle);
+            const filterdSchedules = allSchedules.filter(schedule => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1);
+            cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);
+        } catch (ex) {
+            console.error(ex)
+        }
         console.timeEnd('setMoviesSchedulesCache');
     }
 
-    private static async setRecentMoviesCache(yahooIds) {
+    private static async setRecentMoviesCache(movieNames) {
         console.time('setRecentMoviesCache');
         let today = moment();
         let sixtyDaysBefore = moment().subtract(60, 'days');
         let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-            // .filter(({ yahooId, releaseDate }: Movie) => yahooIds.indexOf(yahooId) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
-            .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
+            .filter(({ chineseTitle, releaseDate }: Movie) => movieNames.indexOf(chineseTitle) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
+        // .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
         cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
         console.timeEnd('setRecentMoviesCache');
     }

@@ -42,9 +42,9 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                         <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
                             <h3 className="title">
                                 {movie.chineseTitle}
-                                {/* {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
-                                    {roomTypes.map((roomType, index) => <img key={index} src={`https://s.yimg.com/f/i/tw/movie/movietime_icon/icon_${roomType}.gif`} />)}
-                                </span>} */}
+                                {roomTypes && roomTypes.length > 0 && <span style={{ marginLeft: '.2em' }}>
+                                    {roomTypes.map((roomType, index) => roomType)}
+                                </span>}
                             </h3>
                         </Link>
                         <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
@@ -64,8 +64,8 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
                     <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`} >
                         {movie.briefSummary && <div className="hidden-xs">
                             <p className="resultSummary">
-                                <span dangerouslySetInnerHTML={{ __html: movie.briefSummary }}></span>                                
-                        </p>
+                                <span dangerouslySetInnerHTML={{ __html: movie.briefSummary }}></span>
+                            </p>
                         </div>}
                     </Link>
                 </div>
