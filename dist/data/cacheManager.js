@@ -12,7 +12,9 @@ const memoryCache = require("memory-cache");
 const db_1 = require("../data/db");
 const mergeData_1 = require("../crawler/mergeData");
 const moment = require("moment");
+const atmovieInTheaterCrawler_1 = require("../crawler/atmovieInTheaterCrawler");
 const util_1 = require("../helper/util");
+const atmoviesTask_1 = require("../task/atmoviesTask");
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -57,28 +59,37 @@ class cacheManager {
     }
     static setInTheaterMoviesCache() {
         return __awaiter(this, void 0, void 0, function* () {
-            // const yahooIds = await getInTheaterYahooIds();
-            // if (yahooIds.length > 0) {
-            yield cacheManager.setRecentMoviesCache([]);
-            yield cacheManager.setMoviesSchedulesCache([]);
-            // }
+            const movieNames = yield atmovieInTheaterCrawler_1.getInTheaterMovieNames();
+            if (movieNames.length > 0) {
+                yield cacheManager.setRecentMoviesCache(movieNames);
+            }
+            yield cacheManager.setMoviesSchedulesCache();
         });
     }
-    static setMoviesSchedulesCache(yahooIds) {
+    static setMoviesSchedulesCache() {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('setMoviesSchedulesCache');
-            const allSchedules = []; //await getMoviesSchedules(yahooIds);
-            cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+            try {
+                const scheduleUrls = yield db_1.db.dbConnection.collection("theaters").find({}, { scheduleUrl: 1, _id: 0 }).toArray();
+                const allSchedules = yield atmoviesTask_1.getMoviesSchedules(scheduleUrls.map(s => s.scheduleUrl));
+                const recentMovieChineseTitles = cacheManager.get(cacheManager.RECENT_MOVIES).map(movie => movie.chineseTitle);
+                const filterdSchedules = allSchedules.filter(schedule => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1);
+                cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);
+            }
+            catch (ex) {
+                console.error(ex);
+            }
             console.timeEnd('setMoviesSchedulesCache');
         });
     }
-    static setRecentMoviesCache(yahooIds) {
+    static setRecentMoviesCache(movieNames) {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('setRecentMoviesCache');
             let today = moment();
             let sixtyDaysBefore = moment().subtract(60, 'days');
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(({ yahooId, releaseDate }) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'));
+                .filter(({ chineseTitle, releaseDate }) => movieNames.indexOf(chineseTitle) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
+            // .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
             cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
         });

@@ -41,6 +41,7 @@ query TheaterDetail($theaterName:String){
                 imdbID
                 yahooRating
                 imdbRating
+                types
                 relatedArticles {
                     title
                 }

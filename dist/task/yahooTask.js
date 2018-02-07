@@ -10,19 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const theaterCrawler_1 = require("../crawler/theaterCrawler");
 const yahooCrawler_1 = require("../crawler/yahooCrawler");
-const yahooMovieSchduleCrawler_1 = require("../crawler/yahooMovieSchduleCrawler");
 const db_1 = require("../data/db");
 const Q = require("q");
 const googleMapApi_1 = require("../thirdPartyIntegration/googleMapApi");
-function getMoviesSchedules(yahooIds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let schedulesPromise = yahooIds.map(yahooId => yahooMovieSchduleCrawler_1.default(yahooId));
-        const schedules = yield Promise.all(schedulesPromise);
-        const allSchedules = [].concat(...schedules);
-        return allSchedules;
-    });
-}
-exports.getMoviesSchedules = getMoviesSchedules;
 function updateTheaterWithLocationList() {
     return __awaiter(this, void 0, void 0, function* () {
         const theaterList = yield theaterCrawler_1.getTheaterList();
