@@ -3,17 +3,17 @@ import Location from '../models/location';
 import theater from '../models/theater';
 
 export default class Schedule {
-    constructor(yahooId = 0, theaterName = "", timesValues = [], timesStrings = [], theaterExtension = new theater()) {
-        this.yahooId = yahooId;
+    constructor(scheduleUrl="", theaterName = "", timesStrings = [], theaterExtension = new theater()) {
+        this.scheduleUrl = scheduleUrl;
         this.theaterName = theaterName;
-        this.timesValues = timesValues;
         this.timesStrings = timesStrings;
         this.theaterExtension = theaterExtension;
     }
-    yahooId?: number
+    scheduleUrl?: string
     movie?: Movie
+    movieName: string
     theaterName?: string
-    timesValues?: string[]
+    level?: string
     timesStrings?: string[]
     roomTypes?: string[]
     theaterExtension?: theater

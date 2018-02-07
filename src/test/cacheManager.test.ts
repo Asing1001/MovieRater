@@ -4,7 +4,7 @@ import * as sinonChai from 'sinon-chai';
 import cacheManager from '../data/cacheManager';
 import * as memoryCache from 'memory-cache';
 import { db } from "../data/db";
-import * as yahooInTheaterCrawler from '../crawler/yahooInTheaterCrawler';
+import * as atmovieInTheaterCrawler from '../crawler/atmovieInTheaterCrawler';
 
 
 const assert = chai.assert;
@@ -27,7 +27,7 @@ describe('cacheManager', () => {
   describe('init cacheManager', () => {
     it('should init complete', async function () {
       stubGetCollection.returns([]);
-      sandbox.stub(yahooInTheaterCrawler,'getInTheaterYahooIds').returns(Promise.resolve([]));
+      sandbox.stub(atmovieInTheaterCrawler,'getInTheaterMovieNames').returns(Promise.resolve([]));
       await cacheManager.init()
     });
   });

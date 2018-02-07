@@ -1,18 +1,10 @@
 import { getTheaterList } from '../crawler/theaterCrawler';
 import { getYahooMovieInfo } from '../crawler/yahooCrawler';
-import crawlyahooMovieSchdule from '../crawler/yahooMovieSchduleCrawler';
 import { db } from '../data/db';
 import Theater from '../models/theater';
 import * as Q from "q";
 import Schedule from '../models/schedule';
 import { getGeoLocation } from '../thirdPartyIntegration/googleMapApi';
-
-export async function getMoviesSchedules(yahooIds: Array<number>) {
-    let schedulesPromise = yahooIds.map(yahooId => crawlyahooMovieSchdule(yahooId));
-    const schedules = await Promise.all(schedulesPromise);
-    const allSchedules: Schedule[] = [].concat(...schedules);
-    return allSchedules;
-}
 
 export async function updateTheaterWithLocationList() {
     const theaterList = await getTheaterList();
