@@ -17,6 +17,7 @@ ${await getDocument()}
     const filename = path.join(distFolder, 'sitemap.xml');
     writeFileSync(filename, xml);
     console.log('sitemap generate done');
+    process.exit()
 }
 
 async function getDocument() {
