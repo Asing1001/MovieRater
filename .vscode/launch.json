@@ -27,7 +27,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/ezCrawler.test.js",
+                "dist/test/theaterCrawler.test.js",
                 "--no-timeouts"
             ],
             "cwd": "${workspaceRoot}",
@@ -45,7 +45,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/yahooCrawler.test.js",
+                "dist/test/theaterCrawler.test.js",
                 "--no-timeouts",
                 "--watch"
             ],
@@ -65,9 +65,7 @@
             "name": "Launch File",
             "program": "${file}",
             "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/dist"
-            ]
+            "outDir": "${workspaceRoot}/dist"
         }
     ]
 }

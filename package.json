@@ -9,6 +9,7 @@
     "start": "node dist/server.js",
     "pretest": "tsc",
     "test": "nyc mocha dist/test/*.js",
+    "sitemap": "node dist/helper/sitemapGenrator.js",
     "posttest": "nyc report --reporter=json && codecov -f coverage/coverage-final.json -t 7dddc944-6883-4357-9c9a-2707a7b42cec",
     "nodemon": "concurrently \"npm run tsc:w \" \"nodemon dist/server.js\"",
     "webpack": "webpack-dev-server --hot --inline --progress --port 3004",

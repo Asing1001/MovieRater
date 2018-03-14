@@ -17,8 +17,8 @@ class TimeList extends React.Component<TimeListProps, {}> {
         return (
             <div style={this.props.style}>
                 {this.props.timesStrings.map((time, index) => {
-                    if (index === nearestTimeIndex)
-                        return <small style={{ display: "inline-block", width: "66px", color: red500 }} key={index}><strong>{time}</strong></small>
+                    if (index >= nearestTimeIndex)
+                        return <small style={{ display: "inline-block", width: "66px" }} key={index}><strong>{time}</strong></small>
                     else
                         return <small style={{ display: "inline-block", width: "66px", color: 'grey' }} key={index}>{time}</small>
                 })}
