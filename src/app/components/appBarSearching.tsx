@@ -35,7 +35,7 @@ class AppBarSearching extends React.Component<any, any> {
 
   private clearSearchText() {
     this.setState({ searchText: '' });
-    setTimeout(() => document.querySelector('input').focus(), 100);
+    requestAnimationFrame(() => document.querySelector('input').focus());
   }
 
   private handleUpdateInput(text) { this.setState({ searchText: text }) }
