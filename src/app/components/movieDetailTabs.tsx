@@ -44,7 +44,8 @@ const movieDetailQuery = gql`
       author
     }
     summary
-    schedules {              
+    schedules {
+      date              
       timesStrings
       roomTypes
       theaterExtension {

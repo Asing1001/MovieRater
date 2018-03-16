@@ -20,8 +20,13 @@ class Schedules extends React.Component<MovieDetailProps, any> {
     constructor(props) {
         super(props)
         this.state = {
-            schedulesWithDistance: []
+            schedulesWithDistance: [],
+            selectedDate: this.getAvailableDates()[0]
         };
+    }
+
+    getAvailableDates() {
+        return [...new Set(this.props.schedules.map(({ date }) => date))];
     }
 
     setSchedulesWithDistance(schedulesCopy) {
@@ -44,7 +49,8 @@ class Schedules extends React.Component<MovieDetailProps, any> {
     render() {
         return (
             <div className="col-xs-12">
-                {this.state.schedulesWithDistance.map(({ timesStrings, theaterName, roomTypes, distance, theaterExtension }, index) => {
+                {this.getAvailableDates().map(date => <button onClick={() => this.setState({ selectedDate: date })}>{date}</button>)}
+                {this.state.schedulesWithDistance.filter(({ date }) => date === this.state.selectedDate).map(({ timesStrings, theaterName, roomTypes, distance, theaterExtension }, index) => {
                     return (
                         <div key={index} style={{ padding: ".6em 1em 0em 1em" }}>
                             <TheaterCard theater={theaterExtension} roomTypes={roomTypes}></TheaterCard>

@@ -211,6 +211,10 @@ const autoCompleteType = new GraphQLObjectType({
 const scheduleType = new GraphQLObjectType({
     name: "scheduleType",
     fields: () => ({
+        date: {
+            type: GraphQLString,
+            resolve: obj => obj.date,
+        },
         theaterName: {
             type: GraphQLString,
             resolve: obj => obj.theaterName,
