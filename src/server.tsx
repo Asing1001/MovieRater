@@ -41,6 +41,7 @@ app.get('/api/cache/index', (req, res) => {
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot, { maxAge: '7d' }));
 app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js', { maxAge: '7d' }));
+app.use('/robots.txt', express.static(staticRoot + 'robots.txt'));
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 
 
@@ -72,7 +73,7 @@ app.use(basicCache, function (req, res, next) {
       image: "/public/favicons/android-chrome-384x384.png"
     }
   };
-  
+
   const client = new ApolloClient({
     ssrMode: true,
     networkInterface: createLocalInterface(graphql, schema),
