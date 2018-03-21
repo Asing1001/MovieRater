@@ -36,7 +36,7 @@ let AppBarSearching = class AppBarSearching extends React.Component {
     }
     clearSearchText() {
         this.setState({ searchText: '' });
-        setTimeout(() => document.querySelector('input').focus(), 100);
+        requestAnimationFrame(() => document.querySelector('input').focus());
     }
     handleUpdateInput(text) { this.setState({ searchText: text }); }
     onNewRequest(selectItem, index, filteredList) {
