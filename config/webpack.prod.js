@@ -60,6 +60,9 @@ module.exports = webpackMerge(commonConfig, {
           urlPattern: /^https:\/\/s.yimg.com\//,
           handler: 'cacheFirst',
         }, {
+          urlPattern: /^https:\/\/movies.yahoo.com.tw\//,
+          handler: 'cacheFirst',
+        }, {
           urlPattern: /^https:\/\/fonts./,
           handler: 'cacheFirst',
         }],
