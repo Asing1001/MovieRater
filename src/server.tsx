@@ -41,7 +41,12 @@ app.get('/api/cache/index', (req, res) => {
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot, { maxAge: '7d' }));
 app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js', { maxAge: '7d' }));
-app.use('/robots.txt', express.static(staticRoot + 'robots.txt'));
+
+const rootFiles = ["robots.txt", "sitemap.xml"];
+rootFiles.forEach(fileName => {
+  app.use('/' + fileName, express.static(staticRoot + fileName));
+})
+
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 
 
