@@ -10,13 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai = require("chai");
 const movieSchduleCrawler_1 = require("../crawler/movieSchduleCrawler");
+const moment = require("moment");
 const should = chai.should();
 describe('movieSchduleCrawler', () => {
     describe('crawlMovieSchdule', () => {
         it('data should have timeStrings length > 0', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(60000);
-                const movieSchedules = yield movieSchduleCrawler_1.default("/showtime/t02a06/a02/");
+                const movieSchedules = yield movieSchduleCrawler_1.default("/showtime/t02a06/a02/", moment().format('YYYYMMDD'));
                 movieSchedules[0].timesStrings.length.should.greaterThan(0);
             });
         });

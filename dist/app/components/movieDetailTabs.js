@@ -46,7 +46,8 @@ const movieDetailQuery = react_apollo_1.gql `
       author
     }
     summary
-    schedules {              
+    schedules {
+      date              
       timesStrings
       roomTypes
       theaterExtension {

@@ -7,9 +7,10 @@ class TimeList extends React.Component {
         super(props);
     }
     render() {
-        const nearestTimeIndex = this.props.timesStrings.findIndex(time => moment(time, 'hh:mm a') > moment());
+        const now = moment();
+        const nearestTimeIndex = this.props.timesStrings.findIndex(time => moment(time, 'hh:mm a') > now);
         return (React.createElement("div", { style: this.props.style }, this.props.timesStrings.map((time, index) => {
-            if (index >= nearestTimeIndex)
+            if (nearestTimeIndex !== -1 && index >= nearestTimeIndex)
                 return React.createElement("small", { style: { display: "inline-block", width: "66px" }, key: index },
                     React.createElement("strong", null, time));
             else
