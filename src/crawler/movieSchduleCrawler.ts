@@ -3,7 +3,7 @@ import Schedule from '../models/schedule';
 import * as moment from 'moment';
 
 const movieSchduleUrl = 'http://www.atmovies.com.tw';
-export default async function crawlMovieSchdule(scheduleUrl, date) {
+export async function crawlMovieSchdule(scheduleUrl, date) {
     let schedules: Schedule[] = [];
     try {
         const isToday = moment().format('YYYYMMDD') === date;

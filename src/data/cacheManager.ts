@@ -5,9 +5,8 @@ import { mergeData } from '../crawler/mergeData';
 import * as moment from 'moment';
 import Movie from '../models/movie';
 import { getInTheaterMovieNames } from '../crawler/atmovieInTheaterCrawler';
-import crawlMovieSchdule from '../crawler/movieSchduleCrawler';
 import { roughSizeOfObject } from '../helper/util';
-import { getMoviesSchedules } from '../task/atmoviesTask';
+import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask';
 
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
@@ -16,8 +15,8 @@ export default class cacheManager {
     static MOVIES_SCHEDULES = 'MoviesSchedules';
     static THEATERS = 'theaters';
     static async init() {
-        const yahooMoviesPromise = db.getCollection("yahooMovies", { yahooId: -1 });
-        const pttArticlesPromise = db.getCollection("pttArticles");
+        const yahooMoviesPromise = db.getCollection({ name: "yahooMovies", sort: { yahooId: -1 } });
+        const pttArticlesPromise = db.getCollection({ name: "pttArticles" });
         console.time('get yahooMovies and pttArticles');
         const [yahooMovies, pttArticles] = await Promise.all([yahooMoviesPromise, pttArticlesPromise]);
         console.timeEnd('get yahooMovies and pttArticles');
@@ -52,7 +51,7 @@ export default class cacheManager {
 
     private static async setTheatersCache() {
         console.time('setTheatersCache');
-        const theaterListWithLocation = await db.getCollection("theaters", { "regionIndex": 1 });
+        const theaterListWithLocation = await db.getCollection({ name: "theaters", sort: { "regionIndex": 1 } });
         console.timeEnd('setTheatersCache');
         cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
     }
@@ -68,8 +67,8 @@ export default class cacheManager {
     public static async setMoviesSchedulesCache() {
         console.time('setMoviesSchedulesCache');
         try {
-            const scheduleUrls = await db.dbConnection.collection("theaters").find({}, { scheduleUrl: 1, _id: 0 }).toArray();
-            const allSchedules = await getMoviesSchedules(scheduleUrls.map(s => s.scheduleUrl));
+            await updateMoviesSchedules();
+            const allSchedules = await getMoviesSchedules();
             const recentMovieChineseTitles: string[] = cacheManager.get(cacheManager.RECENT_MOVIES).map(movie => movie.chineseTitle);
             const filterdSchedules = allSchedules.filter(schedule => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1);
             cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);

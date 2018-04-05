@@ -4,6 +4,7 @@ import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import { updateYahooMovies, updateTheaterWithLocationList } from '../task/yahooTask';
 import { updatePttArticles } from '../task/pttTask';
 import { updateImdbInfo } from '../task/imdbTask';
+import { updateMoviesSchedules } from '../task/atMoviesTask';
 import cacheManager from '../data/cacheManager';
 
 export function initScheduler() {
@@ -17,6 +18,12 @@ export function initScheduler() {
                 console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
         }, 600000);
     }
+    
+    // scheduleJob('5 * * * *', async function () {        
+    //     console.time('[Scheduler] updateMoviesSchedules');
+    //     await updateMoviesSchedules();
+    //     console.timeEnd('[Scheduler] updateMoviesSchedules');
+    // });
 
     scheduleJob('10 * * * *', async function () {
         console.time('[Scheduler] updateYahooMovies');
@@ -50,5 +57,5 @@ export function initScheduler() {
         console.time('[Scheduler] updateImdbInfo');
         await updateImdbInfo()
         console.timeEnd('[Scheduler] updateImdbInfo');
-    });
+    });    
 }
