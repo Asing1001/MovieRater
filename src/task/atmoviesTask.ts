@@ -13,7 +13,7 @@ export async function updateMoviesSchedules() {
     let schedulesPromise = scheduleUrls.map(({ scheduleUrl }) => crawlMovieSchdule(scheduleUrl, scheduleCrawlDate));
     const schedules = await Promise.all(schedulesPromise);
     const allSchedules: Schedule[] = [].concat(...schedules);
-    redisClient.setex(scheduleCrawlDate, 86400 * , JSON.stringify(allSchedules));
+    redisClient.setex(scheduleCrawlDate, 86400 * 2, JSON.stringify(allSchedules));
     return allSchedules;
 }
 
