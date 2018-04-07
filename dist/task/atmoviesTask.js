@@ -21,7 +21,7 @@ function updateMoviesSchedules() {
         let schedulesPromise = scheduleUrls.map(({ scheduleUrl }) => movieSchduleCrawler_1.crawlMovieSchdule(scheduleUrl, scheduleCrawlDate));
         const schedules = yield Promise.all(schedulesPromise);
         const allSchedules = [].concat(...schedules);
-        redisClient.setex(scheduleCrawlDate, 86400 * 9, JSON.stringify(allSchedules));
+        redisClient.setex(scheduleCrawlDate, 86400 * 2, JSON.stringify(allSchedules));
         return allSchedules;
     });
 }
