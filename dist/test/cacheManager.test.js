@@ -13,7 +13,6 @@ const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
 const cacheManager_1 = require("../data/cacheManager");
 const db_1 = require("../data/db");
-const atmovieInTheaterCrawler = require("../crawler/atmovieInTheaterCrawler");
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
@@ -32,7 +31,7 @@ describe('cacheManager', () => {
         it('should init complete', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 stubGetCollection.returns([]);
-                sandbox.stub(atmovieInTheaterCrawler, 'getInTheaterMovieNames').returns(Promise.resolve([]));
+                sandbox.stub(cacheManager_1.default, 'setInTheaterMoviesCache').returns(Promise.resolve([]));
                 yield cacheManager_1.default.init();
             });
         });

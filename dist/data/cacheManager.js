@@ -18,8 +18,8 @@ const atmoviesTask_1 = require("../task/atmoviesTask");
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
-            const yahooMoviesPromise = db_1.db.getCollection("yahooMovies", { yahooId: -1 });
-            const pttArticlesPromise = db_1.db.getCollection("pttArticles");
+            const yahooMoviesPromise = db_1.db.getCollection({ name: "yahooMovies", sort: { yahooId: -1 } });
+            const pttArticlesPromise = db_1.db.getCollection({ name: "pttArticles" });
             console.time('get yahooMovies and pttArticles');
             const [yahooMovies, pttArticles] = yield Promise.all([yahooMoviesPromise, pttArticlesPromise]);
             console.timeEnd('get yahooMovies and pttArticles');
@@ -52,7 +52,7 @@ class cacheManager {
     static setTheatersCache() {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('setTheatersCache');
-            const theaterListWithLocation = yield db_1.db.getCollection("theaters", { "regionIndex": 1 });
+            const theaterListWithLocation = yield db_1.db.getCollection({ name: "theaters", sort: { "regionIndex": 1 } });
             console.timeEnd('setTheatersCache');
             cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
         });
@@ -70,8 +70,8 @@ class cacheManager {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('setMoviesSchedulesCache');
             try {
-                const scheduleUrls = yield db_1.db.dbConnection.collection("theaters").find({}, { scheduleUrl: 1, _id: 0 }).toArray();
-                const allSchedules = yield atmoviesTask_1.getMoviesSchedules(scheduleUrls.map(s => s.scheduleUrl));
+                yield atmoviesTask_1.updateMoviesSchedules();
+                const allSchedules = yield atmoviesTask_1.getMoviesSchedules();
                 const recentMovieChineseTitles = cacheManager.get(cacheManager.RECENT_MOVIES).map(movie => movie.chineseTitle);
                 const filterdSchedules = allSchedules.filter(schedule => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1);
                 cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);

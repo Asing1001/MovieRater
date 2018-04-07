@@ -18,7 +18,7 @@ describe('db', () => {
     describe('getCollection', () => {
         it('get collection should success return array', function () {
             this.timeout(10000);
-            return db_1.db.getCollection('test').should.eventually.have.property('map');
+            return db_1.db.getCollection({ name: 'test' }).should.eventually.have.property('map');
         });
     });
     describe('getDocument', () => {

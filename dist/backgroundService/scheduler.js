@@ -25,6 +25,11 @@ function initScheduler() {
             fetch(systemSetting_1.systemSetting.websiteUrl).then(res => console.log(`[Scheduler] Access to website:${systemSetting_1.systemSetting.websiteUrl}, status:${res.status}`));
         }, 600000);
     }
+    // scheduleJob('5 * * * *', async function () {        
+    //     console.time('[Scheduler] updateMoviesSchedules');
+    //     await updateMoviesSchedules();
+    //     console.timeEnd('[Scheduler] updateMoviesSchedules');
+    // });
     node_schedule_1.scheduleJob('10 * * * *', function () {
         return __awaiter(this, void 0, void 0, function* () {
             console.time('[Scheduler] updateYahooMovies');

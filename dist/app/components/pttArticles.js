@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const List_1 = require("material-ui/List");
 const Tabs_1 = require("material-ui/Tabs");
-class PttArticles extends React.Component {
+class PttArticles extends React.PureComponent {
     constructor(props) {
         super(props);
     }

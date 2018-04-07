@@ -4,7 +4,8 @@ const React = require("react");
 const ratings_1 = require("./ratings");
 const react_router_dom_1 = require("react-router-dom");
 const timeList_1 = require("./timeList");
-class MovieCard extends React.Component {
+const react_lazyload_1 = require("react-lazyload");
+class MovieCard extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -24,7 +25,8 @@ class MovieCard extends React.Component {
         const { roomTypes, movie, timesStrings } = this.props;
         return (React.createElement("article", { className: "card", style: { display: 'flex' } },
             React.createElement(react_router_dom_1.Link, { to: `/movie/${movie.yahooId}` },
-                React.createElement("img", { className: "poster", src: this.getSmallPosterSrc(movie), alt: "Image not found" })),
+                React.createElement(react_lazyload_1.default, null,
+                    React.createElement("img", { className: "poster", src: this.getSmallPosterSrc(movie), alt: "Image not found" }))),
             React.createElement("div", { className: "col-xs-12" },
                 React.createElement("header", { style: { paddingTop: '.5em' } },
                     React.createElement(react_router_dom_1.Link, { style: { color: 'inherit' }, to: `/movie/${movie.yahooId}` },

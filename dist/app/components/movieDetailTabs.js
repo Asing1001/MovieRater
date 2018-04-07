@@ -46,7 +46,8 @@ const movieDetailQuery = react_apollo_1.gql `
       author
     }
     summary
-    schedules {              
+    schedules {
+      date              
       timesStrings
       roomTypes
       theaterExtension {
@@ -63,7 +64,7 @@ const movieDetailQuery = react_apollo_1.gql `
     }
   }
 }`;
-let MovieDetailTabs = class MovieDetailTabs extends React.Component {
+let MovieDetailTabs = class MovieDetailTabs extends React.PureComponent {
     constructor(props) {
         super(props);
         this.handleChange = (value) => {

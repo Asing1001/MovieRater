@@ -27,7 +27,7 @@ const allMoviesNamesQuery = react_apollo_1.gql `
     }
   }
 `;
-let AppBarSearching = class AppBarSearching extends React.Component {
+let AppBarSearching = class AppBarSearching extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {

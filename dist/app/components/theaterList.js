@@ -38,7 +38,7 @@ const theaterInfoStyle = {
     display: 'inline-flex'
 };
 const defaultSubRegion = '全部地區';
-let TheaterList = class TheaterList extends React.Component {
+let TheaterList = class TheaterList extends React.PureComponent {
     constructor(props) {
         super(props);
         this.componentWillReceiveProps = (nextprops) => {

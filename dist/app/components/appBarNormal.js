@@ -15,7 +15,7 @@ const normalStyles = {
     backgroundColor: colors_1.cyan500,
     color: 'white'
 };
-class AppBarNormal extends React.Component {
+class AppBarNormal extends React.PureComponent {
     constructor(props) {
         super(props);
         this.drawerToggle = null;

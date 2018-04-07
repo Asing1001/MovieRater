@@ -10,7 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
+const moment = require("moment");
 const Paper_1 = require("material-ui/Paper");
+const Chip_1 = require("material-ui/Chip");
 const helper_1 = require("../helper");
 const loadingIcon_1 = require("./loadingIcon");
 const theaterCard_1 = require("./theaterCard");
@@ -29,6 +31,7 @@ query TheaterDetail($theaterName:String){
             lng
         }
         schedules {
+            date
             movie {
                 yahooId
                 posterUrl
@@ -60,9 +63,15 @@ var SortType;
     SortType[SortType["ptt"] = 3] = "ptt";
     SortType[SortType["releaseDate"] = 4] = "releaseDate";
 })(SortType || (SortType = {}));
-let TheaterDetail = class TheaterDetail extends React.Component {
+let TheaterDetail = class TheaterDetail extends React.PureComponent {
     constructor(props) {
         super(props);
+        this.state = {
+            selectedDate: moment().format('YYYYMMDD')
+        };
+    }
+    getAvailableDates(schedules) {
+        return [...new Set(schedules.map(({ date }) => date))];
     }
     render() {
         const { data: { loading, theaters } } = this.props;
@@ -73,8 +82,11 @@ let TheaterDetail = class TheaterDetail extends React.Component {
         document.title = `${theater.name}電影時刻表 | Movie Rater`;
         return (React.createElement("div", null,
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em', padding: ".5em 1em" } },
-                React.createElement(theaterCard_1.default, { theater: theater })),
+                React.createElement(theaterCard_1.default, { theater: theater }),
+                React.createElement("div", { className: "date-wrapper" }, this.getAvailableDates(theater.schedules)
+                    .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", key: index, onClick: () => this.setState({ selectedDate: date }) }, index === 0 ? "今天" : moment(date).format('MM/DD'))))),
             theater.schedules && theater.schedules.slice()
+                .filter(({ date }) => date === this.state.selectedDate)
                 .sort(({ movie }, { movie: movie2 }) => this.props.sortFunction(helper_1.classifyArticle(movie), helper_1.classifyArticle(movie2)))
                 .map((schedule, index) => (React.createElement(Paper_1.default, { zDepth: 2, key: index, className: "row no-margin", style: { marginBottom: '.5em' } },
                 React.createElement(movieCard_1.default, { movie: helper_1.classifyArticle(schedule.movie), timesStrings: schedule.timesStrings, roomTypes: schedule.roomTypes }))))));

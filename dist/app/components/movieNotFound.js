@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const status_1 = require("./status");
-class MovieNotFound extends React.Component {
+class MovieNotFound extends React.PureComponent {
     constructor(props) {
         super(props);
     }
