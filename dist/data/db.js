@@ -106,11 +106,11 @@ class db {
         }
         return deferred.promise;
     }
-    static getCollection(collectionName, sort) {
+    static getCollection({ name, sort = {}, fields = {} }) {
         var deferred = Q.defer();
         try {
             log_1.default.debug(arguments);
-            this.dbConnection.collection(collectionName).find({}).sort(sort).toArray((err, items) => {
+            this.dbConnection.collection(name).find({}, fields).sort(sort).toArray((err, items) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);

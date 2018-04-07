@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const moment = require("moment");
-class TimeList extends React.Component {
+class TimeList extends React.PureComponent {
     constructor(props) {
         super(props);
     }

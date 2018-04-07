@@ -7,7 +7,7 @@ const app_1 = require("./components/app");
 const createBrowserHistory_1 = require("history/createBrowserHistory");
 require("./main.scss");
 const react_apollo_1 = require("react-apollo");
-class Root extends React.Component {
+class Root extends React.PureComponent {
     createClient() {
         return new react_apollo_1.ApolloClient({
             initialState: window["__APOLLO_STATE__"] || {},

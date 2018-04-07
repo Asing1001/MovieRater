@@ -5,7 +5,7 @@ const share_1 = require("material-ui/svg-icons/social/share");
 const IconButton_1 = require("material-ui/IconButton");
 const Table_1 = require("material-ui/Table");
 const ratings_1 = require("./ratings");
-class MovieDetail extends React.Component {
+class MovieDetail extends React.PureComponent {
     constructor(props) {
         super(props);
     }

@@ -34,7 +34,7 @@ const movieListingQuery = react_apollo_1.gql `
             briefSummary
             }
           }`;
-let MovieList = class MovieList extends React.Component {
+let MovieList = class MovieList extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {

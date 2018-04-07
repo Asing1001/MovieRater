@@ -26,7 +26,7 @@ function crawlMovieSchdule(scheduleUrl, date) {
                     movieName: $showTime.find('.filmTitle>a').text(),
                     roomTypes: roomTypesString !== "" ? roomTypesString.split(',') : [],
                     level: $showTime.find('img[hspace]').attr('src'),
-                    timesStrings: Array.from($showTime.find('li>ul:nth-child(2)').children(':not([class])')).map((e) => $(e).text().trim())
+                    timesStrings: Array.from($showTime.find('li>ul:nth-child(2)').children(':not([class])')).map((e) => $(e).text().substr(0, 5))
                 };
                 return schedule;
             });
@@ -37,5 +37,5 @@ function crawlMovieSchdule(scheduleUrl, date) {
         return schedules;
     });
 }
-exports.default = crawlMovieSchdule;
+exports.crawlMovieSchdule = crawlMovieSchdule;
 //# sourceMappingURL=movieSchduleCrawler.js.map

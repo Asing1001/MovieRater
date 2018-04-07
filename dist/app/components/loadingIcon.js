@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const RefreshIndicator_1 = require("material-ui/RefreshIndicator");
 const React = require("react");
-class LoadingIcon extends React.Component {
+class LoadingIcon extends React.PureComponent {
     constructor(props) {
         super(props);
     }

@@ -8,7 +8,6 @@ const React = require("react");
 const react_router_dom_1 = require("react-router-dom");
 const swig = require("swig");
 const favicon = require("serve-favicon");
-// import * as compression from 'compression';
 const apicache = require("apicache");
 const app_1 = require("./app/components/app");
 const cacheManager_1 = require("./data/cacheManager");
@@ -22,7 +21,6 @@ const graphql = require("graphql");
 const redis = require("redis");
 db_1.db.openDbConnection().then(cacheManager_1.default.init).then(scheduler_1.initScheduler);
 const app = express();
-// app.use(compression());
 app.get('/api/test', (req, res) => {
     res.send('test!');
 });
@@ -41,10 +39,10 @@ rootFiles.forEach(fileName => {
     app.use('/' + fileName, express.static(staticRoot + fileName));
 });
 app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
+app.use(bodyParser.json());
+app.use('/graphql', graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
 //request below will be cache
-// app.use(device.capture());
 const redisClient = redis.createClient(systemSetting_1.systemSetting.redisUrlForApiCache).on("error", err => console.log("Error " + err));
-redisClient.flushall((err, result) => console.log('redisClient.flushall result:', result));
 const basicCacheOption = {
     debug: true, enabled: systemSetting_1.systemSetting.isProduction, redisClient,
     statusCodes: {
@@ -52,13 +50,6 @@ const basicCacheOption = {
     }
 };
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
-const graphqlCache = apicache.newInstance(Object.assign({}, basicCacheOption, { appendKey: ["cacheKey"] })).middleware('1 hour');
-app.use(bodyParser.json());
-app.use('/graphql', (req, res, next) => {
-    req['cacheKey'] = req.body.operationName + (req.body.variables ? req.body.variables[Object.keys(req.body.variables)[0]] : '');
-    next();
-});
-app.use('/graphql', graphqlCache, graphqlHTTP({ schema: schema_1.default, pretty: systemSetting_1.systemSetting.enableGraphiql, graphiql: systemSetting_1.systemSetting.enableGraphiql, }));
 app.use(basicCache, function (req, res, next) {
     global.navigator = { userAgent: req.headers['user-agent'] };
     global.document = {

@@ -11,7 +11,7 @@ const theaterCardStyle = {
     alignItems: 'center',
     display: 'inline-flex'
 };
-class TheaterCard extends React.Component {
+class TheaterCard extends React.PureComponent {
     constructor(props) {
         super(props);
     }
