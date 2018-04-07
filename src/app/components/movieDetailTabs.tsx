@@ -44,7 +44,8 @@ const movieDetailQuery = gql`
       author
     }
     summary
-    schedules {              
+    schedules {
+      date              
       timesStrings
       roomTypes
       theaterExtension {
@@ -71,7 +72,7 @@ const movieDetailQuery = gql`
     }
   },
 })
-export default class MovieDetailTabs extends React.Component<any, MovieDetailState> {
+export default class MovieDetailTabs extends React.PureComponent<any, MovieDetailState> {
 
   constructor(props) {
     super(props)

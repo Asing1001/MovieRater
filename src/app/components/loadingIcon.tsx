@@ -2,7 +2,7 @@ import RefreshIndicator from 'material-ui/RefreshIndicator';
 import * as React from 'react';
 
 
-export default class LoadingIcon extends React.Component<any, null> {
+export default class LoadingIcon extends React.PureComponent<any, null> {
     constructor(props) {
         super(props)
     }

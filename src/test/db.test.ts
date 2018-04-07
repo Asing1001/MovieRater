@@ -19,7 +19,7 @@ describe('db', () => {
   describe('getCollection', () => {
     it('get collection should success return array', function () {
       this.timeout(10000);
-      return db.getCollection('test').should.eventually.have.property('map')
+      return db.getCollection({ name: 'test' }).should.eventually.have.property('map')
     });
   });
 
@@ -48,7 +48,7 @@ describe('db', () => {
       return db.updateDocument({ name: 'unitTest' }, { page: 'test', article: [{ id: 123 }] }, 'test')
         .then(() => db.getDocument({ name: 'unitTest' }, 'test')).should.eventually.have.deep.property('article[0].id');
     })
-    
+
     // import * as Q from 'Q';
     // it('This is db script to convert pttPages to pttArticles', function() {
     //   this.timeout(10000000);

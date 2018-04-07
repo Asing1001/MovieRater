@@ -9,7 +9,7 @@ interface MovieDetailProps {
     movie: Movie
 }
 
-class MovieDetail extends React.Component<MovieDetailProps, {}> {
+class MovieDetail extends React.PureComponent<MovieDetailProps, {}> {
     constructor(props) {
         super(props)
     }

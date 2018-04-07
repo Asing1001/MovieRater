@@ -17,4 +17,5 @@ export default class Schedule {
     timesStrings?: string[]
     roomTypes?: string[]
     theaterExtension?: theater
+    date?: String
 }

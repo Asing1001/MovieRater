@@ -7,7 +7,7 @@ interface TimeListProps {
     style?: React.CSSProperties
 }
 
-class TimeList extends React.Component<TimeListProps, {}> {
+class TimeList extends React.PureComponent<TimeListProps, {}> {
     constructor(props) {
         super(props)
     }

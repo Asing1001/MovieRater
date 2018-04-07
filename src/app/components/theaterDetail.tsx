@@ -1,6 +1,8 @@
 import * as React from 'react';
+import * as moment from 'moment';
 import Paper from 'material-ui/Paper';
 import Schedule from '../../models/schedule';
+import Chip from 'material-ui/Chip';
 import { classifyArticle, getClientGeoLocation, getDistanceInKM } from '../helper';
 import LoadingIcon from './loadingIcon';
 import TheaterCard from './theaterCard';
@@ -20,6 +22,7 @@ query TheaterDetail($theaterName:String){
             lng
         }
         schedules {
+            date
             movie {
                 yahooId
                 posterUrl
@@ -61,11 +64,17 @@ enum SortType {
         }
     },
 })
-class TheaterDetail extends React.Component<any, any> {
+class TheaterDetail extends React.PureComponent<any, any> {
     constructor(props) {
         super(props)
+        this.state = {
+            selectedDate: moment().format('YYYYMMDD')
+        };
     }
 
+    getAvailableDates(schedules) {
+        return [...new Set(schedules.map(({ date }) => date))];
+    }
 
     render() {
         const { data: { loading, theaters } } = this.props;
@@ -78,9 +87,17 @@ class TheaterDetail extends React.Component<any, any> {
             <div>
                 <Paper zDepth={2} style={{ marginBottom: '.5em', padding: ".5em 1em" }}>
                     <TheaterCard theater={theater}></TheaterCard>
+                    <div className="date-wrapper">
+                        {this.getAvailableDates(theater.schedules)
+                            .map((date, index) =>
+                                <Chip className="datebtn" key={index} onClick={() => this.setState({ selectedDate: date })}>
+                                    {index === 0 ? "今天" : moment(date).format('MM/DD')}
+                                </Chip>)}
+                    </div>
                 </Paper>
                 {
                     theater.schedules && theater.schedules.slice()
+                        .filter(({ date }) => date === this.state.selectedDate)
                         .sort(({ movie }, { movie: movie2 }) => this.props.sortFunction(classifyArticle(movie), classifyArticle(movie2)))
                         .map((schedule: Schedule, index) => (
                             <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>

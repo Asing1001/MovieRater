@@ -7,7 +7,7 @@ interface MovieDetailProps {
     style?: React.CSSProperties
 }
 
-class Ratings extends React.Component<MovieDetailProps, {}> {
+class Ratings extends React.PureComponent<MovieDetailProps, {}> {
     constructor(props) {
         super(props)
     }

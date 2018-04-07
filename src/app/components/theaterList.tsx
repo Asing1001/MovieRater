@@ -32,7 +32,7 @@ const theaterInfoStyle: React.CSSProperties = {
 const defaultSubRegion = '全部地區';
 
 @graphql(theatersQuery)
-class TheaterList extends React.Component<any, any> {
+class TheaterList extends React.PureComponent<any, any> {
     constructor(props) {
         super(props)
         this.state = {

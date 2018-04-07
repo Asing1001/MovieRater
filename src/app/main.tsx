@@ -10,7 +10,7 @@ import {
   createNetworkInterface
 } from 'react-apollo';
 
-class Root extends React.Component<any, any> {
+class Root extends React.PureComponent<any, any> {
   createClient() {
     return new ApolloClient({
       initialState: window["__APOLLO_STATE__"] || {},
