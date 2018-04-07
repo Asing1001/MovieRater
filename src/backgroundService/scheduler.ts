@@ -4,7 +4,7 @@ import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import { updateYahooMovies, updateTheaterWithLocationList } from '../task/yahooTask';
 import { updatePttArticles } from '../task/pttTask';
 import { updateImdbInfo } from '../task/imdbTask';
-import { updateMoviesSchedules } from '../task/atMoviesTask';
+import { updateMoviesSchedules } from '../task/atmoviesTask';
 import cacheManager from '../data/cacheManager';
 
 export function initScheduler() {
