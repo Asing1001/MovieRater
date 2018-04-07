@@ -250,3 +250,13 @@ a.pttArticleTitle:visited {
     background-color: #F06292;
     color: white;
 }
+
+.date-wrapper {
+    margin-top: 1em;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.datebtn {
+    margin: 0 6px .5em 0 !important ;
+}
