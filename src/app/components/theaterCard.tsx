@@ -12,7 +12,7 @@ const theaterCardStyle: React.CSSProperties = {
     display: 'inline-flex'
 }
 
-class TheaterCard extends React.Component<any, any> {
+class TheaterCard extends React.PureComponent<any, any> {
     constructor(props) {
         super(props)
     }

@@ -10,7 +10,7 @@ export class db {
         try {
             if (!this.dbConnection) {
                 this.dbConnection = await MongoClient.connect(systemSetting.dbUrl);
-                console.log('connect to mongodb correctly');                
+                console.log('connect to mongodb correctly');
             }
         } catch (error) {
             console.error(error);
@@ -97,11 +97,11 @@ export class db {
         return deferred.promise;
     }
 
-    public static getCollection(collectionName: string, sort?: Object): Q.Promise<any> {
+    public static getCollection({ name, sort = {}, fields = {} }): Q.Promise<any> {
         var deferred = Q.defer();
         try {
             log.debug(arguments);
-            this.dbConnection.collection(collectionName).find({}).sort(sort).toArray((err, items) => {
+            this.dbConnection.collection(name).find({}, fields).sort(sort).toArray((err, items) => {
                 if (err) {
                     console.error(err);
                     deferred.reject(err);

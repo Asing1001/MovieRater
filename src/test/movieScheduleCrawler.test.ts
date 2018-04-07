@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import crawlMovieSchdule from '../crawler/movieSchduleCrawler';
+import { crawlMovieSchdule } from '../crawler/movieSchduleCrawler';
 import * as moment from 'moment';
 
 
@@ -9,7 +9,7 @@ describe('movieSchduleCrawler', () => {
   describe('crawlMovieSchdule', () => {
     it('data should have timeStrings length > 0', async function () {
       this.timeout(60000);
-      const movieSchedules = await crawlMovieSchdule("/showtime/t02a06/a02/", moment().format('YYYYMMDD'))
+      const movieSchedules = await crawlMovieSchdule("/showtime/t02a01/a02/", moment().add(3, 'days').format('YYYYMMDD'))
       movieSchedules[0].timesStrings.length.should.greaterThan(0)
     });
   });

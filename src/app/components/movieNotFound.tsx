@@ -2,7 +2,7 @@ import * as React from 'react';
 import Paper from 'material-ui/Paper';
 import Status from './status';
 
-class MovieNotFound extends React.Component<any, any> {
+class MovieNotFound extends React.PureComponent<any, any> {
     constructor(props) {
         super(props)
     }

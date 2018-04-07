@@ -39,7 +39,7 @@ const movieListingQuery = gql`
     }
   },
 })
-class MovieList extends React.Component<any, any> {
+class MovieList extends React.PureComponent<any, any> {
   constructor(props) {
     super(props)
     this.state = {

@@ -8,7 +8,7 @@ interface MovieDetailProps {
     movie: Movie
 }
 
-class PttArticles extends React.Component<MovieDetailProps, null> {
+class PttArticles extends React.PureComponent<MovieDetailProps, null> {
     constructor(props) {
         super(props);
     }

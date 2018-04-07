@@ -4,6 +4,7 @@ import Paper from 'material-ui/Paper';
 import Ratings from './ratings';
 import { Link } from 'react-router-dom';
 import TimeList from './timeList';
+import LazyLoad from 'react-lazyload';
 
 interface MovieDetailProps {
     movie: Movie,
@@ -11,7 +12,7 @@ interface MovieDetailProps {
     roomTypes?: String[],
 }
 
-class MovieCard extends React.Component<MovieDetailProps, {}> {
+class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
     constructor(props) {
         super(props)
     }
@@ -35,7 +36,9 @@ class MovieCard extends React.Component<MovieDetailProps, {}> {
         return (
             <article className="card" style={{ display: 'flex' }}>
                 <Link to={`/movie/${movie.yahooId}`} >
-                    <img className="poster" src={this.getSmallPosterSrc(movie)} alt="Image not found" />
+                    <LazyLoad>
+                        <img className="poster" src={this.getSmallPosterSrc(movie)} alt="Image not found" />
+                    </LazyLoad>
                 </Link>
                 <div className="col-xs-12">
                     <header style={{ paddingTop: '.5em' }}>

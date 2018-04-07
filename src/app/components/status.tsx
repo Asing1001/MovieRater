@@ -6,7 +6,7 @@ interface StatusProps {
     code: number
 }
 
-class Status extends React.Component<StatusProps, any> {
+class Status extends React.PureComponent<StatusProps, any> {
     constructor(props) {
         super(props);
     }

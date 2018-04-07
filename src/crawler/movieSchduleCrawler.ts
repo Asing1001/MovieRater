@@ -3,7 +3,7 @@ import Schedule from '../models/schedule';
 import * as moment from 'moment';
 
 const movieSchduleUrl = 'http://www.atmovies.com.tw';
-export default async function crawlMovieSchdule(scheduleUrl, date) {
+export async function crawlMovieSchdule(scheduleUrl, date) {
     let schedules: Schedule[] = [];
     try {
         const isToday = moment().format('YYYYMMDD') === date;
@@ -17,7 +17,7 @@ export default async function crawlMovieSchdule(scheduleUrl, date) {
                 movieName: $showTime.find('.filmTitle>a').text(),
                 roomTypes: roomTypesString !== "" ? roomTypesString.split(',') : [],
                 level: $showTime.find('img[hspace]').attr('src'),
-                timesStrings: Array.from($showTime.find('li>ul:nth-child(2)').children(':not([class])')).map((e) => $(e).text().trim())
+                timesStrings: Array.from($showTime.find('li>ul:nth-child(2)').children(':not([class])')).map((e) => $(e).text().substr(0,5))
             }
             return schedule;
         });
