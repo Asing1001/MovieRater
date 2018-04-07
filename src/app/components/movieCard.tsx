@@ -11,7 +11,7 @@ interface MovieDetailProps {
     roomTypes?: String[],
 }
 
-class MovieCard extends React.Component<MovieDetailProps, {}> {
+class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
     constructor(props) {
         super(props)
     }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Status from './status';
 
-class PageNotFound extends React.Component<any, any> {
+class PageNotFound extends React.PureComponent<any, any> {
     constructor(props) {
         super(props)
     }

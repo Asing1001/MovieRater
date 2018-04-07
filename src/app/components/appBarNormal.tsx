@@ -16,7 +16,7 @@ const normalStyles = {
     color: 'white'
 }
 
-class AppBarNormal extends React.Component<any, any> {
+class AppBarNormal extends React.PureComponent<any, any> {
     constructor(props) {
         super(props)
         this.state = {

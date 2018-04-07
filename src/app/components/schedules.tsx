@@ -16,7 +16,7 @@ interface MovieDetailProps {
     schedules: Schedule[]
 }
 
-class Schedules extends React.Component<MovieDetailProps, any> {
+class Schedules extends React.PureComponent<MovieDetailProps, any> {
     constructor(props) {
         super(props)
         this.state = {

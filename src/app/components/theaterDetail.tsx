@@ -61,7 +61,7 @@ enum SortType {
         }
     },
 })
-class TheaterDetail extends React.Component<any, any> {
+class TheaterDetail extends React.PureComponent<any, any> {
     constructor(props) {
         super(props)
     }
