@@ -53,7 +53,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicons', 'favicon.ico')));
 //request below will be cache
 // app.use(device.capture());
 const redisClient = redis.createClient(systemSetting.redisUrlForApiCache).on("error", err => console.log("Error " + err));
-redisClient.flushall((err, result) => console.log('redisClient.flushall result:', result));
+// redisClient.flushall((err, result) => console.log('redisClient.flushall result:', result));
 const basicCacheOption = {
   debug: true, enabled: systemSetting.isProduction, redisClient,
   statusCodes: {
