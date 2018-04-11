@@ -79,7 +79,7 @@ let TheaterDetail = class TheaterDetail extends React.PureComponent {
             return React.createElement(loadingIcon_1.default, { isLoading: loading });
         }
         let theater = theaters[0];
-        document.title = `${theater.name}電影時刻表 | Movie Rater`;
+        document.title = `上映場次時刻表 - ${theater.name} | Movie Rater`;
         return (React.createElement("div", null,
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em', padding: ".5em 1em" } },
                 React.createElement(theaterCard_1.default, { theater: theater }),

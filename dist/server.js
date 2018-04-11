@@ -55,7 +55,7 @@ app.use(basicCache, function (req, res, next) {
     global.document = {
         title: "Movie Rater",
         meta: {
-            description: "蒐集了IMDB, YAHOO, PTT的電影評價，一目了然讓你不再踩雷",
+            description: "24小時不斷更新IMDB, YAHOO, PTT電影評價、電影時刻表，一目了然讓你不再踩雷！",
             image: "/public/favicons/android-chrome-384x384.png"
         }
     };

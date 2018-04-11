@@ -91,7 +91,7 @@ let MovieDetailTabs = class MovieDetailTabs extends React.PureComponent {
             return React.createElement(loadingIcon_1.default, { isLoading: loading });
         }
         const movie = helper_1.classifyArticle(movies[0]);
-        document.title = `${movie.chineseTitle} | Movie Rater | 電影評分 | PTT | IMDB | YAHOO`;
+        document.title = `${movie.chineseTitle} ${movie.englishTitle} | Movie Rater 電影避雷針  | PTT | IMDB | YAHOO`;
         document["meta"] = {
             image: movie.posterUrl,
             description: `IMDb:${movie.imdbRating}, Yahoo:${movie.yahooRating}, PTT好雷/普雷/負雷:${movie.goodRateArticles.length}/${movie.normalRateArticles.length}/${movie.badRateArticles.length}`
