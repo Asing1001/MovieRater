@@ -65,6 +65,7 @@ class TheaterList extends React.PureComponent<any, any> {
         if (loading) {
             return <LoadingIcon isLoading={loading} />
         }
+        document.title = `電影時刻表 - Movie Rater 電影避雷針`;
         const subRegions = [...new Set(this.props.data.theaters.map(({ subRegion }) => subRegion))]
         return (
             <div>
