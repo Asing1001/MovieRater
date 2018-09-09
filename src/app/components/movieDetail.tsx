@@ -1,9 +1,10 @@
 import * as React from 'react';
 import SVGSocialShare from 'material-ui/svg-icons/social/share';
 import IconButton from 'material-ui/IconButton';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 import Movie from '../../models/movie';
 import Ratings from './ratings';
+import { getMovieSchema } from '../helper';
 
 interface MovieDetailProps {
     movie: Movie
@@ -25,8 +26,10 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, {}> {
     }
 
     render() {
+        const schema = getMovieSchema(this.props.movie)
         return (
             <div>
+                <script type="application/ld+json">{JSON.stringify(schema)}</script>
                 <div className="col-md-8 col-xs-12 pull-right">
                     <Ratings className="ratings" movie={this.props.movie}>
                         {navigator['share'] && <IconButton style={{ position: 'absolute', top: '3px', right: 0 }} onTouchTap={e => { e.preventDefault(); this.share() }}><SVGSocialShare color={"#9E9E9E"} /></IconButton>}
