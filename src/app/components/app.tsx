@@ -21,7 +21,7 @@ class App extends React.Component<any, any> {
     super(props);
     this.state = {
       searching: false,
-      sortFunction: getSortFunction(SortType.imdb)
+      sortFunction: getSortFunction(SortType.releaseDate)
     };
   }
 
