@@ -17,7 +17,7 @@ describe('movieSchduleCrawler', () => {
         it('data should have timeStrings length > 0', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(60000);
-                const movieSchedules = yield movieSchduleCrawler_1.crawlMovieSchdule("/showtime/t02a01/a02/", moment().add(1, 'days').format('YYYYMMDD'));
+                const movieSchedules = yield movieSchduleCrawler_1.crawlMovieSchdule("/showtime/t02a01/a02/", moment().add(2, 'days').format('YYYYMMDD'));
                 movieSchedules[0].timesStrings.length.should.greaterThan(0);
             });
         });

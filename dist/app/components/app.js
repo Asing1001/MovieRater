@@ -27,7 +27,7 @@ class App extends React.Component {
         };
         this.state = {
             searching: false,
-            sortFunction: sorting_1.getSortFunction(sorting_1.SortType.imdb)
+            sortFunction: sorting_1.getSortFunction(sorting_1.SortType.releaseDate)
         };
     }
     render() {
