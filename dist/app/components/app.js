@@ -38,11 +38,11 @@ class App extends React.Component {
                 React.createElement("div", { className: "container", style: { marginTop: '.5em' } },
                     React.createElement(react_router_dom_1.Switch, null,
                         React.createElement(react_router_dom_1.Route, { exact: true, path: "/", render: (props) => {
-                                document.title = `現正上映 - Movie Rater 電影避雷針`;
+                                document.title = `現正上映 - Movie Rater`;
                                 return React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction }));
                             } }),
                         React.createElement(react_router_dom_1.Route, { path: "/upcoming", render: (props) => {
-                                document.title = `即將上映 - Movie Rater 電影避雷針`;
+                                document.title = `即將上映 - Movie Rater`;
                                 return React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction }));
                             } }),
                         React.createElement(react_router_dom_1.Route, { path: "/movie/:id", component: movieDetailTabs_1.default }),
