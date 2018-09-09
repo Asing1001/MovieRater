@@ -9,7 +9,7 @@ describe('movieSchduleCrawler', () => {
   describe('crawlMovieSchdule', () => {
     it('data should have timeStrings length > 0', async function () {
       this.timeout(60000);
-      const movieSchedules = await crawlMovieSchdule("/showtime/t02a01/a02/", moment().add(1, 'days').format('YYYYMMDD'))
+      const movieSchedules = await crawlMovieSchdule("/showtime/t02a01/a02/", moment().add(2, 'days').format('YYYYMMDD'))
       movieSchedules[0].timesStrings.length.should.greaterThan(0)
     });
   });
