@@ -5,7 +5,7 @@ export const systemSetting = {
     enableGraphiql: process.env.ENABLE_GRAPHIQL === 'true',
     enableScheduler: process.env.ENABLE_SCHEDULER === 'true',
     isProduction: process.env.NODE_ENV === "production",
-    keepAlive: process.env.KEEP_ALIVE,
+    keepAlive: process.env.KEEP_ALIVE === "true",
     redisUrlForApiCache: process.env.REDIS_URL || "redis://redistogo:0682398920455ac9f8d245e5cba8998e@greeneye.redistogo.com:11238/",
 }
 

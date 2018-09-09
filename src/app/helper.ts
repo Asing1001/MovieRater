@@ -47,3 +47,62 @@ export function getDistanceInKM(lon1, lat1, lon2, lat2) {
 function getRadians(num) {
     return (num) * Math.PI / 180;
 }
+
+export function getMovieSchema(movie: Movie) {
+    const pttRating = (movie.goodRateArticles.length * 5 / (movie.goodRateArticles.length + movie.badRateArticles.length)) || 6
+    const imdbRating = parseFloat(movie.imdbRating)/2 || 3
+    const yahooRating = parseFloat(movie.yahooRating) || 3
+    const aggregateRating = (imdbRating + yahooRating + pttRating) / 3
+    return {
+        "@context": "http://schema.org",
+        "@type": "Movie",
+        "name": "瘋狂亞洲富豪 Crazy Rich Asians",
+        "image": movie.posterUrl,
+        "url": "https://www.mvrater.com/movie/" + movie.yahooId,
+        "datePublished": movie.releaseDate,
+        "actor": {
+            "@type": "Person",
+            "name": movie.actors.join(',')
+        },
+        "director": {
+            "@type": "Person",
+            "name": movie.directors.join(',')
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": aggregateRating,
+            "ratingCount": "3",
+        },
+        "review": [{
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "IMDb"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": imdbRating,
+            }
+        }, {
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "Yahoo"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": yahooRating,
+            }
+        }, {
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": "PTT"
+            },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": pttRating,
+            }
+        }]
+    }
+}

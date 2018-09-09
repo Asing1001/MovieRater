@@ -21,7 +21,7 @@ class App extends React.Component<any, any> {
     super(props);
     this.state = {
       searching: false,
-      sortFunction: getSortFunction(SortType.imdb)
+      sortFunction: getSortFunction(SortType.releaseDate)
     };
   }
 
@@ -50,8 +50,14 @@ class App extends React.Component<any, any> {
           </AppBarSearching>
           <div className="container" style={{ marginTop: '.5em' }} >
             <Switch>
-              <Route exact path="/" render={(props) => <MovieList {...props} sortFunction={this.state.sortFunction} />} />
-              <Route path="/upcoming" render={(props) => <MovieList {...props} sortFunction={this.state.sortFunction} />} />
+              <Route exact path="/" render={(props) => {
+                document.title = `現正上映 - Movie Rater`;
+                return <MovieList {...props} sortFunction={this.state.sortFunction} />
+              }} />
+              <Route path="/upcoming" render={(props) => {
+                document.title = `即將上映 - Movie Rater`;
+                return <MovieList {...props} sortFunction={this.state.sortFunction} />
+              }} />
               <Route path="/movie/:id" component={MovieDetailTabs} />
               <Route path="/movies/:ids" render={(props) => <MovieList {...props} sortFunction={this.state.sortFunction} />} />
               <Route path="/movienotfound/:query" component={MovieNotFound} />

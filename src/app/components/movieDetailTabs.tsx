@@ -104,7 +104,7 @@ export default class MovieDetailTabs extends React.PureComponent<any, MovieDetai
       return <LoadingIcon isLoading={loading} />
     }
     const movie = classifyArticle(movies[0]);
-    document.title = `${movie.chineseTitle} | Movie Rater | 電影評分 | PTT | IMDB | YAHOO`;
+    document.title = `${movie.chineseTitle} ${movie.englishTitle} | Movie Rater | 電影評分 | PTT | IMDB | YAHOO`;
     document["meta"] = {
       image: movie.posterUrl,
       description: `IMDb:${movie.imdbRating}, Yahoo:${movie.yahooRating}, PTT好雷/普雷/負雷:${movie.goodRateArticles.length}/${movie.normalRateArticles.length}/${movie.badRateArticles.length}`

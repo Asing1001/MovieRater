@@ -102,34 +102,23 @@ input::-ms-clear {
 }
 
 .movieDetail {
-    position: relative;
-    z-index: -1;
-}
-
-.movieDetail td {
-    padding-right: 0 !important;
-}
-
-.movieDetail tr>td:nth-child(1) {
-    width: 35%
-}
-
-.movieDetail tr>td:nth-child(2) {
-    white-space: initial !important;
-}
-
-@media (min-width: 768px) {
-    .movieDetail tr>td:nth-child(1) {
-        width: 120px
+    td {
+        padding-right: 0 !important;
+    }
+    tr>td:nth-child(1) {
+        width: 100px
+    }
+    tr>td:nth-child(2) {
+        white-space: initial !important;
     }
 }
 
 .ratings {
     padding-top: 1em;
-    padding-bottom: 1em;    
+    padding-bottom: 1em;
     text-align: center;
     padding-left: 0;
-    @include desktop{
+    @include desktop {
         text-align: left;
         padding-left: 24px;
     }
@@ -258,5 +247,5 @@ a.pttArticleTitle:visited {
 }
 
 .datebtn {
-    margin: 0 6px .5em 0 !important ;
+    margin: 0 6px .5em 0 !important;
 }

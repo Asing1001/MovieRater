@@ -82,7 +82,7 @@ class TheaterDetail extends React.PureComponent<any, any> {
             return <LoadingIcon isLoading={loading} />
         }
         let theater = theaters[0];
-        document.title = `${theater.name}電影時刻表 | Movie Rater`;
+        document.title = `上映場次時刻表 - ${theater.name} | Movie Rater`;
         return (
             <div>
                 <Paper zDepth={2} style={{ marginBottom: '.5em', padding: ".5em 1em" }}>
