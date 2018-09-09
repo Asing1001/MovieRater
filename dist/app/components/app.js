@@ -27,7 +27,7 @@ class App extends React.Component {
         };
         this.state = {
             searching: false,
-            sortFunction: sorting_1.getSortFunction(sorting_1.SortType.imdb)
+            sortFunction: sorting_1.getSortFunction(sorting_1.SortType.releaseDate)
         };
     }
     render() {
@@ -37,8 +37,14 @@ class App extends React.Component {
                 React.createElement(appBarSearching_1.default, { className: !this.state.searching && "vanish", onBackSpaceIconClick: this.handleSearchToggle.bind(this) }),
                 React.createElement("div", { className: "container", style: { marginTop: '.5em' } },
                     React.createElement(react_router_dom_1.Switch, null,
-                        React.createElement(react_router_dom_1.Route, { exact: true, path: "/", render: (props) => React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction })) }),
-                        React.createElement(react_router_dom_1.Route, { path: "/upcoming", render: (props) => React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction })) }),
+                        React.createElement(react_router_dom_1.Route, { exact: true, path: "/", render: (props) => {
+                                document.title = `現正上映 - Movie Rater`;
+                                return React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction }));
+                            } }),
+                        React.createElement(react_router_dom_1.Route, { path: "/upcoming", render: (props) => {
+                                document.title = `即將上映 - Movie Rater`;
+                                return React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction }));
+                            } }),
                         React.createElement(react_router_dom_1.Route, { path: "/movie/:id", component: movieDetailTabs_1.default }),
                         React.createElement(react_router_dom_1.Route, { path: "/movies/:ids", render: (props) => React.createElement(movieList_1.default, Object.assign({}, props, { sortFunction: this.state.sortFunction })) }),
                         React.createElement(react_router_dom_1.Route, { path: "/movienotfound/:query", component: movieNotFound_1.default }),
