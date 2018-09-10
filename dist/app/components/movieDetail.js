@@ -20,9 +20,9 @@ class MovieDetail extends React.PureComponent {
             .catch((error) => console.log('Error sharing', error));
     }
     render() {
-        const schema = helper_1.getMovieSchema(this.props.movie);
+        const schema = JSON.stringify(helper_1.getMovieSchema(this.props.movie));
         return (React.createElement("div", null,
-            React.createElement("script", { type: "application/ld+json" }, JSON.stringify(schema)),
+            React.createElement("script", { type: "application/ld+json", dangerouslySetInnerHTML: { __html: schema } }),
             React.createElement("div", { className: "col-md-8 col-xs-12 pull-right" },
                 React.createElement(ratings_1.default, { className: "ratings", movie: this.props.movie }, navigator['share'] && React.createElement(IconButton_1.default, { style: { position: 'absolute', top: '3px', right: 0 }, onTouchTap: e => { e.preventDefault(); this.share(); } },
                     React.createElement(share_1.default, { color: "#9E9E9E" }))),
