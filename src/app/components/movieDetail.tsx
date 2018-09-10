@@ -26,10 +26,10 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, {}> {
     }
 
     render() {
-        const schema = getMovieSchema(this.props.movie)
+        const schema = JSON.stringify(getMovieSchema(this.props.movie))
         return (
             <div>
-                <script type="application/ld+json">{JSON.stringify(schema)}</script>
+                <script type="application/ld+json" dangerouslySetInnerHTML={{__html:schema}}></script>
                 <div className="col-md-8 col-xs-12 pull-right">
                     <Ratings className="ratings" movie={this.props.movie}>
                         {navigator['share'] && <IconButton style={{ position: 'absolute', top: '3px', right: 0 }} onTouchTap={e => { e.preventDefault(); this.share() }}><SVGSocialShare color={"#9E9E9E"} /></IconButton>}

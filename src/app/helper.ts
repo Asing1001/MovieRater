@@ -49,14 +49,14 @@ function getRadians(num) {
 }
 
 export function getMovieSchema(movie: Movie) {
-    const pttRating = (movie.goodRateArticles.length * 5 / (movie.goodRateArticles.length + movie.badRateArticles.length)) || 6
+    const pttRating = (movie.goodRateArticles.length * 5 / (movie.goodRateArticles.length + movie.badRateArticles.length)) || 3
     const imdbRating = parseFloat(movie.imdbRating)/2 || 3
     const yahooRating = parseFloat(movie.yahooRating) || 3
     const aggregateRating = (imdbRating + yahooRating + pttRating) / 3
     return {
         "@context": "http://schema.org",
         "@type": "Movie",
-        "name": "瘋狂亞洲富豪 Crazy Rich Asians",
+        "name": `${movie.chineseTitle} ${movie.englishTitle}`,
         "image": movie.posterUrl,
         "url": "https://www.mvrater.com/movie/" + movie.yahooId,
         "datePublished": movie.releaseDate,
