@@ -20,7 +20,7 @@ export async function getRegionList(): Promise<Region[]> {
         const $area = $(area);
         return {
             name: $area.attr('alt'),
-            regionId: $area.attr('href').substr(10, 3),
+            regionId: $area.attr('href').substr(theaterListUrl.length, 3),
         };
     });
 
