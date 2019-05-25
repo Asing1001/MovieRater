@@ -15,6 +15,7 @@ const moment = require("moment");
 const atmovieInTheaterCrawler_1 = require("../crawler/atmovieInTheaterCrawler");
 const util_1 = require("../helper/util");
 const atmoviesTask_1 = require("../task/atmoviesTask");
+const isValideDate_1 = require("../helper/isValideDate");
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -88,7 +89,10 @@ class cacheManager {
             let today = moment();
             let sixtyDaysBefore = moment().subtract(60, 'days');
             let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(({ chineseTitle, releaseDate }) => movieNames.indexOf(chineseTitle) !== -1 && today.diff(moment(releaseDate), 'days') <= 90);
+                .filter(({ chineseTitle, releaseDate }) => {
+                const releaseMoment = isValideDate_1.default(releaseDate) ? moment(releaseDate) : moment();
+                return movieNames.indexOf(chineseTitle) !== -1 && today.diff(releaseMoment, 'days') <= 90;
+            });
             // .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
             cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
             console.timeEnd('setRecentMoviesCache');
