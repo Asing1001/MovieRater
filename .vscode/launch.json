@@ -45,7 +45,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/theaterCrawler.test.js",
+                "dist/test/movieScheduleCrawler.test.js",
                 "--no-timeouts",
                 "--watch"
             ],

@@ -19,10 +19,10 @@ describe('YahooCrawler', () => {
     });
   });
 
-  describe('getYahooMovieInfo(9999)', () => {
+  describe('getYahooMovieInfo(99999)', () => {
     it('.should.eventually.be.rejected', function () {
       this.timeout(30000);
-      return getYahooMovieInfo(9999).should.eventually.be.rejected;
+      return getYahooMovieInfo(99999).should.eventually.be.rejected;
     });
   });
 

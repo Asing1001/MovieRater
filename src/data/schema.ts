@@ -160,7 +160,7 @@ const MovieType = new GraphQLObjectType({
         schedules: {
             type: new GraphQLList(scheduleType),
             resolve: async (obj) => {
-                const moviesSchedules = cacheManager.get(cacheManager.MOVIES_SCHEDULES);
+                const moviesSchedules = cacheManager.get(cacheManager.MOVIES_SCHEDULES) || [];
                 return moviesSchedules.filter((schedule: Schedule) => schedule.movieName == obj.chineseTitle);
             },
         }
@@ -284,7 +284,7 @@ const TheaterType = new GraphQLObjectType({
         schedules: {
             type: new GraphQLList(scheduleType),
             resolve: obj => {
-                let movieSchedules = cacheManager.get(cacheManager.MOVIES_SCHEDULES);
+                let movieSchedules = cacheManager.get(cacheManager.MOVIES_SCHEDULES) || [];
                 movieSchedules = movieSchedules.filter(({ scheduleUrl }: Schedule) => {
                     return scheduleUrl === obj.scheduleUrl
                 })

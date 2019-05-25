@@ -19,7 +19,7 @@ describe('theaterCrawler', () => {
 
   describe('getRegionList()', () => {
     it('length.should.above(0)', async function () {
-      this.timeout(20000);
+      this.timeout(60000);
       let regionList = await getRegionList();
       regionList.length.should.above(0);
     });

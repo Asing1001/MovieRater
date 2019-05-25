@@ -1,12 +1,13 @@
 import * as memoryCache from 'memory-cache';
 import { db } from "../data/db";
-import * as Q from "q";
 import { mergeData } from '../crawler/mergeData';
 import * as moment from 'moment';
 import Movie from '../models/movie';
 import { getInTheaterMovieNames } from '../crawler/atmovieInTheaterCrawler';
 import { roughSizeOfObject } from '../helper/util';
 import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask';
+import isValideDate from '../helper/isValideDate';
+
 
 export default class cacheManager {
     static All_MOVIES = 'allMovies';
@@ -83,7 +84,10 @@ export default class cacheManager {
         let today = moment();
         let sixtyDaysBefore = moment().subtract(60, 'days');
         let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-            .filter(({ chineseTitle, releaseDate }: Movie) => movieNames.indexOf(chineseTitle) !== -1 && today.diff(moment(releaseDate), 'days') <= 90)
+            .filter(({ chineseTitle, releaseDate }: Movie) => {
+                const releaseMoment = isValideDate(releaseDate)? moment(releaseDate) : moment();
+                return movieNames.indexOf(chineseTitle) !== -1 && today.diff(releaseMoment, 'days') <= 90;
+            })
         // .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
         cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
         console.timeEnd('setRecentMoviesCache');
