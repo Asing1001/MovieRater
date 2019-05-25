@@ -27,10 +27,10 @@ describe('YahooCrawler', () => {
             });
         });
     });
-    describe('getYahooMovieInfo(9999)', () => {
+    describe('getYahooMovieInfo(99999)', () => {
         it('.should.eventually.be.rejected', function () {
             this.timeout(30000);
-            return yahooCrawler_1.getYahooMovieInfo(9999).should.eventually.be.rejected;
+            return yahooCrawler_1.getYahooMovieInfo(99999).should.eventually.be.rejected;
         });
     });
     describe('getYahooMovieInfo(6794)', () => {
