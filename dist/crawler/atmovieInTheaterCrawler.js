@@ -15,9 +15,13 @@ function getInTheaterMovieNames() {
         let movieName = [];
         try {
             const $ = yield util_1.getCheerio$(inTheaterUrl);
-            movieName = Array.from($('.filmListAll2>li>a')).map(a => $(a).text());
+            movieName = Array.from($('.filmListPA>li>a')).map(a => $(a).text());
+            if (!movieName.length) {
+                console.warn('getInTheaterMovieNames got 0 movie, the class may have been changed!');
+            }
         }
         catch (error) {
+            console.error('getInTheaterMovieNames fail!!');
             console.error(error);
         }
         return movieName;

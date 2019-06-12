@@ -27,7 +27,8 @@ class cacheManager {
             cacheManager.setAllMoviesNamesCache(yahooMovies);
             cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
             cacheManager.setTheatersCache();
-            yield cacheManager.setInTheaterMoviesCache();
+            yield cacheManager.setRecentMoviesCache();
+            yield cacheManager.setMoviesSchedulesCache();
         });
     }
     static setAllMoviesNamesCache(yahooMovies) {
@@ -58,13 +59,19 @@ class cacheManager {
             cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
         });
     }
-    static setInTheaterMoviesCache() {
+    static setRecentMoviesCache() {
         return __awaiter(this, void 0, void 0, function* () {
-            const movieNames = yield atmovieInTheaterCrawler_1.getInTheaterMovieNames();
-            if (movieNames.length > 0) {
-                yield cacheManager.setRecentMoviesCache(movieNames);
-            }
-            yield cacheManager.setMoviesSchedulesCache();
+            console.time('setRecentMoviesCache');
+            const inTheaterMovieNames = yield atmovieInTheaterCrawler_1.getInTheaterMovieNames();
+            const hasInTheaterData = inTheaterMovieNames && inTheaterMovieNames.length;
+            const today = moment();
+            const recentMovies = cacheManager.get(cacheManager.All_MOVIES)
+                .filter(({ chineseTitle, releaseDate }) => {
+                const releaseMoment = isValideDate_1.default(releaseDate) ? moment(releaseDate) : moment();
+                return (!hasInTheaterData || inTheaterMovieNames.indexOf(chineseTitle) !== -1) && today.diff(releaseMoment, 'days') <= 60;
+            });
+            cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
+            console.timeEnd('setRecentMoviesCache');
         });
     }
     static setMoviesSchedulesCache() {
@@ -81,21 +88,6 @@ class cacheManager {
                 console.error(ex);
             }
             console.timeEnd('setMoviesSchedulesCache');
-        });
-    }
-    static setRecentMoviesCache(movieNames) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.time('setRecentMoviesCache');
-            let today = moment();
-            let sixtyDaysBefore = moment().subtract(60, 'days');
-            let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-                .filter(({ chineseTitle, releaseDate }) => {
-                const releaseMoment = isValideDate_1.default(releaseDate) ? moment(releaseDate) : moment();
-                return movieNames.indexOf(chineseTitle) !== -1 && today.diff(releaseMoment, 'days') <= 90;
-            });
-            // .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
-            cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
-            console.timeEnd('setRecentMoviesCache');
         });
     }
     static get(key) {

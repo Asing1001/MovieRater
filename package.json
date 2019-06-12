@@ -18,7 +18,6 @@
     "tsc:w": "tsc -w",
     "dev": "concurrently \"npm run tsc:w\" \"tsc && npm start\" \"npm run webpack\""
   },
-  "heroku-run-build-script": false,
   "private": true,
   "dependencies": {
     "@google/maps": "^0.3.1",

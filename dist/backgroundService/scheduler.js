@@ -45,7 +45,10 @@ function initScheduler() {
         });
     });
     node_schedule_1.scheduleJob('20 * * * *', function () {
-        cacheManager_1.default.setInTheaterMoviesCache();
+        return __awaiter(this, void 0, void 0, function* () {
+            yield cacheManager_1.default.setRecentMoviesCache();
+            yield cacheManager_1.default.setMoviesSchedulesCache();
+        });
     });
     node_schedule_1.scheduleJob('30 5 * * *', function () {
         return __awaiter(this, void 0, void 0, function* () {
