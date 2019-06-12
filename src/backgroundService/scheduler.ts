@@ -37,8 +37,9 @@ export function initScheduler() {
         console.timeEnd('[Scheduler] updatePttArticles');
     });
 
-    scheduleJob('20 * * * *', function () {
-        cacheManager.setInTheaterMoviesCache();
+    scheduleJob('20 * * * *', async function () {        
+        await cacheManager.setRecentMoviesCache();
+        await cacheManager.setMoviesSchedulesCache()
     });
 
     scheduleJob('30 5 * * *', async function () {
