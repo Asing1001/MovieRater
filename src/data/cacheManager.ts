@@ -24,7 +24,8 @@ export default class cacheManager {
         cacheManager.setAllMoviesNamesCache(yahooMovies);
         cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
         cacheManager.setTheatersCache();
-        await cacheManager.setInTheaterMoviesCache();
+        await cacheManager.setRecentMoviesCache();
+        await cacheManager.setMoviesSchedulesCache()
     }
 
     private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
@@ -56,13 +57,19 @@ export default class cacheManager {
         console.timeEnd('setTheatersCache');
         cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
     }
-
-    public static async setInTheaterMoviesCache() {
-        const movieNames = await getInTheaterMovieNames();
-        if (movieNames.length > 0) {
-            await cacheManager.setRecentMoviesCache(movieNames);
-        }
-        await cacheManager.setMoviesSchedulesCache()
+    
+    public static async setRecentMoviesCache() {
+        console.time('setRecentMoviesCache');
+        const inTheaterMovieNames = await getInTheaterMovieNames();
+        const hasInTheaterData = inTheaterMovieNames && inTheaterMovieNames.length
+        const today = moment();
+        const recentMovies = cacheManager.get(cacheManager.All_MOVIES)
+            .filter(({ chineseTitle, releaseDate }: Movie) => {
+                const releaseMoment = isValideDate(releaseDate)? moment(releaseDate) : moment();
+                return (!hasInTheaterData || inTheaterMovieNames.indexOf(chineseTitle) !== -1) && today.diff(releaseMoment, 'days') <= 60
+            })
+        cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
+        console.timeEnd('setRecentMoviesCache');
     }
 
     public static async setMoviesSchedulesCache() {
@@ -78,22 +85,7 @@ export default class cacheManager {
         }
         console.timeEnd('setMoviesSchedulesCache');
     }
-
-    private static async setRecentMoviesCache(movieNames) {
-        console.time('setRecentMoviesCache');
-        let today = moment();
-        let sixtyDaysBefore = moment().subtract(60, 'days');
-        let recentMovies = cacheManager.get(cacheManager.All_MOVIES)
-            .filter(({ chineseTitle, releaseDate }: Movie) => {
-                const releaseMoment = isValideDate(releaseDate)? moment(releaseDate) : moment();
-                return movieNames.indexOf(chineseTitle) !== -1 && today.diff(releaseMoment, 'days') <= 90;
-            })
-        // .filter(({ yahooId, releaseDate }: Movie) => moment(releaseDate).isBetween(sixtyDaysBefore, today, 'day', '[]'))
-        cacheManager.set(cacheManager.RECENT_MOVIES, recentMovies);
-        console.timeEnd('setRecentMoviesCache');
-    }
-
-
+    
     static get(key) {
         let data = memoryCache.get(key);
         return data;
