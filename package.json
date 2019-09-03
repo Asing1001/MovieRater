@@ -15,6 +15,7 @@
     "webpack": "webpack-dev-server --hot --inline --progress --port 3004",
     "webpack:prod": "webpack -p --config config/webpack.prod.js --progress",
     "build": "rimraf dist && tsc && npm run webpack:prod",
+    "heroku-postbuild": "npm run build && npm run sitemap",
     "tsc:w": "tsc -w",
     "dev": "concurrently \"npm run tsc:w\" \"tsc && npm start\" \"npm run webpack\""
   },
