@@ -1,45 +1,59 @@
 import * as fetch from "isomorphic-fetch";
 import * as cheerio from "cheerio";
 import Movie from '../models/movie';
+import * as moment from 'moment';
 
-export async function getIMDBMovieInfo(englishTitle) {
-    let imdbID = "";
-    let imdbRating = "";
+interface IMDB {
+    imdbID: string
+    imdbRating: string
+}
+
+export async function getIMDBMovieInfo(movie: Movie): Promise<IMDB> {
     try {
-        imdbID = await getIMDBSuggestId(englishTitle);
-        imdbRating = imdbID ? await getIMDBRating(imdbID) : "";
+        const imdbID = await getIMDBSuggestId(movie);
+        if (!imdbID) {
+            return null
+        }
+
+        const imdbRating = await getIMDBRating(imdbID);
+        return {
+            imdbID,
+            imdbRating
+        }
     }
     catch (e) {
         console.error(e);
+        return null
     }
-
-    return {
-        imdbID,
-        imdbRating
-    };
 }
 
-async function getIMDBSuggestId(englishTitle: string) {
-    let suggestId = "";
+async function getIMDBSuggestId({ englishTitle, releaseDate }: Movie) {
     const imdbSuggestJsonUrl = getIMDBSuggestJsonUrl(englishTitle);
+    console.log(imdbSuggestJsonUrl)
     const response = await fetch(imdbSuggestJsonUrl);
-    const text = await response.text();
-    const match = /"id":"([\w]*)",/.exec(text);
-    if (match) {
-        suggestId = match[1];
-    } else {
-        console.log(`could not find suggest id at ${imdbSuggestJsonUrl}`);
+    const suggestions = await response.json();
+    if (suggestions && suggestions.d && suggestions.d.length) {
+        const releaseYear = moment(releaseDate).year()
+        const correctMovie = suggestions.d.find(({ y, l }) => (similarity(l, englishTitle) > 0.8 || y === releaseYear))
+        if (correctMovie && correctMovie.id) {
+            return correctMovie.id
+        }
     }
-    return suggestId;
+    console.log(`could not find suggest id at ${imdbSuggestJsonUrl}`);
+    return null;
 }
 
+// For example, the suggestionUrl of the movie "girl's revenge" is https://v2.sg.media-imdb.com/suggestion/g/girls_revenge.json
 function getIMDBSuggestJsonUrl(englishTitle: string) {
-    const jsonName = englishTitle.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_").substr(0,20);
-    return `https://v2.sg.media-imdb.com/suggests/${jsonName.charAt(0)}/${jsonName}.json`
+    const jsonName = englishTitle.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_").substr(0, 20);
+    return `https://v2.sg.media-imdb.com/suggestion/${jsonName.charAt(0)}/${jsonName}.json`
 }
 
 const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
-export async function getIMDBRating(imdbID) {
+export async function getIMDBRating(imdbID: string) {
+    if (!imdbID) {
+        return null
+    }
     const response = await fetch(`${imdbMobileMovieUrl + imdbID}`);
     const html = await response.text();
     const $ = cheerio.load(html);
@@ -49,4 +63,45 @@ export async function getIMDBRating(imdbID) {
         rating = ratingWrapper.childNodes[0].nodeValue;
     }
     return rating;
+}
+
+function similarity(s1, s2) {
+    var longer = s1;
+    var shorter = s2;
+    if (s1.length < s2.length) {
+        longer = s2;
+        shorter = s1;
+    }
+    var longerLength = longer.length;
+    if (longerLength == 0) {
+        return 1.0;
+    }
+    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
+
+function editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    var costs = new Array();
+    for (var i = 0; i <= s1.length; i++) {
+        var lastValue = i;
+        for (var j = 0; j <= s2.length; j++) {
+            if (i == 0)
+                costs[j] = j;
+            else {
+                if (j > 0) {
+                    var newValue = costs[j - 1];
+                    if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                        newValue = Math.min(Math.min(newValue, lastValue),
+                            costs[j]) + 1;
+                    costs[j - 1] = lastValue;
+                    lastValue = newValue;
+                }
+            }
+        }
+        if (i > 0)
+            costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
 }

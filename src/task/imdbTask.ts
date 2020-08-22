@@ -14,12 +14,13 @@ const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
 async function getNewImdbInfos() {
     const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
     const allMovies: Movie[] = cacheManager.get(cacheManager.All_MOVIES);
-    const promises = allMovies.filter(filterNeedCrawlMovie).map(async ({ englishTitle, yahooId }) => {
-        const imdbInfo = await getIMDBMovieInfo(englishTitle);
-        const movieInfo: Movie = Object.assign(imdbInfo, {
-            yahooId,
+    const promises = allMovies.filter(filterNeedCrawlMovie).map(async (movie) => {
+        const imdbInfo = await getIMDBMovieInfo(movie);
+        const movieInfo: Movie = {
+            ...imdbInfo,
+            yahooId: movie.yahooId,
             imdbLastCrawlTime
-        });
+        }
         return movieInfo;
     });
     return Promise.all(promises);
