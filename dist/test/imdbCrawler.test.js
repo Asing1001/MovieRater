@@ -21,7 +21,7 @@ describe('imdbCrawler', () => {
         it('getIMDBMovieInfo("Who Killed Cock Robin").should.have.property("imdbID","tt5576318"),"imdbRating".above(7)', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(30000);
-                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo("Who Killed Cock Robin");
+                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo({ englishTitle: "Who Killed Cock Robin", releaseDate: '2017-03-31' });
                 movieInfo.should.have.property("imdbID", "tt5576318");
                 movieInfo.should.have.property("imdbRating").above(6);
             });
@@ -29,8 +29,31 @@ describe('imdbCrawler', () => {
         it('getIMDBMovieInfo(" A Silent Voice : The Movie").should.have.property("imdbID","tt5323662"),"imdbRating".above(7)', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(30000);
-                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo(" A Silent Voice : The Movie");
+                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo({ englishTitle: " A Silent Voice : The Movie", releaseDate: '2020-06-12' });
                 movieInfo.should.have.property("imdbID", "tt5323662");
+                movieInfo.should.have.property("imdbRating").above(7);
+            });
+        });
+        it('get Ireesha, The Daughter of Elf-king should have correct data', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo({ englishTitle: "Ireesha, The Daughter of Elf-king", releaseDate: '2020-07-24' });
+                movieInfo.should.have.property("imdbID", "tt11052142");
+                movieInfo.should.have.property("imdbRating").above(6);
+            });
+        });
+        it('get Girl’s Revenge should return null', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo({ englishTitle: "Girl’s Revenge", releaseDate: '2020-08-07' });
+                expect(movieInfo).eq(null);
+            });
+        });
+        it('get Memento should have correct data', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo({ englishTitle: "Memento", releaseDate: '2020-08-05' });
+                movieInfo.should.have.property("imdbID", "tt0209144");
                 movieInfo.should.have.property("imdbRating").above(7);
             });
         });

@@ -31,7 +31,8 @@ describe('cacheManager', () => {
         it('should init complete', function () {
             return __awaiter(this, void 0, void 0, function* () {
                 stubGetCollection.returns([]);
-                sandbox.stub(cacheManager_1.default, 'setInTheaterMoviesCache').returns(Promise.resolve([]));
+                sandbox.stub(cacheManager_1.default, 'setRecentMoviesCache').returns(Promise.resolve([]));
+                sandbox.stub(cacheManager_1.default, 'setMoviesSchedulesCache').returns(Promise.resolve([]));
                 yield cacheManager_1.default.init();
             });
         });
