@@ -25,12 +25,9 @@ function getNewImdbInfos() {
     return __awaiter(this, void 0, void 0, function* () {
         const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
         const allMovies = cacheManager_1.default.get(cacheManager_1.default.All_MOVIES);
-        const promises = allMovies.filter(filterNeedCrawlMovie).map(({ englishTitle, yahooId }) => __awaiter(this, void 0, void 0, function* () {
-            const imdbInfo = yield imdbCrawler_1.getIMDBMovieInfo(englishTitle);
-            const movieInfo = Object.assign(imdbInfo, {
-                yahooId,
-                imdbLastCrawlTime
-            });
+        const promises = allMovies.filter(filterNeedCrawlMovie).map((movie) => __awaiter(this, void 0, void 0, function* () {
+            const imdbInfo = yield imdbCrawler_1.getIMDBMovieInfo(movie);
+            const movieInfo = Object.assign({}, imdbInfo, { yahooId: movie.yahooId, imdbLastCrawlTime });
             return movieInfo;
         }));
         return Promise.all(promises);
