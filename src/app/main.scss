@@ -40,13 +40,13 @@ input::-ms-clear {
     display: flex;
     align-items: center;
     width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
 .appBar.vanish {
-    position: absolute !important;
-    opacity: 0 !important;
-    z-index: -1 !important;
-    top: 0;
+    display: none;
 }
 
 .appBar hr {
