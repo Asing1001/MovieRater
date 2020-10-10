@@ -43,5 +43,12 @@ describe('imdbCrawler', () => {
       movieInfo.should.have.property("imdbID", "tt0209144");
       movieInfo.should.have.property("imdbRating").above(7);
     });
+
+    it('get i WEiR DO should have correct data', async function () {
+      this.timeout(30000);
+      const movieInfo = await getIMDBMovieInfo({ englishTitle: "i WEiR DO", releaseDate: '2020-08-07' });
+      movieInfo.should.have.property("imdbID", "tt12619256");
+      movieInfo.should.have.property("imdbRating").above(7);
+    });
   });
 });
