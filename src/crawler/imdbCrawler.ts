@@ -34,7 +34,11 @@ async function getIMDBSuggestId({ englishTitle, releaseDate }: Movie) {
     const suggestions = await response.json();
     if (suggestions && suggestions.d && suggestions.d.length) {
         const releaseYear = moment(releaseDate).year()
-        const correctMovie = suggestions.d.find(({ y, l }) => (similarity(l, englishTitle) > 0.8 || y === releaseYear))
+        const correctMovie = suggestions.d.find(({ y: year, l: title }) => {
+          const similarity =  getSimilarity(title, englishTitle)
+          return similarity > 0.8 || (similarity > 0.6 && year === releaseYear)
+        })
+
         if (correctMovie && correctMovie.id) {
             return correctMovie.id
         }
@@ -65,7 +69,7 @@ export async function getIMDBRating(imdbID: string) {
     return rating;
 }
 
-function similarity(s1, s2) {
+function getSimilarity(s1, s2) {
     var longer = s1;
     var shorter = s2;
     if (s1.length < s2.length) {
