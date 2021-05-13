@@ -5,7 +5,7 @@ import { db } from '../data/db';
 import * as redis from 'redis';
 import { systemSetting } from '../configs/systemSetting';
 
-const redisClient = redis.createClient(systemSetting.redisUrlForApiCache).on("error", err => console.log("Error " + err));
+const redisClient = redis.createClient(systemSetting.redisUrlForScheduler).on("error", err => console.log("Error " + err));
 
 export async function updateMoviesSchedules() {
     const scheduleUrls = await db.getCollection({ name: "theaters", fields: { scheduleUrl: 1, _id: 0 } });
