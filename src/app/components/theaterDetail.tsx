@@ -91,7 +91,7 @@ class TheaterDetail extends React.PureComponent<any, any> {
                         {this.getAvailableDates(theater.schedules)
                             .map((date, index) =>
                                 <Chip className="datebtn" key={index} onClick={() => this.setState({ selectedDate: date })}>
-                                    {index === 0 ? "今天" : moment(date).format('MM/DD')}
+                                    {moment(date).format('MM/DD')}
                                 </Chip>)}
                     </div>
                 </Paper>
