@@ -5,7 +5,10 @@ Crawl and merge ptt/imdb/yahoo movie data, help easy search high rating movie in
 ![](https://asing1001.github.io/portfolio/index/movierater.jpg)
 
 ## Quick Start 
-`npm install && npm run build && npm start` then open http://localhost:3003
+`npm install -g yarn`
+`yarn install`
+`npm run build && npm start` then open http://localhost:3003
+
 
 ## Developement
 Please open two command line:  
