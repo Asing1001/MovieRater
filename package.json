@@ -17,7 +17,8 @@
     "build": "rimraf dist && tsc && npm run webpack:prod",
     "heroku-postbuild": "npm run build && npm run sitemap",
     "tsc:w": "tsc -w",
-    "dev": "concurrently \"npm run tsc:w\" \"tsc && npm start\" \"npm run webpack\""
+    "dev": "concurrently \"npm run tsc:w\" \"tsc && npm start\" \"npm run webpack\"",
+    "mergedata": "node dist/backgroundService/mergeDataJob.js"
   },
   "private": true,
   "dependencies": {
