@@ -4,6 +4,7 @@ import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import { updateYahooMovies, updateTheaterWithLocationList } from '../task/yahooTask';
 import { updatePttArticles } from '../task/pttTask';
 import { updateImdbInfo } from '../task/imdbTask';
+import { getHtmlOfNetflixMovieWithRatingInfo } from "../crawler/netlixCrawler";
 import cacheManager from '../data/cacheManager';
 
 export function initScheduler() {
@@ -52,4 +53,11 @@ export function initScheduler() {
         await updateImdbInfo()
         console.timeEnd('[Scheduler] updateImdbInfo');
     });    
+
+    getHtmlOfNetflixMovieWithRatingInfo()
+    scheduleJob('0 17 * * *', async function () {
+        console.time('[Scheduler] updateNetflix');
+        await getHtmlOfNetflixMovieWithRatingInfo()
+        console.timeEnd('[Scheduler] updateNetflix');
+    });
 }

@@ -40,7 +40,7 @@ const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot, { maxAge: '7d' }));
 app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js', { maxAge: '7d' }));
 
-const rootFiles = ["robots.txt", "sitemap.xml", "ads.txt"];
+const rootFiles = ["robots.txt", "sitemap.xml", "ads.txt", "netflix.html"];
 rootFiles.forEach(fileName => {
   app.use('/' + fileName, express.static(staticRoot + fileName));
 })
