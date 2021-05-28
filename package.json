@@ -43,6 +43,7 @@
     "mongodb": "^2.2.11",
     "node-sass": "4.12.0",
     "node-schedule": "^1.2.3",
+    "puppeteer": "3.3.0",
     "q": "^1.4.1",
     "react": "^15.5.4",
     "react-apollo": "^1.2.0",
