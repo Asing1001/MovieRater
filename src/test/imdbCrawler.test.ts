@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
+import { getIMDBMovieInfo, getIMDBRating } from '../crawler/imdbCrawler';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -49,6 +49,12 @@ describe('imdbCrawler', () => {
       const movieInfo = await getIMDBMovieInfo({ englishTitle: "i WEiR DO", releaseDate: '2020-08-07' });
       movieInfo.should.have.property("imdbID", "tt12619256");
       movieInfo.should.have.property("imdbRating").above(7);
+    });
+    
+    it('get imdb rating should have correct data', async function () {
+      this.timeout(30000);
+      const movieInfo = await getIMDBRating("tt12619256");
+      movieInfo.length.should.above(0);
     });
   });
 });
