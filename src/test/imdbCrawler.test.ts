@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
+import { getIMDBMovieInfo, getIMDBRating } from '../crawler/imdbCrawler';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -34,7 +34,8 @@ describe('imdbCrawler', () => {
     it('get Girl’s Revenge should return null', async function () {
       this.timeout(30000);
       const movieInfo = await getIMDBMovieInfo({ englishTitle: "Girl’s Revenge", releaseDate: '2020-08-07' });
-      expect(movieInfo).eq(null)
+      movieInfo.should.have.property("imdbID", "tt13388018");
+      movieInfo.should.have.property("imdbRating").above(3);
     });
 
     it('get Memento should have correct data', async function () {
@@ -43,12 +44,11 @@ describe('imdbCrawler', () => {
       movieInfo.should.have.property("imdbID", "tt0209144");
       movieInfo.should.have.property("imdbRating").above(7);
     });
-
-    it('get i WEiR DO should have correct data', async function () {
+    
+    it('get imdb rating should have correct data', async function () {
       this.timeout(30000);
-      const movieInfo = await getIMDBMovieInfo({ englishTitle: "i WEiR DO", releaseDate: '2020-08-07' });
-      movieInfo.should.have.property("imdbID", "tt12619256");
-      movieInfo.should.have.property("imdbRating").above(7);
+      const rating = await getIMDBRating("tt12619256");
+      rating.length.should.above(0);
     });
   });
 });

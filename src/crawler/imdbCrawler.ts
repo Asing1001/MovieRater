@@ -53,7 +53,7 @@ function getIMDBSuggestJsonUrl(englishTitle: string) {
     return `https://v2.sg.media-imdb.com/suggestion/${jsonName.charAt(0)}/${jsonName}.json`
 }
 
-const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
+const imdbMobileMovieUrl = 'https://m.imdb.com/title/';
 export async function getIMDBRating(imdbID: string) {
     if (!imdbID) {
         return null
@@ -62,7 +62,7 @@ export async function getIMDBRating(imdbID: string) {
     const html = await response.text();
     const $ = cheerio.load(html);
     let rating = "";
-    let ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
+    const ratingWrapper = $('[class^=AggregateRatingButton__RatingScore]')[0];
     if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
         rating = ratingWrapper.childNodes[0].nodeValue;
     }

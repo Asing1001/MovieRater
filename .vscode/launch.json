@@ -21,13 +21,13 @@
             "outDir": "${workspaceRoot}/dist"
         },
         {
-            "name": "Run mocha",
+            "name": "Debug Test",
             "type": "node",
             "request": "launch",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "dist/test/imdbCrawler.test.js",
+                "dist/test/netflixCrawler.test.js",
                 "--no-timeouts"
             ],
             "cwd": "${workspaceRoot}",
