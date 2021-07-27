@@ -62,7 +62,7 @@ export async function getIMDBRating(imdbID: string) {
     const html = await response.text();
     const $ = cheerio.load(html);
     let rating = "";
-    let ratingWrapper = $('.AggregateRatingButton__RatingScore-sc-1ll29m0-1')[0];
+    const ratingWrapper = $('[class^=AggregateRatingButton__RatingScore]')[0];
     if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
         rating = ratingWrapper.childNodes[0].nodeValue;
     }
