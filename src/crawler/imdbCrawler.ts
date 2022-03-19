@@ -61,11 +61,7 @@ export async function getIMDBRating(imdbID: string) {
     const response = await fetch(`${imdbMobileMovieUrl + imdbID}`);
     const html = await response.text();
     const $ = cheerio.load(html);
-    let rating = "";
-    const ratingWrapper = $('[class^=AggregateRatingButton__RatingScore]')[0];
-    if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
-        rating = ratingWrapper.childNodes[0].nodeValue;
-    }
+    const rating = $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
     return rating;
 }
 
