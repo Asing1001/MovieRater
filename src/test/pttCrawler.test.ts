@@ -33,7 +33,7 @@ describe('pttCrawler', () => {
             this.timeout(5000);
             let pageIndex = 99999
             return getPttPage(pageIndex).should.eventually
-                .rejectedWith(`index${pageIndex} not exist, server return:500 - Internal Server Error / Server Too Busy.`);
+                .rejectedWith(`index${pageIndex} not exist, server return:404 - Not Found.`);
         });
 
         it('should resolve when Pttid exist', async function () {
