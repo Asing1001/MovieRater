@@ -39,7 +39,10 @@ function getIMDBSuggestId({ englishTitle, releaseDate }) {
         const suggestions = yield response.json();
         if (suggestions && suggestions.d && suggestions.d.length) {
             const releaseYear = moment(releaseDate).year();
-            const correctMovie = suggestions.d.find(({ y, l }) => (similarity(l, englishTitle) > 0.8 || y === releaseYear));
+            const correctMovie = suggestions.d.find(({ y: year, l: title }) => {
+                const similarity = getSimilarity(title, englishTitle);
+                return similarity > 0.8 || (similarity > 0.6 && year === releaseYear);
+            });
             if (correctMovie && correctMovie.id) {
                 return correctMovie.id;
             }
@@ -53,7 +56,7 @@ function getIMDBSuggestJsonUrl(englishTitle) {
     const jsonName = englishTitle.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_").substr(0, 20);
     return `https://v2.sg.media-imdb.com/suggestion/${jsonName.charAt(0)}/${jsonName}.json`;
 }
-const imdbMobileMovieUrl = 'http://m.imdb.com/title/';
+const imdbMobileMovieUrl = 'https://m.imdb.com/title/';
 function getIMDBRating(imdbID) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!imdbID) {
@@ -62,16 +65,12 @@ function getIMDBRating(imdbID) {
         const response = yield fetch(`${imdbMobileMovieUrl + imdbID}`);
         const html = yield response.text();
         const $ = cheerio.load(html);
-        let rating = "";
-        let ratingWrapper = $('#ratings-bar span:nth-child(2)')[0];
-        if (ratingWrapper && ratingWrapper.childNodes && ratingWrapper.childNodes[0]) {
-            rating = ratingWrapper.childNodes[0].nodeValue;
-        }
+        const rating = $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
         return rating;
     });
 }
 exports.getIMDBRating = getIMDBRating;
-function similarity(s1, s2) {
+function getSimilarity(s1, s2) {
     var longer = s1;
     var shorter = s2;
     if (s1.length < s2.length) {

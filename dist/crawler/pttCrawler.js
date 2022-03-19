@@ -10,12 +10,14 @@ function getPttPage(index) {
         request(pttPageUrl, (error, r, html) => {
             if (error) {
                 reject(error);
+                return;
             }
             const $ = cheerio.load(html);
             const $articleInfoDivs = $('.r-ent');
             if (!$articleInfoDivs.length) {
                 let serverReturn = $('.bbs-screen.bbs-content').text();
                 reject(`index${index} not exist, server return:${serverReturn}`);
+                return;
             }
             const articleInfos = Array.from($articleInfoDivs).map((articleInfoDiv) => {
                 let $articleInfoDiv = $(articleInfoDiv);

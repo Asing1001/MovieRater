@@ -84,7 +84,7 @@ let TheaterDetail = class TheaterDetail extends React.PureComponent {
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em', padding: ".5em 1em" } },
                 React.createElement(theaterCard_1.default, { theater: theater }),
                 React.createElement("div", { className: "date-wrapper" }, this.getAvailableDates(theater.schedules)
-                    .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", key: index, onClick: () => this.setState({ selectedDate: date }) }, index === 0 ? "今天" : moment(date).format('MM/DD'))))),
+                    .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", key: index, onClick: () => this.setState({ selectedDate: date }) }, moment(date).format('MM/DD'))))),
             theater.schedules && theater.schedules.slice()
                 .filter(({ date }) => date === this.state.selectedDate)
                 .sort(({ movie }, { movie: movie2 }) => this.props.sortFunction(helper_1.classifyArticle(movie), helper_1.classifyArticle(movie2)))

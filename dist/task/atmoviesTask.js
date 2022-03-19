@@ -13,7 +13,7 @@ const moment = require("moment");
 const db_1 = require("../data/db");
 const redis = require("redis");
 const systemSetting_1 = require("../configs/systemSetting");
-const redisClient = redis.createClient(systemSetting_1.systemSetting.redisUrlForApiCache).on("error", err => console.log("Error " + err));
+const redisClient = redis.createClient(systemSetting_1.systemSetting.redisUrlForScheduler).on("error", err => console.log("Error " + err));
 function updateMoviesSchedules() {
     return __awaiter(this, void 0, void 0, function* () {
         const scheduleUrls = yield db_1.db.getCollection({ name: "theaters", fields: { scheduleUrl: 1, _id: 0 } });

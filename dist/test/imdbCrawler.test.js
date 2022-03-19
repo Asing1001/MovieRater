@@ -46,7 +46,8 @@ describe('imdbCrawler', () => {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(30000);
                 const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo({ englishTitle: "Girl’s Revenge", releaseDate: '2020-08-07' });
-                expect(movieInfo).eq(null);
+                movieInfo.should.have.property("imdbID", "tt13388018");
+                movieInfo.should.have.property("imdbRating").above(3);
             });
         });
         it('get Memento should have correct data', function () {
@@ -55,6 +56,13 @@ describe('imdbCrawler', () => {
                 const movieInfo = yield imdbCrawler_1.getIMDBMovieInfo({ englishTitle: "Memento", releaseDate: '2020-08-05' });
                 movieInfo.should.have.property("imdbID", "tt0209144");
                 movieInfo.should.have.property("imdbRating").above(7);
+            });
+        });
+        it('get imdb rating should have correct data', function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.timeout(30000);
+                const rating = yield imdbCrawler_1.getIMDBRating("tt12619256");
+                rating.length.should.above(0);
             });
         });
     });

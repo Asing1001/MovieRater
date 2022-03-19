@@ -34,7 +34,7 @@ app.get('/api/cache/index', (req, res) => {
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot, { maxAge: '7d' }));
 app.use('/service-worker.js', express.static(staticRoot + 'bundles/service-worker.js', { maxAge: '7d' }));
-const rootFiles = ["robots.txt", "sitemap.xml"];
+const rootFiles = ["robots.txt", "sitemap.xml", "ads.txt"];
 rootFiles.forEach(fileName => {
     app.use('/' + fileName, express.static(staticRoot + fileName));
 });

@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const memoryCache = require("memory-cache");
 const db_1 = require("../data/db");
-const mergeData_1 = require("../crawler/mergeData");
 const moment = require("moment");
 const atmovieInTheaterCrawler_1 = require("../crawler/atmovieInTheaterCrawler");
 const util_1 = require("../helper/util");
@@ -19,13 +18,11 @@ const isValideDate_1 = require("../helper/isValideDate");
 class cacheManager {
     static init() {
         return __awaiter(this, void 0, void 0, function* () {
-            const yahooMoviesPromise = db_1.db.getCollection({ name: "yahooMovies", sort: { yahooId: -1 } });
-            const pttArticlesPromise = db_1.db.getCollection({ name: "pttArticles" });
-            console.time('get yahooMovies and pttArticles');
-            const [yahooMovies, pttArticles] = yield Promise.all([yahooMoviesPromise, pttArticlesPromise]);
-            console.timeEnd('get yahooMovies and pttArticles');
-            cacheManager.setAllMoviesNamesCache(yahooMovies);
-            cacheManager.setAllMoviesCache(yahooMovies, pttArticles);
+            console.time('Get mergedDatas');
+            const mergedDatas = yield db_1.db.getCollection({ name: "mergedDatas" });
+            console.timeEnd('Get mergedDatas');
+            cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
+            cacheManager.setAllMoviesNamesCache(mergedDatas);
             cacheManager.setTheatersCache();
             yield cacheManager.setRecentMoviesCache();
             yield cacheManager.setMoviesSchedulesCache();
@@ -44,12 +41,6 @@ class cacheManager {
         });
         cacheManager.set(cacheManager.All_MOVIES_NAMES, allMoviesName);
         console.timeEnd('setAllMoviesNamesCache');
-    }
-    static setAllMoviesCache(yahooMovies, pttArticles) {
-        console.time('mergeData');
-        let mergedDatas = mergeData_1.mergeData(yahooMovies, pttArticles);
-        console.timeEnd('mergeData');
-        cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
     }
     static setTheatersCache() {
         return __awaiter(this, void 0, void 0, function* () {
