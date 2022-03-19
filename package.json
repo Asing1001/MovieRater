@@ -40,7 +40,7 @@
     "material-ui": "^0.20.0",
     "memory-cache": "^0.1.6",
     "moment": "^2.16.0",
-    "mongodb": "^2.2.11",
+    "mongodb": "^3.1.13",
     "node-schedule": "^1.2.3",
     "q": "^1.4.1",
     "react": "^15.5.4",
