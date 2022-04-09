@@ -39,7 +39,7 @@
     "isomorphic-fetch": "^2.2.1",
     "material-ui": "^0.20.0",
     "memory-cache": "^0.1.6",
-    "moment": "^2.16.0",
+    "moment": "^2.29.2",
     "mongodb": "^2.2.11",
     "node-schedule": "^1.2.3",
     "q": "^1.4.1",
