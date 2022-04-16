@@ -35,13 +35,12 @@ export async function getTheaterListByRegion({ name: regionName, regionId }, ind
             subRegion = $li.text().trim().slice(0, -1);
         }
         else {
-            const theaterInfo = $li.text().trim().replace(/\s+/g, ',').split(',');
             theaterList.push({
                 name: $li.find('a').first().text().trim(),
                 url: $li.find('a[target]').attr('href'),
                 scheduleUrl: $li.find('a').attr('href'),
-                address: theaterInfo[1],
-                phone:  theaterInfo[2],
+                address: $li.find('li').first().text().trim(),
+                phone:  $li.find('li:nth-child(2)').text().trim(),
                 region: regionName,
                 regionIndex: index,
                 subRegion
