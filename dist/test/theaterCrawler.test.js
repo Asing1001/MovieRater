@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai = require("chai");
+const chai_1 = require("chai");
 const sinonChai = require("sinon-chai");
 const theaterCrawler_1 = require("../crawler/theaterCrawler");
 chai.use(sinonChai);
@@ -19,6 +20,7 @@ describe('theaterCrawler', () => {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(20000);
                 let theaterList = yield theaterCrawler_1.getTheaterListByRegion({ regionId: 'a01', name: "基隆" }, 1);
+                chai_1.expect(theaterList[0]).contain({ "name": "基隆秀泰影城", "url": "https://www.showtimes.com.tw/events?corpId=5", "scheduleUrl": "/showtime/t02g04/a01/", "address": "基隆市中正區信一路177號", "phone": "(02)2421-2388", "region": "基隆", "regionIndex": 1, "subRegion": "基隆" });
                 theaterList.length.should.eq(1);
             });
         });

@@ -20,6 +20,7 @@ function setup() {
         yield ensureCrawlerStatus();
         yield yahooTask_1.updateTheaterWithLocationList();
         console.log('db setup done');
+        process.exit();
     });
 }
 function ensureCollectionAndIndex() {

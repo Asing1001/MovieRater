@@ -18,7 +18,8 @@
     "heroku-postbuild": "npm run build && npm run sitemap",
     "tsc:w": "tsc -w",
     "dev": "concurrently \"npm run tsc:w\" \"tsc && npm start\" \"npm run webpack\"",
-    "mergedata": "node dist/backgroundService/mergeDataJob.js"
+    "mergedata": "node dist/backgroundService/mergeDataJob.js",
+    "setup": "node dist/dbScript/firstTimeSetup"
   },
   "private": true,
   "dependencies": {
