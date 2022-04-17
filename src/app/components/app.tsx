@@ -12,6 +12,7 @@ import TheaterList from './theaterList';
 import TheaterDetail from './theaterDetail';
 import PageNotFound from './pageNotFound';
 import { getSortFunction, SortType } from '../sorting';
+import { blueGrey800, blueGrey900 } from 'material-ui/styles/colors';
 
 injectTapEventPlugin();
 
@@ -26,7 +27,11 @@ class App extends React.Component<any, any> {
   }
 
   muiTheme = getMuiTheme({
-    userAgent: navigator.userAgent
+    userAgent: navigator.userAgent,
+    palette: {
+      primary1Color: blueGrey900,
+      primary2Color: blueGrey800,
+    },
   })
 
   handleSearchToggle = () => {

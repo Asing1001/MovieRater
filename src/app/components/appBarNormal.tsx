@@ -2,17 +2,15 @@ import * as React from 'react';
 import AppDrawer from './appDrawer';
 import SVGActionSearch from 'material-ui/svg-icons/action/search';
 import SVGContentSort from 'material-ui/svg-icons/content/sort';
-import SVGActionSettings from 'material-ui/svg-icons/action/settings';
 import SVGNavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
-import { cyan500, cyan300 } from 'material-ui/styles/colors';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import { SortType } from '../sorting';
+import muiThemeable from 'material-ui/styles/muiThemeable';
 
 const normalStyles = {
-    backgroundColor: cyan500,
     color: 'white'
 }
 
@@ -28,10 +26,10 @@ class AppBarNormal extends React.PureComponent<any, any> {
 
     render() {
         return (
-            <Paper zDepth={2} className={`appBar normal ${this.props.className}`} style={normalStyles}>
+            <Paper zDepth={2} className={`appBar normal ${this.props.className}`} style={{color: normalStyles.color, backgroundColor: this.props.muiTheme.palette.primary1Color }}>
                 <IconButton className="leftBtn" onTouchTap={e => { e.preventDefault(); this.drawerToggle() }}><SVGNavigationMenu color={normalStyles.color} /></IconButton>
                 <span className="barTitle">{this.state.barTitle}</span>
-                <span onClick={this.props.onSearchIconClick} className="hidden-xs searchArea" style={{ backgroundColor: cyan300 }}>
+                <span onClick={this.props.onSearchIconClick} className="hidden-xs searchArea" style={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}>
                     <SVGActionSearch className="searchIcon" color={normalStyles.color} />
                     <span>搜尋電影名稱(中英皆可)</span>
                 </span>
@@ -54,4 +52,4 @@ class AppBarNormal extends React.PureComponent<any, any> {
         );
     }
 }
-export default AppBarNormal;
+export default muiThemeable()(AppBarNormal);
