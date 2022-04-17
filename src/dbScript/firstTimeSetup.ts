@@ -14,6 +14,7 @@ async function setup() {
     await ensureCrawlerStatus();
     await updateTheaterWithLocationList();
     console.log('db setup done');
+    process.exit();
 }
 
 async function ensureCollectionAndIndex() {

@@ -1,5 +1,3 @@
-import * as fetch from 'isomorphic-fetch';
-import * as FormData from 'form-data';
 import Region from '../models/region';
 import Theater from '../models/theater';
 import { getCheerio$ } from '../helper/util';
@@ -37,13 +35,12 @@ export async function getTheaterListByRegion({ name: regionName, regionId }, ind
             subRegion = $li.text().trim().slice(0, -1);
         }
         else {
-            const theaterInfo = $li.text().trim().replace(/\s+/g, ',').split(',');
             theaterList.push({
-                name: theaterInfo[0],
-                url: $li.find('a[target]').attr('href').split('weblink=')[1],
+                name: $li.find('a').first().text().trim(),
+                url: $li.find('a[target]').attr('href'),
                 scheduleUrl: $li.find('a').attr('href'),
-                address: theaterInfo.slice(-2, -1)[0],
-                phone: theaterInfo[1],
+                address: $li.find('li').first().text().trim(),
+                phone:  $li.find('li:nth-child(2)').text().trim(),
                 region: regionName,
                 regionIndex: index,
                 subRegion

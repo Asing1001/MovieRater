@@ -52,6 +52,10 @@ For server developement, server run at http://localhost:3003:
 3. Start scheduler for crawl yahoo/imdb/ptt
 ![system diagram](https://github.com/Asing1001/system-diagrams/blob/master/mvrater.jpg?raw=true)
 
+## Crawler
+
+- To manually run a single crawler you could reference firstTimeSetup.ts, and run `yarn setup`  
+
 ## Reference
 
 The project UI is using [Material-UI](https://github.com/callemall/material-ui)
