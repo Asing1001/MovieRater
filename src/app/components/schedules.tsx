@@ -2,10 +2,10 @@ import * as React from 'react';
 import * as moment from 'moment';
 import Schedule from '../../models/schedule';
 import { getClientGeoLocation, getDistanceInKM } from '../helper';
-import { grey500 } from 'material-ui/styles/colors';
 import TheaterCard from './theaterCard';
 import TimeList from './timeList';
 import Chip from 'material-ui/Chip';
+import { grey500 } from 'material-ui/styles/colors';
 
 const theaterInfoStyle: React.CSSProperties = {
     marginRight: '0.5em',
@@ -53,7 +53,7 @@ class Schedules extends React.PureComponent<MovieDetailProps, any> {
                 <div className="date-wrapper col-xs-12">
                     {this.getAvailableDates()
                         .map((date, index) =>
-                            <Chip className="datebtn" key={index} onClick={() => this.setState({ selectedDate: date })}>
+                            <Chip className="datebtn" backgroundColor={this.state.selectedDate === date && grey500} key={index} onClick={() => this.setState({ selectedDate: date })}>
                                 {index === 0 ? "今天" : moment(date).format('MM/DD')}
                             </Chip>)}
                 </div>

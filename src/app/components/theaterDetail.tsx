@@ -3,11 +3,12 @@ import * as moment from 'moment';
 import Paper from 'material-ui/Paper';
 import Schedule from '../../models/schedule';
 import Chip from 'material-ui/Chip';
-import { classifyArticle, getClientGeoLocation, getDistanceInKM } from '../helper';
+import { classifyArticle } from '../helper';
 import LoadingIcon from './loadingIcon';
 import TheaterCard from './theaterCard';
 import MovieCard from './movieCard';
 import { gql, graphql } from 'react-apollo';
+import { grey500 } from 'material-ui/styles/colors';
 
 const theaterDetailQuery = gql`
 query TheaterDetail($theaterName:String){
@@ -64,16 +65,26 @@ enum SortType {
         }
     },
 })
-class TheaterDetail extends React.PureComponent<any, any> {
+class TheaterDetail extends React.PureComponent<any, {selectedDate: string, availableDates: string[]}> {
     constructor(props) {
         super(props)
         this.state = {
-            selectedDate: moment().format('YYYYMMDD')
+            selectedDate: null,
+            availableDates: []
         };
     }
 
     getAvailableDates(schedules) {
-        return [...new Set(schedules.map(({ date }) => date))];
+        return [...new Set(schedules.map(({ date }) => date))] as string[];
+    }
+
+    componentWillReceiveProps = (nextprops) => {
+        const { data: { loading, theaters } } = nextprops;
+        if (!loading && theaters.length) {
+          const availableDates = this.getAvailableDates(theaters[0].schedules)
+          const newestAvailableDate = availableDates.find(date=> moment(date).isSameOrAfter(moment(), 'date'))
+          this.setState({ availableDates, selectedDate: newestAvailableDate || availableDates[0] })
+        }
     }
 
     render() {
@@ -88,9 +99,9 @@ class TheaterDetail extends React.PureComponent<any, any> {
                 <Paper zDepth={2} style={{ marginBottom: '.5em', padding: ".5em 1em" }}>
                     <TheaterCard theater={theater}></TheaterCard>
                     <div className="date-wrapper">
-                        {this.getAvailableDates(theater.schedules)
+                        {this.state.availableDates
                             .map((date, index) =>
-                                <Chip className="datebtn" key={index} onClick={() => this.setState({ selectedDate: date })}>
+                                <Chip className="datebtn" backgroundColor={this.state.selectedDate === date && grey500} key={index} onClick={() => this.setState({ ...this.state, selectedDate: date })}>
                                     {moment(date).format('MM/DD')}
                                 </Chip>)}
                     </div>
