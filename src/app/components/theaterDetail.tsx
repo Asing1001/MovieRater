@@ -101,7 +101,7 @@ class TheaterDetail extends React.PureComponent<any, {selectedDate: string, avai
                     <div className="date-wrapper">
                         {this.state.availableDates
                             .map((date, index) =>
-                                <Chip className="datebtn" backgroundColor={this.state.selectedDate === date && grey500} key={index} onClick={() => this.setState({ ...this.state, selectedDate: date })}>
+                                <Chip className="datebtn" backgroundColor={this.state.selectedDate === date ? grey500: null} key={index} onClick={() => this.setState({ ...this.state, selectedDate: date })}>
                                     {moment(date).format('MM/DD')}
                                 </Chip>)}
                     </div>

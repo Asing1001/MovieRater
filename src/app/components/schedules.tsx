@@ -35,8 +35,7 @@ class Schedules extends React.PureComponent<MovieDetailProps, any> {
         getClientGeoLocation().then(({ latitude, longitude }) => {
             const schedulesWithDistance = schedules.map((schedule) => {
                 let { theaterExtension, theaterExtension: { location: { lat, lng } } } = schedule;
-                theaterExtension.distance = getDistanceInKM(lng, lat, longitude, latitude);
-                return Object.assign({}, schedule, { theaterExtension });
+                return Object.assign({}, schedule, { theaterExtension: {...theaterExtension, distance: getDistanceInKM(lng, lat, longitude, latitude)} });
             }).sort(({ theaterExtension: { distance: distanceA } }, { theaterExtension: { distance: distanceB } }) => distanceA - distanceB);
             this.setState({ schedulesWithDistance })
         });
@@ -53,7 +52,7 @@ class Schedules extends React.PureComponent<MovieDetailProps, any> {
                 <div className="date-wrapper col-xs-12">
                     {this.getAvailableDates()
                         .map((date, index) =>
-                            <Chip className="datebtn" backgroundColor={this.state.selectedDate === date && grey500} key={index} onClick={() => this.setState({ selectedDate: date })}>
+                            <Chip className="datebtn" backgroundColor={this.state.selectedDate === date ? grey500: null} key={index} onClick={() => this.setState({ selectedDate: date })}>
                                 {index === 0 ? "今天" : moment(date).format('MM/DD')}
                             </Chip>)}
                 </div>
