@@ -6,6 +6,7 @@ const helper_1 = require("../helper");
 const theaterCard_1 = require("./theaterCard");
 const timeList_1 = require("./timeList");
 const Chip_1 = require("material-ui/Chip");
+const colors_1 = require("material-ui/styles/colors");
 const theaterInfoStyle = {
     marginRight: '0.5em',
     fontSize: 'small',
@@ -40,7 +41,7 @@ class Schedules extends React.PureComponent {
     render() {
         return (React.createElement("div", { className: "col-xs-12" },
             React.createElement("div", { className: "date-wrapper col-xs-12" }, this.getAvailableDates()
-                .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", key: index, onClick: () => this.setState({ selectedDate: date }) }, index === 0 ? "今天" : moment(date).format('MM/DD')))),
+                .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", backgroundColor: this.state.selectedDate === date && colors_1.grey500, key: index, onClick: () => this.setState({ selectedDate: date }) }, index === 0 ? "今天" : moment(date).format('MM/DD')))),
             this.state.schedulesWithDistance.filter(({ date }) => date === this.state.selectedDate).map(({ timesStrings, theaterName, roomTypes, distance, theaterExtension }, index) => {
                 return (React.createElement("p", { key: index, className: "col-xs-12" },
                     React.createElement(theaterCard_1.default, { theater: theaterExtension, roomTypes: roomTypes }),

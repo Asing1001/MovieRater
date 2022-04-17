@@ -18,6 +18,7 @@ const loadingIcon_1 = require("./loadingIcon");
 const theaterCard_1 = require("./theaterCard");
 const movieCard_1 = require("./movieCard");
 const react_apollo_1 = require("react-apollo");
+const colors_1 = require("material-ui/styles/colors");
 const theaterDetailQuery = react_apollo_1.gql `
 query TheaterDetail($theaterName:String){
     theaters(name:$theaterName){
@@ -66,8 +67,17 @@ var SortType;
 let TheaterDetail = class TheaterDetail extends React.PureComponent {
     constructor(props) {
         super(props);
+        this.componentWillReceiveProps = (nextprops) => {
+            const { data: { loading, theaters } } = nextprops;
+            if (!loading && theaters.length) {
+                const availableDates = this.getAvailableDates(theaters[0].schedules);
+                const newestAvailableDate = availableDates.find(date => moment(date).isSameOrAfter(moment(), 'date'));
+                this.setState({ availableDates, selectedDate: newestAvailableDate || availableDates[0] });
+            }
+        };
         this.state = {
-            selectedDate: moment().format('YYYYMMDD')
+            selectedDate: null,
+            availableDates: []
         };
     }
     getAvailableDates(schedules) {
@@ -83,8 +93,8 @@ let TheaterDetail = class TheaterDetail extends React.PureComponent {
         return (React.createElement("div", null,
             React.createElement(Paper_1.default, { zDepth: 2, style: { marginBottom: '.5em', padding: ".5em 1em" } },
                 React.createElement(theaterCard_1.default, { theater: theater }),
-                React.createElement("div", { className: "date-wrapper" }, this.getAvailableDates(theater.schedules)
-                    .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", key: index, onClick: () => this.setState({ selectedDate: date }) }, moment(date).format('MM/DD'))))),
+                React.createElement("div", { className: "date-wrapper" }, this.state.availableDates
+                    .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", backgroundColor: this.state.selectedDate === date && colors_1.grey500, key: index, onClick: () => this.setState(Object.assign({}, this.state, { selectedDate: date })) }, moment(date).format('MM/DD'))))),
             theater.schedules && theater.schedules.slice()
                 .filter(({ date }) => date === this.state.selectedDate)
                 .sort(({ movie }, { movie: movie2 }) => this.props.sortFunction(helper_1.classifyArticle(movie), helper_1.classifyArticle(movie2)))
