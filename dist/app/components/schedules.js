@@ -28,8 +28,7 @@ class Schedules extends React.PureComponent {
         helper_1.getClientGeoLocation().then(({ latitude, longitude }) => {
             const schedulesWithDistance = schedules.map((schedule) => {
                 let { theaterExtension, theaterExtension: { location: { lat, lng } } } = schedule;
-                theaterExtension.distance = helper_1.getDistanceInKM(lng, lat, longitude, latitude);
-                return Object.assign({}, schedule, { theaterExtension });
+                return Object.assign({}, schedule, { theaterExtension: Object.assign({}, theaterExtension, { distance: helper_1.getDistanceInKM(lng, lat, longitude, latitude) }) });
             }).sort(({ theaterExtension: { distance: distanceA } }, { theaterExtension: { distance: distanceB } }) => distanceA - distanceB);
             this.setState({ schedulesWithDistance });
         });
@@ -41,7 +40,7 @@ class Schedules extends React.PureComponent {
     render() {
         return (React.createElement("div", { className: "col-xs-12" },
             React.createElement("div", { className: "date-wrapper col-xs-12" }, this.getAvailableDates()
-                .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", backgroundColor: this.state.selectedDate === date && colors_1.grey500, key: index, onClick: () => this.setState({ selectedDate: date }) }, index === 0 ? "今天" : moment(date).format('MM/DD')))),
+                .map((date, index) => React.createElement(Chip_1.default, { className: "datebtn", backgroundColor: this.state.selectedDate === date ? colors_1.grey500 : null, key: index, onClick: () => this.setState({ selectedDate: date }) }, index === 0 ? "今天" : moment(date).format('MM/DD')))),
             this.state.schedulesWithDistance.filter(({ date }) => date === this.state.selectedDate).map(({ timesStrings, theaterName, roomTypes, distance, theaterExtension }, index) => {
                 return (React.createElement("p", { key: index, className: "col-xs-12" },
                     React.createElement(theaterCard_1.default, { theater: theaterExtension, roomTypes: roomTypes }),

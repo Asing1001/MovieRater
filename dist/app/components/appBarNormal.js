@@ -7,12 +7,11 @@ const sort_1 = require("material-ui/svg-icons/content/sort");
 const menu_1 = require("material-ui/svg-icons/navigation/menu");
 const Paper_1 = require("material-ui/Paper");
 const IconButton_1 = require("material-ui/IconButton");
-const colors_1 = require("material-ui/styles/colors");
 const IconMenu_1 = require("material-ui/IconMenu");
 const MenuItem_1 = require("material-ui/MenuItem");
 const sorting_1 = require("../sorting");
+const muiThemeable_1 = require("material-ui/styles/muiThemeable");
 const normalStyles = {
-    backgroundColor: colors_1.cyan500,
     color: 'white'
 };
 class AppBarNormal extends React.PureComponent {
@@ -24,11 +23,11 @@ class AppBarNormal extends React.PureComponent {
         };
     }
     render() {
-        return (React.createElement(Paper_1.default, { zDepth: 2, className: `appBar normal ${this.props.className}`, style: normalStyles },
+        return (React.createElement(Paper_1.default, { zDepth: 2, className: `appBar normal ${this.props.className}`, style: { color: normalStyles.color, backgroundColor: this.props.muiTheme.palette.primary1Color } },
             React.createElement(IconButton_1.default, { className: "leftBtn", onTouchTap: e => { e.preventDefault(); this.drawerToggle(); } },
                 React.createElement(menu_1.default, { color: normalStyles.color })),
             React.createElement("span", { className: "barTitle" }, this.state.barTitle),
-            React.createElement("span", { onClick: this.props.onSearchIconClick, className: "hidden-xs searchArea", style: { backgroundColor: colors_1.cyan300 } },
+            React.createElement("span", { onClick: this.props.onSearchIconClick, className: "hidden-xs searchArea", style: { backgroundColor: this.props.muiTheme.palette.primary2Color } },
                 React.createElement(search_1.default, { className: "searchIcon", color: normalStyles.color }),
                 React.createElement("span", null, "\u641C\u5C0B\u96FB\u5F71\u540D\u7A31(\u4E2D\u82F1\u7686\u53EF)")),
             React.createElement(IconButton_1.default, { onTouchTap: e => { e.preventDefault(); this.props.onSearchIconClick(); }, className: "visible-xs rightBtn" },
@@ -42,5 +41,5 @@ class AppBarNormal extends React.PureComponent {
             React.createElement(appDrawer_1.default, { changeTitle: barTitle => this.setState({ barTitle }), ref: instance => this.drawerToggle = instance && instance.toggle })));
     }
 }
-exports.default = AppBarNormal;
+exports.default = muiThemeable_1.default()(AppBarNormal);
 //# sourceMappingURL=appBarNormal.js.map

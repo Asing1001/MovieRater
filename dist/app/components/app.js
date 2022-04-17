@@ -14,12 +14,17 @@ const theaterList_1 = require("./theaterList");
 const theaterDetail_1 = require("./theaterDetail");
 const pageNotFound_1 = require("./pageNotFound");
 const sorting_1 = require("../sorting");
+const colors_1 = require("material-ui/styles/colors");
 injectTapEventPlugin();
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.muiTheme = getMuiTheme_1.default({
-            userAgent: navigator.userAgent
+            userAgent: navigator.userAgent,
+            palette: {
+                primary1Color: colors_1.blueGrey900,
+                primary2Color: colors_1.blueGrey800,
+            },
         });
         this.handleSearchToggle = () => {
             this.setState({ searching: !this.state.searching });
