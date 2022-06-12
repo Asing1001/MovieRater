@@ -1,5 +1,5 @@
 @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
-$tablet-width: 768px;
+$tablet-width: 992px;
 $desktop-width: 1024px;
 @mixin mobile {
     @media (max-width: #{$tablet-width - 1px}) {
@@ -167,8 +167,22 @@ a.pttArticleTitle:visited {
     color: #888 !important;
 }
 
-.swipeViewWrapper [role='option']:nth-child(2) {
-    background-color: black;
+.swipeViewWrapper {
+    &.active-0,&.active-2 
+    {
+        [role='listbox'] > div {
+            @include desktop(){
+                height: 560px;
+            }
+            @include tablet(){
+                height: 462px;
+            }
+        }
+    }
+    
+    [role='listbox'] > div {
+        height: calc(100vh - 111px)
+    }    
 }
 
 .pttArticles::before {
