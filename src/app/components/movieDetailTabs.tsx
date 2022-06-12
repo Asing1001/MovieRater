@@ -121,9 +121,8 @@ export default class MovieDetailTabs extends React.PureComponent<any, MovieDetai
           movie.schedules.length > 0 && <Tab label="Time" value={3} />
         }
       </Tabs>
-      <div className="swipeViewWrapper">
+      <div className={`swipeViewWrapper active-${this.state.slideIndex}`}>
         <SwipeableViews
-          slideStyle={{ height: 'calc(100vh - 111px)', paddingBottom: '1em' }}
           index={this.state.slideIndex}
           onChangeIndex={this.handleChange.bind(this)}
           threshold={6}
