@@ -2,6 +2,8 @@ import * as fetch from "isomorphic-fetch";
 import * as cheerio from "cheerio";
 import Movie from '../models/movie';
 import * as moment from 'moment';
+import * as https from 'https';
+import { IncomingHttpHeaders } from "http2";
 
 interface IMDB {
     imdbID: string
@@ -58,8 +60,9 @@ export async function getIMDBRating(imdbID: string) {
     if (!imdbID) {
         return null
     }
-    const response = await fetch(`${imdbMobileMovieUrl + imdbID}`);
-    const html = await response.text();
+    const targetMovieImdbUrl = `${imdbMobileMovieUrl + imdbID + '/'}`;
+    let response = await httpRequest('GET', targetMovieImdbUrl);
+    const html = response.body;
     const $ = cheerio.load(html);
     const rating = $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
     return rating;
@@ -104,4 +107,79 @@ function editDistance(s1, s2) {
             costs[s2.length] = lastValue;
     }
     return costs[s2.length];
+}
+
+
+function httpRequest(method, url, body = null) {
+
+  if (body && method !== 'POST') throw new Error(`Invalid use of the body parameter while using the ${method} method.`);
+  
+  let urlObject;
+  try {
+      urlObject = new URL(url);
+  } catch (error) {
+      throw new Error(`Invalid url ${url}`);
+  }
+
+  let options = {
+      method: method,
+      hostname: urlObject.hostname,
+      port: urlObject.port,
+      path: urlObject.pathname,
+      headers: {}
+  };
+
+  return new Promise((resolve: (value: IHttpResponse) => void, reject) => {
+
+      const clientRequest = https.request(options, incomingMessage => {
+
+          // Response object.
+          let response : IHttpResponse = {
+              statusCode: incomingMessage.statusCode,
+              headers: incomingMessage.headers,
+              bodyStream: [],
+              body: ''
+          };
+
+          // Collect response body data.
+          incomingMessage.on('data', chunk => {
+              return response.bodyStream.push(chunk);
+          });
+
+          // Resolve on end.
+          incomingMessage.on('end', () => {
+              if (response.bodyStream.length) {
+                  response.body = response.bodyStream.join();
+                  try {
+                      response.body = JSON.parse(response.body);
+                  } catch (error) {
+                      // Silently fail if response is not JSON.
+                  }
+              }
+
+              resolve(response);
+          });
+      });
+      
+      // Reject on request error.
+      clientRequest.on('error', error => {
+          reject(error);
+      });
+
+      // Write request body if present.
+      if (body) {
+          clientRequest.write(body);
+      }
+
+      // Close HTTP connection.
+      clientRequest.end();
+  });
+}
+
+export interface IHttpResponse
+{
+  statusCode: number,
+  headers: IncomingHttpHeaders
+  bodyStream: any[],
+  body: string,
 }
