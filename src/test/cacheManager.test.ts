@@ -2,13 +2,8 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import cacheManager from '../data/cacheManager';
-import * as memoryCache from 'memory-cache';
 import { db } from "../data/db";
 
-
-const assert = chai.assert;
-const expect = chai.expect;
-const should = chai.should();
 chai.should();
 chai.use(sinonChai);
 

@@ -2,9 +2,6 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { db } from "../data/db";
 
-const assert = chai.assert;
-const expect = chai.expect;
-const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
 
@@ -48,15 +45,5 @@ describe('db', () => {
       return db.updateDocument({ name: 'unitTest' }, { page: 'test', article: [{ id: 123 }] }, 'test')
         .then(() => db.getDocument({ name: 'unitTest' }, 'test')).should.eventually.have.deep.property('article[0].id');
     })
-
-    // import * as Q from 'Q';
-    // it('This is db script to convert pttPages to pttArticles', function() {
-    //   this.timeout(10000000);
-    //   return db.getCollection('pttPages').then(pttPages => {
-    //     let allArticles = [].concat(...pttPages.map(({articles}) => articles));
-    //     let promises = db.insertCollection( allArticles, "pttArticles");
-    //     return Q.all(promises).then(() => pttPages);
-    //   })
-    // })
   });
 });
