@@ -2,6 +2,7 @@ import * as fetch from "isomorphic-fetch";
 import * as cheerio from "cheerio";
 import Movie from '../models/movie';
 import * as moment from 'moment';
+import * as request from "request";
 
 interface IMDB {
     imdbID: string
@@ -54,15 +55,22 @@ function getIMDBSuggestJsonUrl(englishTitle: string) {
 }
 
 const imdbMobileMovieUrl = 'https://m.imdb.com/title/';
-export async function getIMDBRating(imdbID: string) {
+export async function getIMDBRating(imdbID: string): Promise<string> {
     if (!imdbID) {
         return null
     }
-    const response = await fetch(`${imdbMobileMovieUrl + imdbID}`);
-    const html = await response.text();
-    const $ = cheerio.load(html);
-    const rating = $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
-    return rating;
+    return new Promise((resolve: (value: string) => void, reject) => {
+        request(`${imdbMobileMovieUrl + imdbID}/`, (error: Error, r, html: string) =>{
+            if(error) {
+                reject(error)
+                return
+            }
+            const $ = cheerio.load(html);
+            const rating = $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
+            resolve(rating);
+            return
+        })
+    })
 }
 
 function getSimilarity(s1, s2) {
