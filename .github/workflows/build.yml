@@ -10,6 +10,10 @@ on:
 
 env:
   NODE_VERSION: 12.22.1
+  PROJECT_ID: movierater-1492834745733
+
+permissions:
+  id-token: write
 
 jobs:
   build:
@@ -39,13 +43,46 @@ jobs:
       run: docker-compose up -d
 
     - name: Wait for services to start
-      run: sleep 15
+      run: sleep 5
 
     - name: Run tests
       run: yarn test
 
-    - name: Generate sitemap
-      run: yarn sitemap
-
     - name: Stop services
       run: docker-compose down
+      
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      if: github.ref == 'refs/heads/master'
+      run: |
+        docker build -t asia-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/movierater/movierater .
+
+    - id: 'auth'
+      name: 'Authenticate to GCP'
+      uses: 'google-github-actions/auth@v0.3.1'
+      if: github.ref == 'refs/heads/master'
+      with:
+          create_credentials_file: 'true'
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+
+    - id: 'gcloud' 
+      name: 'gcloud login'
+      if: github.ref == 'refs/heads/master'
+      run: |-
+        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+        gcloud config set project ${{ env.PROJECT_ID }}
+        gcloud services list
+        gcloud auth configure-docker asia-east1-docker.pkg.dev
+
+    - name: Push Docker image to Artifact Registry
+      if: github.ref == 'refs/heads/master'
+      run: |        
+        docker push asia-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/movierater/movierater
