@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+env:
+  NODE_VERSION: 12.22.1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build application
+      run: yarn build
+
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update && \
+        sudo apt-get -y install docker-compose
+
+    - name: Start services
+      run: docker-compose up -d
+
+    - name: Wait for services to start
+      run: sleep 30
+
+    - name: Run tests
+      run: yarn test
+
+    - name: Generate sitemap
+      run: yarn sitemap
+
+    - name: Stop services
+      run: docker-compose down
