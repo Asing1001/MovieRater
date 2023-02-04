@@ -39,7 +39,7 @@ jobs:
       run: docker-compose up -d
 
     - name: Wait for services to start
-      run: sleep 30
+      run: sleep 15
 
     - name: Run tests
       run: yarn test
