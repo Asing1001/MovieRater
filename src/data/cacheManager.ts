@@ -3,7 +3,6 @@ import { db } from "../data/db";
 import * as moment from 'moment';
 import Movie from '../models/movie';
 import { getInTheaterMovieNames } from '../crawler/atmovieInTheaterCrawler';
-import { roughSizeOfObject } from '../helper/util';
 import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask';
 import isValideDate from '../helper/isValideDate';
 
@@ -82,6 +81,5 @@ export default class cacheManager {
 
     static set(key, value) {
         memoryCache.put(key, value);
-        console.log(`${key} size:${roughSizeOfObject(value)}`);
     }
 }

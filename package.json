@@ -32,7 +32,6 @@
     "compression": "^1.6.2",
     "core-js": "^2.4.1",
     "express": "^4.14.0",
-    "express-device": "^0.4.2",
     "express-graphql": "^0.6.4",
     "graphql": "^0.9.3",
     "hint.css": "^2.4.1",
