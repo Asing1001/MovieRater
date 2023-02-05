@@ -8,7 +8,8 @@ Crawl and merge ptt/imdb/yahoo movie data, help easy search high rating movie in
 ## Quick Start
 
 `npm install -g yarn`
-`yarn install`
+`docker compose up`
+`yarn`
 `yarn build && yarn start` then open http://localhost:3003
 
 ## Developement
