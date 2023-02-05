@@ -31,6 +31,11 @@ resource "google_cloud_run_service" "movierater" {
   location = "asia-east1"
 
   template {
+    metadata {
+      annotations = {
+        "run.googleapis.com/cpu-throttling" = false
+      }
+    }
     spec {
       containers {
         image = "asia-east1-docker.pkg.dev/movierater-1492834745733/movierater/movierater"
