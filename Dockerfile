@@ -1,6 +1,9 @@
 # Use the official Node.js image
 FROM node:12.22.1
 
+# Setup timezone
+ENV TZ=Asia/Taipei
+
 # Set the working directory
 WORKDIR /app
 

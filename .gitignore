@@ -15,3 +15,17 @@ npm-debug.log
 
 /.nyc_output
 /coverage
+
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.log
+*.backup
+
+# Environment-specific files
+*.tfvars.*
+
+# .terraform files
+.terraform/
+.terraform.lock.hcl
