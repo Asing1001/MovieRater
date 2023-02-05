@@ -54,20 +54,19 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Build Docker image
-      if: github.ref == 'refs/heads/master'
       run: |
         docker build -t asia-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/movierater/movierater .
 
     - id: 'auth'
       name: 'Authenticate to GCP'
       uses: 'google-github-actions/auth@v0.3.1'
-      if: github.ref == 'refs/heads/master'
       with:
           create_credentials_file: 'true'
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
@@ -75,7 +74,6 @@ jobs:
 
     - id: 'gcloud' 
       name: 'gcloud login'
-      if: github.ref == 'refs/heads/master'
       run: |-
         gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
         gcloud config set project ${{ env.PROJECT_ID }}
@@ -83,6 +81,5 @@ jobs:
         gcloud auth configure-docker asia-east1-docker.pkg.dev
 
     - name: Push Docker image to Artifact Registry
-      if: github.ref == 'refs/heads/master'
       run: |        
         docker push asia-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/movierater/movierater
