@@ -7,7 +7,6 @@ import { StaticRouter } from 'react-router-dom';
 import * as swig from 'swig';
 import * as favicon from 'serve-favicon';
 import * as apicache from 'apicache';
-import * as device from 'express-device';
 import App from './app/components/app';
 import cacheManager from './data/cacheManager';
 import { systemSetting } from './configs/systemSetting';
