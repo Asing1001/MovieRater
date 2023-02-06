@@ -1,14 +1,9 @@
-output "pool_name" {
-  description = "Pool name"
-  value       = module.gh_oidc.pool_name
-}
-
 output "provider_name" {
-  description = "Provider name"
+  description = "Github actions WORKLOAD_IDENTITY_PROVIDER"
   value       = module.gh_oidc.provider_name
 }
 
 output "sa_email" {
-  description = "Example SA email"
-  value       = google_service_account.sa.email
+  description = "Github actions SERVICE_ACCOUNT, see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-google-cloud-platform"
+  value       = google_service_account.main.email
 }

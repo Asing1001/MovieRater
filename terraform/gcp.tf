@@ -3,14 +3,14 @@ provider "google" {
   region  = var.region
 }
 
-resource "google_service_account" "sa" {
+resource "google_service_account" "main" {
   account_id = "terraform-sa"
 }
 
-resource "google_project_iam_member" "project_editor" {
+resource "google_project_iam_member" "main" {
   project = var.project_id
   role    = "roles/editor"
-  member  = "serviceAccount:${google_service_account.sa.email}"
+  member  = "serviceAccount:${google_service_account.main.email}"
 }
 
 module "gh_oidc" {
@@ -19,20 +19,22 @@ module "gh_oidc" {
   pool_id     = "movierater-pool"
   provider_id = "movierater-gh-provider"
   sa_mapping = {
-    (google_service_account.sa.account_id) = {
-      sa_name   = google_service_account.sa.name
+    (google_service_account.main.account_id) = {
+      sa_name   = google_service_account.main.name
       attribute = "attribute.repository/Asing1001/movieRater.React"
     }
   }
 }
 
-resource "google_cloud_run_service" "movierater" {
+resource "google_cloud_run_service" "main" {
   name     = "movierater"
   location = "asia-east1"
 
   template {
     metadata {
       annotations = {
+        "autoscaling.knative.dev/minScale"  = "1"
+        "autoscaling.knative.dev/maxScale"  = "1"
         "run.googleapis.com/cpu-throttling" = false
       }
     }
@@ -72,23 +74,45 @@ resource "google_cloud_run_service" "movierater" {
 
         env {
           name  = "REDIS_URL"
-          value = "redis://default:${upstash_redis_database.redis.password}@${upstash_redis_database.redis.endpoint}:${upstash_redis_database.redis.port}"
+          value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
         }
 
         env {
           name  = "REDISCLOUD_URL"
-          value = "redis://default:${upstash_redis_database.redis.password}@${upstash_redis_database.redis.endpoint}:${upstash_redis_database.redis.port}"
+          value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
         }
       }
     }
   }
 }
 
-resource "google_cloud_run_service_iam_binding" "movierater" {
-  location = google_cloud_run_service.movierater.location
-  service  = google_cloud_run_service.movierater.name
+resource "google_cloud_run_service_iam_binding" "main" {
+  location = google_cloud_run_service.main.location
+  service  = google_cloud_run_service.main.name
   role     = "roles/run.invoker"
   members = [
     "allUsers"
   ]
+}
+
+resource "google_cloud_run_domain_mapping" "www_mvrater" {
+  name     = "www.mvrater.com"
+  location = google_cloud_run_service.main.location
+  metadata {
+    namespace = var.project_id
+  }
+  spec {
+    route_name = google_cloud_run_service.main.name
+  }
+}
+
+resource "google_cloud_run_domain_mapping" "mvrater" {
+  name     = "mvrater.com"
+  location = google_cloud_run_service.main.location
+  metadata {
+    namespace = var.project_id
+  }
+  spec {
+    route_name = google_cloud_run_service.main.name
+  }
 }
