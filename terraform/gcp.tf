@@ -26,69 +26,69 @@ module "gh_oidc" {
   }
 }
 
-resource "google_cloud_run_service" "main" {
+locals {
+  movierater_image = "asia-east1-docker.pkg.dev/movierater-1492834745733/movierater/movierater"
+}
+
+resource "google_cloud_run_v2_service" "main" {
   name     = "movierater"
-  location = "asia-east1"
+  location = var.region
 
   template {
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/minScale"  = "1"
-        "autoscaling.knative.dev/maxScale"  = "1"
-        "run.googleapis.com/cpu-throttling" = false
-      }
+    annotations = {
+      "autoscaling.knative.dev/minScale"  = "1"
+      "autoscaling.knative.dev/maxScale"  = "1"
+      "run.googleapis.com/cpu-throttling" = false
     }
-    spec {
-      containers {
-        image = "asia-east1-docker.pkg.dev/movierater-1492834745733/movierater/movierater"
+    containers {
+      image = local.movierater_image
 
-        env {
-          name  = "DB_URL"
-          value = var.db_url
-        }
+      env {
+        name  = "DB_URL"
+        value = var.db_url
+      }
 
-        env {
-          name  = "WEBSITE_URL"
-          value = var.website_url
-        }
+      env {
+        name  = "WEBSITE_URL"
+        value = var.website_url
+      }
 
-        env {
-          name  = "ENABLE_GRAPHIQL"
-          value = var.enable_graphiql
-        }
+      env {
+        name  = "ENABLE_GRAPHIQL"
+        value = var.enable_graphiql
+      }
 
-        env {
-          name  = "ENABLE_SCHEDULER"
-          value = var.enable_scheduler
-        }
+      env {
+        name  = "ENABLE_SCHEDULER"
+        value = var.enable_scheduler
+      }
 
-        env {
-          name  = "NODE_ENV"
-          value = var.node_env
-        }
+      env {
+        name  = "NODE_ENV"
+        value = var.node_env
+      }
 
-        env {
-          name  = "KEEP_ALIVE"
-          value = var.keep_alive
-        }
+      env {
+        name  = "KEEP_ALIVE"
+        value = var.keep_alive
+      }
 
-        env {
-          name  = "REDIS_URL"
-          value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
-        }
+      env {
+        name  = "REDIS_URL"
+        value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
+      }
 
-        env {
-          name  = "REDISCLOUD_URL"
-          value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
-        }
+      env {
+        name  = "REDISCLOUD_URL"
+        value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
       }
     }
   }
 }
 
 resource "google_cloud_run_service_iam_binding" "main" {
-  location = google_cloud_run_service.main.location
-  service  = google_cloud_run_service.main.name
+  location = google_cloud_run_v2_service.main.location
+  service  = google_cloud_run_v2_service.main.name
   role     = "roles/run.invoker"
   members = [
     "allUsers"
@@ -97,23 +97,23 @@ resource "google_cloud_run_service_iam_binding" "main" {
 
 resource "google_cloud_run_domain_mapping" "www_mvrater" {
   name     = "www.mvrater.com"
-  location = google_cloud_run_service.main.location
+  location = google_cloud_run_v2_service.main.location
   metadata {
     namespace = var.project_id
   }
   spec {
-    route_name = google_cloud_run_service.main.name
+    route_name = google_cloud_run_v2_service.main.name
   }
 }
 
 resource "google_cloud_run_domain_mapping" "mvrater" {
   name     = "mvrater.com"
-  location = google_cloud_run_service.main.location
+  location = google_cloud_run_v2_service.main.location
   metadata {
     namespace = var.project_id
   }
   spec {
-    route_name = google_cloud_run_service.main.name
+    route_name = google_cloud_run_v2_service.main.name
   }
 }
 
@@ -129,5 +129,45 @@ resource "google_storage_bucket" "main" {
   location = var.region
   versioning {
     enabled = true
+  }
+}
+
+resource "google_cloud_run_v2_job" "merge_data" {
+  name         = "merge-data"
+  location     = var.region
+  launch_stage = "BETA"
+
+  template {
+    task_count = 1
+    template {
+      timeout = "3600s"
+      containers {
+        image = local.movierater_image
+        command = [
+          "yarn",
+          "mergedata",
+        ]
+        env {
+          name  = "DB_URL"
+          value = var.db_url
+        }
+      }
+    }
+  }
+}
+
+resource "google_cloud_scheduler_job" "merge_data" {
+  name      = "merge-data-scheduler-trigger"
+  schedule  = "0 12 * * *"
+  time_zone = "Asia/Taipei"
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://${google_cloud_run_v2_job.merge_data.location}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${var.project_id}/jobs/${google_cloud_run_v2_job.merge_data.name}:run"
+
+    oauth_token {
+      scope                 = "https://www.googleapis.com/auth/cloud-platform"
+      service_account_email = google_service_account.main.email
+    }
   }
 }
