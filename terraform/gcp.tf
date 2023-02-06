@@ -116,3 +116,18 @@ resource "google_cloud_run_domain_mapping" "mvrater" {
     route_name = google_cloud_run_service.main.name
   }
 }
+
+terraform {
+  backend "gcs" {
+    bucket = "movierater-bucket"
+    prefix = "terraform/state"
+  }
+}
+
+resource "google_storage_bucket" "main" {
+  name     = "movierater-bucket"
+  location = var.region
+  versioning {
+    enabled = true
+  }
+}
