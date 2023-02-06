@@ -26,10 +26,10 @@ async function getNewImdbInfos() {
     return Promise.all(promises);
 }
 
-function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbLastCrawlTime }: Movie) {
+function filterNeedCrawlMovie({ englishTitle, releaseDate }: Movie) {
     const now = moment();
     const isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
-    const shouldCrawl = englishTitle && (isRecentMovie || (!isRecentMovie && !imdbLastCrawlTime));
+    const shouldCrawl = englishTitle && isRecentMovie;
     return shouldCrawl;
 }
 
