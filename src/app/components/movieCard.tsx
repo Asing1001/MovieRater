@@ -8,8 +8,8 @@ import LazyLoad from 'react-lazyload';
 
 interface MovieDetailProps {
     movie: Movie,
-    timesStrings?: String[],
-    roomTypes?: String[],
+    timesStrings?: string[],
+    roomTypes?: string[],
 }
 
 class MovieCard extends React.PureComponent<MovieDetailProps, {}> {

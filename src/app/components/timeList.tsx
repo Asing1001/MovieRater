@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { red500 } from 'material-ui/styles/colors';
 
 interface TimeListProps {
-    timesStrings: String[],
+    timesStrings: string[],
     style?: React.CSSProperties
 }
 
