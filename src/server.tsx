@@ -10,7 +10,7 @@ import * as apicache from 'apicache';
 import App from './app/components/app';
 import cacheManager from './data/cacheManager';
 import { systemSetting } from './configs/systemSetting';
-import { db } from './data/db';
+import { Mongo } from './data/db';
 import { initScheduler } from './backgroundService/scheduler';
 import schema from './data/schema';
 import { renderToStringWithData, ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
@@ -18,7 +18,7 @@ import { createLocalInterface } from 'apollo-local-query';
 import * as graphql from 'graphql';
 import * as redis from 'redis';
 
-db.openDbConnection().then(cacheManager.init).then(initScheduler);
+Mongo.openDbConnection().then(cacheManager.init).then(initScheduler);
 
 const app = express();
 
@@ -27,7 +27,7 @@ app.get('/api/test', (req, res) => {
 });
 
 app.get('/api/crawlerStatus', (req, res) => {
-  db.getDocument({ name: "crawlerStatus" }, "configs").then(c => res.send(c));
+  Mongo.getDocument({ name: "crawlerStatus" }, "configs").then(c => res.send(c));
 });
 
 app.get('/api/cache/index', (req, res) => {
