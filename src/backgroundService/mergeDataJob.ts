@@ -34,7 +34,7 @@ const main = async () => {
     const start = batchIndex * batchSize;
     const end = start + batchSize;
     mergedDatas.slice(start, end).forEach((data) => {
-      bulk.find({ yahooId: data.yahooId }).upsert().updateOne(data);
+      bulk.find({ yahooId: data.yahooId }).upsert().updateOne({ $set: data });
     });
     await bulk.execute();
     console.timeEnd(`Insert mergedDatas batch ${batchIndex}`);
