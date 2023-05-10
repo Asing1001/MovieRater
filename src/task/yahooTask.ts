@@ -52,7 +52,7 @@ export async function updateYahooMovies(howManyPagePerTime) {
 const crawlerStatusFilter = { name: 'crawlerStatus' };
 async function getCurrentCrawlRange(howManyPagePerTime) {
   const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, 'configs');
-  const startYahooId = crawlerStatus.maxYahooId + 1;
+  const startYahooId = crawlerStatus.lastCrawlYahooId + 1;
   return { startYahooId, endYahooId: startYahooId + howManyPagePerTime - 1 };
 }
 
@@ -79,17 +79,22 @@ async function getRangeYahooMovies({ startYahooId, endYahooId }) {
 
 function updateMaxYahooId(yahooMovies, startYahooId) {
   const movieIds = yahooMovies.map(({ yahooId }) => yahooId);
-  let newMaxYahooId = Math.max(...movieIds, startYahooId);
-  const alreadyCrawlTheNewest = newMaxYahooId === startYahooId;
+  const maxCrawledYahooId = Math.max(...movieIds, startYahooId);
+  const alreadyCrawlTheNewest = maxCrawledYahooId === startYahooId;
   if (alreadyCrawlTheNewest) {
-    newMaxYahooId = 1;
+    Mongo.updateDocument(
+      crawlerStatusFilter,
+      { lastCrawlYahooId: 0 },
+      'configs'
+    );
+  } else {
+    Mongo.updateDocument(
+      crawlerStatusFilter,
+      { maxYahooId: maxCrawledYahooId, lastCrawlYahooId: maxCrawledYahooId },
+      'configs'
+    );
   }
-  Mongo.updateDocument(
-    crawlerStatusFilter,
-    { maxYahooId: newMaxYahooId },
-    'configs'
-  );
   console.log(
-    `new movieInfo count:${yahooMovies.length}, newMaxYahooId:${newMaxYahooId}`
+    `new movieInfo count:${yahooMovies.length}, lastCrawlYahooId:${maxCrawledYahooId}`
   );
 }

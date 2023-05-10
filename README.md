@@ -14,8 +14,8 @@ Crawl and merge ptt/imdb/yahoo movie data, help easy search high rating movie in
 
 ## Get the latest Data locally
 
-0. Copy the data from real db or execute `updatePttArticles` and `updateYahooMovies`
-1. `yarn mergedata` to insert the merged result to DB
+0. `yarn setup`
+1. `yarn mergedata`
 
 ## Developement
 

@@ -21,7 +21,7 @@ export async function updatePttArticles(howManyPagePerTime) {
 const crawlerStatusFilter = { name: 'crawlerStatus' };
 async function getCurrentCrawlRange(howManyPagePerTime) {
   const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, 'configs');
-  const startPttIndex = crawlerStatus.maxPttIndex + 1;
+  const startPttIndex = crawlerStatus.lastCrawlPttIndex + 1;
   return { startPttIndex, endPttIndex: startPttIndex + howManyPagePerTime - 1 };
 }
 
@@ -48,17 +48,23 @@ async function getRangePttPages({ startPttIndex, endPttIndex }) {
 
 function updateMaxPttIndex(pttPages, startPttIndex) {
   const pttIndexs = pttPages.map(({ pageIndex }) => pageIndex);
-  let newMaxPttIndex = Math.max(...pttIndexs, startPttIndex);
-  const alreadyCrawlTheNewest = newMaxPttIndex === startPttIndex;
+  const maxCrawledPttIndex = Math.max(...pttIndexs, startPttIndex);
+  const alreadyCrawlTheNewest = maxCrawledPttIndex === startPttIndex;
   if (alreadyCrawlTheNewest) {
-    newMaxPttIndex = newMaxPttIndex - 100 > 0 ? newMaxPttIndex - 100 : 1;
+    const lastCrawlPttIndex =
+      maxCrawledPttIndex - 100 > 0 ? maxCrawledPttIndex - 100 : 0;
+    Mongo.updateDocument(crawlerStatusFilter, { lastCrawlPttIndex }, 'configs');
+  } else {
+    Mongo.updateDocument(
+      crawlerStatusFilter,
+      {
+        maxPttIndex: maxCrawledPttIndex,
+        lastCrawlPttIndex: maxCrawledPttIndex,
+      },
+      'configs'
+    );
   }
-  Mongo.updateDocument(
-    crawlerStatusFilter,
-    { maxPttIndex: newMaxPttIndex },
-    'configs'
-  );
   console.log(
-    `new pttPages count:${pttPages.length}, newMaxPttIndex:${newMaxPttIndex}`
+    `new pttPages count:${pttPages.length}, lastCrawlPttIndex:${maxCrawledPttIndex}`
   );
 }

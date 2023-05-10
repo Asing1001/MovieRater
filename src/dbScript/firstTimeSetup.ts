@@ -1,11 +1,16 @@
-import { MongoClient, Db } from 'mongodb';
-import { updateTheaterWithLocationList } from '../task/yahooTask';
+import { Db } from 'mongodb';
+import {
+  updateTheaterWithLocationList,
+  updateYahooMovies,
+} from '../task/yahooTask';
 import { Mongo } from '../data/db';
+import { updatePttArticles } from '../task/pttTask';
 
 setup();
 
 let db: Db;
-
+const NEWEST_FETCH_COUNT = 500;
+const BATCH_SIZE = 50;
 //It Will not override any exist collection, document and index, so don't be afraid if accidently excute it.
 async function setup() {
   const connection = await Mongo.openDbConnection();
@@ -13,6 +18,10 @@ async function setup() {
   await ensureCollectionAndIndex();
   await ensureCrawlerStatus();
   await updateTheaterWithLocationList();
+  for (let i = 0; i < NEWEST_FETCH_COUNT / BATCH_SIZE; i++) {
+    await updateYahooMovies(BATCH_SIZE);
+    await updatePttArticles(BATCH_SIZE);
+  }
   console.log('db setup done');
   process.exit();
 }
@@ -28,14 +37,24 @@ async function ensureCollectionAndIndex() {
 }
 
 async function ensureCrawlerStatus() {
+  const res = await fetch(
+    `https://www.mvrater.com/api/crawlerstatus?${Date.now()}`
+  );
+  const crawlerStatus = await res.json();
+  const { maxYahooId, maxPttIndex } = crawlerStatus;
   const defaultCrawlerStatus = {
     name: 'crawlerStatus',
-    maxYahooId: 1,
-    maxPttIndex: 1,
+    maxYahooId,
+    maxPttIndex,
+    lastCrawlYahooId: maxYahooId - NEWEST_FETCH_COUNT,
+    lastCrawlPttIndex: maxPttIndex - NEWEST_FETCH_COUNT,
+    scheduleDay: undefined,
   };
-  const isCrawlerStatusExist = await db
+  await db
     .collection('configs')
-    .count({ name: defaultCrawlerStatus.name });
-  isCrawlerStatusExist ||
-    (await db.collection('configs').insertOne(defaultCrawlerStatus));
+    .updateOne(
+      { name: defaultCrawlerStatus.name },
+      { $set: defaultCrawlerStatus },
+      { upsert: true }
+    );
 }
