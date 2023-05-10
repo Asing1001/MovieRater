@@ -12,20 +12,28 @@ Crawl and merge ptt/imdb/yahoo movie data, help easy search high rating movie in
 `yarn`
 `yarn build && yarn start` then open http://localhost:3003
 
+## Get the latest Data locally
+
+0. Copy the data from real db or execute `updatePttArticles` and `updateYahooMovies`
+1. `yarn mergedata` to insert the merged result to DB
+
 ## Developement
 
-Please open two command line:  
+Please open three command line:  
 For UI developement, server run at http://localhost:3004:
 
+0. `docker compose up`
 1. `yarn start`
 2. `yarn webpack`
 
 For server developement, server run at http://localhost:3003:
 
+0. `docker compose up`
 1. `yarn tsc:w`
 2. `yarn nodemon`
 
 ## Test
+
 `yarn test`
 
 ### Debug Test in Vscode
