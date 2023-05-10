@@ -17,7 +17,7 @@ const normalStyles = {
 
 const routesWithSort = [
   { path: '/', exact: true },
-  { path: 'upcoming' },
+  { path: '/upcoming' },
   { path: '/movies/:ids' },
   { path: '/theater/:name' },
 ];
