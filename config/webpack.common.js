@@ -13,7 +13,15 @@ module.exports = {
             { test: /\.tsx?$/, use: ['babel-loader?presets[]=es2015', "ts-loader"] },
             {
                 test: /\.html$/,
-                loader: 'html-loader'
+                loader: 'html-loader',
+                options: {
+                    minimize: {
+                        ignoreCustomFragments: [/\{\{.*}}/],
+                        collapseWhitespace: true,
+                        conservativeCollapse: true,
+                        minifyJS: true
+                    }
+                }
             },
             {
                 test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
@@ -30,6 +38,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html',
             filename: 'index.html',
+
         }),
 
         new CopyWebpackPlugin(
