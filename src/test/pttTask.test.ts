@@ -27,7 +27,7 @@ describe('pttCrawler', () => {
       };
       const stubGetDocument = sandbox
         .stub(Mongo, 'getDocument')
-        .returns({ maxPttIndex: 9999 });
+        .returns({ lastCrawlPttIndex: 9999 });
       const stubGetPttPage = sandbox
         .stub(pttCrawler, 'getPttPage')
         .returns(Promise.resolve(pttPage));

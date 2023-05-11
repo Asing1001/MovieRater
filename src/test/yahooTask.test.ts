@@ -29,7 +29,7 @@ describe('yahooTask', () => {
       const yahooMovie: YahooMovie = { yahooId: 99999, chineseTitle: '測試' };
       const stubGetDocument = sandbox
         .stub(Mongo, 'getDocument')
-        .returns({ maxYahooId: 9999 });
+        .returns({ lastCrawlYahooId: 9999 });
       const stubGetYahooMovieInfo = sandbox
         .stub(yahooCrawler, 'getYahooMovieInfo')
         .returns(Promise.resolve(yahooMovie));
