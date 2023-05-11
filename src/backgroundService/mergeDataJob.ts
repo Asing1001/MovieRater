@@ -8,9 +8,11 @@ const main = async () => {
   const yahooMoviesPromise = Mongo.getCollection<YahooMovie>({
     name: 'yahooMovies',
     sort: { yahooId: -1 },
+    options: { projection: { _id: 0 } },
   });
   const pttArticlesPromise = Mongo.getCollection<Article>({
     name: 'pttArticles',
+    options: { projection: { _id: 0 } },
   });
   console.time('get yahooMovies and pttArticles');
   const [yahooMovies, pttArticles] = await Promise.all([

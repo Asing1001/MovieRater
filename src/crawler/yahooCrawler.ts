@@ -46,8 +46,9 @@ export function getYahooMovieInfo(yahooId: number) {
           .map((director) => director.trim()),
         actors: $movieInfoDiv
           .find('.movie_intro_list')
-          .eq(1)
+          .last()
           .text()
+          .replace('演員：', '')
           .split('、')
           .map((director) => director.trim()),
         launchCompany: $movieInfoValues.eq(2).text().split('：')[1],

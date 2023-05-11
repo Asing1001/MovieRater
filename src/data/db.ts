@@ -51,12 +51,12 @@ export class Mongo {
     }
   }
 
-  public static async getCollection<T>({ name, sort = {}, fields = {} }) {
+  public static async getCollection<T>({ name, sort = {}, options = {} }) {
     try {
       log.debug('getCollection', arguments);
       return await this.db
         .collection<T>(name)
-        .find({}, fields)
+        .find({}, options)
         .sort(sort)
         .toArray();
     } catch (error) {
