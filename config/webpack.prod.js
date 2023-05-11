@@ -49,11 +49,11 @@ module.exports = webpackMerge(commonConfig, {
         minify: true,
         runtimeCaching: [{
           urlPattern: /mvrater.com/,
-          handler: 'cacheFirst',
+          handler: 'networkFirst',
           options: {
             cache: {
               name: '__movierater__',
-              maxAgeSeconds: 60 * 60
+              maxAgeSeconds: 86400,
             }
           }
         }, {
