@@ -57,4 +57,13 @@ describe('YahooCrawler', () => {
       movieInfo.imdbRating.should.greaterThan(6).lessThan(8);
     });
   });
+
+  describe('getYahooMovieInfo(13379)', () => {
+    it('.should parse imdb rating correctly', async function () {
+      this.timeout(30000);
+      const movieInfo: YahooMovie = await getYahooMovieInfo(13379);
+      movieInfo.imdbRating.includes('克里斯多夫麥奎利(Christopher McQuarrie)')
+        .should.be.false;
+    });
+  });
 });

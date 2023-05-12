@@ -27,6 +27,9 @@ export function getYahooMovieInfo(yahooId: number) {
       const fullSummary = $('.gray_infobox_inner>span').attr('title2');
       const summary =
         fullSummary || $('.gray_infobox_inner>span').eq(0).html().trim();
+      const imdbRatingMatch = /\d{1}\.?\d{1}?/.exec(
+        $movieInfoValues.eq(3).text()
+      );
       const movieInfo: YahooMovie = {
         yahooId,
         posterUrl,
@@ -53,7 +56,7 @@ export function getYahooMovieInfo(yahooId: number) {
           .map((director) => director.trim()),
         launchCompany: $movieInfoValues.eq(2).text().split('：')[1],
         yahooRating: $('.score>.score_num').text(),
-        imdbRating: $movieInfoValues.eq(3).text().split('：')[1],
+        imdbRating: imdbRatingMatch ? imdbRatingMatch[0] : '',
         summary,
       };
 
