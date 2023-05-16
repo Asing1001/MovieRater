@@ -46,8 +46,9 @@ async function getRangePttPages({ startPttIndex, endPttIndex }) {
   return pttPages;
 }
 
-function updateMaxPttIndex(pttPages, startPttIndex) {
+async function updateMaxPttIndex(pttPages, startPttIndex) {
   const pttIndexs = pttPages.map(({ pageIndex }) => pageIndex);
+  const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, 'configs');
   const maxCrawledPttIndex = Math.max(...pttIndexs, startPttIndex);
   const alreadyCrawlTheNewest = maxCrawledPttIndex === startPttIndex;
   if (alreadyCrawlTheNewest) {
@@ -58,7 +59,7 @@ function updateMaxPttIndex(pttPages, startPttIndex) {
     Mongo.updateDocument(
       crawlerStatusFilter,
       {
-        maxPttIndex: maxCrawledPttIndex,
+        maxPttIndex: Math.max(maxCrawledPttIndex, crawlerStatus.maxPttIndex),
         lastCrawlPttIndex: maxCrawledPttIndex,
       },
       'configs'

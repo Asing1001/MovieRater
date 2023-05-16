@@ -77,8 +77,9 @@ async function getRangeYahooMovies({ startYahooId, endYahooId }) {
   return yahooMovies;
 }
 
-function updateMaxYahooId(yahooMovies, startYahooId) {
+async function updateMaxYahooId(yahooMovies, startYahooId) {
   const movieIds = yahooMovies.map(({ yahooId }) => yahooId);
+  const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, 'configs');
   const maxCrawledYahooId = Math.max(...movieIds, startYahooId);
   const alreadyCrawlTheNewest = maxCrawledYahooId === startYahooId;
   if (alreadyCrawlTheNewest) {
@@ -90,7 +91,10 @@ function updateMaxYahooId(yahooMovies, startYahooId) {
   } else {
     Mongo.updateDocument(
       crawlerStatusFilter,
-      { maxYahooId: maxCrawledYahooId, lastCrawlYahooId: maxCrawledYahooId },
+      {
+        maxYahooId: Math.max(crawlerStatus.maxYahooId, maxCrawledYahooId),
+        lastCrawlYahooId: maxCrawledYahooId,
+      },
       'configs'
     );
   }
