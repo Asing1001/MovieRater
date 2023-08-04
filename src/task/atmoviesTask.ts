@@ -15,11 +15,13 @@ export async function updateMoviesSchedules() {
     .find({}, { projection: { scheduleUrl: 1, _id: 0 } })
     .toArray();
   const scheduleCrawlDate = await getScheduleCrawlDate();
+  console.log('scheduleCrawlDate', scheduleCrawlDate);
   let schedulesPromise = scheduleUrls.map(({ scheduleUrl }) =>
     crawlMovieSchdule(scheduleUrl, scheduleCrawlDate)
   );
   const schedules = await Promise.all(schedulesPromise);
   const allSchedules: Schedule[] = [].concat(...schedules);
+  console.log('allSchedules.length', allSchedules.length);
   redisClient.setex(scheduleCrawlDate, 86400 * 2, JSON.stringify(allSchedules));
   return allSchedules;
 }

@@ -23,7 +23,9 @@ export async function crawlMovieSchdule(scheduleUrl, date) {
         });
     }
     catch (error) {
+        console.error('crawlMovieSchdule fail!');
         console.error(error);
     }
+    console.log(`crawlMovieSchdule(${scheduleUrl}, ${date}), schedules.length: ${schedules.length}`)
     return schedules;
 }
