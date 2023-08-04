@@ -7,6 +7,7 @@ Crawl and merge ptt/imdb/yahoo movie data, help easy search high rating movie in
 
 ## Quick Start
 
+`nvm use`
 `npm install -g yarn`
 `docker compose up`
 `yarn`
