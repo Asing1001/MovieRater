@@ -1,7 +1,6 @@
 import { crawlMovieSchdule } from '../crawler/movieSchduleCrawler';
 import Schedule from '../models/schedule';
 import * as moment from 'moment';
-
 import { Mongo } from '../data/db';
 import * as redis from 'redis';
 import { systemSetting } from '../configs/systemSetting';
@@ -18,7 +17,8 @@ export async function updateMoviesSchedules(): Promise<Schedule[]> {
     .toArray();
   const scheduleCrawlDate = await getScheduleCrawlDate();
   console.log('scheduleCrawlDate', scheduleCrawlDate);
-  const allSchedules = await promiseMap(scheduleUrls, ({ scheduleUrl }) => crawlMovieSchdule(scheduleUrl, scheduleCrawlDate), 20)
+  const schedules = await promiseMap(scheduleUrls, ({ scheduleUrl }) => crawlMovieSchdule(scheduleUrl, scheduleCrawlDate), 20)
+  const allSchedules = [].concat(...schedules);
   console.log('allSchedules.length', allSchedules.length);
   redisClient.setex(scheduleCrawlDate, 86400 * 2, JSON.stringify(allSchedules));
   return allSchedules;
