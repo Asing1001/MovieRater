@@ -5,9 +5,10 @@ import * as moment from 'moment';
 const movieSchduleUrl = 'http://www.atmovies.com.tw';
 export async function crawlMovieSchdule(scheduleUrl, date) {
     let schedules: Schedule[] = [];
+    const isToday = moment().format('YYYYMMDD') === date;
+    const atmovieScheduleUrl = `${movieSchduleUrl + scheduleUrl}${isToday ? '' : date + '/'}`
     try {
-        const isToday = moment().format('YYYYMMDD') === date;
-        const $ = await getCheerio$(`${movieSchduleUrl + scheduleUrl}${isToday ? '' : date + '/'}`)
+        const $ = await getCheerio$(atmovieScheduleUrl)
         schedules = Array.from($('#theaterShowtimeTable')).map(showTime => {
             const $showTime = $(showTime);
             const roomTypesString = $showTime.find('.filmVersion').text();
@@ -17,7 +18,7 @@ export async function crawlMovieSchdule(scheduleUrl, date) {
                 movieName: $showTime.find('.filmTitle>a').text(),
                 roomTypes: roomTypesString !== "" ? roomTypesString.split(',') : [],
                 level: $showTime.find('img[hspace]').attr('src'),
-                timesStrings: Array.from($showTime.find('li>ul:nth-child(2)').children(':not([class])')).map((e) => $(e).text().substr(0,5))
+                timesStrings: Array.from($showTime.find('li>ul:nth-child(2)').children(':not([class])')).map((e) => $(e).text().substr(0, 5))
             }
             return schedule;
         });
@@ -26,6 +27,6 @@ export async function crawlMovieSchdule(scheduleUrl, date) {
         console.error('crawlMovieSchdule fail!');
         console.error(error);
     }
-    console.log(`crawlMovieSchdule(${scheduleUrl}, ${date}), schedules.length: ${schedules.length}`)
+    console.log(`crawlMovieSchdule(${atmovieScheduleUrl}, ${date}), schedules.length: ${schedules.length}`)
     return schedules;
 }
