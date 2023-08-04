@@ -17,7 +17,7 @@ export async function updateMoviesSchedules(): Promise<Schedule[]> {
     .toArray();
   const scheduleCrawlDate = await getScheduleCrawlDate();
   console.log('scheduleCrawlDate', scheduleCrawlDate);
-  const schedules = await promiseMap(scheduleUrls, ({ scheduleUrl }) => crawlMovieSchdule(scheduleUrl, scheduleCrawlDate), 20)
+  const schedules = await promiseMap(scheduleUrls, ({ scheduleUrl }) => crawlMovieSchdule(scheduleUrl, scheduleCrawlDate), 15)
   const allSchedules = [].concat(...schedules);
   console.log('allSchedules.length', allSchedules.length);
   redisClient.setex(scheduleCrawlDate, 86400 * 2, JSON.stringify(allSchedules));
