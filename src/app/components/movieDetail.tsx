@@ -18,7 +18,7 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, {}> {
     share() {
         navigator["share"]({
             title: document.title,
-            text: document["meta"].description,
+            text: `${this.props.movie.chineseTitle} ${this.props.movie.englishTitle} | ${document["meta"].description} | MovieRater`,
             url: location.href,
         })
         .then(() => console.log('Successful share'))
