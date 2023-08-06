@@ -4,8 +4,7 @@ import * as moment from 'moment';
 import Movie from '../models/movie';
 import { getInTheaterMovieNames } from '../crawler/atmovieInTheaterCrawler';
 import {
-  getMoviesSchedules,
-  updateMoviesSchedules,
+  getMoviesSchedules, updateMoviesSchedules,
 } from '../task/atmoviesTask';
 import isValideDate from '../helper/isValideDate';
 
@@ -25,6 +24,9 @@ export default class cacheManager {
     cacheManager.setAllMoviesNamesCache(mergedDatas);
     cacheManager.setTheatersCache();
     await cacheManager.setRecentMoviesCache();
+    // To let the api return data ASAP, we serve the schedules from Redis first
+    await cacheManager.setMoviesSchedulesCache();
+    await updateMoviesSchedules()
     await cacheManager.setMoviesSchedulesCache();
   }
 
@@ -78,7 +80,6 @@ export default class cacheManager {
   public static async setMoviesSchedulesCache() {
     console.time('setMoviesSchedulesCache');
     try {
-      await updateMoviesSchedules();
       const allSchedules = await getMoviesSchedules();
       const recentMovieChineseTitles: string[] = cacheManager
         .get(cacheManager.RECENT_MOVIES)

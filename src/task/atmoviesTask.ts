@@ -24,22 +24,25 @@ export async function updateMoviesSchedules(): Promise<Schedule[]> {
   return allSchedules;
 }
 
-export async function getMoviesSchedules(): Promise<any> {
-  return new Promise((resolve, reject) => {
+export async function getMoviesSchedules(): Promise<Schedule[]> {
+  return new Promise<Schedule[]>((resolve, reject) => {
     const multi = redisClient.multi();
     for (let i = 0; i < 7; i++) {
       multi.get(moment().add(i, 'days').format('YYYYMMDD'));
     }
     multi.exec((err, replies) => {
-      err && console.error(err);
-      console.log('MULTI got ' + replies.length + ' replies');
-      resolve(
-        [].concat(
-          ...replies
-            .filter((reply) => reply !== null)
-            .map((reply) => JSON.parse(reply))
-        )
+      if (err) {
+        console.error(err);
+        reject(err);
+        return;
+      }
+      console.log('getMoviesSchedules got ' + replies.length + ' replies');
+      const schedules: Schedule[] = [].concat(
+        ...replies
+          .filter((reply) => reply !== null)
+          .map((reply) => JSON.parse(reply))
       );
+      resolve(schedules);
     });
   });
 }

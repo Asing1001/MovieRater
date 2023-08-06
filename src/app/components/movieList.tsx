@@ -1,6 +1,4 @@
 import * as React from 'react';
-import * as moment from 'moment';
-import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import IconLocationOn from 'material-ui/svg-icons/content/sort';
 import MovieCard from './movieCard';
@@ -8,58 +6,87 @@ import Movie from '../../models/movie';
 import { classifyArticle } from '../helper';
 import LoadingIcon from './loadingIcon';
 import { gql, graphql } from 'react-apollo';
+import { Link } from 'react-router-dom';
 
 const nearbyIcon = <IconLocationOn />;
 
 const movieListingQuery = gql`
-         query MovieListing($yahooIds:[Int],$range:String){
-           movies(yahooIds:$yahooIds, range:$range) {
-            yahooId,
-            posterUrl,
-            chineseTitle,
-            englishTitle,
-            releaseDate,
-            types,
-            runTime,
-            yahooRating,
-            imdbID,
-            imdbRating,
-            relatedArticles{title},
-            briefSummary
-            }
-          }`;
+  query MovieListing($yahooIds: [Int], $range: String) {
+    movies(yahooIds: $yahooIds, range: $range) {
+      yahooId
+      posterUrl
+      chineseTitle
+      englishTitle
+      releaseDate
+      types
+      runTime
+      yahooRating
+      imdbID
+      imdbRating
+      relatedArticles {
+        title
+      }
+      briefSummary
+    }
+  }
+`;
 
 @graphql(movieListingQuery, {
   options: ({ match }) => {
     return {
       variables: {
-        yahooIds: match.params.ids && match.params.ids.split(',').map(id => parseInt(id)),
-        range: match.path.replace('/','')
+        yahooIds:
+          match.params.ids &&
+          match.params.ids.split(',').map((id) => parseInt(id)),
+        range: match.path.replace('/', ''),
       },
-    }
+    };
   },
 })
 class MovieList extends React.PureComponent<any, any> {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       movies: [],
-      isLoading: true
+      isLoading: true,
     };
   }
   render() {
     if (this.props.data.loading) {
-      return <LoadingIcon isLoading={this.props.data.loading} />
+      return <LoadingIcon isLoading={this.props.data.loading} />;
     }
     return (
       <div>
-        {
-          this.props.data.movies.map(movie => classifyArticle(movie)).sort(this.props.sortFunction).map((movie: Movie, index) => (
-            <Paper zDepth={2} className="row no-margin" style={{ marginBottom: '.5em' }} key={index}>
-              <MovieCard key={movie.yahooId} movie={movie}></MovieCard>
+        {this.props.data.movies
+          .map((movie) => classifyArticle(movie))
+          .sort(this.props.sortFunction)
+          .map((movie: Movie, index) => (
+            <Paper
+              zDepth={2}
+              className="row no-margin"
+              style={{ marginBottom: '.5em' }}
+              key={index}
+            >
+              <MovieCard key={movie.yahooId} movie={movie}>
+                <Link
+                  style={{ color: 'inherit' }}
+                  to={`/movie/${movie.yahooId}`}
+                >
+                  {movie.briefSummary && (
+                    <div className="hidden-xs">
+                      <p className="resultSummary">
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: movie.briefSummary,
+                          }}
+                        ></span>
+                      </p>
+                    </div>
+                  )}
+                </Link>
+              </MovieCard>
             </Paper>
-          ))
-        }
+          ))}
       </div>
     );
   }

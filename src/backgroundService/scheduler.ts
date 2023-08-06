@@ -5,6 +5,7 @@ import { updateYahooMovies, updateTheaterWithLocationList } from '../task/yahooT
 import { updatePttArticles } from '../task/pttTask';
 import { updateImdbInfo } from '../task/imdbTask';
 import cacheManager from '../data/cacheManager';
+import { updateMoviesSchedules } from "../task/atmoviesTask";
 
 export function initScheduler() {
     if (!systemSetting.enableScheduler) {
@@ -17,7 +18,7 @@ export function initScheduler() {
                 console.log(`[Scheduler] Access to website:${systemSetting.websiteUrl}, status:${res.status}`));
         }, 600000);
     }
-    
+
     scheduleJob('10 * * * *', async function () {
         console.time('[Scheduler] updateYahooMovies');
         await updateYahooMovies(schedulerSetting.yahooPagePerTime)
@@ -30,8 +31,9 @@ export function initScheduler() {
         console.timeEnd('[Scheduler] updatePttArticles');
     });
 
-    scheduleJob('20 * * * *', async function () {        
+    scheduleJob('20 * * * *', async function () {
         await cacheManager.setRecentMoviesCache();
+        await updateMoviesSchedules()
         await cacheManager.setMoviesSchedulesCache()
     });
 
@@ -51,5 +53,5 @@ export function initScheduler() {
         console.time('[Scheduler] updateImdbInfo');
         await updateImdbInfo()
         console.timeEnd('[Scheduler] updateImdbInfo');
-    });    
+    });
 }
