@@ -31,7 +31,7 @@ For server developement, server run at http://localhost:3003:
 
 0. `docker compose up`
 1. `yarn tsc:w`
-2. `yarn nodemon`
+2. `TZ=Asia/Taipei yarn nodemon`
 
 ## Test
 

@@ -50,14 +50,6 @@ const theaterDetailQuery = gql`
   }
 `;
 
-enum SortType {
-  imdb = 0,
-  yahoo = 1,
-  tomato = 2,
-  ptt = 3,
-  releaseDate = 4,
-}
-
 @graphql(theaterDetailQuery, {
   options: ({ match }) => {
     return {
@@ -69,35 +61,22 @@ enum SortType {
 })
 class TheaterDetail extends React.PureComponent<
   any,
-  { selectedDate: string; availableDates: string[] }
+  { selectedDate: Date; }
 > {
   constructor(props) {
     super(props);
     this.state = {
-      selectedDate: null,
-      availableDates: [],
-    };
+      selectedDate: new Date()
+    }
+  }
+
+  isSelectedDate(date) {
+    return moment(date).isSame(this.state.selectedDate, 'date')
   }
 
   getAvailableDates(schedules) {
     return [...new Set(schedules.map(({ date }) => date))] as string[];
   }
-
-  componentWillReceiveProps = (nextprops) => {
-    const {
-      data: { loading, theaters },
-    } = nextprops;
-    if (!loading && theaters.length) {
-      const availableDates = this.getAvailableDates(theaters[0].schedules);
-      const newestAvailableDate = availableDates.find((date) =>
-        moment(date).isSameOrAfter(moment(), 'date')
-      );
-      this.setState({
-        availableDates,
-        selectedDate: newestAvailableDate || availableDates[0],
-      });
-    }
-  };
 
   render() {
     const {
@@ -106,22 +85,23 @@ class TheaterDetail extends React.PureComponent<
     if (loading) {
       return <LoadingIcon isLoading={loading} />;
     }
-    let theater = theaters[0];
-    document.title = `上映場次時刻表 - ${theater.name} | Movie Rater`;
+    const theater = theaters[0];
+    document.title = `${theater.name}時刻表 | Movie Rater`;
+    const availableDates = this.getAvailableDates(theaters[0].schedules);
     return (
       <div>
         <Paper zDepth={2} style={{ marginBottom: '.5em', padding: '.5em 1em' }}>
           <TheaterCard theater={theater}></TheaterCard>
           <div className="date-wrapper">
-            {this.state.availableDates.map((date, index) => (
+            {availableDates.map((date, index) => (
               <Chip
                 className="datebtn"
                 backgroundColor={
-                  this.state.selectedDate === date ? grey500 : null
+                  this.isSelectedDate(date) ? grey500 : null
                 }
                 key={index}
                 onClick={() =>
-                  this.setState({ ...this.state, selectedDate: date })
+                  this.setState({ selectedDate: new Date(date) })
                 }
               >
                 {moment(date).format('MM/DD')}
@@ -132,7 +112,7 @@ class TheaterDetail extends React.PureComponent<
         {theater.schedules &&
           theater.schedules
             .slice()
-            .filter(({ date }) => date === this.state.selectedDate)
+            .filter(({ date }) => this.isSelectedDate(date))
             .sort(({ movie }, { movie: movie2 }) =>
               this.props.sortFunction(
                 classifyArticle(movie),
