@@ -100,9 +100,9 @@ class TheaterDetail extends React.PureComponent<
                   this.isSelectedDate(date) ? grey500 : null
                 }
                 key={index}
-                onClick={() =>
-                  this.setState({ selectedDate: new Date(date) })
-                }
+                onClick={() => {
+                  this.setState({ selectedDate: moment(date).toDate() })
+                }}
               >
                 {moment(date).format('MM/DD')}
               </Chip>
