@@ -15,8 +15,8 @@ export const schedulerSetting = {
 }
 
 export const googleApiSetting = {
-    directionApiKey: 'AIzaSyDQ7FKQW10TIxKmbe7Tjc6fAXI3OQZh-No',
-    geoApiKey: 'AIzaSyBcj5gbydKX6IdPnSxqDUwTTzlszB7oZVw'
+    // It is a deleted API key, you could retrieve your own one to fetch the real data.
+    geoApiKey: process.env.GOOGLEMAP_APIKEY || 'AIzaSyBcj5gbydKX6IdPnSxqDUwTTzlszB7oZVw'
 }
 
 console.log("systemSetting", JSON.stringify(systemSetting));
