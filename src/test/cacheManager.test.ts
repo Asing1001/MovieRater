@@ -21,7 +21,7 @@ describe('cacheManager', () => {
   });
 
   describe('init cacheManager', () => {
-    it.only('should init complete', async function () {
+    it('should init complete', async function () {
       stubGetCollection.returns([]);
       stubUpdateSchedules.returns([])
       
