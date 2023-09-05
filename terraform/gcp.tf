@@ -35,10 +35,9 @@ resource "google_cloud_run_v2_service" "main" {
   location = var.region
 
   template {
-    annotations = {
-      "autoscaling.knative.dev/minScale"  = "1"
-      "autoscaling.knative.dev/maxScale"  = "1"
-      "run.googleapis.com/cpu-throttling" = false
+
+    scaling {
+      max_instance_count = 1
     }
     containers {
       image = local.movierater_image

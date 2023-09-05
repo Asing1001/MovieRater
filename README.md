@@ -75,12 +75,10 @@ The project UI is using [Material-UI](https://github.com/callemall/material-ui)
 ### Terraform
 
 ```bash
-# For first time, you need to download google cloud sdk, and then
 gcloud auth application-default login
-
-# After the gcloud credentials are set, you only need to run:
 cd terraform
 terraform init
+terraform plan
 ```
 
 ### Heroku
