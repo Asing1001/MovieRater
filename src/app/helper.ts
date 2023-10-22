@@ -58,7 +58,7 @@ export function getMovieSchema(movie: Movie) {
         "@type": "Movie",
         "name": `${movie.chineseTitle} ${movie.englishTitle}`,
         "image": movie.posterUrl,
-        "url": "https://www.mvrater.com/movie/" + movie.yahooId,
+        "url": "https://www.mvrater.com/movie/" + movie._id,
         "datePublished": movie.releaseDate,
         "actor": {
             "@type": "Person",

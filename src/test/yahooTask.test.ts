@@ -14,7 +14,8 @@ import Schedule from '../models/schedule';
 const should = chai.should();
 chai.use(sinonChai);
 
-describe('yahooTask', () => {
+// Yahoo close the movie section on 2023/10
+describe.skip('yahooTask', () => {
   let sandbox: sinon.SinonSandbox, stubUpdateDocument;
 
   beforeEach(() => {

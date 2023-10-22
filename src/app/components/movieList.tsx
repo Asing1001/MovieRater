@@ -11,8 +11,11 @@ import { Link } from 'react-router-dom';
 const nearbyIcon = <IconLocationOn />;
 
 const movieListingQuery = gql`
-  query MovieListing($yahooIds: [Int], $range: String) {
-    movies(yahooIds: $yahooIds, range: $range) {
+  query MovieListing($ids: [ID], $range: String) {
+    movies(ids: $ids, range: $range) {
+      _id
+      lineUrlHash
+      lineRating
       yahooId
       posterUrl
       chineseTitle
@@ -35,9 +38,9 @@ const movieListingQuery = gql`
   options: ({ match }) => {
     return {
       variables: {
-        yahooIds:
+        ids:
           match.params.ids &&
-          match.params.ids.split(',').map((id) => parseInt(id)),
+          match.params.ids.split(','),
         range: match.path.replace('/', ''),
       },
     };
@@ -67,10 +70,10 @@ class MovieList extends React.PureComponent<any, any> {
               style={{ marginBottom: '.5em' }}
               key={index}
             >
-              <MovieCard key={movie.yahooId} movie={movie}>
+              <MovieCard key={movie._id} movie={movie}>
                 <Link
                   style={{ color: 'inherit' }}
-                  to={`/movie/${movie.yahooId}`}
+                  to={`/movie/${movie._id}`}
                 >
                   {movie.briefSummary && (
                     <div className="hidden-xs">

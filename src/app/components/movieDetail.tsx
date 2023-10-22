@@ -10,6 +10,12 @@ interface MovieDetailProps {
     movie: Movie
 }
 
+function getBigPosterUrl(linePosterUrl: string): string {
+    if (!linePosterUrl) {
+        return ''
+    }
+    return linePosterUrl.replace('/w280', '/w644')
+}
 class MovieDetail extends React.PureComponent<MovieDetailProps, {}> {
     constructor(props) {
         super(props)
@@ -27,6 +33,7 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, {}> {
 
     render() {
         const schema = JSON.stringify(getMovieSchema(this.props.movie))
+
         return (
             <div>
                 <script type="application/ld+json" dangerouslySetInnerHTML={{__html:schema}}></script>
@@ -74,7 +81,7 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, {}> {
                         </TableBody>
                     </Table>
                 </div>
-                <img src={this.props.movie.posterUrl} style={{ padding: 0 }} className="col-md-4 col-xs-12" alt="" />
+                <img src={getBigPosterUrl(this.props.movie.posterUrl)} style={{ padding: 0 }} className="col-md-4 col-xs-12" alt="" />
             </div>
         );
     };

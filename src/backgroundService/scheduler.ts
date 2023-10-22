@@ -1,11 +1,12 @@
 import * as fetch from "isomorphic-fetch";
 import { scheduleJob } from 'node-schedule';
 import { systemSetting, schedulerSetting } from '../configs/systemSetting';
-import { updateYahooMovies, updateTheaterWithLocationList } from '../task/yahooTask';
+import { updateTheaterWithLocationList } from '../task/yahooTask';
 import { updatePttArticles } from '../task/pttTask';
 import { updateImdbInfo } from '../task/imdbTask';
 import cacheManager from '../data/cacheManager';
 import { updateMoviesSchedules } from "../task/atmoviesTask";
+import { updateLINEMovies } from "../task/lineTask";
 
 export function initScheduler() {
     if (!systemSetting.enableScheduler) {
@@ -20,9 +21,9 @@ export function initScheduler() {
     }
 
     scheduleJob('10 * * * *', async function () {
-        console.time('[Scheduler] updateYahooMovies');
-        await updateYahooMovies(schedulerSetting.yahooPagePerTime)
-        console.timeEnd('[Scheduler] updateYahooMovies');
+        console.time('[Scheduler] updateLINEMovies');
+        await updateLINEMovies()
+        console.timeEnd('[Scheduler] updateLINEMovies');
     });
 
     scheduleJob('15 * * * *', async function () {

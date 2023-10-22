@@ -8,7 +8,8 @@ const expect = chai.expect;
 const should = chai.should();
 chai.use(chaiAsPromised);
 
-describe('YahooCrawler', () => {
+// Yahoo close the movie section on 2023/10
+describe.skip('YahooCrawler', () => {
   describe('getYahooMovieInfo(10)', () => {
     it('.should.have.property("chineseTitle")', async function () {
       this.timeout(300000);

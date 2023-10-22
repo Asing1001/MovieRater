@@ -1,5 +1,7 @@
 export default class YahooMovie {
+  _id?: string;
   yahooId?: number;
+  lineMovieId?: string;
   posterUrl?: string;
   chineseTitle?: string;
   englishTitle?: string;
@@ -11,5 +13,7 @@ export default class YahooMovie {
   launchCompany?: string;
   yahooRating?: string;
   imdbRating?: string;
+  lineRating?: string;
   summary?: string;
+  lineUrlHash?: string;
 }

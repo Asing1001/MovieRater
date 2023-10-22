@@ -18,9 +18,11 @@ interface MovieDetailState {
 }
 
 const movieDetailQuery = gql`
- query MovieListing($yahooIds:[Int]){
-  movies(yahooIds:$yahooIds) {
-    yahooId
+ query MovieListing($ids:[ID]){
+  movies(ids:$ids) {
+    _id
+    lineUrlHash
+    lineRating
     posterUrl
     chineseTitle
     englishTitle
@@ -67,7 +69,7 @@ const movieDetailQuery = gql`
   options: ({ match }) => {
     return {
       variables: {
-        yahooIds: match.params.id
+        ids: [match.params.id]
       }
     }
   },

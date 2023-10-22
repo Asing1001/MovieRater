@@ -14,35 +14,22 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
     super(props);
   }
 
-  private getSmallPosterSrc({ yahooId, posterUrl }: Movie) {
-    // "https://s.yimg.com/vu/movies/fp/mpost/64/01/6401.jpg"
-    // "https://movies.yahoo.com.tw/y/r/w158/vu/movies/fp/mpost/64/01/6401.jpg"
-    // "https://movies.yahoo.com.tw/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
-    // "https://movies.yahoo.com.tw/x/r/w158/i/o/production/movies/October2017/j5FRcQyIjAdjfmcLqcpf-1000x1429.jpg"
-    if (!posterUrl) return '';
-
-    const suffix = posterUrl.split('/').slice(3).join('/');
-    const isOldDomain = posterUrl.indexOf('s.yimg.com') !== -1;
-    const prefix = yahooId < 6962 && isOldDomain ? 'y' : 'x';
-    return `https://movies.yahoo.com.tw/${prefix}/r/w158/${suffix}`;
-  }
-
   render() {
     const { roomTypes, movie } = this.props;
     return (
       <article className="card" style={{ display: 'flex' }}>
-        <Link to={`/movie/${movie.yahooId}`}>
+        <Link to={`/movie/${movie._id}`}>
           <LazyLoad>
             <img
               className="poster"
-              src={this.getSmallPosterSrc(movie)}
+              src={movie.posterUrl}
               alt="Image not found"
             />
           </LazyLoad>
         </Link>
         <div className="col-xs-12">
           <header style={{ paddingTop: '.5em' }}>
-            <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
+            <Link style={{ color: 'inherit' }} to={`/movie/${movie._id}`}>
               <h3 className="title">
                 {movie.chineseTitle}
                 {roomTypes && roomTypes.length > 0 && (
@@ -52,12 +39,12 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
                 )}
               </h3>
             </Link>
-            <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
+            <Link style={{ color: 'inherit' }} to={`/movie/${movie._id}`}>
               <small>{movie.englishTitle}</small>
             </Link>
           </header>
           <div className="resultInfo">
-            <Link style={{ color: 'inherit' }} to={`/movie/${movie.yahooId}`}>
+            <Link style={{ color: 'inherit' }} to={`/movie/${movie._id}`}>
               <div>上映日期：{movie.releaseDate || '未提供'}</div>
               <div className="hidden-xs">
                 類型：{movie.types.join('、') || '未提供'}

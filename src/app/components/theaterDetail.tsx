@@ -26,7 +26,9 @@ const theaterDetailQuery = gql`
       schedules {
         date
         movie {
-          yahooId
+          _id
+          lineUrlHash
+          lineRating
           posterUrl
           chineseTitle
           englishTitle

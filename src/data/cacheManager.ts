@@ -15,11 +15,7 @@ export default class cacheManager {
   static MOVIES_SCHEDULES = 'MoviesSchedules';
   static THEATERS = 'theaters';
   static async init() {
-    console.time('Get mergedDatas');
-    const mergedDatas = await Mongo.getCollection<Movie>({
-      name: 'mergedDatas',
-    });
-    console.timeEnd('Get mergedDatas');
+    const mergedDatas = await cacheManager.getMergedDatas();
     cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
     cacheManager.setAllMoviesNamesCache(mergedDatas);
     cacheManager.setTheatersCache();
@@ -30,15 +26,26 @@ export default class cacheManager {
     await cacheManager.setMoviesSchedulesCache();
   }
 
+  private static async getMergedDatas() {
+    console.time('Get mergedDatas');
+    const mergedDatas = await Mongo.getCollection<Movie>({
+      name: 'mergedDatas',
+    });
+    console.timeEnd('Get mergedDatas');
+    // Convert ObjectId to string
+    mergedDatas.forEach(movie => movie._id = movie._id.toString())
+    return mergedDatas;
+  }
+
   private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
     let allMoviesName = [];
     console.time('setAllMoviesNamesCache');
-    yahooMovies.forEach(({ chineseTitle, englishTitle, yahooId }) => {
+    yahooMovies.forEach(({ chineseTitle, englishTitle, _id }) => {
       if (chineseTitle) {
-        allMoviesName.push({ value: yahooId, text: chineseTitle });
+        allMoviesName.push({ value: _id, text: chineseTitle });
       }
       if (englishTitle && englishTitle !== chineseTitle) {
-        allMoviesName.push({ value: yahooId, text: englishTitle });
+        allMoviesName.push({ value: _id, text: englishTitle });
       }
     });
 
@@ -63,11 +70,14 @@ export default class cacheManager {
     const today = moment();
     const recentMovies = cacheManager
       .get(cacheManager.All_MOVIES)
-      .filter(({ chineseTitle, releaseDate }: Movie) => {
+      .filter(({ chineseTitle, releaseDate, lineMovieId }: Movie) => {
+        // The movie with yahooId does not have image.
+        const hasLINEMovieId = Boolean(lineMovieId)
         const releaseMoment = isValideDate(releaseDate)
           ? moment(releaseDate)
           : moment();
         return (
+          hasLINEMovieId &&
           (!hasInTheaterData ||
             inTheaterMovieNames.indexOf(chineseTitle) !== -1) &&
           today.diff(releaseMoment, 'days') <= 60

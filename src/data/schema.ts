@@ -18,24 +18,25 @@ const QueryType = new GraphQLObjectType({
     fields: () => ({
         allMoviesNames: {
             type: new GraphQLList(autoCompleteType),
-            description: 'Array of movie names, key:yahooId, value:chineseTitle or englishTitles',
+            description: 'Array of movie names, value: _id, text: chineseTitle',
             resolve: (root, args) => cacheManager.get(cacheManager.All_MOVIES_NAMES)
         },
         movies: {
             type: new GraphQLList(MovieType),
             args: {
-                yahooIds: { type: new GraphQLList(GraphQLInt) },
+                ids: { type: new GraphQLList(GraphQLID) },
                 range: { type: GraphQLString }
             },
-            resolve: async (root, { yahooIds, range }) => {
-                if (yahooIds) {
+            resolve: async (root, { ids, range }) => {
+                if (ids) {
                     const allMovies: Array<Movie> = cacheManager.get("allMovies");
-                    return allMovies.filter(({ yahooId }) => yahooIds.indexOf(yahooId) !== -1);
+                    const movies = allMovies.filter(({ _id }) => ids.indexOf(_id) !== -1);
+                    return movies;
                 } else if (range === 'upcoming') {
                     let today = moment();
                     let nintyDaysAfter = moment().add(90, 'days');
                     let futureMovies = cacheManager.get(cacheManager.All_MOVIES)
-                        .filter(({ yahooId, releaseDate }: Movie) =>
+                        .filter(({ releaseDate }: Movie) =>
                             moment(releaseDate).isBetween(today, nintyDaysAfter, 'day', '()')) // '(' means exclude
                     return futureMovies;
                 } else {
@@ -63,6 +64,20 @@ const MovieType = new GraphQLObjectType({
     name: 'Movie',
     description: '...',
     fields: () => ({
+        _id: {
+            type: GraphQLID,
+            resolve: obj => obj._id,
+        },
+        lineMovieId: {
+            type: GraphQLString,
+            description: 'line movie id',
+            resolve: obj => obj.lineMovieId,
+        },
+        lineUrlHash: {
+            type: GraphQLString,
+            description: 'line movie url hash',
+            resolve: obj => obj.lineUrlHash,
+        },
         yahooId: {
             type: GraphQLInt,
             description: 'yahoo movie id',
@@ -144,6 +159,10 @@ const MovieType = new GraphQLObjectType({
         yahooRating: {
             type: GraphQLString,
             resolve: obj => obj.yahooRating,
+        },
+        lineRating: {
+            type: GraphQLString,
+            resolve: obj => obj.lineRating,
         },
         imdbRating: {
             type: GraphQLString,

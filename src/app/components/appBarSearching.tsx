@@ -41,26 +41,26 @@ class AppBarSearching extends React.PureComponent<any, any> {
   private handleUpdateInput(text) { this.setState({ searchText: text }) }
 
   private onNewRequest(selectItem, index, filteredList) {
-    let yahooIds = [];
+    let movieIds = [];
     let searchText = '';
     if (index === -1) {
       searchText = selectItem.toLowerCase();
       if (!filteredList) {
-        yahooIds = this.props.data.allMoviesNames.filter(({ value, text }) => text.toLowerCase().indexOf(searchText) !== -1).map(({ value }) => parseInt(value)).slice(0, 6);
+        movieIds = this.props.data.allMoviesNames.filter(({ value, text }) => text.toLowerCase().indexOf(searchText) !== -1).map(({ value }) => value).slice(0, 6);
       } else {
-        yahooIds = filteredList.map(({ value }) => parseInt(value.key)).slice(0, 6);
+        movieIds = filteredList.map(({ value }) => value.key).slice(0, 6);
       }
     } else {
-      yahooIds.push(parseInt(selectItem.value));
+      movieIds.push(selectItem.value);
     }
 
-    if (yahooIds.length === 0) {
+    if (movieIds.length === 0) {
       this.context.router.history.push(`/movienotfound/${searchText}`)
     }
-    else if (yahooIds.length === 1) {
-      this.context.router.history.push(`/movie/${yahooIds}`)
+    else if (movieIds.length === 1) {
+      this.context.router.history.push(`/movie/${movieIds}`)
     } else {
-      this.context.router.history.push(`/movies/${yahooIds}`)
+      this.context.router.history.push(`/movies/${movieIds}`)
     }
   }
 
