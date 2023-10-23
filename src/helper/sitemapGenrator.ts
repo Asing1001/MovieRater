@@ -21,11 +21,11 @@ ${await getDocument()}
 
 async function getDocument() {
   const movies = await Mongo.db
-    .collection('yahooMovies')
-    .find({}, { projection: { yahooId: 1, _id: 0 } })
-    .sort({ yahooId: -1 })
+    .collection('mergedDatas')
+    .find({}, { projection: { _id: 1 } })
+    .sort({ _id: -1 })
     .toArray();
-  const movieUrls = movies.map(({ yahooId }) => `/movie/${yahooId}`);
+  const movieUrls = movies.map(({ _id }) => `/movie/${_id}`);
   const theaters = await Mongo.db
     .collection('theaters')
     .find({}, { projection: { name: 1, _id: 0 } })
