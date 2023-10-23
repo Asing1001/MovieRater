@@ -1,7 +1,6 @@
 import {
     GraphQLID,
     GraphQLList,
-    GraphQLNonNull,
     GraphQLObjectType,
     GraphQLSchema,
     GraphQLString,
@@ -11,6 +10,8 @@ import cacheManager from '../data/cacheManager';
 import Movie from '../models/movie';
 import Schedule from '../models/schedule';
 import * as moment from 'moment';
+import { findMoviesBy } from './findMoviesBy';
+import { ObjectId } from 'mongodb';
 
 const QueryType = new GraphQLObjectType({
     name: 'Query',
@@ -27,11 +28,11 @@ const QueryType = new GraphQLObjectType({
                 ids: { type: new GraphQLList(GraphQLID) },
                 range: { type: GraphQLString }
             },
-            resolve: async (root, { ids, range }) => {
+            resolve: async (root, { ids, range }: { ids: [string], range: string }) => {
                 if (ids) {
-                    const allMovies: Array<Movie> = cacheManager.get("allMovies");
-                    const movies = allMovies.filter(({ _id }) => ids.indexOf(_id) !== -1);
-                    return movies;
+                    const allMovies: Array<Movie> = cacheManager.get(cacheManager.All_MOVIES);
+                    const isObjectId = ObjectId.isValid(ids[0])
+                    return findMoviesBy(allMovies, ids, isObjectId ? "_id" : "yahooId")
                 } else if (range === 'upcoming') {
                     let today = moment();
                     let nintyDaysAfter = moment().add(90, 'days');
