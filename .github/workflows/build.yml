@@ -80,6 +80,7 @@ jobs:
         gcloud services list
         gcloud auth configure-docker asia-east1-docker.pkg.dev
 
-    - name: Push Docker image to Artifact Registry
-      run: |        
-        docker push asia-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/movierater/movierater
+    # Disable because Google cloud charge for this
+    # - name: Push Docker image to Artifact Registry
+    #   run: |        
+    #     docker push asia-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/movierater/movierater
