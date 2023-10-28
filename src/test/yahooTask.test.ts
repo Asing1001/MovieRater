@@ -3,13 +3,8 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { Mongo } from '../data/db';
 import { updateYahooMovies } from '../task/yahooTask';
-import * as googleMapApi from '../thirdPartyIntegration/googleMapApi';
-import Location from '../models/location';
-import Theater from '../models/theater';
-import YahooMovie from '../models/yahooMovie';
-import * as theaterCrawler from '../crawler/theaterCrawler';
+import MovieBase from '../models/movieBase';
 import * as yahooCrawler from '../crawler/yahooCrawler';
-import Schedule from '../models/schedule';
 
 const should = chai.should();
 chai.use(sinonChai);
@@ -27,10 +22,8 @@ describe.skip('yahooTask', () => {
 
   describe('updateYahooMovies', () => {
     it('should get newYahooMovies then updateDocument', async function () {
-      const yahooMovie: YahooMovie = { yahooId: 99999, chineseTitle: '測試' };
-      const stubGetDocument = sandbox
-        .stub(Mongo, 'getDocument')
-        .returns({ lastCrawlYahooId: 9999 });
+      const yahooMovie: MovieBase = { yahooId: 99999, chineseTitle: '測試' };
+      const stubGetDocument = sandbox.stub(Mongo, 'getDocument').returns({ lastCrawlYahooId: 9999 });
       const stubGetYahooMovieInfo = sandbox
         .stub(yahooCrawler, 'getYahooMovieInfo')
         .returns(Promise.resolve(yahooMovie));

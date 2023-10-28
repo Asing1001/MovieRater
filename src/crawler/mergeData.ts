@@ -1,22 +1,22 @@
-import YahooMovie from "../models/yahooMovie";
-import Movie from "../models/movie";
-import Article from "../models/article";
-import * as moment from "moment";
-import isValideDate from "../helper/isValideDate";
+import MovieBase from '../models/movieBase';
+import Movie from '../models/movie';
+import Article from '../models/article';
+import * as moment from 'moment';
+import isValideDate from '../helper/isValideDate';
 
-export function mergeData(yahooMovies: Array<YahooMovie>, allArticles: Article[]): Movie[] {
+export function mergeData(yahooMovies: Array<MovieBase>, allArticles: Article[]): Movie[] {
   const mergedMovies = yahooMovies.map(mergeByChineseTitle);
   return mergedMovies;
 
-  function mergeByChineseTitle({ _id, ...movieBase }: YahooMovie): Movie {
+  function mergeByChineseTitle({ _id, ...movieBase }: MovieBase): Movie {
     const chineseTitle = movieBase.chineseTitle;
     const releaseDate = isValideDate(movieBase.releaseDate) ? moment(movieBase.releaseDate) : moment();
-    const rangeStart = releaseDate.clone().subtract(3, "months");
-    const rangeEnd = releaseDate.clone().add(6, "months");
+    const rangeStart = releaseDate.clone().subtract(3, 'months');
+    const rangeEnd = releaseDate.clone().add(6, 'months');
     const relatedArticles = allArticles.filter(({ title, date }: Article) => {
       const isChinesetitleMatch = title.indexOf(chineseTitle) !== -1;
       if (isChinesetitleMatch) {
-        const articleFullDate = moment(date, "YYYY/MM/DD");
+        const articleFullDate = moment(date, 'YYYY/MM/DD');
         const isInNearMonth = articleFullDate.isBetween(rangeStart, rangeEnd);
         return isInNearMonth;
       }

@@ -1,4 +1,4 @@
-export default class YahooMovie {
+export default class MovieBase {
   // It is actually ObjectId, however we can not directly reference ObjectId
   // because it will bring MongoDB reference into frontend
   _id?: ObjectIdLike;

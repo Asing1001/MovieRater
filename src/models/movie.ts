@@ -1,4 +1,4 @@
-import MovieBase from './yahooMovie';
+import MovieBase from './movieBase';
 import Article from './article';
 import Schedule from './schedule';
 

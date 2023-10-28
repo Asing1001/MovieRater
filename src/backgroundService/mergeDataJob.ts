@@ -1,11 +1,11 @@
 import { mergeData } from '../crawler/mergeData';
 import { Mongo } from '../data/db';
 import Article from '../models/article';
-import YahooMovie from '../models/yahooMovie';
+import MovieBase from '../models/movieBase';
 
 const main = async () => {
   await Mongo.openDbConnection();
-  const yahooMoviesPromise = Mongo.getCollection<YahooMovie>({
+  const yahooMoviesPromise = Mongo.getCollection<MovieBase>({
     name: 'yahooMovies',
   });
   const pttArticlesPromise = Mongo.getCollection<Article>({
@@ -13,10 +13,7 @@ const main = async () => {
     options: { projection: { _id: 0 } },
   });
   console.time('get yahooMovies and pttArticles');
-  const [yahooMovies, pttArticles] = await Promise.all([
-    yahooMoviesPromise,
-    pttArticlesPromise,
-  ]);
+  const [yahooMovies, pttArticles] = await Promise.all([yahooMoviesPromise, pttArticlesPromise]);
   console.timeEnd('get yahooMovies and pttArticles');
   console.time('mergeData');
   const mergedDatas = mergeData(yahooMovies, pttArticles);
@@ -24,16 +21,12 @@ const main = async () => {
   console.log('mergedDatas.length', mergedDatas.length);
   console.time('Insert mergedDatas');
   const batchSize = 100;
-  for (
-    let batchIndex = 0;
-    batchIndex < mergedDatas.length / batchSize;
-    batchIndex++
-  ) {
+  for (let batchIndex = 0; batchIndex < mergedDatas.length / batchSize; batchIndex++) {
     console.time(`Insert mergedDatas batch ${batchIndex}`);
     const bulk = Mongo.db.collection('mergedDatas').initializeUnorderedBulkOp();
     const start = batchIndex * batchSize;
     const end = start + batchSize;
-    mergedDatas.slice(start, end).forEach(({_id, ...data}) => {
+    mergedDatas.slice(start, end).forEach(({ _id, ...data }) => {
       bulk.find({ movieBaseId: data.movieBaseId }).upsert().updateOne({ $set: data });
     });
     await bulk.execute();

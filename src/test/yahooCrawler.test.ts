@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { getYahooMovieInfo } from '../crawler/yahooCrawler';
-import YahooMovie from '../models/yahooMovie';
+import MovieBase from '../models/movieBase';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -13,7 +13,7 @@ describe.skip('YahooCrawler', () => {
   describe('getYahooMovieInfo(10)', () => {
     it('.should.have.property("chineseTitle")', async function () {
       this.timeout(300000);
-      const yahooMovie: YahooMovie = await getYahooMovieInfo(10);
+      const yahooMovie: MovieBase = await getYahooMovieInfo(10);
       yahooMovie.should.have.property('chineseTitle');
       yahooMovie.should.have.property('englishTitle');
       yahooMovie.summary.length.should.greaterThan(0);
@@ -34,7 +34,7 @@ describe.skip('YahooCrawler', () => {
   describe('getYahooMovieInfo(6794)', () => {
     it('.summary should include html <br> tag', async function () {
       this.timeout(30000);
-      const movieInfo: YahooMovie = await getYahooMovieInfo(6794);
+      const movieInfo: MovieBase = await getYahooMovieInfo(6794);
       assert.isTrue(movieInfo.summary.indexOf('<br>') !== -1);
     });
   });
@@ -42,11 +42,9 @@ describe.skip('YahooCrawler', () => {
   describe('getYahooMovieInfo(12438)', () => {
     it('.should parse actors and directors correctly', async function () {
       this.timeout(30000);
-      const movieInfo: YahooMovie = await getYahooMovieInfo(12438);
+      const movieInfo: MovieBase = await getYahooMovieInfo(12438);
       movieInfo.actors.length.should.equal(6);
-      movieInfo.directors[0].should.equal(
-        '克斯提安施沃考夫(Christian Schwochow)'
-      );
+      movieInfo.directors[0].should.equal('克斯提安施沃考夫(Christian Schwochow)');
       movieInfo.imdbRating.should.greaterThan(6).lessThan(8);
     });
   });
@@ -54,7 +52,7 @@ describe.skip('YahooCrawler', () => {
   describe('getYahooMovieInfo(14908)', () => {
     it('.should parse imdb rating correctly', async function () {
       this.timeout(30000);
-      const movieInfo: YahooMovie = await getYahooMovieInfo(14908);
+      const movieInfo: MovieBase = await getYahooMovieInfo(14908);
       movieInfo.imdbRating.should.greaterThan(6).lessThan(8);
     });
   });
@@ -62,9 +60,8 @@ describe.skip('YahooCrawler', () => {
   describe('getYahooMovieInfo(13379)', () => {
     it('.should parse imdb rating correctly', async function () {
       this.timeout(30000);
-      const movieInfo: YahooMovie = await getYahooMovieInfo(13379);
-      movieInfo.imdbRating.includes('克里斯多夫麥奎利(Christopher McQuarrie)')
-        .should.be.false;
+      const movieInfo: MovieBase = await getYahooMovieInfo(13379);
+      movieInfo.imdbRating.includes('克里斯多夫麥奎利(Christopher McQuarrie)').should.be.false;
     });
   });
 });
