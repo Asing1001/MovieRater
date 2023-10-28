@@ -3,6 +3,8 @@ import { Mongo } from '../data/db';
 import cacheManager from '../data/cacheManager';
 import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
 import Movie from '../models/movie';
+import { promiseMap } from '../helper/promiseMap';
+import { ObjectId } from 'mongodb';
 
 export async function updateImdbInfo() {
   const movieInfos = await getNewImdbInfos();
@@ -11,19 +13,18 @@ export async function updateImdbInfo() {
 }
 
 const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
-async function getNewImdbInfos() {
+async function getNewImdbInfos(): Promise<Movie[]>{
   const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
   const allMovies: Movie[] = cacheManager.get(cacheManager.All_MOVIES);
-  const promises = allMovies.filter(filterNeedCrawlMovie).map(async (movie) => {
+  return promiseMap(allMovies.filter(filterNeedCrawlMovie), async (movie) => {
     const imdbInfo = await getIMDBMovieInfo(movie);
     const movieInfo: Movie = {
+      movieBaseId: movie.movieBaseId,
       ...imdbInfo,
-      yahooId: movie.yahooId,
       imdbLastCrawlTime,
     };
     return movieInfo;
-  });
-  return Promise.all(promises);
+  }, 5)
 }
 
 function filterNeedCrawlMovie({ englishTitle, releaseDate }: Movie) {
@@ -37,7 +38,7 @@ function logResult(movieInfos: Movie[]) {
   const foundMovies = movieInfos.filter((movie) => movie.imdbID);
   const notfoundMovieIds = movieInfos
     .filter((movie) => !movie.imdbID)
-    .map((movie) => movie.yahooId);
+    .map((movie) => movie.movieBaseId);
   console.log(
     `Found imdbInfos: ${foundMovies.length}, NotFound: ${notfoundMovieIds.length}`
   );
@@ -46,11 +47,11 @@ function logResult(movieInfos: Movie[]) {
 
 async function updateNewImdbInfos(movieInfos: Movie[]) {
   var promises = movieInfos.map(
-    ({ yahooId, imdbID, imdbRating, imdbLastCrawlTime }) => {
+    ({ movieBaseId, imdbID, imdbRating, imdbLastCrawlTime }) => {
       const newInfo = imdbID
         ? { imdbID, imdbRating, imdbLastCrawlTime }
         : { imdbLastCrawlTime };
-      return Mongo.updateDocument({ yahooId }, newInfo, 'yahooMovies');
+      return Mongo.updateDocument({ _id: new ObjectId(movieBaseId) }, newInfo, 'yahooMovies');
     }
   );
   await Promise.all(promises);

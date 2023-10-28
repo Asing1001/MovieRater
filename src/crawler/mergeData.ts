@@ -1,30 +1,32 @@
-import YahooMovie from '../models/yahooMovie';
-import Movie from '../models/movie';
-import Article from '../models/article';
-import * as moment from 'moment';
-import isValideDate from '../helper/isValideDate';
+import YahooMovie from "../models/yahooMovie";
+import Movie from "../models/movie";
+import Article from "../models/article";
+import * as moment from "moment";
+import isValideDate from "../helper/isValideDate";
 
-export function mergeData(yahooMovies: Array<YahooMovie>, allArticles: Article[]) {
-    let mergedMovies = yahooMovies.map(mergeByChineseTitle);
-    return mergedMovies;
+export function mergeData(yahooMovies: Array<YahooMovie>, allArticles: Article[]): Movie[] {
+  const mergedMovies = yahooMovies.map(mergeByChineseTitle);
+  return mergedMovies;
 
-    function mergeByChineseTitle(movie: Movie) {
-        let chineseTitle = movie.chineseTitle;
-        let releaseDate = isValideDate(movie.releaseDate)? moment(movie.releaseDate): moment();
-        let rangeStart = releaseDate.clone().subtract(3, 'months');
-        let rangeEnd = releaseDate.clone().add(6, 'months');
+  function mergeByChineseTitle({ _id, ...movieBase }: YahooMovie): Movie {
+    const chineseTitle = movieBase.chineseTitle;
+    const releaseDate = isValideDate(movieBase.releaseDate) ? moment(movieBase.releaseDate) : moment();
+    const rangeStart = releaseDate.clone().subtract(3, "months");
+    const rangeEnd = releaseDate.clone().add(6, "months");
+    const relatedArticles = allArticles.filter(({ title, date }: Article) => {
+      const isChinesetitleMatch = title.indexOf(chineseTitle) !== -1;
+      if (isChinesetitleMatch) {
+        const articleFullDate = moment(date, "YYYY/MM/DD");
+        const isInNearMonth = articleFullDate.isBetween(rangeStart, rangeEnd);
+        return isInNearMonth;
+      }
+      return isChinesetitleMatch;
+    });
 
-        movie.relatedArticles = allArticles.filter(({title, date}: Article) => {
-            let isChinesetitleMatch = title.indexOf(chineseTitle) !== -1;
-            if (isChinesetitleMatch) {
-                let articleFullDate = moment(date, 'YYYY/MM/DD');
-                let isInNearMonth = articleFullDate.isBetween(rangeStart, rangeEnd);
-                return isInNearMonth;
-            }
-            return isChinesetitleMatch;
-        });
-        return movie;
-    }
+    return {
+      ...movieBase,
+      movieBaseId: _id.toHexString(),
+      relatedArticles,
+    };
+  }
 }
-
-

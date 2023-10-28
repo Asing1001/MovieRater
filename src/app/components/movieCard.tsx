@@ -18,7 +18,7 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
     const { roomTypes, movie } = this.props;
     return (
       <article className="card" style={{ display: 'flex' }}>
-        <Link to={`/movie/${movie._id}`}>
+        <Link to={`/movie/${movie.movieBaseId}`}>
           <LazyLoad>
             <img
               className="poster"
@@ -29,7 +29,7 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
         </Link>
         <div className="col-xs-12">
           <header style={{ paddingTop: '.5em' }}>
-            <Link style={{ color: 'inherit' }} to={`/movie/${movie._id}`}>
+            <Link style={{ color: 'inherit' }} to={`/movie/${movie.movieBaseId}`}>
               <h3 className="title">
                 {movie.chineseTitle}
                 {roomTypes && roomTypes.length > 0 && (
@@ -39,12 +39,12 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
                 )}
               </h3>
             </Link>
-            <Link style={{ color: 'inherit' }} to={`/movie/${movie._id}`}>
+            <Link style={{ color: 'inherit' }} to={`/movie/${movie.movieBaseId}`}>
               <small>{movie.englishTitle}</small>
             </Link>
           </header>
           <div className="resultInfo">
-            <Link style={{ color: 'inherit' }} to={`/movie/${movie._id}`}>
+            <Link style={{ color: 'inherit' }} to={`/movie/${movie.movieBaseId}`}>
               <div>上映日期：{movie.releaseDate || '未提供'}</div>
               <div className="hidden-xs">
                 類型：{movie.types.join('、') || '未提供'}

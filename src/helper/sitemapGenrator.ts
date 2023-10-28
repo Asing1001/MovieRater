@@ -22,10 +22,10 @@ ${await getDocument()}
 async function getDocument() {
   const movies = await Mongo.db
     .collection('mergedDatas')
-    .find({}, { projection: { _id: 1 } })
-    .sort({ _id: -1 })
+    .find({}, { projection: { movieBaseId: 1 } })
+    .sort({ movieBaseId: -1 })
     .toArray();
-  const movieUrls = movies.map(({ _id }) => `/movie/${_id}`);
+  const movieUrls = movies.map(({ movieBaseId }) => `/movie/${movieBaseId}`);
   const theaters = await Mongo.db
     .collection('theaters')
     .find({}, { projection: { name: 1, _id: 0 } })

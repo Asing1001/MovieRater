@@ -7,7 +7,6 @@ const main = async () => {
   await Mongo.openDbConnection();
   const yahooMoviesPromise = Mongo.getCollection<YahooMovie>({
     name: 'yahooMovies',
-    options: { projection: { _id: 0 } },
   });
   const pttArticlesPromise = Mongo.getCollection<Article>({
     name: 'pttArticles',
@@ -34,8 +33,8 @@ const main = async () => {
     const bulk = Mongo.db.collection('mergedDatas').initializeUnorderedBulkOp();
     const start = batchIndex * batchSize;
     const end = start + batchSize;
-    mergedDatas.slice(start, end).forEach((data) => {
-      bulk.find({ lineMovieId: data.lineMovieId }).upsert().updateOne({ $set: data });
+    mergedDatas.slice(start, end).forEach(({_id, ...data}) => {
+      bulk.find({ movieBaseId: data.movieBaseId }).upsert().updateOne({ $set: data });
     });
     await bulk.execute();
     console.timeEnd(`Insert mergedDatas batch ${batchIndex}`);

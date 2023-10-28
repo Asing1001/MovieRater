@@ -1,10 +1,8 @@
 import { Db } from 'mongodb';
-import {
-  updateTheaterWithLocationList,
-  updateYahooMovies,
-} from '../task/yahooTask';
+import { updateTheaterWithLocationList } from '../task/yahooTask';
 import { Mongo } from '../data/db';
 import { updatePttArticles } from '../task/pttTask';
+import { updateLINEMovies } from '../task/lineTask';
 
 setup();
 
@@ -18,8 +16,8 @@ async function setup() {
   await ensureCollectionAndIndex();
   await ensureCrawlerStatus();
   await updateTheaterWithLocationList();
+  await updateLINEMovies();
   for (let i = 0; i < NEWEST_FETCH_COUNT / BATCH_SIZE; i++) {
-    await updateYahooMovies(BATCH_SIZE);
     await updatePttArticles(BATCH_SIZE);
   }
   console.log('db setup done');
@@ -31,15 +29,14 @@ async function ensureCollectionAndIndex() {
   //1. create collection if collection not exist
   //2. create index if index not exist
   await db.collection('yahooMovies').createIndex({ yahooId: -1 });
+  await db.collection('yahooMovies').createIndex({ lineMovieId: -1 });
   await db.collection('pttArticles').createIndex({ url: -1 });
   await db.collection('theaters').createIndex({ regionIndex: 1 });
   await db.collection('theaters').createIndex({ name: 1 });
 }
 
 async function ensureCrawlerStatus() {
-  const res = await fetch(
-    `https://www.mvrater.com/api/crawlerstatus?${Date.now()}`
-  );
+  const res = await fetch(`https://www.mvrater.com/api/crawlerstatus?${Date.now()}`);
   const crawlerStatus = await res.json();
   const { maxYahooId, maxPttIndex } = crawlerStatus;
   const defaultCrawlerStatus = {
@@ -52,9 +49,5 @@ async function ensureCrawlerStatus() {
   };
   await db
     .collection('configs')
-    .updateOne(
-      { name: defaultCrawlerStatus.name },
-      { $set: defaultCrawlerStatus },
-      { upsert: true }
-    );
+    .updateOne({ name: defaultCrawlerStatus.name }, { $set: defaultCrawlerStatus }, { upsert: true });
 }

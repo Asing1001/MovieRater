@@ -1,5 +1,7 @@
 export default class YahooMovie {
-  _id?: string;
+  // It is actually ObjectId, however we can not directly reference ObjectId
+  // because it will bring MongoDB reference into frontend
+  _id?: ObjectIdLike;
   yahooId?: number;
   lineMovieId?: string;
   posterUrl?: string;
@@ -16,4 +18,8 @@ export default class YahooMovie {
   lineRating?: string;
   summary?: string;
   lineUrlHash?: string;
+}
+
+interface ObjectIdLike {
+  toHexString: () => string;
 }

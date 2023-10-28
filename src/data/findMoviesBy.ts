@@ -1,6 +1,6 @@
 import Movie from "../models/movie";
 
-export function findMoviesBy(allMovies: Movie[], ids: [string], findBy: "_id" | "yahooId") {
+export function findMoviesBy(allMovies: Movie[], ids: [string], findBy: "movieBaseId" | "yahooId") {
   const idSet = new Set(ids);
   const movies = [];
 

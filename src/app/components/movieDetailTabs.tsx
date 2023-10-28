@@ -20,7 +20,7 @@ interface MovieDetailState {
 const movieDetailQuery = gql`
  query MovieListing($ids:[ID]){
   movies(ids:$ids) {
-    _id
+    movieBaseId
     lineUrlHash
     lineRating
     posterUrl

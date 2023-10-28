@@ -32,20 +32,18 @@ export default class cacheManager {
       name: 'mergedDatas',
     });
     console.timeEnd('Get mergedDatas');
-    // Convert ObjectId to string
-    mergedDatas.forEach(movie => movie._id = movie._id.toString())
     return mergedDatas;
   }
 
-  private static setAllMoviesNamesCache(yahooMovies: Array<Movie>) {
+  private static setAllMoviesNamesCache(movies: Array<Movie>) {
     let allMoviesName = [];
     console.time('setAllMoviesNamesCache');
-    yahooMovies.forEach(({ chineseTitle, englishTitle, _id }) => {
+    movies.forEach(({ chineseTitle, englishTitle, movieBaseId }) => {
       if (chineseTitle) {
-        allMoviesName.push({ value: _id, text: chineseTitle });
+        allMoviesName.push({ value: movieBaseId, text: chineseTitle });
       }
       if (englishTitle && englishTitle !== chineseTitle) {
-        allMoviesName.push({ value: _id, text: englishTitle });
+        allMoviesName.push({ value: movieBaseId, text: englishTitle });
       }
     });
 

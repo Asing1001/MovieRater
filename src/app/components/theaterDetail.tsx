@@ -26,7 +26,7 @@ const theaterDetailQuery = gql`
       schedules {
         date
         movie {
-          _id
+          movieBaseId
           lineUrlHash
           lineRating
           posterUrl

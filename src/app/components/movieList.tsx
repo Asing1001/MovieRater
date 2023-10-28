@@ -13,7 +13,7 @@ const nearbyIcon = <IconLocationOn />;
 const movieListingQuery = gql`
   query MovieListing($ids: [ID], $range: String) {
     movies(ids: $ids, range: $range) {
-      _id
+      movieBaseId
       lineUrlHash
       lineRating
       yahooId
@@ -70,10 +70,10 @@ class MovieList extends React.PureComponent<any, any> {
               style={{ marginBottom: '.5em' }}
               key={index}
             >
-              <MovieCard key={movie._id} movie={movie}>
+              <MovieCard key={movie.movieBaseId} movie={movie}>
                 <Link
                   style={{ color: 'inherit' }}
-                  to={`/movie/${movie._id}`}
+                  to={`/movie/${movie.movieBaseId}`}
                 >
                   {movie.briefSummary && (
                     <div className="hidden-xs">
