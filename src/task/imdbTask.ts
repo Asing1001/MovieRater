@@ -34,10 +34,11 @@ async function getNewImdbInfos(): Promise<Movie[]> {
   );
 }
 
-function filterNeedCrawlMovie({ englishTitle, releaseDate }: Movie) {
+function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbID, imdbRating, imdbLastCrawlTime }: Movie) {
   const now = moment();
   const isRecentMovie = now.diff(moment(releaseDate), 'months') <= 6;
-  const shouldCrawl = englishTitle && isRecentMovie;
+  const dataJustCrawled = imdbID && imdbRating && now.diff(moment(imdbLastCrawlTime), 'days') <= 7;
+  const shouldCrawl = !dataJustCrawled && englishTitle && isRecentMovie;
   return shouldCrawl;
 }
 
