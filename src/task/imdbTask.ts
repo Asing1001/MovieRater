@@ -13,18 +13,25 @@ export async function updateImdbInfo() {
 }
 
 const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
-async function getNewImdbInfos(): Promise<Movie[]>{
+async function getNewImdbInfos(): Promise<Movie[]> {
   const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
   const allMovies: Movie[] = cacheManager.get(cacheManager.All_MOVIES);
-  return promiseMap(allMovies.filter(filterNeedCrawlMovie), async (movie) => {
-    const imdbInfo = await getIMDBMovieInfo(movie);
-    const movieInfo: Movie = {
-      movieBaseId: movie.movieBaseId,
-      ...imdbInfo,
-      imdbLastCrawlTime,
-    };
-    return movieInfo;
-  }, 5)
+  const toCrawlMovies = allMovies.filter(filterNeedCrawlMovie);
+  console.log('getNewImdbInfos ~ toCrawlMovies length:', toCrawlMovies.length);
+
+  return promiseMap(
+    toCrawlMovies,
+    async (movie) => {
+      const imdbInfo = await getIMDBMovieInfo(movie);
+      const movieInfo: Movie = {
+        movieBaseId: movie.movieBaseId,
+        ...imdbInfo,
+        imdbLastCrawlTime,
+      };
+      return movieInfo;
+    },
+    5
+  );
 }
 
 function filterNeedCrawlMovie({ englishTitle, releaseDate }: Movie) {
@@ -36,23 +43,15 @@ function filterNeedCrawlMovie({ englishTitle, releaseDate }: Movie) {
 
 function logResult(movieInfos: Movie[]) {
   const foundMovies = movieInfos.filter((movie) => movie.imdbID);
-  const notfoundMovieIds = movieInfos
-    .filter((movie) => !movie.imdbID)
-    .map((movie) => movie.movieBaseId);
-  console.log(
-    `Found imdbInfos: ${foundMovies.length}, NotFound: ${notfoundMovieIds.length}`
-  );
+  const notfoundMovieIds = movieInfos.filter((movie) => !movie.imdbID).map((movie) => movie.movieBaseId);
+  console.log(`Found imdbInfos: ${foundMovies.length}, NotFound: ${notfoundMovieIds.length}`);
   console.log(`Not found YahooIds: ${notfoundMovieIds}`);
 }
 
 async function updateNewImdbInfos(movieInfos: Movie[]) {
-  var promises = movieInfos.map(
-    ({ movieBaseId, imdbID, imdbRating, imdbLastCrawlTime }) => {
-      const newInfo = imdbID
-        ? { imdbID, imdbRating, imdbLastCrawlTime }
-        : { imdbLastCrawlTime };
-      return Mongo.updateDocument({ _id: new ObjectId(movieBaseId) }, newInfo, 'yahooMovies');
-    }
-  );
+  var promises = movieInfos.map(({ movieBaseId, imdbID, imdbRating, imdbLastCrawlTime }) => {
+    const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime };
+    return Mongo.updateDocument({ _id: new ObjectId(movieBaseId) }, newInfo, 'yahooMovies');
+  });
   await Promise.all(promises);
 }
