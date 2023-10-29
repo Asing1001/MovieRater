@@ -30,7 +30,10 @@ async function getNewImdbInfos(): Promise<Movie[]> {
       };
       return movieInfo;
     },
-    5
+    {
+      concurrency: 5,
+      delay: 500,
+    }
   );
 }
 

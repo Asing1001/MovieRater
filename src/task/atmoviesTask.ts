@@ -17,7 +17,11 @@ export async function updateMoviesSchedules(): Promise<Schedule[]> {
     .toArray();
   const scheduleCrawlDate = await getScheduleCrawlDate();
   console.log('scheduleCrawlDate', scheduleCrawlDate);
-  const schedules = await promiseMap(scheduleUrls, ({ scheduleUrl }) => crawlMovieSchdule(scheduleUrl, scheduleCrawlDate), 15)
+  const schedules = await promiseMap(
+    scheduleUrls,
+    ({ scheduleUrl }) => crawlMovieSchdule(scheduleUrl, scheduleCrawlDate),
+    { concurrency: 15, delay: 100 }
+  );
   const allSchedules = [].concat(...schedules);
   console.log('allSchedules.length', allSchedules.length);
   redisClient.setex(scheduleCrawlDate, 86400 * 2, JSON.stringify(allSchedules));
@@ -38,9 +42,7 @@ export async function getMoviesSchedules(): Promise<Schedule[]> {
       }
       console.log('getMoviesSchedules got ' + replies.length + ' replies');
       const schedules: Schedule[] = [].concat(
-        ...replies
-          .filter((reply) => reply !== null)
-          .map((reply) => JSON.parse(reply))
+        ...replies.filter((reply) => reply !== null).map((reply) => JSON.parse(reply))
       );
       resolve(schedules);
     });
@@ -50,10 +52,7 @@ export async function getMoviesSchedules(): Promise<Schedule[]> {
 const crawlerStatusFilter = { name: 'crawlerStatus' };
 async function getScheduleCrawlDate() {
   let resultDay = 0;
-  const { scheduleDay: currentScheduleDay } = await Mongo.getDocument(
-    crawlerStatusFilter,
-    'configs'
-  );
+  const { scheduleDay: currentScheduleDay } = await Mongo.getDocument(crawlerStatusFilter, 'configs');
   if (currentScheduleDay !== undefined && currentScheduleDay < 7) {
     resultDay = currentScheduleDay + 1;
   }
