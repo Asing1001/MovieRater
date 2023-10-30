@@ -41,6 +41,11 @@ app.post('/api/imdbTask', checkTaskTriggerKeyInHeader, (req, res) => {
   res.send('Task start!');
 });
 
+app.post('/api/init', checkTaskTriggerKeyInHeader, (req, res) => {
+  cacheManager.init();
+  res.send('Task start!');
+});
+
 //static content
 const staticRoot = path.join(__dirname, 'public/');
 app.use('/public', express.static(staticRoot, { maxAge: '7d' }));
