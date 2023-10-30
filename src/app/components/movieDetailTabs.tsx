@@ -112,10 +112,12 @@ export default class MovieDetailTabs extends React.PureComponent<any, MovieDetai
       return <PageNotFound />;
     }
     const movie = classifyArticle(matchedMovie);
-    document.title = `${movie.chineseTitle} ${movie.englishTitle} | Movie Rater | 電影評分 | PTT | IMDB | YAHOO`;
+    const { chineseTitle, englishTitle, posterUrl } = movie;
+
+    document.title = `${chineseTitle} ${englishTitle} | Movie Rater | 電影評分 | PTT | IMDb | LINE電影`;
     document['meta'] = {
-      image: movie.posterUrl,
-      description: `IMDb:${movie.imdbRating}, Yahoo:${movie.yahooRating}, PTT好雷/普雷/負雷:${movie.goodRateArticles.length}/${movie.normalRateArticles.length}/${movie.badRateArticles.length}`,
+      image: posterUrl,
+      description: generateMovieDescription(movie),
     };
     return (
       <Paper zDepth={2}>
@@ -140,4 +142,17 @@ export default class MovieDetailTabs extends React.PureComponent<any, MovieDetai
       </Paper>
     );
   }
+}
+
+function generateMovieDescription(movie: Movie) {
+  const { imdbRating, lineRating, yahooRating, goodRateArticles, normalRateArticles, badRateArticles } = movie;
+  const ratings = [];
+
+  if (imdbRating) ratings.push(`IMDb:${imdbRating}`);
+  if (lineRating) ratings.push(`LINE電影:${lineRating}`);
+  if (yahooRating) ratings.push(`Yahoo:${yahooRating}`);
+
+  return `${ratings.join(', ')}${ratings.length ? ', ' : ''}PTT好雷/普雷/負雷:${goodRateArticles.length}/${
+    normalRateArticles.length
+  }/${badRateArticles.length}`;
 }
