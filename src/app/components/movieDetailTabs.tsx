@@ -118,6 +118,7 @@ export default class MovieDetailTabs extends React.PureComponent<any, MovieDetai
     document['meta'] = {
       image: posterUrl,
       description: generateMovieDescription(movie),
+      canonicalUrl: `https://www.mvrater.com/movie/${movie.movieBaseId}`,
     };
     return (
       <Paper zDepth={2}>

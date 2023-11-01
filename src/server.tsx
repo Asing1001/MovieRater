@@ -108,7 +108,10 @@ app.use(basicCache, function (req, res, next) {
         title: global.document.title,
         meta: global.document.meta,
         html: content,
-        apolloState: `window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};`,
+        apolloState: `<script>window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(
+          /</g,
+          '\\u003c'
+        )};</script>`,
       });
       res.status(context['status'] || 200).send(page);
     },
