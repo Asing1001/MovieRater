@@ -20,19 +20,21 @@ ${await getDocument()}
 }
 
 async function getDocument() {
+  const theaters = await Mongo.db
+    .collection('theaters')
+    .find({}, { projection: { name: 1, _id: 0 } })
+    .toArray();
+  const theaterUrls = theaters.map(({ name }) => `/theater/${name}`);
+
   const movies = await Mongo.db
     .collection('mergedDatas')
     .find({}, { projection: { movieBaseId: 1 } })
     .sort({ movieBaseId: -1 })
     .toArray();
   const movieUrls = movies.map(({ movieBaseId }) => `/movie/${movieBaseId}`);
-  const theaters = await Mongo.db
-    .collection('theaters')
-    .find({}, { projection: { name: 1, _id: 0 } })
-    .toArray();
-  const theaterUrls = theaters.map(({ name }) => `/theater/${name}`);
+
   return defaultUrl
-    .concat(movieUrls, theaterUrls)
+    .concat(theaterUrls, movieUrls)
     .map((url) => getSiteMapRow(`${rootUrl}${url}`))
     .join('');
 }
