@@ -45,12 +45,27 @@ function getRadians(num) {
   return (num * Math.PI) / 180;
 }
 
+const defaultRating = 3.5; // Default rating on a 0-5 scale (equivalent to 7 on a 0-10 scale)
+
 export function getMovieSchema(movie: Movie) {
-  const pttRating =
-    (movie.goodRateArticles.length * 5) / (movie.goodRateArticles.length + movie.badRateArticles.length) || 3;
-  const imdbRating = parseFloat(movie.imdbRating) / 2 || 3;
-  const yahooRating = parseFloat(movie.yahooRating) || 3;
-  const aggregateRating = (imdbRating + yahooRating + pttRating) / 3;
+  const goodCount = movie.goodRateArticles.length;
+  const badCount = movie.badRateArticles.length;
+  const normalCount = movie.normalRateArticles.length;
+  const totalArticles = goodCount + badCount + normalCount;
+
+  // Calculate the ratings on a 0-5 scale
+  const pttRating = calculateClampedRating(
+    (goodCount * 10 + normalCount * 7 - badCount * 2) / totalArticles / 2 || // Divide by 2 to map to 0-5
+      defaultRating,
+    { min: 0, max: 5 }
+  );
+
+  const imdbRating = calculateClampedRating(parseFloat(movie.imdbRating) / 2 || defaultRating, { min: 0, max: 5 });
+  const lineRating = calculateClampedRating(parseFloat(movie.lineRating) / 2 || defaultRating, { min: 0, max: 5 });
+
+  // Calculate the aggregate rating on a 0-5 scale
+  const aggregateRating = calculateClampedRating((imdbRating + lineRating + pttRating) / 3, { min: 0, max: 5 });
+
   return {
     '@context': 'http://schema.org',
     '@type': 'Movie',
@@ -68,43 +83,48 @@ export function getMovieSchema(movie: Movie) {
     },
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: aggregateRating,
-      ratingCount: '3',
+      ratingValue: aggregateRating.toFixed(1),
+      ratingCount: totalArticles + 2,
     },
     review: [
       {
         '@type': 'Review',
         author: {
-          '@type': 'Person',
+          '@type': 'Organization',
           name: 'IMDb',
         },
         reviewRating: {
           '@type': 'Rating',
-          ratingValue: imdbRating,
+          ratingValue: imdbRating.toFixed(1),
         },
       },
       {
         '@type': 'Review',
         author: {
-          '@type': 'Person',
-          name: 'Yahoo',
+          '@type': 'Organization',
+          name: 'LINE電影',
         },
         reviewRating: {
           '@type': 'Rating',
-          ratingValue: yahooRating,
+          ratingValue: lineRating.toFixed(1),
         },
       },
       {
         '@type': 'Review',
         author: {
-          '@type': 'Person',
+          '@type': 'Organization',
           name: 'PTT',
         },
         reviewRating: {
           '@type': 'Rating',
-          ratingValue: pttRating,
+          ratingValue: pttRating.toFixed(1),
         },
       },
     ],
   };
+}
+
+// Helper function to calculate and clamp a rating within a given range
+function calculateClampedRating(value, range) {
+  return Math.min(Math.max(value, range.min), range.max);
 }
