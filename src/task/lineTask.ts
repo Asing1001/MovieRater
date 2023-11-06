@@ -17,6 +17,7 @@ export async function updateLINEMovies() {
 }
 
 function mapToYahooMovieModel(item: LINEMovieItem): MovieBase | null {
+  const lineRating = item.rating? item.rating.average.toFixed(1): undefined;
   const yahooMovie: MovieBase = {
     lineMovieId: item.id,
     lineUrlHash: item.url.hash,
@@ -29,7 +30,7 @@ function mapToYahooMovieModel(item: LINEMovieItem): MovieBase | null {
     directors: item.directors,
     actors: item.cast,
     launchCompany: item.production,
-    lineRating: item.rating.average.toFixed(1),
+    lineRating,
     summary: item.shortDescription,
   };
   return yahooMovie;
