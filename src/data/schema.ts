@@ -235,7 +235,9 @@ const scheduleType = new GraphQLObjectType({
     movie: {
       type: MovieType,
       resolve: (obj: Schedule) =>
-        cacheManager.get(cacheManager.All_MOVIES).find(({ chineseTitle }: Movie) => obj.movieName === chineseTitle),
+        cacheManager
+          .get(cacheManager.All_MOVIES)
+          .find(({ chineseTitle, lineMovieId }: Movie) => obj.movieName === chineseTitle && Boolean(lineMovieId)),
     },
     timesValues: {
       type: new GraphQLList(GraphQLString),

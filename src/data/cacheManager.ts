@@ -3,9 +3,7 @@ import { Mongo } from '../data/db';
 import * as moment from 'moment';
 import Movie from '../models/movie';
 import { getInTheaterMovieNames } from '../crawler/atmovieInTheaterCrawler';
-import {
-  getMoviesSchedules, updateMoviesSchedules,
-} from '../task/atmoviesTask';
+import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask';
 import isValideDate from '../helper/isValideDate';
 
 export default class cacheManager {
@@ -22,7 +20,7 @@ export default class cacheManager {
     await cacheManager.setRecentMoviesCache();
     // To let the api return data ASAP, we serve the schedules from Redis first
     await cacheManager.setMoviesSchedulesCache();
-    await updateMoviesSchedules()
+    await updateMoviesSchedules();
     await cacheManager.setMoviesSchedulesCache();
   }
 
@@ -70,14 +68,11 @@ export default class cacheManager {
       .get(cacheManager.All_MOVIES)
       .filter(({ chineseTitle, releaseDate, lineMovieId }: Movie) => {
         // The movie with yahooId does not have image.
-        const hasLINEMovieId = Boolean(lineMovieId)
-        const releaseMoment = isValideDate(releaseDate)
-          ? moment(releaseDate)
-          : moment();
+        const hasLINEMovieId = Boolean(lineMovieId);
+        const releaseMoment = isValideDate(releaseDate) ? moment(releaseDate) : moment();
         return (
           hasLINEMovieId &&
-          (!hasInTheaterData ||
-            inTheaterMovieNames.indexOf(chineseTitle) !== -1) &&
+          (!hasInTheaterData || inTheaterMovieNames.indexOf(chineseTitle) !== -1) &&
           today.diff(releaseMoment, 'days') <= 60
         );
       });
@@ -89,14 +84,7 @@ export default class cacheManager {
     console.time('setMoviesSchedulesCache');
     try {
       const allSchedules = await getMoviesSchedules();
-      const recentMovieChineseTitles: string[] = cacheManager
-        .get(cacheManager.RECENT_MOVIES)
-        .map((movie) => movie.chineseTitle);
-      const filterdSchedules = allSchedules.filter(
-        (schedule) =>
-          recentMovieChineseTitles.indexOf(schedule.movieName) !== -1
-      );
-      cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);
+      cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
     } catch (ex) {
       console.error(ex);
     }
