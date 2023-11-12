@@ -84,7 +84,15 @@ export default class cacheManager {
     console.time('setMoviesSchedulesCache');
     try {
       const allSchedules = await getMoviesSchedules();
-      cacheManager.set(cacheManager.MOVIES_SCHEDULES, allSchedules);
+      // currently the schedules here has some data that could not mapped to LINE's movie title
+      // TODO: get the schedule directly from LINE so we don't need this filter, and the display will be more accurate
+      const recentMovieChineseTitles: string[] = cacheManager
+        .get(cacheManager.RECENT_MOVIES)
+        .map((movie) => movie.chineseTitle);
+      const filterdSchedules = allSchedules.filter(
+        (schedule) => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1
+      );
+      cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);
     } catch (ex) {
       console.error(ex);
     }
