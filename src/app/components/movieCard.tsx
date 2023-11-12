@@ -20,11 +20,7 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
       <article className="card" style={{ display: 'flex' }}>
         <Link to={`/movie/${movie.movieBaseId}`}>
           <LazyLoad>
-            <img
-              className="poster"
-              src={movie.posterUrl}
-              alt="Image not found"
-            />
+            <img className="poster" src={movie.posterUrl} alt="Image not found" />
           </LazyLoad>
         </Link>
         <div className="col-xs-12">
@@ -33,9 +29,7 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
               <h3 className="title">
                 {movie.chineseTitle}
                 {roomTypes && roomTypes.length > 0 && (
-                  <span style={{ marginLeft: '.2em' }}>
-                    {roomTypes.map((roomType, index) => roomType)}
-                  </span>
+                  <span style={{ marginLeft: '.2em' }}>{roomTypes.map((roomType, index) => roomType)}</span>
                 )}
               </h3>
             </Link>
@@ -46,10 +40,8 @@ class MovieCard extends React.PureComponent<MovieDetailProps, {}> {
           <div className="resultInfo">
             <Link style={{ color: 'inherit' }} to={`/movie/${movie.movieBaseId}`}>
               <div>上映日期：{movie.releaseDate || '未提供'}</div>
-              <div className="hidden-xs">
-                類型：{movie.types.join('、') || '未提供'}
-              </div>
-              <div>片長：{movie.runTime}</div>
+              <div className="hidden-xs">類型：{movie.types.join('、') || '未提供'}</div>
+              <div>片長：{movie.runTime}分鐘</div>
             </Link>
           </div>
           <Ratings
