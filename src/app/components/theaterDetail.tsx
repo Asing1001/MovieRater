@@ -62,16 +62,16 @@ const theaterDetailQuery = gql`
     };
   },
 })
-class TheaterDetail extends React.PureComponent<any, { selectedDate: Date }> {
+class TheaterDetail extends React.PureComponent<any, { selectedIndex: number }> {
   constructor(props) {
     super(props);
     this.state = {
-      selectedDate: new Date(),
+      selectedIndex: 0,
     };
   }
 
-  isSelectedDate(date) {
-    return moment(date).isSame(this.state.selectedDate, 'date');
+  isSelectedIndex(index: Number) {
+    return this.state.selectedIndex === index;
   }
 
   getAvailableDates(schedules) {
@@ -99,10 +99,10 @@ class TheaterDetail extends React.PureComponent<any, { selectedDate: Date }> {
             {availableDates.map((date, index) => (
               <Chip
                 className="datebtn"
-                backgroundColor={this.isSelectedDate(date) ? grey500 : null}
+                backgroundColor={this.isSelectedIndex(index) ? grey500 : null}
                 key={index}
                 onClick={() => {
-                  this.setState({ selectedDate: moment(date).toDate() });
+                  this.setState({ selectedIndex: index });
                 }}
               >
                 {moment(date).format('MM/DD')}
@@ -113,7 +113,7 @@ class TheaterDetail extends React.PureComponent<any, { selectedDate: Date }> {
         {theater.schedules &&
           theater.schedules
             .slice()
-            .filter(({ date }) => this.isSelectedDate(date))
+            .filter(({ date }) => date === availableDates[this.state.selectedIndex])
             .sort(({ movie }, { movie: movie2 }) =>
               this.props.sortFunction(classifyArticle(movie), classifyArticle(movie2))
             )
