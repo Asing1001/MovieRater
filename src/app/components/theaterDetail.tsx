@@ -10,6 +10,7 @@ import MovieCard from './movieCard';
 import { gql, graphql } from 'react-apollo';
 import { grey500 } from 'material-ui/styles/colors';
 import TimeList from './timeList';
+import Theater from '../../models/theater';
 
 const theaterDetailQuery = gql`
   query TheaterDetail($theaterName: String) {
@@ -61,19 +62,16 @@ const theaterDetailQuery = gql`
     };
   },
 })
-class TheaterDetail extends React.PureComponent<
-  any,
-  { selectedDate: Date; }
-> {
+class TheaterDetail extends React.PureComponent<any, { selectedDate: Date }> {
   constructor(props) {
     super(props);
     this.state = {
-      selectedDate: new Date()
-    }
+      selectedDate: new Date(),
+    };
   }
 
   isSelectedDate(date) {
-    return moment(date).isSame(this.state.selectedDate, 'date')
+    return moment(date).isSame(this.state.selectedDate, 'date');
   }
 
   getAvailableDates(schedules) {
@@ -87,8 +85,11 @@ class TheaterDetail extends React.PureComponent<
     if (loading) {
       return <LoadingIcon isLoading={loading} />;
     }
-    const theater = theaters[0];
+    const theater: Theater = theaters[0];
     document.title = `${theater.name}時刻表 | Movie Rater`;
+    document['meta'] = {
+      description: generateTheaterDescription(theater),
+    };
     const availableDates = this.getAvailableDates(theaters[0].schedules);
     return (
       <div>
@@ -98,12 +99,10 @@ class TheaterDetail extends React.PureComponent<
             {availableDates.map((date, index) => (
               <Chip
                 className="datebtn"
-                backgroundColor={
-                  this.isSelectedDate(date) ? grey500 : null
-                }
+                backgroundColor={this.isSelectedDate(date) ? grey500 : null}
                 key={index}
                 onClick={() => {
-                  this.setState({ selectedDate: moment(date).toDate() })
+                  this.setState({ selectedDate: moment(date).toDate() });
                 }}
               >
                 {moment(date).format('MM/DD')}
@@ -116,28 +115,14 @@ class TheaterDetail extends React.PureComponent<
             .slice()
             .filter(({ date }) => this.isSelectedDate(date))
             .sort(({ movie }, { movie: movie2 }) =>
-              this.props.sortFunction(
-                classifyArticle(movie),
-                classifyArticle(movie2)
-              )
+              this.props.sortFunction(classifyArticle(movie), classifyArticle(movie2))
             )
             .map((schedule: Schedule, index) => (
-              <Paper
-                zDepth={2}
-                key={index}
-                className="row no-margin"
-                style={{ marginBottom: '.5em' }}
-              >
-                <MovieCard
-                  movie={classifyArticle(schedule.movie)}
-                  roomTypes={schedule.roomTypes}
-                >
+              <Paper zDepth={2} key={index} className="row no-margin" style={{ marginBottom: '.5em' }}>
+                <MovieCard movie={classifyArticle(schedule.movie)} roomTypes={schedule.roomTypes}>
                   <TimeList
                     timesStrings={schedule.timesStrings}
-                    greyOutExpired={moment(schedule.date).isSame(
-                      moment(),
-                      'day'
-                    )}
+                    greyOutExpired={moment(schedule.date).isSame(moment(), 'day')}
                   ></TimeList>
                 </MovieCard>
               </Paper>
@@ -147,3 +132,10 @@ class TheaterDetail extends React.PureComponent<
   }
 }
 export default TheaterDetail;
+
+function generateTheaterDescription(theater: Theater) {
+  const movieNames = theater.schedules
+    ? [...new Set(theater.schedules.map(({ movie }) => movie.chineseTitle))].join('、')
+    : null;
+  return `${theater.name} · 地址:${theater.address} · 線上購票請點此 · 電影時刻表:${movieNames}`;
+}
