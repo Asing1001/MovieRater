@@ -18,6 +18,7 @@ export default class MovieBase {
   lineRating?: string;
   summary?: string;
   lineUrlHash?: string;
+  lineTrailerHash?: string;
 }
 
 interface ObjectIdLike {

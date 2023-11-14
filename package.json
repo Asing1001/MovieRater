@@ -36,6 +36,7 @@
     "graphql": "^0.9.3",
     "hint.css": "^2.4.1",
     "history": "^4.6.3",
+    "hls.js": "0.12.4",
     "isomorphic-fetch": "^2.2.1",
     "material-ui": "^0.20.0",
     "memory-cache": "^0.1.6",

@@ -72,6 +72,10 @@ const MovieType = new GraphQLObjectType({
       description: 'line movie url hash',
       resolve: (obj) => obj.lineUrlHash,
     },
+    lineTrailerHash: {
+      type: GraphQLString,
+      resolve: (obj) => obj.lineTrailerHash,
+    },
     yahooId: {
       type: GraphQLInt,
       description: 'yahoo movie id',

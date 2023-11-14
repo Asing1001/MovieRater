@@ -2,268 +2,290 @@
 $tablet-width: 992px;
 $desktop-width: 1024px;
 @mixin mobile {
-    @media (max-width: #{$tablet-width - 1px}) {
-        @content;
-    }
+  @media (max-width: #{$tablet-width - 1px}) {
+    @content;
+  }
 }
 
 @mixin tablet {
-    @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
-        @content;
-    }
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
 }
 
 @mixin desktop {
-    @media (min-width: #{$desktop-width}) {
-        @content;
-    }
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
 }
 
 html,
 body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
 }
 
 div * {
-    font-family: Noto Sans TC, Sans-Serif;
+  font-family: Noto Sans TC, Sans-Serif;
 }
 
 input::-ms-clear {
-    width: 0;
-    height: 0;
+  width: 0;
+  height: 0;
 }
 
 .appBar {
-    height: 56px;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    z-index: 2;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .appBar.vanish {
-    display: none;
+  display: none;
 }
 
 .appBar hr {
-    border-bottom: none !important;
+  border-bottom: none !important;
 }
 
 .appBar .barTitle {
-    width: 150px;
-    font-size: 1.4em;
+  width: 150px;
+  font-size: 1.4em;
 }
 
 .appBar .rightBtn {
-    margin-left: auto !important;
+  margin-left: auto !important;
 }
 
 .appBar .searchArea {
-    flex: 0.9;
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    height: 36px
+  flex: 0.9;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  height: 36px;
 }
 
 .appBar .searchArea .searchIcon {
-    width: 56px !important;
+  width: 56px !important;
 }
 
 @media (min-width: 767px) {
-    .appBar .leftBtn {
-        width: 72px !important;
-    }
-    .appBar .searchArea {
-        flex: 0.8;
-    }
-    .appBar.searching {
-        background-color: #F5F5F5 !important;
-    }
-    .appBar.searching .searchArea {
-        background-color: white !important;
-    }
-    .appBar .sortingBtn {
-        margin-left: auto !important;
-    }
+  .appBar .leftBtn {
+    width: 72px !important;
+  }
+  .appBar .searchArea {
+    flex: 0.8;
+  }
+  .appBar.searching {
+    background-color: #f5f5f5 !important;
+  }
+  .appBar.searching .searchArea {
+    background-color: white !important;
+  }
+  .appBar .sortingBtn {
+    margin-left: auto !important;
+  }
 }
 
 .backdrop {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    top: 0px;
-    left: 0px;
-    z-index: 2;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+}
+
+img.movieImage {
+  padding: 8px 0 8px 8px;
+}
+
+.readMore {
+  border: none;
+  background: none;
+  text-decoration: underline;
+  color: #337ab7;
+  cursor: pointer;
 }
 
 .movieDetail {
-    td {
-        padding-right: 0 !important;
-    }
-    tr>td:nth-child(1) {
-        width: 100px
-    }
-    tr>td:nth-child(2) {
-        white-space: initial !important;
-    }
+  div {
+    margin: 0 8px 8px 8px;
+    padding-right: 8px;
+  }
+}
+
+.movieSummary {
+  margin: 0 8px 8px 8px;
+}
+
+.collapsed-summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to two lines */
+  -webkit-box-orient: vertical;
+  transition: max-height 0.3s ease-in-out; /* Add a smooth transition effect */
+  max-height: 2.8em; /* Adjust to control the number of lines displayed */
+}
+
+.expanded-summary {
+  max-height: none;
+  -webkit-line-clamp: unset;
 }
 
 .ratings {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    text-align: center;
-    padding-left: 0;
-    @include desktop {
-        text-align: left;
-        padding-left: 24px;
-    }
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 8px;
 }
 
 .ratingWrapper {
-    display: inline-block;
-    min-width: 66px;
-    text-align: left;
-    .logo {
-        &.ptt {
-            background-color: black;
-            color: white;
-        }
-        &.imdb {
-            background: #E3C436;
-            color: black;
-        }
-        &.yahoo {
-            background: #720E9E;
-            color: white;
-        }
-        &.line {
-            background: #06c755;
-            color: white;
-        }
-        margin-right: 4px;
-        font-size: 0.8em;
-        width: 33px;
-        height: 28px;
-        line-height: 28px;
-        text-align: center;
-        display: inline-block;
-        border-radius: 20%;
-        font-weight: bolder;
+  display: inline-block;
+  min-width: 66px;
+  text-align: left;
+  .logo {
+    &.ptt {
+      background-color: black;
+      color: white;
     }
+    &.imdb {
+      background: #e3c436;
+      color: black;
+    }
+    &.yahoo {
+      background: #720e9e;
+      color: white;
+    }
+    &.line {
+      background: #06c755;
+      color: white;
+    }
+    margin-right: 4px;
+    font-size: 0.8em;
+    width: 33px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 20%;
+    font-weight: bolder;
+  }
 }
 
 .pttPush {
-    margin-top: 6px;
+  margin-top: 6px;
 }
 
 a.pttArticleTitle {
-    line-height: 1.2em !important;
-    color: #aaa !important;
-    text-decoration: underline;
+  line-height: 1.2em !important;
+  color: #aaa !important;
+  text-decoration: underline;
 }
 
 a.pttArticleTitle:visited {
-    color: #888 !important;
+  color: #888 !important;
 }
 
 .swipeViewWrapper {
-    &.active-0,&.active-2 
-    {
-        [role='listbox'] > div {
-            @include desktop(){
-                height: 560px;
-            }
-            @include tablet(){
-                height: 462px;
-            }
-        }
-    }
-    
-    [role='listbox'] > div {
-        height: calc(100vh - 111px)
-    }    
+  //   To limit the height on the desktop for the tabs
+  //   &.active-0,
+  //   &.active-2 {
+  //     [role='listbox'] > div {
+  //       @include desktop() {
+  //         height: 560px;
+  //       }
+  //       @include tablet() {
+  //         height: 462px;
+  //       }
+  //     }
+  //   }
+
+  [role='listbox'] > div {
+    height: calc(100vh - 111px);
+  }
 }
 
 .pttArticles::before {
-    content: "";
-    position: fixed;
-    top: 0px;
-    bottom: 0;
-    background-color: black;
-    width: 100%;
-    z-index: -1;
+  content: '';
+  position: fixed;
+  top: 0px;
+  bottom: 0;
+  background-color: black;
+  width: 100%;
+  z-index: -1;
 }
 
 .no-padding {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .no-margin {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .resultSummary {
-    overflow: hidden;
-    max-height: 150px;
-    margin-bottom: .2em;
+  overflow: hidden;
+  max-height: 150px;
+  margin-bottom: 0.2em;
 }
 
 .resultSummary p {
-    margin: 0;
+  margin: 0;
 }
 
-.resultInfo>span {
-    padding-right: 1em
+.resultInfo > span {
+  padding-right: 1em;
 }
 
 .card {
-    .title {
-        font-size: 14px;
-        font-weight: 700;
-        margin: 0;
+  .title {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .poster {
+    width: 150px;
+    @include mobile {
+      width: 100px;
     }
-    .poster {
-        width: 150px;
-        @include mobile {
-            width: 100px;
-        }
-    }
+  }
 }
 
 @media (max-width: 768px) {
-    .resultInfo>span {
-        padding-right: .5em
-    }
-    [class*="col-"] {
-        padding-left: .5em;
-        padding-right: .5em;
-    }
-    .container {
-        padding-left: 0;
-        padding-right: 0;
-    }
+  .resultInfo > span {
+    padding-right: 0.5em;
+  }
+  [class*='col-'] {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+  .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 .roomType {
-    margin-left: 2px;
-    padding: 1px 5px;
-    background-color: #F06292;
-    color: white;
+  margin-left: 2px;
+  padding: 1px 5px;
+  background-color: #f06292;
+  color: white;
 }
 
 .date-wrapper {
-    margin-top: 1em;
-    display: flex;
-    flex-wrap: wrap;
+  margin-top: 1em;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .datebtn {
-    margin: 0 6px .5em 0 !important;
+  margin: 0 6px 0.5em 0 !important;
 }

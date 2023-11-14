@@ -23,6 +23,7 @@ const movieDetailQuery = gql`
       movieBaseId
       lineUrlHash
       lineRating
+      lineTrailerHash
       posterUrl
       chineseTitle
       englishTitle
@@ -89,17 +90,6 @@ export default class MovieDetailTabs extends React.PureComponent<any, MovieDetai
     });
   };
 
-  handleSlideHeight = () => {
-    // const slides = document.querySelectorAll("[role='option']") as NodeListOf<HTMLDivElement>;
-    // Array.from(slides).forEach((slide, index) => {
-    //   slide.style.height = index === this.state.slideIndex ? 'auto' : '500px';
-    // })
-  };
-
-  componentDidUpdate = (prevProps, prevState) => {
-    this.handleSlideHeight();
-  };
-
   render() {
     const {
       data: { loading, movies },
@@ -123,21 +113,15 @@ export default class MovieDetailTabs extends React.PureComponent<any, MovieDetai
     return (
       <Paper zDepth={2}>
         <Tabs onChange={this.handleChange.bind(this)} value={this.state.slideIndex}>
-          <Tab label="Detail" value={0} />
-          <Tab label="Ptt" value={1} />
-          <Tab label="Summary" value={2} />
-          {movie.schedules.length > 0 && <Tab label="Time" value={3} />}
+          <Tab label="電影資訊" value={0} />
+          {movie.schedules.length > 0 && <Tab label="時刻表" value={1} />}
+          <Tab label="Ptt" value={2} />
         </Tabs>
         <div className={`swipeViewWrapper active-${this.state.slideIndex}`}>
           <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange.bind(this)} threshold={6}>
             <MovieDetail movie={movie}></MovieDetail>
-            <PttArticles movie={movie}></PttArticles>
-            <div
-              className="col-xs-12"
-              style={{ paddingTop: '1em' }}
-              dangerouslySetInnerHTML={{ __html: movie.summary }}
-            ></div>
             <Schedules schedules={movie.schedules}></Schedules>
+            <PttArticles movie={movie}></PttArticles>
           </SwipeableViews>
         </div>
       </Paper>
