@@ -193,18 +193,17 @@ a.pttArticleTitle:visited {
 }
 
 .swipeViewWrapper {
-  //   To limit the height on the desktop for the tabs
-  //   &.active-0,
-  //   &.active-2 {
-  //     [role='listbox'] > div {
-  //       @include desktop() {
-  //         height: 560px;
-  //       }
-  //       @include tablet() {
-  //         height: 462px;
-  //       }
-  //     }
-  //   }
+  // To limit the height on the desktop for the tabs
+  &.active-0 {
+    [role='listbox'] > div {
+      @include desktop() {
+        height: 600px;
+      }
+      @include tablet() {
+        height: 560px;
+      }
+    }
+  }
 
   [role='listbox'] > div {
     height: calc(100vh - 111px);

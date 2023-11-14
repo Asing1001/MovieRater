@@ -122,7 +122,7 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, { isExpanded: bo
           )}
         </div>
         {trailer && (
-          <div className="col-xs-12" style={{ marginTop: '.5em' }}>
+          <div style={{ marginTop: '.5em', float: 'left', width: '100%' }}>
             <HLSVideoPlayer streamUrl={trailer.streamUrl} poster={trailer.poster} />
           </div>
         )}
@@ -141,7 +141,7 @@ function getLINETrailerDetail(lineTrailerHash: string) {
     return null;
   }
   return {
-    streamUrl: `https://obs.line-scdn.net/${lineTrailerHash}/270p.m3u8`,
+    streamUrl: `https://obs.line-scdn.net/${lineTrailerHash}/480p.m3u8`,
     poster: `https://obs.line-scdn.net/${lineTrailerHash}/w644`,
   };
 }
