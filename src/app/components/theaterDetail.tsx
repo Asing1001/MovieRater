@@ -86,7 +86,7 @@ class TheaterDetail extends React.PureComponent<any, { selectedIndex: number }> 
       return <LoadingIcon isLoading={loading} />;
     }
     const theater: Theater = theaters[0];
-    document.title = `${theater.name}時刻表`;
+    document.title = `${theater.name}時刻表 | 按iMDb/LINE/PTT評分排序`;
     document['meta'] = {
       description: generateTheaterDescription(theater),
     };
@@ -137,5 +137,5 @@ function generateTheaterDescription(theater: Theater) {
   const movieNames = theater.schedules
     ? [...new Set(theater.schedules.map(({ movie }) => movie.chineseTitle))].join('、')
     : null;
-  return `${theater.name}．地址:${theater.address}．線上購票請點此．電影時刻表:${movieNames}`;
+  return `${theater.name}．地址:${theater.address}．線上購票．電影時刻表:${movieNames}`;
 }
