@@ -92,10 +92,10 @@ class AppBarNormal extends React.PureComponent<any, any> {
                     }}
                   />
                   <MenuItem
-                    primaryText="依Yahoo排序"
+                    primaryText="依LINE Movie排序"
                     onTouchTap={(e) => {
                       e.preventDefault();
-                      this.props.switchSorting(SortType.yahoo);
+                      this.props.switchSorting(SortType.line);
                     }}
                   />
                   <MenuItem

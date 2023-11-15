@@ -86,7 +86,7 @@ class TheaterDetail extends React.PureComponent<any, { selectedIndex: number }> 
       return <LoadingIcon isLoading={loading} />;
     }
     const theater: Theater = theaters[0];
-    document.title = `${theater.name}時刻表 | 按iMDb/LINE/PTT評分排序`;
+    document.title = `${theater.name}時刻表 | 按IMDb/LINE/PTT評分排序`;
     document['meta'] = {
       description: generateTheaterDescription(theater),
     };
