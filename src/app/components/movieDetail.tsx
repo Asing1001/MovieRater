@@ -120,11 +120,12 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, { isExpanded: bo
             </button>
           )}
         </div>
-        {trailer && (
+        {/* the HLSVideoPlayer is too slow.... */}
+        {/* {trailer && (
           <div style={{ marginTop: '.5em', float: 'left', width: '100%' }}>
             <HLSVideoPlayer streamUrl={trailer.streamUrl} poster={trailer.poster} />
           </div>
-        )}
+        )} */}
       </div>
     );
   };
