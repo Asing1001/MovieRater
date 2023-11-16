@@ -35,24 +35,28 @@ class Schedules extends React.PureComponent<MovieDetailProps, any> {
     getClientGeoLocation().then(({ latitude, longitude }) => {
       const schedulesWithDistance = schedules
         .map((schedule) => {
-          let {
-            theaterExtension,
-            theaterExtension: {
-              location: { lat, lng },
-            },
-          } = schedule;
-          return Object.assign({}, schedule, {
-            theaterExtension: {
-              ...theaterExtension,
-              distance: getDistanceInKM(lng, lat, longitude, latitude),
-            },
-          });
+          const { theaterExtension } = schedule;
+          if (
+            theaterExtension &&
+            theaterExtension.location &&
+            theaterExtension.location.lat &&
+            theaterExtension.location.lng
+          ) {
+            const { lat, lng } = theaterExtension.location;
+            return {
+              ...schedule,
+              theaterExtension: {
+                ...theaterExtension,
+                distance: getDistanceInKM(lng, lat, longitude, latitude),
+              },
+            };
+          } else {
+            return schedule; // If lat and lng are missing, return the original schedule
+          }
         })
         .sort(
-          (
-            { theaterExtension: { distance: distanceA } },
-            { theaterExtension: { distance: distanceB } }
-          ) => distanceA - distanceB
+          ({ theaterExtension: { distance: distanceA } }, { theaterExtension: { distance: distanceB } }) =>
+            distanceA - distanceB
         );
       this.setState({ schedulesWithDistance });
     });
@@ -61,15 +65,8 @@ class Schedules extends React.PureComponent<MovieDetailProps, any> {
   componentDidMount() {
     let schedules = this.props.schedules
       .slice()
-      .sort(
-        (
-          { theaterExtension: { regionIndex: a } },
-          { theaterExtension: { regionIndex: b } }
-        ) => a - b
-      );
-    this.setState({ schedulesWithDistance: schedules }, () =>
-      this.setSchedulesWithDistance(schedules)
-    );
+      .sort(({ theaterExtension: { regionIndex: a } }, { theaterExtension: { regionIndex: b } }) => a - b);
+    this.setState({ schedulesWithDistance: schedules }, () => this.setSchedulesWithDistance(schedules));
   }
 
   render() {
@@ -79,46 +76,24 @@ class Schedules extends React.PureComponent<MovieDetailProps, any> {
           {this.getAvailableDates().map((date, index) => (
             <Chip
               className="datebtn"
-              backgroundColor={
-                this.state.selectedDate === date ? grey500 : null
-              }
+              backgroundColor={this.state.selectedDate === date ? grey500 : null}
               key={index}
               onClick={() => this.setState({ selectedDate: date })}
             >
-              {moment(date).isSame(moment(), 'day')
-                ? '今天'
-                : moment(date).format('MM/DD')}
+              {moment(date).isSame(moment(), 'day') ? '今天' : moment(date).format('MM/DD')}
             </Chip>
           ))}
         </div>
         {this.state.schedulesWithDistance
           .filter(({ date }) => date === this.state.selectedDate)
-          .map(
-            (
-              {
-                timesStrings,
-                theaterName,
-                roomTypes,
-                distance,
-                theaterExtension,
-                date,
-              },
-              index
-            ) => {
-              return (
-                <p key={index} className="col-xs-12">
-                  <TheaterCard
-                    theater={theaterExtension}
-                    roomTypes={roomTypes}
-                  ></TheaterCard>
-                  <TimeList
-                    timesStrings={timesStrings}
-                    greyOutExpired={moment(date).isSame(moment(), 'day')}
-                  ></TimeList>
-                </p>
-              );
-            }
-          )}
+          .map(({ timesStrings, theaterName, roomTypes, distance, theaterExtension, date }, index) => {
+            return (
+              <p key={index} className="col-xs-12">
+                <TheaterCard theater={theaterExtension} roomTypes={roomTypes}></TheaterCard>
+                <TimeList timesStrings={timesStrings} greyOutExpired={moment(date).isSame(moment(), 'day')}></TimeList>
+              </p>
+            );
+          })}
       </div>
     );
   }
