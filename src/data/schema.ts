@@ -289,7 +289,7 @@ const TheaterType = new GraphQLObjectType({
       resolve: (obj) => obj.region,
     },
     regionIndex: {
-      type: GraphQLString,
+      type: GraphQLInt,
       resolve: (obj) => obj.regionIndex,
     },
     subRegion: {

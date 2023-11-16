@@ -12,7 +12,7 @@ export default class Theater {
   phone?: string;
   region?: string;
   subRegion?: string;
-  regionIndex?: number;
+  regionIndex?: string;
   location?: Location;
   distance?: number;
   scheduleUrl?: string;
