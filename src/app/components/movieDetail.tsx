@@ -111,8 +111,7 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, { isExpanded: bo
           <div
             className={`collapsed-summary ${isExpanded ? 'expanded-summary' : ''}`} // Add or remove the 'expanded-summary' class
             dangerouslySetInnerHTML={{
-              __html:
-                '💥《即刻救援》票房名導皮耶莫瑞爾12億打造全新動作爽片<br/>💥《玩命關頭X》《自殺突擊隊：突擊》動作巨星約翰希南領銜主演<br/>💥《GLOW：華麗女子摔角聯盟》金球獎提名愛莉森布里共同演出<br/>💥《捍衛任務4》《不可能的任務7》團隊火爆動作鉅獻<br/>💥即刻重裝上陣， 全力殺出重圍！<br/><br/>　　前特種部隊成員梅森（約翰希南 飾）為日復一日的辦公室生活感到厭煩，某天，他接到一份新工作，要在落魄的記者克萊兒（愛莉森布里 飾）前往帕多尼亞採訪統治當地的獨裁者尤安（尤安帕布羅瑞巴 飾）時擔任她的保鑣，不料，一場突如其來的軍事政變打斷了採訪，兩人必須設法逃出生天……。<br/><br/>更多資訊請見：<br/>「車庫娛樂」粉絲頁：https://www.facebook.com/garageplay.tw​<br/>「車庫娛樂」官網：https://garageplay.tw/',
+              __html: movie.summary,
             }}
           ></div>
           {!isExpanded && (
