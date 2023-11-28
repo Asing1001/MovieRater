@@ -27,12 +27,12 @@ class TheaterCard extends React.PureComponent<any, any> {
         </Link>
         <div style={{ paddingTop: '0.5em', display: 'flex', alignItems: 'center' }}>
           {url && (
-            <a href={url} style={{ whiteSpace: 'nowrap', ...theaterCardStyle }}>
+            <a href={url} style={{ whiteSpace: 'nowrap', ...theaterCardStyle }} target="_blank">
               <SVGAVWeb color={grey500} viewBox={'-3 0 30 24'} />
               線上購票
             </a>
           )}
-          <a href={`https://maps.google.com?q=${name}`} style={theaterCardStyle}>
+          <a href={`https://maps.google.com?q=${name}`} style={theaterCardStyle} target="_blank">
             <SVGCommunicationLocationOn color={grey500} viewBox={'-3 0 30 24'} />
             {distance ? `(${distance}km)${address}` : address}
           </a>
