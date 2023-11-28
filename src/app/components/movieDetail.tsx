@@ -107,7 +107,7 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, { isExpanded: bo
           </div>
         </div>
         <div className="col-xs-12 hidden-md hidden-lg">
-          <span>劇情簡介：</span>
+          <h5>劇情簡介：</h5>
           <div
             className={`collapsed-summary ${isExpanded ? 'expanded-summary' : ''}`} // Add or remove the 'expanded-summary' class
             dangerouslySetInnerHTML={{
@@ -121,7 +121,8 @@ class MovieDetail extends React.PureComponent<MovieDetailProps, { isExpanded: bo
           )}
         </div>
         {trailer && (
-          <div style={{ marginTop: '.5em', float: 'left', width: '100%' }}>
+          <div style={{ padding: '.5em', float: 'left', width: '100%' }}>
+            <h5>預告片：</h5>
             <HLSVideoPlayer streamUrl={trailer.streamUrl} poster={trailer.poster} />
           </div>
         )}
