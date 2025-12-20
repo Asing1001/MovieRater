@@ -4,7 +4,7 @@ import { LINEPage } from '../models/LINEPage';
 export async function getPlayingMovies(): Promise<LINEMovieResponse> {
   try {
     const res = await fetch(
-      'https://today.line.me/webapi/movie/incinemas/listings/inCinemas?offset=0&length=200&country=tw&tag=PLAYING'
+      'https://today.line.me/webapi/movie/incinemas/listings/inCinemas?offset=0&length=200&country=tw'
     );
 
     if (!res.ok) {
