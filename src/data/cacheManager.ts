@@ -2,7 +2,7 @@ import * as memoryCache from 'memory-cache';
 import { Mongo } from '../data/db';
 import * as moment from 'moment';
 import Movie from '../models/movie';
-import { getInTheaterMovieNames } from '../crawler/atmovieInTheaterCrawler';
+import { getPlayingMovies } from '../crawler/lineCrawler';
 import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask';
 import isValideDate from '../helper/isValideDate';
 
@@ -59,20 +59,21 @@ export default class cacheManager {
     cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
   }
 
+  // This is the list of movies in home page
   public static async setRecentMoviesCache() {
     console.time('setRecentMoviesCache');
-    const inTheaterMovieNames = await getInTheaterMovieNames();
-    const hasInTheaterData = inTheaterMovieNames && inTheaterMovieNames.length;
+    const inTheaterResponse = await getPlayingMovies();
+    const inTheaterLineIds = inTheaterResponse.items.map(item => item.id);
+    const hasInTheaterData = inTheaterLineIds && inTheaterLineIds.length;
     const today = moment();
     const recentMovies = cacheManager
       .get(cacheManager.All_MOVIES)
-      .filter(({ chineseTitle, releaseDate, lineMovieId }: Movie) => {
-        // The movie with yahooId does not have image.
+      .filter(({ releaseDate, lineMovieId }: Movie) => {
         const hasLINEMovieId = Boolean(lineMovieId);
         const releaseMoment = isValideDate(releaseDate) ? moment(releaseDate) : moment();
         return (
           hasLINEMovieId &&
-          (!hasInTheaterData || inTheaterMovieNames.indexOf(chineseTitle) !== -1) &&
+          (!hasInTheaterData || inTheaterLineIds.indexOf(lineMovieId) !== -1) &&
           today.diff(releaseMoment, 'days') <= 60
         );
       });
