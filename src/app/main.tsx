@@ -7,19 +7,17 @@ import './main.scss';
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo';
 
 class Root extends React.PureComponent<any, any> {
-  createClient() {
-    return new ApolloClient({
-      initialState: window['__APOLLO_STATE__'] || {},
-      ssrForceFetchDelay: 100,
-      networkInterface: createNetworkInterface({
-        uri: '/graphql',
-      }),
-    });
-  }
+  client = new ApolloClient({
+    initialState: window['__APOLLO_STATE__'] || {},
+    ssrForceFetchDelay: 100,
+    networkInterface: createNetworkInterface({
+      uri: '/graphql',
+    }),
+  });
 
   render() {
     return (
-      <ApolloProvider client={this.createClient()}>
+      <ApolloProvider client={this.client}>
         <Router history={history}>
           <App />
         </Router>
