@@ -7,11 +7,11 @@
 - Local shell observed during baseline: Node 21.7.1, no global `yarn`
 - Local services: Docker Compose starts MongoDB 4.2 on `27018` and Redis on `6380`
 - Build: `npm run build` succeeds
-- Test: `npm test` compiles TypeScript, then fails because several crawler tests depend on live external sites
+- Test: `npm test` passes after moving IMDB crawler checks to fixture-backed default tests
 
 ### Baseline Test Result
 
-`npm test` result after starting Docker services:
+Original `npm test` result after starting Docker services:
 
 - 24 passing
 - 9 pending
@@ -22,6 +22,19 @@ Known failures:
 - IMDB crawler tests return empty ratings for several movies.
 - PTT missing-page test expected a 404 message but received `ECONNRESET`.
 - The suite writes coverage helper files outside the repo, so sandboxed runs need approval.
+
+Current `npm test` result after test stabilization:
+
+- 29 passing
+- 11 pending
+- 0 failing
+
+Changes made:
+
+- IMDB crawler default tests use local fixtures for suggestion matching and rating parsing.
+- Live IMDB coverage is opt-in with `ENABLE_LIVE_CRAWLER_TESTS=true`.
+- The LINE crawler no longer dumps full API payloads during tests.
+- `systemSetting` logging redacts connection strings and task keys.
 
 ### Baseline Build Result
 
@@ -65,6 +78,7 @@ Node 24 is the preferred target because it is current LTS and gives the longest 
   - `/graphql`
 - Replace live-network crawler unit tests with fixture-backed contract tests.
 - Keep a small number of opt-in integration tests for real external sites.
+- Keep default test output concise enough to spot real failures quickly.
 
 ### Phase 2: Extract Domain and Data Modules
 
@@ -94,7 +108,7 @@ Node 24 is the preferred target because it is current LTS and gives the longest 
 
 ## First Implementation Slice
 
-The first code slice should be conservative and immediately useful:
+The first code slice was conservative and immediately useful:
 
 1. Add fixture-backed tests around current GraphQL/query behavior.
 2. Add cache indexes inside the existing app to remove repeated linear scans.
@@ -104,12 +118,32 @@ The first code slice should be conservative and immediately useful:
 
 This makes the current app faster and more testable while creating guardrails for the rewrite.
 
+Status:
+
+- Done: cache indexes for hot GraphQL lookup paths.
+- Done: desktop movie detail summary uses movie data instead of hard-coded content.
+- Done: Apollo client creation no longer happens during render.
+- Done: IMDB live tests split from default test flow.
+- Done: production config logging redacted.
+
+## Next Implementation Slice
+
+Recommended next work:
+
+1. Stop default `npm test` from uploading Codecov locally; reserve upload for CI.
+2. Reduce DB/task debug output in tests, especially `updateDocument(...)` spam from LINE task tests.
+3. Add route/query smoke tests for the current SSR pages before deeper refactors.
+4. Upgrade the production runtime target away from Node 12, starting with the smallest supported Heroku runtime step.
+5. Add a temporary staging Heroku app or preview deployment before the larger rewrite begins.
+
 ## Risks
 
 - Current tests mutate local Mongo data and call real external services.
 - Some crawlers depend on third-party HTML/API shapes that can change without notice.
 - React 15 and Material-UI 0.x cannot be incrementally upgraded all the way to current React/MUI without significant UI work.
 - SSR currently depends on request-level globals, which is fragile under concurrent traffic.
+- Heroku still builds with Node 12, which is end-of-life and will eventually become a build blocker.
+- The default `posttest` script uploads Codecov from local machines and includes a token in `package.json`.
 
 ## Decision
 

@@ -12,10 +12,6 @@ export async function getPlayingMovies(): Promise<LINEMovieResponse> {
     }
 
     const response: LINEMovieResponse = await res.json();
-
-    // Now you can work with the 'response' data.
-    console.log(response); // Replace this with your desired processing logic.
-
     return response;
   } catch (error) {
     console.error('An error occurred:', error);

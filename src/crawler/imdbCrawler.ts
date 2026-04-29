@@ -28,11 +28,14 @@ export async function getIMDBMovieInfo(movie: Movie): Promise<IMDB> {
     }
 }
 
-async function getIMDBSuggestId({ englishTitle, releaseDate }: Movie) {
+export async function getIMDBSuggestId({ englishTitle, releaseDate }: Movie) {
     const imdbSuggestJsonUrl = getIMDBSuggestJsonUrl(englishTitle);
-    console.log(imdbSuggestJsonUrl)
     const response = await fetch(imdbSuggestJsonUrl);
     const suggestions = await response.json();
+    return getIMDBSuggestIdFromSuggestions(suggestions, englishTitle, releaseDate);
+}
+
+export function getIMDBSuggestIdFromSuggestions(suggestions: any, englishTitle: string, releaseDate: string) {
     if (suggestions && suggestions.d && suggestions.d.length) {
         const releaseYear = moment(releaseDate).year()
         const correctMovie = suggestions.d.find(({ y: year, l: title }) => {
@@ -44,7 +47,6 @@ async function getIMDBSuggestId({ englishTitle, releaseDate }: Movie) {
             return correctMovie.id
         }
     }
-    console.log(`could not find suggest id at ${imdbSuggestJsonUrl}`);
     return null;
 }
 
@@ -65,12 +67,15 @@ export async function getIMDBRating(imdbID: string): Promise<string> {
                 reject(error)
                 return
             }
-            const $ = cheerio.load(html);
-            const rating = $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
-            resolve(rating);
+            resolve(getIMDBRatingFromHtml(html));
             return
         })
     })
+}
+
+export function getIMDBRatingFromHtml(html: string): string {
+    const $ = cheerio.load(html);
+    return $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
 }
 
 function getSimilarity(s1, s2) {

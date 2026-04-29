@@ -19,4 +19,10 @@ export const googleApiSetting = {
   geoApiKey: process.env.GOOGLEMAP_APIKEY || 'AIzaSyBcj5gbydKX6IdPnSxqDUwTTzlszB7oZVw',
 };
 
-console.log('systemSetting', JSON.stringify(systemSetting));
+console.log('systemSetting', JSON.stringify({
+  ...systemSetting,
+  dbUrl: systemSetting.dbUrl ? '[redacted]' : undefined,
+  redisUrlForApiCache: systemSetting.redisUrlForApiCache ? '[redacted]' : undefined,
+  redisUrlForScheduler: systemSetting.redisUrlForScheduler ? '[redacted]' : undefined,
+  taskTriggerKey: systemSetting.taskTriggerKey ? '[redacted]' : undefined,
+}));
