@@ -29,9 +29,11 @@ describe('pttCrawler', () => {
     });
 
     describe('getPttPage', () => {
-        it('should reject when Pttid not exist', function () {
+        const liveIt = process.env.ENABLE_LIVE_CRAWLER_TESTS === 'true' ? it : it.skip;
+
+        liveIt('should reject when Pttid not exist', function () {
             this.timeout(5000);
-            let pageIndex = 99999
+            let pageIndex = 99999;
             return getPttPage(pageIndex).should.eventually
                 .rejectedWith(`index${pageIndex} not exist, server return:404 - Not Found.`);
         });

@@ -126,15 +126,34 @@ Status:
 - Done: IMDB live tests split from default test flow.
 - Done: production config logging redacted.
 
+## Second Implementation Slice
+
+Status: **done**
+
+Changes:
+
+- `log.ts`: `log.debug(...)` is now a no-op unless `LOG_LEVEL=debug` is set. Eliminates `updateDocument(...)` / `insertDocument(...)` spam in test output.
+- `package.json`: Codecov upload is now guarded by `$CI=true`; local `npm test` no longer uploads coverage.
+- `package.json` + `.nvmrc`: Node engine target upgraded from `^12.22.1` to `>=22`. `.nvmrc` updated to `v22`. Heroku app (`moviesrater`) is already on the `heroku-24` stack which ships Node 22.x by default — this aligns the declared target with reality.
+- `lineTask.test.ts`: Live LINE API test moved behind `ENABLE_LIVE_CRAWLER_TESTS=true` guard.
+- `googleMapApi.test.ts`: Live Google Maps tests moved behind `ENABLE_LIVE_CRAWLER_TESTS=true` guard.
+- `pttCrawler.test.ts`: Live "not exist" PTT page test moved behind `ENABLE_LIVE_CRAWLER_TESTS=true` guard.
+
+Test result after second slice (no VPN, Docker running):
+
+- 25 passing
+- 15 pending
+- 0 failing
+
 ## Next Implementation Slice
 
 Recommended next work:
 
-1. Stop default `npm test` from uploading Codecov locally; reserve upload for CI.
-2. Reduce DB/task debug output in tests, especially `updateDocument(...)` spam from LINE task tests.
-3. Add route/query smoke tests for the current SSR pages before deeper refactors.
-4. Upgrade the production runtime target away from Node 12, starting with the smallest supported Heroku runtime step.
-5. Add a temporary staging Heroku app or preview deployment before the larger rewrite begins.
+1. Add route/query smoke tests for the current SSR pages (home, upcoming, movie detail, theaters) before deeper refactors.
+2. Upgrade key dependencies: replace `request` with `node-fetch`/`undici`, upgrade MongoDB driver from v3 to v5/v6, upgrade Redis client from v2 to v4.
+3. Upgrade TypeScript from 2.3.x to 5.x — this will likely surface type errors that need fixing.
+4. Add a staging Heroku app or preview deployment before the larger rewrite begins.
+5. Start the Next.js rewrite scaffold in `apps/web` with the existing Mongo/Redis data layer wired in.
 
 ## Risks
 

@@ -3,22 +3,27 @@ import * as chaiAsPromised from 'chai-as-promised';
 import { updateLINEMovies } from '../task/lineTask';
 import { Mongo } from '../data/db';
 
-const assert = chai.assert;
 const expect = chai.expect;
-const should = chai.should();
 chai.should();
 chai.use(chaiAsPromised);
 
+const liveIt = process.env.ENABLE_LIVE_CRAWLER_TESTS === 'true' ? it : it.skip;
+
 describe('lineTask', () => {
-  before(async () => {
+  before(async function () {
+    if (process.env.ENABLE_LIVE_CRAWLER_TESTS !== 'true') return;
     await Mongo.openDbConnection();
   });
+
+  after(() => {
+    Mongo.closeDbConnection();
+  });
+
   describe('Update Movies', () => {
-    it('should without error', async function () {
+    liveIt('should update LINE movies without error', async function () {
       this.timeout(30000);
       const movies = await updateLINEMovies();
-      // Assuming movies[0] is an object with a lineTrailerHash property
-      expect(movies.pop().lineTrailerHash).to.be.not.null; // Use "to.be.null" instead of "is.null"
+      expect(movies.pop().lineTrailerHash).to.be.not.null;
     });
   });
 });
