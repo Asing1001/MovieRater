@@ -311,13 +311,13 @@ resource "google_cloud_scheduler_job" "imdb_daily" {
   }
 }
 
-# Job 3 — PTT articles crawl, daily
+# Job 3 — PTT articles crawl + merge, daily
 resource "google_cloud_scheduler_job" "ptt_daily" {
   name             = "ptt-daily"
-  description      = "Daily PTT movie article crawl"
+  description      = "Daily PTT crawl + merge yahooMovies into mergedDatas"
   schedule         = "0 4 * * *"
   time_zone        = "Asia/Taipei"
-  attempt_deadline = "320s"
+  attempt_deadline = "540s"
   depends_on       = [google_project_service.apis]
 
   http_target {

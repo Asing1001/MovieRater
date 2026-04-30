@@ -34,6 +34,14 @@ export default class cacheManager {
     await cacheManager.setMoviesSchedulesCache();
   }
 
+  // Refresh only the movies portion of the cache (cheaper than full init)
+  static async refreshMoviesCache() {
+    const mergedDatas = await cacheManager.getMergedDatas();
+    cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
+    cacheManager.setMovieLookupCache(mergedDatas);
+    cacheManager.setAllMoviesNamesCache(mergedDatas);
+  }
+
   private static async getMergedDatas() {
     console.time('Get mergedDatas');
     const mergedDatas = await Mongo.getCollection<Movie>({ name: 'mergedDatas' });
