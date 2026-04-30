@@ -1,6 +1,9 @@
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
-import { getMovieById } from '@/lib/movies';
-import { getSchedulesByLineMovieDbId } from '@/lib/theaters';
+import { ObjectId } from 'mongodb';
+import { Mongo } from '@/data/db';
+import Movie from '@/models/movie';
+import Schedule from '@/models/schedule';
 import { getArticlesByMovieBaseId } from '@/lib/articles';
 import { classifyArticle, getMovieSchema, serialize } from '@/lib/utils';
 import Ratings from '@/components/Ratings';
@@ -10,14 +13,36 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
-import Chip from '@mui/material/Chip';
 import type { Metadata } from 'next';
+
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ id: string }> };
 
+const fetchMovie = cache(async (id: string): Promise<Movie | null> => {
+  await Mongo.openDbConnection();
+  const query = ObjectId.isValid(id)
+    ? { movieBaseId: id }
+    : { yahooId: Number(id) };
+  const raw = await Mongo.db.collection<Movie>('mergedDatas').findOne(query);
+  if (!raw) return null;
+
+  // Enrich lineMovieDbId from yahooMovies if not already set
+  if (!raw.lineMovieDbId && raw.movieBaseId) {
+    const yahoo = await Mongo.db
+      .collection<{ _id: string; lineMovieDbId?: string; imdbRating?: string; imdbID?: string }>('yahooMovies')
+      .findOne({ _id: raw.movieBaseId } as any, { projection: { lineMovieDbId: 1, imdbRating: 1, imdbID: 1 } });
+    if (yahoo?.lineMovieDbId) raw.lineMovieDbId = yahoo.lineMovieDbId;
+    if (yahoo?.imdbRating && !raw.imdbRating) raw.imdbRating = yahoo.imdbRating;
+    if (yahoo?.imdbID && !raw.imdbID) raw.imdbID = yahoo.imdbID;
+  }
+
+  return serialize(raw);
+});
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const movie = getMovieById(id);
+  const movie = await fetchMovie(id);
   if (!movie) return { title: 'Movie Rater' };
   return {
     title: `${movie.chineseTitle} ${movie.englishTitle} | Movie Rater`,
@@ -28,12 +53,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MoviePage({ params }: Props) {
   const { id } = await params;
-  const raw = getMovieById(id);
+  const raw = await fetchMovie(id);
   if (!raw) notFound();
 
-  const articles = await getArticlesByMovieBaseId(raw.movieBaseId);
+  const [articles, scheduleRows] = await Promise.all([
+    getArticlesByMovieBaseId(raw.movieBaseId ?? ''),
+    raw.lineMovieDbId
+      ? Mongo.db
+          .collection<Schedule>('schedules')
+          .find({ lineMovieDbId: raw.lineMovieDbId })
+          .toArray()
+          .then(serialize)
+      : Promise.resolve([]),
+  ]);
+
   const movie = classifyArticle({ ...raw, relatedArticles: articles });
-  const schedules = movie.lineMovieDbId ? getSchedulesByLineMovieDbId(movie.lineMovieDbId) : [];
   const schema = getMovieSchema(movie);
   const posterUrl = movie.posterUrl?.replace('/w280', '/w644') ?? '';
 
@@ -41,7 +75,6 @@ export default async function MoviePage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 
-      {/* Hero section */}
       <Paper elevation={0} variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
         <Box sx={{ display: 'flex', gap: 0, flexDirection: { xs: 'column', sm: 'row' } }}>
           {posterUrl && (
@@ -77,7 +110,7 @@ export default async function MoviePage({ params }: Props) {
         )}
       </Paper>
 
-      {schedules.length > 0 && <Schedules schedules={schedules} />}
+      {scheduleRows.length > 0 && <Schedules schedules={scheduleRows} />}
 
       <PttArticles
         good={movie.goodRateArticles ?? []}

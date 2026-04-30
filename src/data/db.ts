@@ -59,8 +59,9 @@ export class Mongo {
     }
   }
 
-  public static async getCollection<T>({ name, sort = {}, options = {} }) {
+  public static async getCollection<T>({ name, sort = {}, options = {} }): Promise<any[]> {
     try {
+      await this.openDbConnection();
       log.debug('getCollection', arguments);
       return await this.db
         .collection<T>(name)
@@ -69,6 +70,7 @@ export class Mongo {
         .toArray();
     } catch (error) {
       console.error(error);
+      return [];
     }
   }
 

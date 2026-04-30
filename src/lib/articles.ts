@@ -5,6 +5,7 @@ import { serialize } from './utils';
 
 export async function getArticlesByMovieBaseId(movieBaseId: string): Promise<Article[]> {
   if (!movieBaseId) return [];
+  await Mongo.openDbConnection();
   const nineMonthsAgo = moment().subtract(9, 'months').format('YYYY/MM/DD');
   const articles = await Mongo.db
     .collection<Article>('pttArticles')

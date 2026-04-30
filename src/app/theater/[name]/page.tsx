@@ -1,12 +1,17 @@
 import { notFound } from 'next/navigation';
-import { getTheaterByName, getEnrichedSchedulesByLineTheaterId, getSchedulesByTheaterName } from '@/lib/theaters';
+import { Mongo } from '@/data/db';
+import Theater from '@/models/theater';
+import Schedule from '@/models/schedule';
+import Movie from '@/models/movie';
 import { serialize } from '@/lib/utils';
+import type { EnrichedSchedule, MovieMeta } from '@/lib/theaters';
 import TheaterSchedules from '@/components/TheaterSchedules';
-import type { EnrichedSchedule } from '@/lib/theaters';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import type { Metadata } from 'next';
+
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ name: string }> };
 
@@ -18,16 +23,41 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TheaterPage({ params }: Props) {
   const { name } = await params;
   const decoded = decodeURIComponent(name);
-  const theater = getTheaterByName(decoded);
+
+  await Mongo.openDbConnection();
+  const theater = serialize(
+    await Mongo.db.collection<Theater>('theaters').findOne({ name: decoded })
+  );
   if (!theater) notFound();
 
-  const enrichedSchedules: EnrichedSchedule[] = theater.lineTheaterId
-    ? getEnrichedSchedulesByLineTheaterId(theater.lineTheaterId)
-    : (serialize(getSchedulesByTheaterName(theater.name ?? '')) as EnrichedSchedule[]);
+  const schedules = serialize(
+    await Mongo.db
+      .collection<Schedule>('schedules')
+      .find({ lineTheaterId: theater.lineTheaterId ?? null })
+      .toArray()
+  );
+
+  // Enrich schedules with movie metadata for poster/rating display
+  const lineMovieDbIds = [...new Set(schedules.map((s) => s.lineMovieDbId).filter(Boolean))];
+  const movieDocs = lineMovieDbIds.length
+    ? await Mongo.db
+        .collection<Movie>('mergedDatas')
+        .find({ lineMovieDbId: { $in: lineMovieDbIds } })
+        .project({ lineMovieDbId: 1, movieBaseId: 1, posterUrl: 1, chineseTitle: 1, englishTitle: 1, imdbRating: 1, lineRating: 1, types: 1, runTime: 1 })
+        .toArray()
+    : [];
+  const movieByLineId: Record<string, MovieMeta> = {};
+  for (const m of movieDocs) {
+    if (m.lineMovieDbId) movieByLineId[m.lineMovieDbId] = serialize(m as MovieMeta);
+  }
+
+  const enrichedSchedules: EnrichedSchedule[] = schedules.map((s) => ({
+    ...s,
+    movieMeta: s.lineMovieDbId ? movieByLineId[s.lineMovieDbId] : undefined,
+  }));
 
   return (
     <Box>
-      {/* Theater header */}
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
           {(theater.theaterCity ?? theater.region) && (
@@ -55,7 +85,6 @@ export default async function TheaterPage({ params }: Props) {
         )}
       </Box>
 
-      {/* Schedule */}
       {enrichedSchedules.length > 0 ? (
         <TheaterSchedules schedules={enrichedSchedules} />
       ) : (
