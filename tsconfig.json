@@ -11,7 +11,7 @@
     "outDir": "dist/",
     "rootDir": "src/",
     "sourceMap": true,
-    "target": "es2020",
+    "target": "es6",
     "jsx": "react",
     "types": ["mocha", "react-dom"],
     "lib": ["dom", "es2020"]

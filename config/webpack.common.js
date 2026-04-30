@@ -10,7 +10,7 @@ module.exports = {
 
     module: {
         rules: [
-            { test: /\.tsx?$/, use: ['babel-loader?presets[]=es2015', "ts-loader"] },
+            { test: /\.tsx?$/, use: ['babel-loader?presets[]=es2015', { loader: 'ts-loader', options: { transpileOnly: true } }] },
             {
                 test: /\.html$/,
                 loader: 'html-loader',
