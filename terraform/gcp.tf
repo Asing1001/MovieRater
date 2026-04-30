@@ -80,7 +80,7 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     "attribute.actor"      = "assertion.actor"
     "attribute.aud"        = "assertion.aud"
   }
-  attribute_condition = "assertion.repository == 'Asing1001/movieRater.React'"
+  attribute_condition = "assertion.repository == 'Asing1001/MovieRater'"
 
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
@@ -90,7 +90,7 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 resource "google_service_account_iam_member" "github_wif" {
   service_account_id = google_service_account.main.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/Asing1001/movieRater.React"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/Asing1001/MovieRater"
 }
 
 # ── Artifact Registry ─────────────────────────────────────────────────────────
