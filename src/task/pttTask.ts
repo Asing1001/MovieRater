@@ -1,6 +1,5 @@
 import { getPttPage } from '../crawler/pttCrawler';
 import { Mongo } from '../data/db';
-import * as Q from 'q';
 import Article from '../models/article';
 import PttPage from '../models/pttPage';
 
@@ -32,15 +31,13 @@ async function getRangePttPages({ startPttIndex, endPttIndex }) {
     promises.push(promise);
   }
 
-  const results = await Q.allSettled(promises);
+  const results = await Promise.allSettled(promises);
   let pttPages = [];
   results.forEach((result) => {
-    if (result.state === 'fulfilled') {
-      var value = result.value;
-      pttPages.push(value);
+    if (result.status === 'fulfilled') {
+      pttPages.push(result.value);
     } else {
-      var reason = result.reason;
-      console.error(reason);
+      console.error(result.reason);
     }
   });
   return pttPages;

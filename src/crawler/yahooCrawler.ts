@@ -1,23 +1,16 @@
-import * as request from 'request';
 import * as cheerio from 'cheerio';
-import * as Q from 'q';
 import MovieBase from '../models/movieBase';
 
-export function getYahooMovieInfo(yahooId: number) {
-  const defer = Q.defer();
+export async function getYahooMovieInfo(yahooId: number): Promise<MovieBase> {
   const yahooMovieUrl = 'https://movies.yahoo.com.tw/movieinfo_main.html/id=' + yahooId;
-  var req = request({ url: yahooMovieUrl, followRedirect: false }, (error, res, body) => {
-    if (error) {
-      let reason = `error occur when request ${yahooMovieUrl}, error:${error}`;
-      return defer.reject(reason);
-    }
+  const response = await fetch(yahooMovieUrl, { redirect: 'manual' });
 
-    if (res.headers.location) {
-      let reason = `${yahooMovieUrl} 404 not found`;
-      return defer.reject(reason);
-    }
+  if (response.status >= 300) {
+    throw new Error(`${yahooMovieUrl} 404 not found`);
+  }
 
-    const $ = cheerio.load(body, { decodeEntities: false });
+  const body = await response.text();
+  const $ = cheerio.load(body, { decodeEntities: false });
     const $movieInfoDiv = $('.movie_intro_info_r');
     const $movieInfoValues = $movieInfoDiv.find('>span');
     const posterUrl = $('.movie_intro_foto>img').attr('src');
@@ -52,12 +45,9 @@ export function getYahooMovieInfo(yahooId: number) {
       summary,
     };
 
-    if (!movieInfo.chineseTitle) {
-      let reason = `${yahooMovieUrl} can not find chineseTitle, data might got problem.`;
-      return defer.reject(reason);
-    }
+  if (!movieInfo.chineseTitle) {
+    throw new Error(`${yahooMovieUrl} can not find chineseTitle, data might got problem.`);
+  }
 
-    return defer.resolve(movieInfo);
-  });
-  return defer.promise;
+  return movieInfo;
 }

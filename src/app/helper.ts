@@ -23,7 +23,7 @@ export function classifyArticle(movie: Movie) {
   return movieWithClassifyArticles;
 }
 
-export function getClientGeoLocation(): Promise<Coordinates> {
+export function getClientGeoLocation(): Promise<GeolocationCoordinates> {
   return new Promise((reslove, reject) =>
     window.navigator.geolocation.getCurrentPosition((pos) => reslove(pos.coords), reject, { timeout: 10000 })
   );

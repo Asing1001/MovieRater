@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(heroku stack:info --app moviesrater)",
+      "Bash(heroku run *)",
+      "Bash(heroku info *)",
+      "Bash(heroku buildpacks *)",
+      "Bash(npm --version)",
+      "Bash(npm test *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(heroku releases *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://www.mvrater.com/)",
+      "Bash(curl -s -o /dev/null -w \" %{http_code}\" https://www.mvrater.com/upcoming)",
+      "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('mongodb:', p.dependencies.mongodb, 'redis:', p.dependencies.redis, 'request:', p.dependencies.request\\)\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}

@@ -1,4 +1,3 @@
-import * as memoryCache from 'memory-cache';
 import { Mongo } from '../data/db';
 import * as moment from 'moment';
 import Movie from '../models/movie';
@@ -7,6 +6,7 @@ import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask'
 import isValideDate from '../helper/isValideDate';
 
 export default class cacheManager {
+  private static _store = new Map<string, any>();
   static All_MOVIES = 'allMovies';
   static All_MOVIES_NAMES = 'allMoviesNames';
   static MOVIES_BY_CHINESE_TITLE = 'moviesByChineseTitle';
@@ -160,12 +160,11 @@ export default class cacheManager {
     return theatersByScheduleUrl[scheduleUrl];
   }
 
-  static get(key) {
-    let data = memoryCache.get(key);
-    return data;
+  static get(key: string) {
+    return cacheManager._store.get(key);
   }
 
-  static set(key, value) {
-    memoryCache.put(key, value);
+  static set(key: string, value: any) {
+    cacheManager._store.set(key, value);
   }
 }

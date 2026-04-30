@@ -3,7 +3,7 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { Mongo } from '../data/db';
 import Movie from '../models/movie';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -14,7 +14,7 @@ chai.use(chaiAsPromised);
 describe('mergeData', () => {
   describe('mergeData', () => {
     it('should not merge if chineseTitle match but article date not in range', function () {
-      let yahooMovies: Array<Movie> = [{ _id: new ObjectID(), chineseTitle: '測試資料1', releaseDate: '2016-11-07' }];
+      let yahooMovies: Array<Movie> = [{ _id: new ObjectId(), chineseTitle: '測試資料1', releaseDate: '2016-11-07' }];
       let pttArticles = [
         {
           title: '[好雷] 測試資料1',
@@ -27,7 +27,7 @@ describe('mergeData', () => {
     });
 
     it('should merge if chineseTitle match and article date in range', function () {
-      let yahooMovies: Array<Movie> = [{ _id: new ObjectID(), chineseTitle: '測試', releaseDate: '2016-09-07' }];
+      let yahooMovies: Array<Movie> = [{ _id: new ObjectId(), chineseTitle: '測試', releaseDate: '2016-09-07' }];
       let pttArticles = [
         {
           title: '[好雷] 測試資料',

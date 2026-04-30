@@ -16,7 +16,7 @@ import schema from './data/schema';
 import { renderToStringWithData, ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
 import { createLocalInterface } from 'apollo-local-query';
 import * as graphql from 'graphql';
-import * as redis from 'redis';
+import Redis from 'ioredis';
 import { updateImdbInfo } from './task/imdbTask';
 import { checkTaskTriggerKeyInHeader } from './helper/taskTriggerAuthorityHandler';
 
@@ -64,9 +64,8 @@ app.use(
 );
 
 //request below will be cache
-const redisClient = redis
-  .createClient(systemSetting.redisUrlForApiCache)
-  .on('error', (err) => console.log('Error ' + err));
+const redisClient = new Redis(systemSetting.redisUrlForApiCache);
+redisClient.on('error', (err) => console.log('Redis error: ' + err));
 const basicCacheOption = {
   debug: true,
   enabled: systemSetting.isProduction,

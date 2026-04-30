@@ -4,7 +4,7 @@ import * as sinonChai from 'sinon-chai';
 import { Mongo } from '../data/db';
 import { updateMoviesSchedules } from '../task/atmoviesTask';
 import * as movieSchduleCrawler from '../crawler/movieSchduleCrawler';
-import * as redis from 'redis';
+
 
 const should = chai.should();
 const assert = chai.assert;

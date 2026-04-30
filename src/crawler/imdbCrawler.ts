@@ -1,8 +1,6 @@
-import * as fetch from "isomorphic-fetch";
 import * as cheerio from "cheerio";
 import Movie from '../models/movie';
 import * as moment from 'moment';
-import * as request from "request";
 
 interface IMDB {
     imdbID: string
@@ -59,18 +57,11 @@ function getIMDBSuggestJsonUrl(englishTitle: string) {
 const imdbMobileMovieUrl = 'https://m.imdb.com/title/';
 export async function getIMDBRating(imdbID: string): Promise<string> {
     if (!imdbID) {
-        return null
+        return null;
     }
-    return new Promise((resolve: (value: string) => void, reject) => {
-        request(`${imdbMobileMovieUrl + imdbID}/`, (error: Error, r, html: string) =>{
-            if(error) {
-                reject(error)
-                return
-            }
-            resolve(getIMDBRatingFromHtml(html));
-            return
-        })
-    })
+    const response = await fetch(`${imdbMobileMovieUrl}${imdbID}/`);
+    const html = await response.text();
+    return getIMDBRatingFromHtml(html);
 }
 
 export function getIMDBRatingFromHtml(html: string): string {

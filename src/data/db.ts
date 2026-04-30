@@ -9,7 +9,8 @@ export class Mongo {
   public static async openDbConnection() {
     try {
       if (!this.dbConnection) {
-        this.dbConnection = await MongoClient.connect(systemSetting.dbUrl);
+        this.dbConnection = new MongoClient(systemSetting.dbUrl);
+        await this.dbConnection.connect();
         this.db = this.dbConnection.db();
         console.log('connect to mongodb correctly');
       }

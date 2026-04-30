@@ -2,17 +2,16 @@ import { crawlMovieSchdule } from '../crawler/movieSchduleCrawler';
 import Schedule from '../models/schedule';
 import * as moment from 'moment';
 import { Mongo } from '../data/db';
-import * as redis from 'redis';
+import Redis from 'ioredis';
 import { systemSetting } from '../configs/systemSetting';
 import { promiseMap } from '../helper/promiseMap';
 
-const redisClient = redis
-  .createClient(systemSetting.redisUrlForScheduler)
-  .on('error', (err) => console.log('Error ' + err));
+const redisClient = new Redis(systemSetting.redisUrlForScheduler);
+redisClient.on('error', (err) => console.log('Redis error: ' + err));
 
 export async function updateMoviesSchedules(): Promise<Schedule[]> {
-  const scheduleUrls: { scheduleUrl: string }[] = await Mongo.db
-    .collection('theaters')
+  const scheduleUrls = await Mongo.db
+    .collection<{ scheduleUrl: string }>('theaters')
     .find({}, { projection: { scheduleUrl: 1, _id: 0 } })
     .toArray();
   const scheduleCrawlDate = await getScheduleCrawlDate();
@@ -29,24 +28,18 @@ export async function updateMoviesSchedules(): Promise<Schedule[]> {
 }
 
 export async function getMoviesSchedules(): Promise<Schedule[]> {
-  return new Promise<Schedule[]>((resolve, reject) => {
-    const multi = redisClient.multi();
-    for (let i = 0; i < 7; i++) {
-      multi.get(moment().add(i, 'days').format('YYYYMMDD'));
-    }
-    multi.exec((err, replies) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-        return;
-      }
-      console.log('getMoviesSchedules got ' + replies.length + ' replies');
-      const schedules: Schedule[] = [].concat(
-        ...replies.filter((reply) => reply !== null).map((reply) => JSON.parse(reply))
-      );
-      resolve(schedules);
-    });
-  });
+  const multi = redisClient.multi();
+  for (let i = 0; i < 7; i++) {
+    multi.get(moment().add(i, 'days').format('YYYYMMDD'));
+  }
+  const replies = await multi.exec();
+  console.log('getMoviesSchedules got ' + replies.length + ' replies');
+  const schedules: Schedule[] = [].concat(
+    ...replies
+      .filter(([err, reply]) => !err && reply !== null)
+      .map(([, reply]) => JSON.parse(reply as string))
+  );
+  return schedules;
 }
 
 const crawlerStatusFilter = { name: 'crawlerStatus' };

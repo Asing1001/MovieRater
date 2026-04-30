@@ -7,7 +7,7 @@ import { updateImdbInfo } from '../task/imdbTask';
 import * as imdbCrawler from '../crawler/imdbCrawler';
 import Movie from '../models/movie';
 import cacheManager from '../data/cacheManager';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 const should = chai.should();
 chai.use(sinonChai);
@@ -28,7 +28,7 @@ describe('imdbTask', () => {
 
   describe('updateImdbInfo', () => {
     const movie: Movie = {
-      movieBaseId: new ObjectID().toHexString(),
+      movieBaseId: new ObjectId().toHexString(),
       englishTitle: 'Dangal',
       releaseDate: moment().format(),
       imdbLastCrawlTime: moment().subtract(2, 'days').format(),
@@ -51,7 +51,7 @@ describe('imdbTask', () => {
       await updateImdbInfo();
       sandbox.assert.calledWith(
         stubUpdateDocument,
-        { _id: new ObjectID(movie.movieBaseId) },
+        { _id: new ObjectId(movie.movieBaseId) },
         { imdbLastCrawlTime: moment().format('YYYY-MM-DDTHH') }
       );
     });

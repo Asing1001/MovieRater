@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { initScheduler } from '../backgroundService/scheduler';
 import { systemSetting } from '../configs/systemSetting';
-import * as nodeSchedule from 'node-schedule';
+import * as cron from 'node-cron';
 
 chai.use(sinonChai);
 const assert = chai.assert;
@@ -14,7 +14,7 @@ describe('Scheduler', () => {
   let consoleSpy: sinon.SinonSpy, scheduleJobSpy: sinon.SinonSpy;
   beforeEach(() => {
     consoleSpy = sinon.spy(console, 'log');
-    scheduleJobSpy = sinon.spy(nodeSchedule, 'scheduleJob');
+    scheduleJobSpy = sinon.spy(cron, 'schedule');
   })
   afterEach(() => {
     consoleSpy.restore();

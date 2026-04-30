@@ -1,5 +1,4 @@
-import * as fetch from 'isomorphic-fetch';
-import { scheduleJob } from 'node-schedule';
+import * as cron from 'node-cron';
 import { systemSetting, schedulerSetting } from '../configs/systemSetting';
 import { updateTheaterWithLocationList } from '../task/yahooTask';
 import { updatePttArticles } from '../task/pttTask';
@@ -14,37 +13,37 @@ export function initScheduler() {
   }
   console.log('[Scheduler] init');
 
-  scheduleJob('10 * * * *', async function () {
+  cron.schedule('10 * * * *', async () => {
     console.time('[Scheduler] updateLINEMovies');
     await updateLINEMovies();
     console.timeEnd('[Scheduler] updateLINEMovies');
   });
 
-  scheduleJob('15 * * * *', async function () {
+  cron.schedule('15 * * * *', async () => {
     console.time('[Scheduler] updatePttArticles');
     await updatePttArticles(schedulerSetting.pttPagePerTime);
     console.timeEnd('[Scheduler] updatePttArticles');
   });
 
-  scheduleJob('20 * * * *', async function () {
+  cron.schedule('20 * * * *', async () => {
     await cacheManager.setRecentMoviesCache();
     await updateMoviesSchedules();
     await cacheManager.setMoviesSchedulesCache();
   });
 
-  scheduleJob('30 5 * * *', async function () {
+  cron.schedule('30 5 * * *', async () => {
     console.time('[Scheduler] updateTheaterWithLocationList');
     await updateTheaterWithLocationList();
     console.timeEnd('[Scheduler] updateTheaterWithLocationList');
   });
 
-  scheduleJob('40 5 * * *', async function () {
+  cron.schedule('40 5 * * *', async () => {
     console.time('[Scheduler] cacheManager.init');
     await cacheManager.init();
     console.timeEnd('[Scheduler] cacheManager.init');
   });
 
-  scheduleJob('30 6 * * *', async function () {
+  cron.schedule('30 6 * * *', async () => {
     console.time('[Scheduler] updateImdbInfo');
     await updateImdbInfo();
     console.timeEnd('[Scheduler] updateImdbInfo');
