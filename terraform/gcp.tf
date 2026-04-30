@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "movierater-tf-state"
+    bucket = "movierater-react-tf-state"
     prefix = "terraform/state"
   }
   required_providers {
@@ -32,7 +32,7 @@ resource "google_project_service" "apis" {
   disable_on_destroy = false
 }
 
-# ── Service account & OIDC for GitHub Actions ─────────────────────────────────
+# ── Service account for GitHub Actions CI/CD ──────────────────────────────────
 resource "google_service_account" "main" {
   account_id   = "terraform-sa"
   display_name = "MovieRater CI/CD"
@@ -62,17 +62,35 @@ resource "google_project_iam_member" "sa_sa_user" {
   member  = "serviceAccount:${google_service_account.main.email}"
 }
 
-module "gh_oidc" {
-  source      = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
-  project_id  = var.project_id
-  pool_id     = "movierater-pool"
-  provider_id = "movierater-gh-provider"
-  sa_mapping = {
-    (google_service_account.main.account_id) = {
-      sa_name   = google_service_account.main.name
-      attribute = "attribute.repository/Asing1001/movieRater.React"
-    }
+# ── Workload Identity Federation for keyless GitHub Actions auth ───────────────
+resource "google_iam_workload_identity_pool" "github" {
+  workload_identity_pool_id = "gh-pool"
+  display_name              = "GitHub Actions Pool"
+  depends_on                = [google_project_service.apis]
+}
+
+resource "google_iam_workload_identity_pool_provider" "github" {
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github.workload_identity_pool_id
+  workload_identity_pool_provider_id = "gh-provider"
+  display_name                       = "GitHub Actions Provider"
+
+  attribute_mapping = {
+    "google.subject"       = "assertion.sub"
+    "attribute.repository" = "assertion.repository"
+    "attribute.actor"      = "assertion.actor"
+    "attribute.aud"        = "assertion.aud"
   }
+  attribute_condition = "assertion.repository == 'Asing1001/movieRater.React'"
+
+  oidc {
+    issuer_uri = "https://token.actions.githubusercontent.com"
+  }
+}
+
+resource "google_service_account_iam_member" "github_wif" {
+  service_account_id = google_service_account.main.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/Asing1001/movieRater.React"
 }
 
 # ── Artifact Registry ─────────────────────────────────────────────────────────
@@ -87,9 +105,9 @@ locals {
   movierater_image = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.main.repository_id}/movierater"
 }
 
-# ── GCS bucket for Terraform state (bootstrap: create manually before tf init) ─
+# ── GCS bucket for Terraform state (created manually before tf init) ──────────
 resource "google_storage_bucket" "tf_state" {
-  name                        = "movierater-tf-state"
+  name                        = "movierater-react-tf-state"
   location                    = var.region
   uniform_bucket_level_access = true
   versioning {
@@ -98,38 +116,30 @@ resource "google_storage_bucket" "tf_state" {
 }
 
 # ── Secrets ───────────────────────────────────────────────────────────────────
-# Secrets are created by Terraform but values must be set manually:
-#   gcloud secrets versions add db-url --data-file=- <<< "mongodb+srv://..."
-#   gcloud secrets versions add task-trigger-key --data-file=- <<< "your-key"
-#   gcloud secrets versions add omdb-api-key --data-file=- <<< "your-key"
-
 resource "google_secret_manager_secret" "db_url" {
-  secret_id = "db-url"
-  replication { auto {} }
+  secret_id  = "db-url"
   depends_on = [google_project_service.apis]
-}
-
-resource "google_secret_manager_secret" "task_trigger_key" {
-  secret_id = "task-trigger-key"
-  replication { auto {} }
-  depends_on = [google_project_service.apis]
+  replication {
+    auto {}
+  }
 }
 
 resource "google_secret_manager_secret" "omdb_api_key" {
-  secret_id = "omdb-api-key"
-  replication { auto {} }
+  secret_id  = "omdb-api-key"
   depends_on = [google_project_service.apis]
+  replication {
+    auto {}
+  }
 }
 
-# Allow Cloud Run service account to access secrets
+# ── Cloud Run service account ──────────────────────────────────────────────────
+resource "google_service_account" "cloudrun" {
+  account_id   = "cloudrun-sa"
+  display_name = "MovieRater Cloud Run"
+}
+
 resource "google_secret_manager_secret_iam_member" "db_url" {
   secret_id = google_secret_manager_secret.db_url.secret_id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.cloudrun.email}"
-}
-
-resource "google_secret_manager_secret_iam_member" "task_trigger_key" {
-  secret_id = google_secret_manager_secret.task_trigger_key.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.cloudrun.email}"
 }
@@ -140,13 +150,9 @@ resource "google_secret_manager_secret_iam_member" "omdb_api_key" {
   member    = "serviceAccount:${google_service_account.cloudrun.email}"
 }
 
-# ── Cloud Run service account ──────────────────────────────────────────────────
-resource "google_service_account" "cloudrun" {
-  account_id   = "cloudrun-sa"
-  display_name = "MovieRater Cloud Run"
-}
-
 # ── Cloud Run service ─────────────────────────────────────────────────────────
+# Bootstrapped with a public placeholder image; GitHub Actions updates the image
+# on every push to master via `gcloud run deploy`.
 resource "google_cloud_run_v2_service" "main" {
   name     = "movierater"
   location = var.region
@@ -155,18 +161,24 @@ resource "google_cloud_run_v2_service" "main" {
   depends_on = [
     google_project_service.apis,
     google_artifact_registry_repository.main,
+    google_secret_manager_secret.db_url,
+    google_secret_manager_secret.omdb_api_key,
   ]
+
+  lifecycle {
+    ignore_changes = [template[0].containers[0].image]
+  }
 
   template {
     service_account = google_service_account.cloudrun.email
 
     scaling {
-      min_instance_count = 1
+      min_instance_count = 0
       max_instance_count = 1
     }
 
     containers {
-      image = "${local.movierater_image}:latest"
+      image = "us-docker.pkg.dev/cloudrun/container/hello:latest"
 
       resources {
         limits = {
@@ -176,38 +188,32 @@ resource "google_cloud_run_v2_service" "main" {
         startup_cpu_boost = true
       }
 
-      # Non-sensitive env vars
-      env { name = "NODE_ENV";        value = "production" }
-      env { name = "TZ";              value = "Asia/Taipei" }
-      env { name = "WEBSITE_URL";     value = "https://www.mvrater.com" }
-      env { name = "ENABLE_SCHEDULER"; value = "true" }
-      env { name = "ENABLE_GRAPHIQL"; value = "false" }
-
-      # Redis from Upstash (built at apply time)
       env {
-        name  = "REDIS_URL"
-        value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
+        name  = "NODE_ENV"
+        value = "production"
       }
       env {
-        name  = "REDISCLOUD_URL"
-        value = "redis://default:${upstash_redis_database.main.password}@${upstash_redis_database.main.endpoint}:${upstash_redis_database.main.port}"
+        name  = "TZ"
+        value = "Asia/Taipei"
+      }
+      env {
+        name  = "WEBSITE_URL"
+        value = "https://www.mvrater.com"
+      }
+      env {
+        name  = "ENABLE_SCHEDULER"
+        value = "false"
+      }
+      env {
+        name  = "ENABLE_GRAPHIQL"
+        value = "false"
       }
 
-      # Sensitive vars from Secret Manager
       env {
         name = "DB_URL"
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.db_url.secret_id
-            version = "latest"
-          }
-        }
-      }
-      env {
-        name = "TASK_TRIGGER_KEY"
-        value_source {
-          secret_key_ref {
-            secret  = google_secret_manager_secret.task_trigger_key.secret_id
             version = "latest"
           }
         }
@@ -226,9 +232,10 @@ resource "google_cloud_run_v2_service" "main" {
 }
 
 # Allow public access
-resource "google_cloud_run_service_iam_binding" "public" {
+resource "google_cloud_run_v2_service_iam_binding" "public" {
+  project  = var.project_id
   location = google_cloud_run_v2_service.main.location
-  service  = google_cloud_run_v2_service.main.name
+  name     = google_cloud_run_v2_service.main.name
   role     = "roles/run.invoker"
   members  = ["allUsers"]
 }
@@ -238,12 +245,86 @@ resource "google_cloud_run_domain_mapping" "www" {
   name     = "www.mvrater.com"
   location = google_cloud_run_v2_service.main.location
   metadata { namespace = var.project_id }
-  spec { route_name = google_cloud_run_v2_service.main.name }
+  spec {
+    route_name     = google_cloud_run_v2_service.main.name
+    force_override = true
+  }
 }
 
 resource "google_cloud_run_domain_mapping" "apex" {
   name     = "mvrater.com"
   location = google_cloud_run_v2_service.main.location
   metadata { namespace = var.project_id }
-  spec { route_name = google_cloud_run_v2_service.main.name }
+  spec {
+    route_name     = google_cloud_run_v2_service.main.name
+    force_override = true
+  }
+}
+
+# ── Cloud Scheduler (3 free jobs/project) ────────────────────────────────────
+resource "google_service_account" "scheduler" {
+  account_id   = "scheduler-sa"
+  display_name = "MovieRater Cloud Scheduler"
+}
+
+resource "google_cloud_run_v2_service_iam_member" "scheduler_invoker" {
+  project  = var.project_id
+  location = var.region
+  name     = google_cloud_run_v2_service.main.name
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:${google_service_account.scheduler.email}"
+}
+
+# Job 1 — LINE movies + theater schedules, hourly
+resource "google_cloud_scheduler_job" "line_hourly" {
+  name             = "line-hourly"
+  description      = "Update LINE movies and theater schedules"
+  schedule         = "10 * * * *"
+  time_zone        = "Asia/Taipei"
+  attempt_deadline = "320s"
+  depends_on       = [google_project_service.apis]
+
+  http_target {
+    http_method = "POST"
+    uri         = "${google_cloud_run_v2_service.main.uri}/api/tasks/line"
+    oidc_token {
+      service_account_email = google_service_account.scheduler.email
+    }
+  }
+}
+
+# Job 2 — IMDB ratings backfill, daily
+resource "google_cloud_scheduler_job" "imdb_daily" {
+  name             = "imdb-daily"
+  description      = "Daily IMDB ratings backfill"
+  schedule         = "40 6 * * *"
+  time_zone        = "Asia/Taipei"
+  attempt_deadline = "540s"
+  depends_on       = [google_project_service.apis]
+
+  http_target {
+    http_method = "POST"
+    uri         = "${google_cloud_run_v2_service.main.uri}/api/tasks/imdb"
+    oidc_token {
+      service_account_email = google_service_account.scheduler.email
+    }
+  }
+}
+
+# Job 3 — PTT articles crawl, daily
+resource "google_cloud_scheduler_job" "ptt_daily" {
+  name             = "ptt-daily"
+  description      = "Daily PTT movie article crawl"
+  schedule         = "0 4 * * *"
+  time_zone        = "Asia/Taipei"
+  attempt_deadline = "320s"
+  depends_on       = [google_project_service.apis]
+
+  http_target {
+    http_method = "POST"
+    uri         = "${google_cloud_run_v2_service.main.uri}/api/tasks/ptt"
+    oidc_token {
+      service_account_email = google_service_account.scheduler.email
+    }
+  }
 }

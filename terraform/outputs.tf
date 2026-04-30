@@ -1,6 +1,6 @@
 output "workload_identity_provider" {
   description = "Set as WORKLOAD_IDENTITY_PROVIDER in GitHub Actions secrets"
-  value       = module.gh_oidc.provider_name
+  value       = google_iam_workload_identity_pool_provider.github.name
 }
 
 output "service_account" {

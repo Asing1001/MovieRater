@@ -4,8 +4,6 @@ export const systemSetting = {
   enableGraphiql: process.env.ENABLE_GRAPHIQL === 'true',
   enableScheduler: process.env.ENABLE_SCHEDULER === 'true',
   isProduction: process.env.NODE_ENV === 'production',
-  redisUrlForApiCache: process.env.REDIS_URL || 'redis://localhost:6380/',
-  redisUrlForScheduler: process.env.REDISCLOUD_URL || 'redis://localhost:6380/',
   taskTriggerKey: process.env.TASK_TRIGGER_KEY || 'taskTriggerKey',
 };
 
@@ -26,7 +24,5 @@ export const googleApiSetting = {
 console.log('systemSetting', JSON.stringify({
   ...systemSetting,
   dbUrl: systemSetting.dbUrl ? '[redacted]' : undefined,
-  redisUrlForApiCache: systemSetting.redisUrlForApiCache ? '[redacted]' : undefined,
-  redisUrlForScheduler: systemSetting.redisUrlForScheduler ? '[redacted]' : undefined,
   taskTriggerKey: systemSetting.taskTriggerKey ? '[redacted]' : undefined,
 }));

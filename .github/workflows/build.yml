@@ -7,9 +7,9 @@ on:
     branches: [master]
 
 env:
-  PROJECT_ID: movierater-1492834745733
+  PROJECT_ID: movierater-react
   REGION: asia-east1
-  IMAGE: asia-east1-docker.pkg.dev/movierater-1492834745733/movierater/movierater
+  IMAGE: asia-east1-docker.pkg.dev/movierater-react/movierater/movierater
 
 permissions:
   id-token: write
