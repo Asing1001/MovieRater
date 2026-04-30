@@ -76,7 +76,15 @@ const basicCacheOption = {
 };
 const basicCache = apicache.options(basicCacheOption).middleware('1 hour');
 app.use(basicCache, function (req, res, next) {
-  global.navigator = { userAgent: req.headers['user-agent'] };
+  try {
+    Object.defineProperty(global, 'navigator', {
+      value: { userAgent: req.headers['user-agent'] },
+      configurable: true,
+      writable: true,
+    });
+  } catch (_e) {
+    // Node 22+ defines navigator as a read-only built-in; SSR proceeds with Node's navigator
+  }
   global.document = {
     title: 'Movie Rater',
     meta: {
