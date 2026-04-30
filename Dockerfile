@@ -1,23 +1,33 @@
-# Use the official Node.js image
-FROM node:12.22.1
+FROM node:20-alpine AS base
 
-# Setup timezone
-ENV TZ=Asia/Taipei
-
-# Set the working directory
+# Install dependencies only
+FROM base AS deps
 WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 
-# Copy package.json and yarn.lock to the working directory
-COPY package.json yarn.lock ./
-
-# Install dependencies
-RUN yarn
-
-# Copy the rest of the application code to the working directory
+# Build the app
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm run build
 
-# Run the build step
-RUN yarn build
+# Production image — Next.js standalone output
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV TZ=Asia/Taipei
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
-# Set the command to run the application when the container starts
-CMD ["yarn", "start"]
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+EXPOSE 3000
+CMD ["node", "server.js"]

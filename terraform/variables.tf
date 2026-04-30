@@ -1,39 +1,20 @@
 variable "project_id" {
   type        = string
-  description = "The GCP project id"
+  description = "GCP project ID"
 }
 
 variable "region" {
+  type    = string
   default = "asia-east1"
 }
 
-variable "db_url" {
-  default     = "mongodb://localhost:27018/movierater"
-  description = "mongodb url"
-}
-
-variable "enable_graphiql" {
-  default = false
-}
-
-variable "enable_scheduler" {
-  default     = true
-  description = "whether to schedule the background tasks, see movieRater.React/src/backgroundService/scheduler.ts"
-}
-
-variable "node_env" {
-  default = true
-}
-
-variable "website_url" {
-  default     = ""
-  description = "if you set to true, the application will request website_url in every 15 seconds to keep it awake."
-}
-
 variable "upstash_email" {
-  description = "upstash redis module required param"
+  type        = string
+  description = "Upstash account email"
 }
 
 variable "upstash_apikey" {
-  description = "upstash redis module required param"
+  type        = string
+  sensitive   = true
+  description = "Upstash API key"
 }
