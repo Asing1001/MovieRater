@@ -33,7 +33,7 @@ export default async function TheaterPage({ params }: Props) {
         )}
       </Paper>
       {schedules.length > 0 ? (
-        <Schedules schedules={schedules} />
+        <Schedules schedules={schedules} titleKey="movieName" />
       ) : (
         <Typography color="text.secondary">目前無場次資料</Typography>
       )}

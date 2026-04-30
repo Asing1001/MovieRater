@@ -11,7 +11,7 @@ function getNextDays(count = 7) {
   return Array.from({ length: count }, (_, i) => moment().add(i, 'days').format('YYYYMMDD'));
 }
 
-export default function Schedules({ schedules }: { schedules: Schedule[] }) {
+export default function Schedules({ schedules, titleKey = 'theaterName' }: { schedules: Schedule[]; titleKey?: 'theaterName' | 'movieName' }) {
   const days = getNextDays();
   const [selectedDay, setSelectedDay] = useState(days[0]);
 
@@ -37,7 +37,7 @@ export default function Schedules({ schedules }: { schedules: Schedule[] }) {
       ) : (
         filtered.map((s, i) => (
           <Paper key={i} variant="outlined" sx={{ p: 1.5, mt: 1 }}>
-            <Typography fontWeight={600}>{s.theaterName}</Typography>
+            <Typography fontWeight={600}>{s[titleKey]}</Typography>
             {s.roomTypes?.length ? (
               <Typography variant="caption" color="text.secondary">{s.roomTypes.join(' / ')}</Typography>
             ) : null}

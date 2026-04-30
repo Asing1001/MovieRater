@@ -110,9 +110,13 @@ export default class cacheManager {
       const recentMovieChineseTitles: string[] = cacheManager
         .get(cacheManager.RECENT_MOVIES)
         .map((movie) => movie.chineseTitle);
-      const filterdSchedules = allSchedules.filter(
-        (schedule) => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1
-      );
+      const theatersByUrl: Record<string, any> = cacheManager.get(cacheManager.THEATERS_BY_SCHEDULE_URL) || {};
+      const filterdSchedules = allSchedules
+        .filter((schedule) => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1)
+        .map((schedule) => ({
+          ...schedule,
+          theaterName: schedule.theaterName || theatersByUrl[schedule.scheduleUrl]?.name || '',
+        }));
       cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);
       cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME, cacheManager.groupBy(filterdSchedules, 'movieName'));
       cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_THEATER_URL, cacheManager.groupBy(filterdSchedules, 'scheduleUrl'));
