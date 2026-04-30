@@ -4,7 +4,7 @@ import { updateTheaterWithLocationList } from '../task/yahooTask';
 import { updatePttArticles } from '../task/pttTask';
 import { updateImdbInfo } from '../task/imdbTask';
 import cacheManager from '../data/cacheManager';
-import { updateMoviesSchedules } from '../task/atmoviesTask';
+import { updateLineSchedules } from '../task/lineScheduleTask';
 import { updateLINEMovies } from '../task/lineTask';
 
 export function initScheduler() {
@@ -26,9 +26,11 @@ export function initScheduler() {
   });
 
   cron.schedule('20 * * * *', async () => {
+    console.time('[Scheduler] updateLineSchedules');
     await cacheManager.setRecentMoviesCache();
-    await updateMoviesSchedules();
+    await updateLineSchedules();
     await cacheManager.setMoviesSchedulesCache();
+    console.timeEnd('[Scheduler] updateLineSchedules');
   });
 
   cron.schedule('30 5 * * *', async () => {

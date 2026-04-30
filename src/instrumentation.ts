@@ -4,8 +4,12 @@ export async function register() {
     const cacheManager = (await import('./data/cacheManager')).default;
     const { initScheduler } = await import('./backgroundService/scheduler');
     await Mongo.openDbConnection();
-    // Init cache in background — don't block server startup
-    cacheManager.init().catch(console.error);
+    // Init cache then crawl LINE schedules — all in background
+    cacheManager.init().then(async () => {
+      const { updateLineSchedules } = await import('./task/lineScheduleTask');
+      await updateLineSchedules();
+      await cacheManager.setMoviesSchedulesCache();
+    }).catch(console.error);
     initScheduler();
   }
 }

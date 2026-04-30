@@ -2,9 +2,16 @@ import { MongoClient, Db } from 'mongodb';
 import { systemSetting } from '../configs/systemSetting';
 import log from '../helper/log';
 
+declare global {
+  var __mongoClient: MongoClient | undefined;
+  var __mongoDb: Db | undefined;
+}
+
 export class Mongo {
-  static dbConnection: MongoClient = null;
-  static db: Db = null;
+  static get dbConnection(): MongoClient { return globalThis.__mongoClient ?? null; }
+  static set dbConnection(v: MongoClient) { globalThis.__mongoClient = v; }
+  static get db(): Db { return globalThis.__mongoDb ?? null; }
+  static set db(v: Db) { globalThis.__mongoDb = v; }
 
   public static async openDbConnection() {
     try {

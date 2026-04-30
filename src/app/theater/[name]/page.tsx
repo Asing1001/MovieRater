@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getTheaterByName, getSchedulesByTheaterUrl } from '@/lib/theaters';
+import { getTheaterByName, getSchedulesByTheaterName } from '@/lib/theaters';
 import Schedules from '@/components/Schedules';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -19,7 +19,7 @@ export default async function TheaterPage({ params }: Props) {
   const theater = getTheaterByName(decoded);
   if (!theater) notFound();
 
-  const schedules = theater.scheduleUrl ? getSchedulesByTheaterUrl(theater.scheduleUrl) : [];
+  const schedules = getSchedulesByTheaterName(theater.name ?? '');
 
   return (
     <>

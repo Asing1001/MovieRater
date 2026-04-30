@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getMovieById } from '@/lib/movies';
-import { getSchedulesByMovieName } from '@/lib/theaters';
+import { getSchedulesByLineMovieDbId } from '@/lib/theaters';
 import { classifyArticle, getMovieSchema, serialize } from '@/lib/utils';
 import Ratings from '@/components/Ratings';
 import PttArticles from '@/components/PttArticles';
@@ -31,7 +31,7 @@ export default async function MoviePage({ params }: Props) {
   if (!raw) notFound();
 
   const movie = classifyArticle(raw);
-  const schedules = getSchedulesByMovieName(movie.chineseTitle ?? '');
+  const schedules = movie.lineMovieDbId ? getSchedulesByLineMovieDbId(movie.lineMovieDbId) : [];
   const schema = getMovieSchema(movie);
   const posterUrl = movie.posterUrl?.replace('/w280', '/w644') ?? '';
 

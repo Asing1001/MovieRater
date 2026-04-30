@@ -25,6 +25,7 @@ async function mapToYahooMovieModel(item: LINEMovieItem): Promise<MovieBase | nu
 
   const movie: MovieBase = {
     lineMovieId: item.id,
+    lineMovieDbId: item.movieId,
     lineUrlHash: (item.url && item.url.hash) || null,
     posterUrl: (item.thumbnail && `https://obs.line-scdn.net/${item.thumbnail.hash}/w280`) || null,
     chineseTitle: item.title,

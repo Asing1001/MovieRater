@@ -4,6 +4,7 @@ export default class MovieBase {
   _id?: ObjectIdLike;
   yahooId?: number;
   lineMovieId?: string;
+  lineMovieDbId?: string;
   posterUrl?: string;
   chineseTitle?: string;
   englishTitle?: string;

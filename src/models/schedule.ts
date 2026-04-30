@@ -1,20 +1,10 @@
-import Movie from '../models/movie';
-import theater from '../models/theater';
-
 export default class Schedule {
-  constructor(scheduleUrl = '', theaterName = '', timesStrings = [], theaterExtension = new theater()) {
-    this.scheduleUrl = scheduleUrl;
-    this.theaterName = theaterName;
-    this.timesStrings = timesStrings;
-    this.theaterExtension = theaterExtension;
-  }
-  scheduleUrl?: string;
-  movie?: Movie;
+  lineMovieDbId?: string;
+  lineTheaterId?: string;
   movieName?: string;
   theaterName?: string;
-  level?: string;
-  timesStrings?: string[];
-  roomTypes?: string[];
-  theaterExtension?: theater;
-  date?: string;
+  theaterCity?: string;
+  date?: string;             // YYYYMMDD
+  timesStrings?: string[];   // ["14:30", "17:00"]
+  roomTypes?: string[];      // ["數位 國"] or ["IMAX 英"]
 }

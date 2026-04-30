@@ -12,10 +12,10 @@ export function getTheaterByName(name: string): Theater | undefined {
   return t ? serialize(t) : undefined;
 }
 
-export function getSchedulesByMovieName(movieName: string) {
-  return serialize(cacheManager.getSchedulesByMovieName(movieName));
+export function getSchedulesByLineMovieDbId(lineMovieDbId: string) {
+  return serialize(cacheManager.getSchedulesByLineMovieDbId(lineMovieDbId));
 }
 
-export function getSchedulesByTheaterUrl(scheduleUrl: string) {
-  return serialize(cacheManager.getSchedulesByTheaterUrl(scheduleUrl));
+export function getSchedulesByTheaterName(theaterName: string) {
+  return serialize(cacheManager.getSchedulesByTheaterName(theaterName));
 }

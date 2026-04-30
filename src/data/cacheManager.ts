@@ -2,7 +2,7 @@ import { Mongo } from '../data/db';
 import moment from 'moment';
 import Movie from '../models/movie';
 import { getPlayingMovies } from '../crawler/lineCrawler';
-import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask';
+import Schedule from '../models/schedule';
 import isValideDate from '../helper/isValideDate';
 
 // Use globalThis to share cache across module instances (important for Next.js dev mode)
@@ -17,7 +17,8 @@ export default class cacheManager {
   static RECENT_MOVIES = 'recentMovies';
   static MOVIES_SCHEDULES = 'MoviesSchedules';
   static MOVIES_SCHEDULES_BY_MOVIE_NAME = 'MoviesSchedulesByMovieName';
-  static MOVIES_SCHEDULES_BY_THEATER_URL = 'MoviesSchedulesByTheaterUrl';
+  static MOVIES_SCHEDULES_BY_LINE_MOVIE_DB_ID = 'MoviesSchedulesByLineMovieDbId';
+  static MOVIES_SCHEDULES_BY_THEATER_NAME = 'MoviesSchedulesByTheaterName';
   static THEATERS = 'theaters';
   static THEATERS_BY_SCHEDULE_URL = 'theatersByScheduleUrl';
   static async init() {
@@ -27,9 +28,6 @@ export default class cacheManager {
     cacheManager.setAllMoviesNamesCache(mergedDatas);
     await cacheManager.setTheatersCache();
     await cacheManager.setRecentMoviesCache();
-    // To let the api return data ASAP, we serve the schedules from Redis first
-    await cacheManager.setMoviesSchedulesCache();
-    await updateMoviesSchedules();
     await cacheManager.setMoviesSchedulesCache();
   }
 
@@ -104,22 +102,11 @@ export default class cacheManager {
   public static async setMoviesSchedulesCache() {
     console.time('setMoviesSchedulesCache');
     try {
-      const allSchedules = await getMoviesSchedules();
-      // currently the schedules here has some data that could not mapped to LINE's movie title
-      // TODO: get the schedule directly from LINE so we don't need this filter, and the display will be more accurate
-      const recentMovieChineseTitles: string[] = cacheManager
-        .get(cacheManager.RECENT_MOVIES)
-        .map((movie) => movie.chineseTitle);
-      const theatersByUrl: Record<string, any> = cacheManager.get(cacheManager.THEATERS_BY_SCHEDULE_URL) || {};
-      const filterdSchedules = allSchedules
-        .filter((schedule) => recentMovieChineseTitles.indexOf(schedule.movieName) !== -1)
-        .map((schedule) => ({
-          ...schedule,
-          theaterName: schedule.theaterName || theatersByUrl[schedule.scheduleUrl]?.name || '',
-        }));
-      cacheManager.set(cacheManager.MOVIES_SCHEDULES, filterdSchedules);
-      cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME, cacheManager.groupBy(filterdSchedules, 'movieName'));
-      cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_THEATER_URL, cacheManager.groupBy(filterdSchedules, 'scheduleUrl'));
+      const schedules = await Mongo.getCollection<Schedule>({ name: 'schedules' });
+      cacheManager.set(cacheManager.MOVIES_SCHEDULES, schedules);
+      cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME, cacheManager.groupBy(schedules, 'movieName'));
+      cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_LINE_MOVIE_DB_ID, cacheManager.groupBy(schedules, 'lineMovieDbId'));
+      cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_THEATER_NAME, cacheManager.groupBy(schedules, 'theaterName'));
     } catch (ex) {
       console.error(ex);
     }
@@ -154,18 +141,15 @@ export default class cacheManager {
   }
 
   static getSchedulesByMovieName(movieName: string) {
-    const schedulesByMovieName = cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME) || {};
-    return schedulesByMovieName[movieName] || [];
+    return (cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME) ?? {})[movieName] ?? [];
   }
 
-  static getSchedulesByTheaterUrl(scheduleUrl: string) {
-    const schedulesByTheaterUrl = cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_THEATER_URL) || {};
-    return schedulesByTheaterUrl[scheduleUrl] || [];
+  static getSchedulesByLineMovieDbId(lineMovieDbId: string) {
+    return (cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_LINE_MOVIE_DB_ID) ?? {})[lineMovieDbId] ?? [];
   }
 
-  static getTheaterByScheduleUrl(scheduleUrl: string) {
-    const theatersByScheduleUrl = cacheManager.get(cacheManager.THEATERS_BY_SCHEDULE_URL) || {};
-    return theatersByScheduleUrl[scheduleUrl];
+  static getSchedulesByTheaterName(theaterName: string) {
+    return (cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_THEATER_NAME) ?? {})[theaterName] ?? [];
   }
 
   static get(key: string) {
