@@ -1,6 +1,6 @@
-import * as cheerio from "cheerio";
 import Movie from '../models/movie';
 import moment from 'moment';
+import { omdbSetting } from '../configs/systemSetting';
 
 interface IMDB {
     imdbID: string
@@ -11,18 +11,13 @@ export async function getIMDBMovieInfo(movie: Movie): Promise<IMDB> {
     try {
         const imdbID = await getIMDBSuggestId(movie);
         if (!imdbID) {
-            return null
+            return null;
         }
-
         const imdbRating = await getIMDBRating(imdbID);
-        return {
-            imdbID,
-            imdbRating
-        }
-    }
-    catch (e) {
+        return { imdbID, imdbRating };
+    } catch (e) {
         console.error(e);
-        return null
+        return null;
     }
 }
 
@@ -54,19 +49,16 @@ function getIMDBSuggestJsonUrl(englishTitle: string) {
     return `https://v2.sg.media-imdb.com/suggestion/${jsonName.charAt(0)}/${jsonName}.json`
 }
 
-const imdbMobileMovieUrl = 'https://m.imdb.com/title/';
 export async function getIMDBRating(imdbID: string): Promise<string> {
-    if (!imdbID) {
+    if (!imdbID) return null;
+    try {
+        const res = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${omdbSetting.apiKey}`);
+        const data = await res.json();
+        return data.Response === 'True' ? data.imdbRating : null;
+    } catch (e) {
+        console.error('getIMDBRating failed:', e);
         return null;
     }
-    const response = await fetch(`${imdbMobileMovieUrl}${imdbID}/`);
-    const html = await response.text();
-    return getIMDBRatingFromHtml(html);
-}
-
-export function getIMDBRatingFromHtml(html: string): string {
-    const $ = cheerio.load(html);
-    return $('[data-testid="hero-rating-bar__aggregate-rating__score"] > span').first().text();
 }
 
 function getSimilarity(s1, s2) {

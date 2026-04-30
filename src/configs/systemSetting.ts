@@ -14,6 +14,10 @@ export const schedulerSetting = {
   yahooPagePerTime: 50,
 };
 
+export const omdbSetting = {
+  apiKey: process.env.OMDB_API_KEY || '',
+};
+
 export const googleApiSetting = {
   // It is a deleted API key, you could retrieve your own one to fetch the real data.
   geoApiKey: process.env.GOOGLEMAP_APIKEY || 'AIzaSyBcj5gbydKX6IdPnSxqDUwTTzlszB7oZVw',
