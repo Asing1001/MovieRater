@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/sing/github/movieRater.React/src/instrumentation.ts"],"sourcesContent":["export async function register() {\n  if (process.env.NEXT_RUNTIME === 'nodejs') {\n    const { Mongo } = await import('./data/db');\n    const cacheManager = (await import('./data/cacheManager')).default;\n    const { initScheduler } = await import('./backgroundService/scheduler');\n    await Mongo.openDbConnection();\n    // Init cache in background — don't block server startup\n    cacheManager.init().catch(console.error);\n    initScheduler();\n  }\n}\n"],"names":[],"mappings":";;;;AAAO,eAAe;IACpB,wCAA2C;QACzC,MAAM,EAAE,KAAK,EAAE,GAAG;QAClB,MAAM,eAAe,CAAC,gHAAmC,EAAE,OAAO;QAClE,MAAM,EAAE,aAAa,EAAE,GAAG;QAC1B,MAAM,MAAM,gBAAgB;QAC5B,wDAAwD;QACxD,aAAa,IAAI,GAAG,KAAK,CAAC,QAAQ,KAAK;QACvC;IACF;AACF","debugId":null}}]
-}

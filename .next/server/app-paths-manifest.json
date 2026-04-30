@@ -1,6 +1,0 @@
-{
-  "/movie/[id]/page": "app/movie/[id]/page.js",
-  "/page": "app/page.js",
-  "/theaters/page": "app/theaters/page.js",
-  "/upcoming/page": "app/upcoming/page.js"
-}
