@@ -1,5 +1,10 @@
 import Movie from '../models/movie';
 
+/** Strip BSON ObjectIds and other non-serializable MongoDB fields for RSC→Client prop passing */
+export function serialize<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
+}
+
 export function classifyArticle(movie: Movie): Movie {
   if (!movie?.relatedArticles) return movie;
   const m = { ...movie, goodRateArticles: [], normalRateArticles: [], badRateArticles: [], otherArticles: [] };

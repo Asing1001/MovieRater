@@ -1,44 +1,94 @@
 import Link from 'next/link';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
 import Ratings from './Ratings';
 import Movie from '@/models/movie';
 
 export default function MovieCard({ movie, children }: { movie: Movie; children?: React.ReactNode }) {
   const href = `/movie/${movie.movieBaseId}`;
+
   return (
-    <Paper elevation={2} sx={{ mb: 1, display: 'flex', flexDirection: 'row' }}>
-      <Link href={href} style={{ flexShrink: 0 }}>
-        <img
-          className="poster"
+    <Box
+      sx={{
+        display: 'flex',
+        mb: 1.5,
+        borderRadius: 2,
+        overflow: 'hidden',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+        bgcolor: 'background.paper',
+        transition: 'box-shadow 0.2s',
+        '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.16)' },
+      }}
+    >
+      {/* Poster */}
+      <Link href={href} style={{ flexShrink: 0, display: 'block' }}>
+        <Box
+          component="img"
           src={movie.posterUrl}
           alt={movie.chineseTitle}
           loading="lazy"
-          style={{ display: 'block' }}
+          sx={{
+            width: { xs: 90, sm: 120 },
+            height: { xs: 130, sm: 175 },
+            objectFit: 'cover',
+            display: 'block',
+            bgcolor: 'grey.100',
+          }}
         />
       </Link>
-      <Box sx={{ flex: 1, p: 1 }}>
-        <Link href={href} style={{ color: 'inherit', textDecoration: 'none' }}>
-          <Typography variant="subtitle1" fontWeight={700} className="card-title">
+
+      {/* Content */}
+      <Box sx={{ flex: 1, p: { xs: 1.5, sm: 2 }, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <Link href={href} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Typography
+            variant="subtitle1"
+            fontWeight={700}
+            sx={{ lineHeight: 1.3, mb: 0.25 }}
+            noWrap
+          >
             {movie.chineseTitle}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: 'block', mb: 0.75 }}
+            noWrap
+          >
             {movie.englishTitle}
           </Typography>
         </Link>
 
-        <Box sx={{ mt: 0.5, fontSize: '0.85rem' }}>
-          <Link href={href} style={{ color: 'inherit', textDecoration: 'none' }}>
-            <div>上映日期：{movie.releaseDate || '未提供'}</div>
-            <div>類型：{movie.types?.join('、') || '未提供'}</div>
-            <div>片長：{movie.runTime ? `${movie.runTime}分鐘` : '未提供'}</div>
-          </Link>
+        {/* Meta row */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1, fontSize: '0.75rem', color: 'text.secondary' }}>
+          {movie.releaseDate && <span>{movie.releaseDate}</span>}
+          {movie.releaseDate && movie.types?.length > 0 && <span>·</span>}
+          {movie.types?.length > 0 && <span>{movie.types.slice(0, 3).join('/')}</span>}
+          {movie.runTime && <><span>·</span><span>{movie.runTime}分</span></>}
         </Box>
 
-        <Ratings movie={movie} />
-        {children}
+        <Ratings movie={movie} sx={{ mb: 0.5 }} />
+
+        {children && (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              mt: 'auto',
+              pt: 0.5,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              fontSize: '0.8rem',
+              lineHeight: 1.5,
+            }}
+          >
+            {children}
+          </Typography>
+        )}
       </Box>
-    </Paper>
+    </Box>
   );
 }

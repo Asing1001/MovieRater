@@ -1,13 +1,15 @@
 import { notFound } from 'next/navigation';
 import { getMovieById } from '@/lib/movies';
 import { getSchedulesByMovieName } from '@/lib/theaters';
-import { classifyArticle, getMovieSchema } from '@/lib/utils';
+import { classifyArticle, getMovieSchema, serialize } from '@/lib/utils';
 import Ratings from '@/components/Ratings';
 import PttArticles from '@/components/PttArticles';
 import Schedules from '@/components/Schedules';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
 import type { Metadata } from 'next';
 
 type Props = { params: Promise<{ id: string }> };
@@ -36,27 +38,39 @@ export default async function MoviePage({ params }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <Paper elevation={2} sx={{ p: 2, mb: 2 }}>
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+
+      {/* Hero section */}
+      <Paper elevation={0} variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 0, flexDirection: { xs: 'column', sm: 'row' } }}>
           {posterUrl && (
-            <img src={posterUrl} alt={movie.chineseTitle} style={{ width: 160, objectFit: 'cover', flexShrink: 0 }} />
+            <Box sx={{ flexShrink: 0, width: { xs: '100%', sm: 200 } }}>
+              <img
+                src={posterUrl}
+                alt={movie.chineseTitle}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', maxHeight: 300 }}
+              />
+            </Box>
           )}
-          <Box sx={{ flex: 1, minWidth: 200 }}>
-            <Typography variant="h5" fontWeight={700}>{movie.chineseTitle}</Typography>
-            <Typography variant="subtitle1" color="text.secondary">{movie.englishTitle}</Typography>
-            <Ratings movie={movie} />
-            <Box sx={{ mt: 1, fontSize: '0.9rem', '& > div': { mb: 0.5 } }}>
-              <div>上映日期：{movie.releaseDate || '未提供'}</div>
-              <div>類型：{movie.types?.join('、') || '未提供'}</div>
-              <div>片長：{movie.runTime ? `${movie.runTime}分鐘` : '未提供'}</div>
-              <div>導演：{movie.directors?.join('、') || '未提供'}</div>
-              <div>演員：{movie.actors?.join('、') || '未提供'}</div>
+          <Box sx={{ flex: 1, p: 2.5 }}>
+            <Typography variant="h5" fontWeight={700} gutterBottom>{movie.chineseTitle}</Typography>
+            <Typography variant="body2" color="text.secondary" gutterBottom>{movie.englishTitle}</Typography>
+            <Ratings movie={movie} sx={{ my: 1.5 }} />
+            <Divider sx={{ my: 1.5 }} />
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '4px 12px', fontSize: '0.875rem' }}>
+              {movie.releaseDate && <><span style={{ color: 'grey' }}>上映日期</span><span>{movie.releaseDate}</span></>}
+              {movie.types?.length > 0 && <><span style={{ color: 'grey' }}>類型</span><span>{movie.types.join('、')}</span></>}
+              {movie.runTime && <><span style={{ color: 'grey' }}>片長</span><span>{movie.runTime} 分鐘</span></>}
+              {movie.directors?.length > 0 && <><span style={{ color: 'grey' }}>導演</span><span>{movie.directors.join('、')}</span></>}
+              {movie.actors?.length > 0 && <><span style={{ color: 'grey' }}>演員</span><span>{movie.actors.join('、')}</span></>}
             </Box>
           </Box>
         </Box>
         {movie.summary && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2">{movie.summary}</Typography>
+          <Box sx={{ px: 2.5, pb: 2.5 }}>
+            <Divider sx={{ mb: 1.5 }} />
+            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.8 }}>
+              {movie.summary}
+            </Typography>
           </Box>
         )}
       </Paper>
@@ -64,10 +78,10 @@ export default async function MoviePage({ params }: Props) {
       {schedules.length > 0 && <Schedules schedules={schedules} />}
 
       <PttArticles
-        good={movie.goodRateArticles ?? []}
-        normal={movie.normalRateArticles ?? []}
-        bad={movie.badRateArticles ?? []}
-        other={movie.otherArticles ?? []}
+        good={serialize(movie.goodRateArticles ?? [])}
+        normal={serialize(movie.normalRateArticles ?? [])}
+        bad={serialize(movie.badRateArticles ?? [])}
+        other={serialize(movie.otherArticles ?? [])}
       />
     </>
   );

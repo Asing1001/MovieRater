@@ -12,18 +12,14 @@ export default async function UpcomingPage({ searchParams }: { searchParams: Pro
   const sorted = sortMovies(movies, (sort as SortKey) || 'releaseDate');
 
   if (!sorted.length) {
-    return <Typography sx={{ mt: 4, textAlign: 'center' }}>目前沒有即將上映的電影資料。</Typography>;
+    return <Typography sx={{ mt: 4, textAlign: 'center', color: 'text.secondary' }}>目前沒有即將上映的電影資料。</Typography>;
   }
 
   return (
     <>
       {sorted.map((movie) => (
         <MovieCard key={movie.movieBaseId?.toString()} movie={movie}>
-          {movie.summary && (
-            <p className="resultSummary" style={{ fontSize: '0.85rem', marginTop: 4 }}>
-              {briefSummary(movie.summary)}
-            </p>
-          )}
+          {briefSummary(movie.summary)}
         </MovieCard>
       ))}
     </>

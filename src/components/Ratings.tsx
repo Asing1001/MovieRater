@@ -1,39 +1,75 @@
+import Box from '@mui/material/Box';
 import Movie from '@/models/movie';
+import { SxProps } from '@mui/material/styles';
 
-export default function Ratings({ movie, className }: { movie: Movie; className?: string }) {
+interface BadgeProps { color: string; textColor?: string; label: string; value: string; href?: string }
+
+function Badge({ color, textColor = '#fff', label, value, href }: BadgeProps) {
+  const content = (
+    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: '4px', mr: 1, mb: 0.5 }}>
+      <Box
+        component="span"
+        sx={{
+          background: color,
+          color: textColor,
+          fontSize: '0.65rem',
+          fontWeight: 800,
+          px: '5px',
+          py: '2px',
+          borderRadius: '4px',
+          letterSpacing: '0.02em',
+          lineHeight: 1.4,
+        }}
+      >
+        {label}
+      </Box>
+      <Box component="span" sx={{ fontWeight: 600, fontSize: '0.9rem', color: 'text.primary' }}>
+        {value}
+      </Box>
+    </Box>
+  );
+
+  if (href) {
+    return (
+      <a href={href} target="_blank" rel="noopener" style={{ textDecoration: 'none', color: 'inherit' }}>
+        {content}
+      </a>
+    );
+  }
+  return content;
+}
+
+export default function Ratings({ movie, sx }: { movie: Movie; sx?: SxProps }) {
   const g = movie.goodRateArticles?.length ?? 0;
   const n = movie.normalRateArticles?.length ?? 0;
   const b = movie.badRateArticles?.length ?? 0;
+  const pttValue = g + n + b > 0 ? `好${g} 普${n} 負${b}` : 'N/A';
 
   return (
-    <div className={className} style={{ paddingTop: '1em', paddingBottom: '1em', paddingLeft: 8 }}>
-      <div className="ratingWrapper">
-        <span className="logo imdb">IMDb</span>
-        {movie.imdbID ? (
-          <a href={`https://www.imdb.com/title/${movie.imdbID}`}>{movie.imdbRating || 'N/A'}</a>
-        ) : (
-          <span>{movie.imdbRating || 'N/A'}</span>
-        )}
-      </div>
-
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', ...sx }}>
+      <Badge
+        color="#f5c518"
+        textColor="#000"
+        label="IMDb"
+        value={movie.imdbRating || 'N/A'}
+        href={movie.imdbID ? `https://www.imdb.com/title/${movie.imdbID}` : undefined}
+      />
       {movie.lineRating ? (
-        <div className="ratingWrapper">
-          <span className="logo line">LINE</span>
-          <a href={`https://today.line.me/tw/v2/movie/${movie.lineUrlHash}/2`}>{movie.lineRating || 'N/A'}</a>
-        </div>
+        <Badge
+          color="#06c755"
+          label="LINE"
+          value={movie.lineRating}
+          href={`https://today.line.me/tw/v2/movie/${movie.lineUrlHash}/2`}
+        />
       ) : (
-        <div className="ratingWrapper">
-          <span className="logo yahoo">Y!</span>
-          <a href={`https://movies.yahoo.com.tw/movieinfo_main.html/id=${movie.yahooId}`}>
-            {movie.yahooRating || 'N/A'}
-          </a>
-        </div>
+        <Badge
+          color="#720e9e"
+          label="Yahoo"
+          value={movie.yahooRating || 'N/A'}
+          href={`https://movies.yahoo.com.tw/movieinfo_main.html/id=${movie.yahooId}`}
+        />
       )}
-
-      <div className="ratingWrapper">
-        <span className="logo ptt">PTT</span>
-        <span title="好雷/普雷/負雷">{g}/{n}/{b}</span>
-      </div>
-    </div>
+      <Badge color="#1a1a1a" label="PTT" value={pttValue} />
+    </Box>
   );
 }
