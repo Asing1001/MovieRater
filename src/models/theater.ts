@@ -17,4 +17,6 @@ export default class Theater {
   distance?: number;
   scheduleUrl?: string;
   schedules?: Schedule[];
+  lineTheaterId?: string;
+  theaterCity?: string;
 }

@@ -14,13 +14,16 @@ export default class cacheManager {
   static All_MOVIES = 'allMovies';
   static All_MOVIES_NAMES = 'allMoviesNames';
   static MOVIES_BY_CHINESE_TITLE = 'moviesByChineseTitle';
+  static MOVIES_BY_LINE_MOVIE_DB_ID = 'moviesByLineMovieDbId';
   static RECENT_MOVIES = 'recentMovies';
   static MOVIES_SCHEDULES = 'MoviesSchedules';
   static MOVIES_SCHEDULES_BY_MOVIE_NAME = 'MoviesSchedulesByMovieName';
   static MOVIES_SCHEDULES_BY_LINE_MOVIE_DB_ID = 'MoviesSchedulesByLineMovieDbId';
   static MOVIES_SCHEDULES_BY_THEATER_NAME = 'MoviesSchedulesByTheaterName';
+  static MOVIES_SCHEDULES_BY_LINE_THEATER_ID = 'MoviesSchedulesByLineTheaterId';
   static THEATERS = 'theaters';
   static THEATERS_BY_SCHEDULE_URL = 'theatersByScheduleUrl';
+  static THEATERS_BY_LINE_THEATER_ID = 'theatersByLineTheaterId';
   static async init() {
     const mergedDatas = await cacheManager.getMergedDatas();
     cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
@@ -35,19 +38,24 @@ export default class cacheManager {
     console.time('Get mergedDatas');
     const mergedDatas = await Mongo.getCollection<Movie>({ name: 'mergedDatas' });
 
-    // Enrich with lineMovieDbId from yahooMovies (not yet in the daily merged snapshot)
+    // Enrich from yahooMovies: fields that may not be in the daily merged snapshot yet.
+    // Join by _id (movieBaseId is yahooMovies._id.toHexString()) — more reliable than lineMovieId.
+    // yahooMovies._id is stored as a plain string (hex), not an ObjectId
     const yahooMovies = await Mongo.db
-      .collection<{ lineMovieId: string; lineMovieDbId: string }>('yahooMovies')
-      .find({ lineMovieDbId: { $exists: true } }, { projection: { lineMovieId: 1, lineMovieDbId: 1, _id: 0 } })
+      .collection<{ _id: string; lineMovieId?: string; lineMovieDbId?: string; imdbID?: string; imdbRating?: string; imdbLastCrawlTime?: string }>('yahooMovies')
+      .find({}, { projection: { lineMovieId: 1, lineMovieDbId: 1, imdbID: 1, imdbRating: 1, imdbLastCrawlTime: 1 } })
       .toArray();
-    const dbIdByLineId: Record<string, string> = {};
+    const yahooById: Record<string, typeof yahooMovies[0]> = {};
     for (const y of yahooMovies) {
-      if (y.lineMovieId && y.lineMovieDbId) dbIdByLineId[y.lineMovieId] = y.lineMovieDbId;
+      yahooById[String(y._id)] = y;
     }
     for (const movie of mergedDatas) {
-      if (movie.lineMovieId && dbIdByLineId[movie.lineMovieId]) {
-        (movie as any).lineMovieDbId = dbIdByLineId[movie.lineMovieId];
-      }
+      const y = yahooById[movie.movieBaseId];
+      if (!y) continue;
+      if (y.lineMovieDbId) (movie as any).lineMovieDbId = y.lineMovieDbId;
+      if (y.imdbID)            movie.imdbID            = y.imdbID;
+      if (y.imdbRating)        movie.imdbRating        = y.imdbRating;
+      if (y.imdbLastCrawlTime) movie.imdbLastCrawlTime = y.imdbLastCrawlTime;
     }
 
     console.timeEnd('Get mergedDatas');
@@ -56,12 +64,17 @@ export default class cacheManager {
 
   static setMovieLookupCache(movies: Array<Movie>) {
     const moviesByChineseTitle = {};
+    const moviesByLineMovieDbId = {};
     movies.forEach((movie) => {
       if (movie.chineseTitle && !moviesByChineseTitle[movie.chineseTitle]) {
         moviesByChineseTitle[movie.chineseTitle] = movie;
       }
+      if (movie.lineMovieDbId) {
+        moviesByLineMovieDbId[movie.lineMovieDbId] = movie;
+      }
     });
     cacheManager.set(cacheManager.MOVIES_BY_CHINESE_TITLE, moviesByChineseTitle);
+    cacheManager.set(cacheManager.MOVIES_BY_LINE_MOVIE_DB_ID, moviesByLineMovieDbId);
   }
 
   private static setAllMoviesNamesCache(movies: Array<Movie>) {
@@ -80,7 +93,7 @@ export default class cacheManager {
     console.timeEnd('setAllMoviesNamesCache');
   }
 
-  private static async setTheatersCache() {
+  public static async setTheatersCache() {
     console.time('setTheatersCache');
     const theaterListWithLocation = await Mongo.getCollection({
       name: 'theaters',
@@ -89,6 +102,7 @@ export default class cacheManager {
     console.timeEnd('setTheatersCache');
     cacheManager.set(cacheManager.THEATERS, theaterListWithLocation);
     cacheManager.set(cacheManager.THEATERS_BY_SCHEDULE_URL, cacheManager.groupOneBy(theaterListWithLocation, 'scheduleUrl'));
+    cacheManager.set(cacheManager.THEATERS_BY_LINE_THEATER_ID, cacheManager.groupOneBy(theaterListWithLocation, 'lineTheaterId'));
   }
 
   // This is the list of movies in home page
@@ -121,6 +135,7 @@ export default class cacheManager {
       cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME, cacheManager.groupBy(schedules, 'movieName'));
       cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_LINE_MOVIE_DB_ID, cacheManager.groupBy(schedules, 'lineMovieDbId'));
       cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_THEATER_NAME, cacheManager.groupBy(schedules, 'theaterName'));
+      cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_LINE_THEATER_ID, cacheManager.groupBy(schedules, 'lineTheaterId'));
     } catch (ex) {
       console.error(ex);
     }
@@ -154,6 +169,15 @@ export default class cacheManager {
     return moviesByChineseTitle[chineseTitle];
   }
 
+  static getMovieByLineMovieDbId(lineMovieDbId: string) {
+    let map = cacheManager.get(cacheManager.MOVIES_BY_LINE_MOVIE_DB_ID);
+    if (!map || Object.keys(map).length === 0) {
+      cacheManager.setMovieLookupCache(cacheManager.get(cacheManager.All_MOVIES) ?? []);
+      map = cacheManager.get(cacheManager.MOVIES_BY_LINE_MOVIE_DB_ID) ?? {};
+    }
+    return map[lineMovieDbId];
+  }
+
   static getSchedulesByMovieName(movieName: string) {
     return (cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME) ?? {})[movieName] ?? [];
   }
@@ -164,6 +188,14 @@ export default class cacheManager {
 
   static getSchedulesByTheaterName(theaterName: string) {
     return (cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_THEATER_NAME) ?? {})[theaterName] ?? [];
+  }
+
+  static getSchedulesByLineTheaterId(lineTheaterId: string) {
+    return (cacheManager.get(cacheManager.MOVIES_SCHEDULES_BY_LINE_THEATER_ID) ?? {})[lineTheaterId] ?? [];
+  }
+
+  static getTheaterByLineTheaterId(lineTheaterId: string) {
+    return (cacheManager.get(cacheManager.THEATERS_BY_LINE_THEATER_ID) ?? {})[lineTheaterId] ?? null;
   }
 
   static get(key: string) {

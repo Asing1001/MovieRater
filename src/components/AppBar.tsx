@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,6 +16,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import InputBase from '@mui/material/InputBase';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import SortIcon from '@mui/icons-material/Sort';
@@ -38,11 +40,145 @@ const sortOptions: { label: string; value: SortKey }[] = [
 
 const sortableRoutes = ['/', '/upcoming', '/theater'];
 
+type Suggestion = { value: string; text: string };
+
+function SearchBar({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
+  const [query, setQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!query.trim()) {
+      setSuggestions([]);
+      setOpen(false);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
+        const data: Suggestion[] = await res.json();
+        setSuggestions(data);
+        setOpen(data.length > 0);
+        setActiveIndex(-1);
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 200);
+  }, [query]);
+
+  function selectSuggestion(s: Suggestion) {
+    router.push(`/movie/${s.value}`);
+    onClose();
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (activeIndex >= 0 && suggestions[activeIndex]) {
+      selectSuggestion(suggestions[activeIndex]);
+      return;
+    }
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      onClose();
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (!open) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, -1));
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+      setActiveIndex(-1);
+    }
+  }
+
+  return (
+    <Box sx={{ flex: 1, position: 'relative' }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          bgcolor: 'rgba(255,255,255,0.15)',
+          borderRadius: 1,
+          px: 1.5,
+        }}
+      >
+        <SearchIcon sx={{ color: 'rgba(255,255,255,0.7)', mr: 1, flexShrink: 0 }} />
+        <InputBase
+          inputRef={inputRef}
+          autoFocus
+          placeholder="搜尋電影名稱（中英皆可）"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onFocus={() => suggestions.length > 0 && setOpen(true)}
+          sx={{ color: 'white', flex: 1, '& input::placeholder': { color: 'rgba(255,255,255,0.6)' } }}
+        />
+        {loading && <CircularProgress size={16} sx={{ color: 'rgba(255,255,255,0.7)', mr: 0.5 }} />}
+        <IconButton size="small" color="inherit" onClick={onClose}>
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
+
+      {/* Dropdown */}
+      {open && suggestions.length > 0 && (
+        <Paper
+          elevation={8}
+          sx={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            left: 0,
+            right: 0,
+            zIndex: 1400,
+            maxHeight: 320,
+            overflow: 'auto',
+            borderRadius: 1,
+          }}
+        >
+          {suggestions.map((s, i) => (
+            <Box
+              key={s.value}
+              onMouseDown={() => selectSuggestion(s)}
+              sx={{
+                px: 2,
+                py: 1,
+                cursor: 'pointer',
+                bgcolor: i === activeIndex ? 'action.selected' : 'transparent',
+                '&:hover': { bgcolor: 'action.hover' },
+                borderBottom: i < suggestions.length - 1 ? '1px solid' : 'none',
+                borderColor: 'divider',
+              }}
+            >
+              <Typography variant="body2">{s.text}</Typography>
+            </Box>
+          ))}
+        </Paper>
+      )}
+    </Box>
+  );
+}
+
 export default function AppBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searching, setSearching] = useState(false);
   const [sortAnchor, setSortAnchor] = useState<null | HTMLElement>(null);
-  const [query, setQuery] = useState('');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -56,13 +192,6 @@ export default function AppBar() {
     params.set('sort', value);
     router.push(`${pathname}?${params.toString()}`);
     setSortAnchor(null);
-  }
-
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (query.trim()) router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-    setSearching(false);
-    setQuery('');
   }
 
   return (
@@ -106,32 +235,9 @@ export default function AppBar() {
             </Tabs>
           )}
 
-          {/* Search bar (expanded) */}
+          {/* Search */}
           {searching ? (
-            <Box
-              component="form"
-              onSubmit={handleSearch}
-              sx={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                bgcolor: 'rgba(255,255,255,0.15)',
-                borderRadius: 1,
-                px: 1.5,
-              }}
-            >
-              <SearchIcon sx={{ color: 'rgba(255,255,255,0.7)', mr: 1, flexShrink: 0 }} />
-              <InputBase
-                autoFocus
-                placeholder="搜尋電影名稱（中英皆可）"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                sx={{ color: 'white', flex: 1, '& input::placeholder': { color: 'rgba(255,255,255,0.6)' } }}
-              />
-              <IconButton size="small" color="inherit" onClick={() => { setSearching(false); setQuery(''); }}>
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Box>
+            <SearchBar onClose={() => setSearching(false)} />
           ) : (
             <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
               <IconButton color="inherit" onClick={() => setSearching(true)} aria-label="搜尋">

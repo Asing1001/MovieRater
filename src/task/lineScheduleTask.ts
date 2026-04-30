@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { Mongo } from '../data/db';
-import { crawlLineSchedules } from '../crawler/lineScheduleCrawler';
+import { crawlLineSchedules, LineTheaterInfo } from '../crawler/lineScheduleCrawler';
 import { getPlayingMovies } from '../crawler/lineCrawler';
 import { promiseMap } from '../helper/promiseMap';
 
@@ -28,21 +28,48 @@ export async function updateLineSchedules(): Promise<void> {
     moment().add(i, 'days').format('YYYYMMDD')
   );
 
-  const allSchedules = (
-    await promiseMap(
-      playingMovies,
-      (movie) => crawlLineSchedules(movie.lineMovieDbId, dates),
-      { concurrency: 5, delay: 200 }
-    )
-  ).flat();
+  const results = await promiseMap(
+    playingMovies,
+    (movie) => crawlLineSchedules(movie.lineMovieDbId, dates),
+    { concurrency: 5, delay: 200 }
+  );
 
-  const col = Mongo.db.collection('schedules');
-  await col.deleteMany({});
-  if (allSchedules.length) {
-    await col.insertMany(allSchedules);
-    await col.createIndex({ lineMovieDbId: 1, date: 1 });
-    await col.createIndex({ theaterName: 1, date: 1 });
+  const allSchedules = results.flatMap((r) => r.schedules);
+
+  // Collect unique theaters seen across all movies
+  const allTheaters = new Map<string, LineTheaterInfo>();
+  for (const { theaters } of results) {
+    for (const t of theaters) {
+      if (!allTheaters.has(t.lineTheaterId)) allTheaters.set(t.lineTheaterId, t);
+    }
   }
 
-  console.log(`updateLineSchedules: stored ${allSchedules.length} schedule entries`);
+  const scheduleCol = Mongo.db.collection('schedules');
+  await scheduleCol.deleteMany({});
+  if (allSchedules.length) {
+    await scheduleCol.insertMany(allSchedules);
+    await scheduleCol.createIndex({ lineMovieDbId: 1, date: 1 });
+    await scheduleCol.createIndex({ lineTheaterId: 1, date: 1 });
+    await scheduleCol.createIndex({ theaterName: 1, date: 1 });
+  }
+
+  // Upsert LINE theaters into theaters collection — keyed by lineTheaterId
+  // Only sets lineTheaterId, name, theaterCity, address from LINE; preserves other fields (phone, location)
+  const theaterCol = Mongo.db.collection('theaters');
+  await Promise.all([...allTheaters.values()].map((t) =>
+    theaterCol.updateOne(
+      { lineTheaterId: t.lineTheaterId },
+      {
+        $set: {
+          lineTheaterId: t.lineTheaterId,
+          name: t.name,
+          theaterCity: t.theaterCity,
+          address: t.address,
+        },
+      },
+      { upsert: true }
+    )
+  ));
+
+  console.log(`updateLineSchedules: stored ${allSchedules.length} schedule entries, upserted ${allTheaters.size} theaters`);
 }

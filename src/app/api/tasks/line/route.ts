@@ -9,6 +9,7 @@ export async function POST() {
     await cacheManager.setRecentMoviesCache();
     await updateLineSchedules();
     await cacheManager.setMoviesSchedulesCache();
+    await cacheManager.setTheatersCache();
     const count = (cacheManager.get(cacheManager.MOVIES_SCHEDULES) ?? []).length;
     return NextResponse.json({ ok: true, scheduleCount: count });
   } catch (err) {

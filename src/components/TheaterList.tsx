@@ -10,13 +10,13 @@ import Link from 'next/link';
 import Theater from '@/models/theater';
 
 export default function TheaterList({ theaters }: { theaters: Theater[] }) {
-  const regions = [...new Set(theaters.map((t) => t.region).filter(Boolean))];
+  const regions = [...new Set(theaters.map((t) => t.theaterCity ?? t.region).filter(Boolean))];
 
   return (
     <>
       <Typography variant="h6" sx={{ mb: 1 }}>電影院列表</Typography>
       {regions.map((region) => {
-        const inRegion = theaters.filter((t) => t.region === region);
+        const inRegion = theaters.filter((t) => (t.theaterCity ?? t.region) === region);
         return (
           <div key={region}>
             <Typography variant="subtitle2" sx={{ mt: 2, mb: 0.5, color: 'text.secondary' }}>{region}</Typography>

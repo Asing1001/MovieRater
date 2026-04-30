@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getMovieById } from '@/lib/movies';
 import { getSchedulesByLineMovieDbId } from '@/lib/theaters';
+import { getArticlesByMovieBaseId } from '@/lib/articles';
 import { classifyArticle, getMovieSchema, serialize } from '@/lib/utils';
 import Ratings from '@/components/Ratings';
 import PttArticles from '@/components/PttArticles';
@@ -30,7 +31,8 @@ export default async function MoviePage({ params }: Props) {
   const raw = getMovieById(id);
   if (!raw) notFound();
 
-  const movie = classifyArticle(raw);
+  const articles = await getArticlesByMovieBaseId(raw.movieBaseId);
+  const movie = classifyArticle({ ...raw, relatedArticles: articles });
   const schedules = movie.lineMovieDbId ? getSchedulesByLineMovieDbId(movie.lineMovieDbId) : [];
   const schema = getMovieSchema(movie);
   const posterUrl = movie.posterUrl?.replace('/w280', '/w644') ?? '';
@@ -78,10 +80,10 @@ export default async function MoviePage({ params }: Props) {
       {schedules.length > 0 && <Schedules schedules={schedules} />}
 
       <PttArticles
-        good={serialize(movie.goodRateArticles ?? [])}
-        normal={serialize(movie.normalRateArticles ?? [])}
-        bad={serialize(movie.badRateArticles ?? [])}
-        other={serialize(movie.otherArticles ?? [])}
+        good={movie.goodRateArticles ?? []}
+        normal={movie.normalRateArticles ?? []}
+        bad={movie.badRateArticles ?? []}
+        other={movie.otherArticles ?? []}
       />
     </>
   );

@@ -30,6 +30,7 @@ export function initScheduler() {
     await cacheManager.setRecentMoviesCache();
     await updateLineSchedules();
     await cacheManager.setMoviesSchedulesCache();
+    await cacheManager.setTheatersCache();
     console.timeEnd('[Scheduler] updateLineSchedules');
   });
 

@@ -20,7 +20,7 @@ export function mergeData(yahooMovies: Array<MovieBase>, allArticles: Article[])
         const isInNearMonth = articleFullDate.isBetween(rangeStart, rangeEnd);
         return isInNearMonth;
       }
-      return isChinesetitleMatch;
+      return false;
     });
 
     return {

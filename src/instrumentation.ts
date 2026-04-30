@@ -9,6 +9,7 @@ export async function register() {
       const { updateLineSchedules } = await import('./task/lineScheduleTask');
       await updateLineSchedules();
       await cacheManager.setMoviesSchedulesCache();
+      await cacheManager.setTheatersCache();
     }).catch(console.error);
     initScheduler();
   }

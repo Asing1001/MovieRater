@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import Link from 'next/link';
 import Schedule from '@/models/schedule';
 import moment from 'moment';
 
@@ -37,7 +38,13 @@ export default function Schedules({ schedules, titleKey = 'theaterName' }: { sch
       ) : (
         filtered.map((s, i) => (
           <Paper key={i} variant="outlined" sx={{ p: 1.5, mt: 1 }}>
-            <Typography fontWeight={600}>{s[titleKey]}</Typography>
+            <Typography fontWeight={600}>
+              {titleKey === 'theaterName' ? (
+                <Link href={`/theater/${encodeURIComponent(s.theaterName ?? '')}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                  {s[titleKey]}
+                </Link>
+              ) : s[titleKey]}
+            </Typography>
             {s.roomTypes?.length ? (
               <Typography variant="caption" color="text.secondary">{s.roomTypes.join(' / ')}</Typography>
             ) : null}

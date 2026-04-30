@@ -1,4 +1,4 @@
-import { getPttPage } from '../crawler/pttCrawler';
+import { getPttPage, findMovieBaseId } from '../crawler/pttCrawler';
 import { Mongo } from '../data/db';
 import Article from '../models/article';
 import PttPage from '../models/pttPage';
@@ -7,12 +7,16 @@ export async function updatePttArticles(howManyPagePerTime) {
   const range = await getCurrentCrawlRange(howManyPagePerTime);
   const pttPages = await getRangePttPages(range);
   updateMaxPttIndex(pttPages, range.startPttIndex);
-  let pttArticles: Article[] = [].concat(
+  const pttArticles: Article[] = ([] as Article[]).concat(
     ...pttPages.map(({ articles }) => articles)
   );
+  const enriched = pttArticles.map((article) => ({
+    ...article,
+    movieBaseId: findMovieBaseId(article.title ?? '', article.date ?? ''),
+  }));
   await Promise.all(
-    pttArticles.map((pttArticle) =>
-      Mongo.updateDocument({ url: pttArticle.url }, pttArticle, 'pttArticles')
+    enriched.map((article) =>
+      Mongo.updateDocument({ url: article.url }, article, 'pttArticles')
     )
   );
 }
@@ -25,28 +29,22 @@ async function getCurrentCrawlRange(howManyPagePerTime) {
 }
 
 async function getRangePttPages({ startPttIndex, endPttIndex }) {
-  const promises = [];
+  const pttPages: PttPage[] = [];
   for (let i = startPttIndex; i <= endPttIndex; i++) {
-    const promise = getPttPage(i);
-    promises.push(promise);
-  }
-
-  const results = await Promise.allSettled(promises);
-  let pttPages = [];
-  results.forEach((result) => {
-    if (result.status === 'fulfilled') {
-      pttPages.push(result.value);
-    } else {
-      console.error(result.reason);
+    try {
+      const page = await getPttPage(i);
+      pttPages.push(page);
+    } catch (err) {
+      console.error(err);
     }
-  });
+  }
   return pttPages;
 }
 
-async function updateMaxPttIndex(pttPages, startPttIndex) {
-  const pttIndexs = pttPages.map(({ pageIndex }) => pageIndex);
+async function updateMaxPttIndex(pttPages: PttPage[], startPttIndex: number) {
+  const pttIndexes = pttPages.map(({ pageIndex }) => pageIndex);
   const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, 'configs');
-  const maxCrawledPttIndex = Math.max(...pttIndexs, startPttIndex);
+  const maxCrawledPttIndex = Math.max(...pttIndexes, startPttIndex);
   const alreadyCrawlTheNewest = maxCrawledPttIndex === startPttIndex;
   if (alreadyCrawlTheNewest) {
     const lastCrawlPttIndex =

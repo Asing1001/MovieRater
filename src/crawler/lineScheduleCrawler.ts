@@ -11,8 +11,20 @@ function msToTimeString(ms: number): string {
   });
 }
 
-export async function crawlLineSchedules(lineMovieDbId: string, dates: string[]): Promise<Schedule[]> {
-  const results: Schedule[] = [];
+export interface LineTheaterInfo {
+  lineTheaterId: string;
+  name: string;
+  theaterCity: string;
+  address: string;
+}
+
+export async function crawlLineSchedules(lineMovieDbId: string, dates: string[]): Promise<{
+  schedules: Schedule[];
+  theaters: LineTheaterInfo[];
+}> {
+  const schedules: Schedule[] = [];
+  const theaterMap = new Map<string, LineTheaterInfo>();
+
   for (const date of dates) {
     const isoDate = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`;
     try {
@@ -20,8 +32,16 @@ export async function crawlLineSchedules(lineMovieDbId: string, dates: string[])
       if (!res.ok) continue;
       const { items } = await res.json();
       for (const theater of items ?? []) {
+        if (!theaterMap.has(theater.id)) {
+          theaterMap.set(theater.id, {
+            lineTheaterId: theater.id,
+            name: theater.name,
+            theaterCity: theater.city ?? '',
+            address: theater.address ?? '',
+          });
+        }
         for (const sv of theater.showtimeViews ?? []) {
-          results.push({
+          schedules.push({
             lineMovieDbId,
             lineTheaterId: theater.id,
             theaterName: theater.name,
@@ -37,5 +57,6 @@ export async function crawlLineSchedules(lineMovieDbId: string, dates: string[])
       console.error(`crawlLineSchedules failed for movieId=${lineMovieDbId} date=${date}:`, err);
     }
   }
-  return results;
+
+  return { schedules, theaters: [...theaterMap.values()] };
 }
