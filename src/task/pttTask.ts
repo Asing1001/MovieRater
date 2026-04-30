@@ -1,5 +1,6 @@
 import { getPttPage, findMovieBaseId } from '../crawler/pttCrawler';
 import { Mongo } from '../data/db';
+import { ObjectId } from 'mongodb';
 import Article from '../models/article';
 import PttPage from '../models/pttPage';
 
@@ -19,6 +20,34 @@ export async function updatePttArticles(howManyPagePerTime) {
       Mongo.updateDocument({ url: article.url }, article, 'pttArticles')
     )
   );
+
+  // Aggregate counts from ALL pttArticles per movieBaseId and persist to DB
+  const countAgg = await Mongo.db.collection('pttArticles').aggregate([
+    { $match: { movieBaseId: { $exists: true, $ne: null } } },
+    { $group: {
+      _id: '$movieBaseId',
+      pttGoodCount: { $sum: { $cond: [{ $or: [
+        { $gte: [{ $indexOfCP: ['$title', '好雷'] }, 0] },
+        { $gte: [{ $indexOfCP: ['$title', '好無雷'] }, 0] },
+      ] }, 1, 0] } },
+      pttNormalCount: { $sum: { $cond: [{ $gte: [{ $indexOfCP: ['$title', '普雷'] }, 0] }, 1, 0] } },
+      pttBadCount: { $sum: { $cond: [{ $gte: [{ $indexOfCP: ['$title', '負雷'] }, 0] }, 1, 0] } },
+    } },
+  ]).toArray();
+
+  if (countAgg.length > 0) {
+    const bulkY = Mongo.db.collection('yahooMovies').initializeUnorderedBulkOp();
+    const bulkM = Mongo.db.collection('mergedDatas').initializeUnorderedBulkOp();
+    for (const { _id, pttGoodCount, pttNormalCount, pttBadCount } of countAgg) {
+      const counts = { pttGoodCount, pttNormalCount, pttBadCount };
+      try { bulkY.find({ _id: new ObjectId(_id) }).updateOne({ $set: counts }); } catch {}
+      bulkM.find({ movieBaseId: _id }).updateOne({ $set: counts });
+    }
+    await Promise.all([bulkY.execute(), bulkM.execute()]);
+    console.log(`updatePttArticles: wrote counts for ${countAgg.length} movies`);
+  }
+
+  return countAgg;
 }
 
 const crawlerStatusFilter = { name: 'crawlerStatus' };

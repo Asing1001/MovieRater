@@ -37,18 +37,24 @@ export default async function TheaterPage({ params }: Props) {
       .toArray()
   );
 
-  // Enrich schedules with movie metadata for poster/rating display
+  // Enrich schedules with movie metadata for poster/rating display.
+  // Query yahooMovies (written by lineTask) — mergedDatas may be stale.
   const lineMovieDbIds = [...new Set(schedules.map((s) => s.lineMovieDbId).filter(Boolean))];
   const movieDocs = lineMovieDbIds.length
     ? await Mongo.db
-        .collection<Movie>('mergedDatas')
+        .collection('yahooMovies')
         .find({ lineMovieDbId: { $in: lineMovieDbIds } })
-        .project({ lineMovieDbId: 1, movieBaseId: 1, posterUrl: 1, chineseTitle: 1, englishTitle: 1, imdbRating: 1, lineRating: 1, types: 1, runTime: 1 })
+        .project({ lineMovieDbId: 1, _id: 1, posterUrl: 1, chineseTitle: 1, englishTitle: 1, imdbRating: 1, lineRating: 1, types: 1, runTime: 1 })
         .toArray()
     : [];
   const movieByLineId: Record<string, MovieMeta> = {};
   for (const m of movieDocs) {
-    if (m.lineMovieDbId) movieByLineId[m.lineMovieDbId] = serialize(m as MovieMeta);
+    if (m.lineMovieDbId) {
+      movieByLineId[m.lineMovieDbId] = serialize({
+        ...m,
+        movieBaseId: m._id?.toString?.() ?? String(m._id),
+      } as MovieMeta);
+    }
   }
 
   const enrichedSchedules: EnrichedSchedule[] = schedules.map((s) => ({

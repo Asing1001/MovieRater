@@ -9,6 +9,9 @@ export default class Movie extends MovieBase {
   badRateArticles?: Array<Article>;
   otherArticles?: Array<Article>;
   relatedArticles?: Array<Article>;
+  pttGoodCount?: number;
+  pttNormalCount?: number;
+  pttBadCount?: number;
   imdbID?: string;
   imdbRating?: string;
   imdbLastCrawlTime?: string;

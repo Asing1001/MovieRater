@@ -40,9 +40,9 @@ function Badge({ color, textColor = '#fff', label, value, href }: BadgeProps) {
 }
 
 export default function Ratings({ movie, sx }: { movie: Movie; sx?: SxProps }) {
-  const g = movie.goodRateArticles?.length ?? 0;
-  const n = movie.normalRateArticles?.length ?? 0;
-  const b = movie.badRateArticles?.length ?? 0;
+  const g = movie.goodRateArticles?.length ?? movie.pttGoodCount ?? 0;
+  const n = movie.normalRateArticles?.length ?? movie.pttNormalCount ?? 0;
+  const b = movie.badRateArticles?.length ?? movie.pttBadCount ?? 0;
   const pttValue = g + n + b > 0 ? `好${g} 普${n} 負${b}` : 'N/A';
 
   return (
