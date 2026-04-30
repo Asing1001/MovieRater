@@ -13,7 +13,7 @@ export async function updateImdbInfo() {
 }
 
 const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
-async function getNewImdbInfos(): Promise<Movie[]> {
+export async function getNewImdbInfos(): Promise<Movie[]> {
   const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
   const allMovies: Movie[] = cacheManager.get(cacheManager.All_MOVIES);
   const toCrawlMovies = allMovies.filter(filterNeedCrawlMovie);
@@ -52,7 +52,7 @@ function logResult(movieInfos: Movie[]) {
   console.log(`Not found YahooIds: ${notfoundMovieIds}`);
 }
 
-async function updateNewImdbInfos(movieInfos: Movie[]) {
+export async function updateNewImdbInfos(movieInfos: Movie[]) {
   var promises = movieInfos.map(({ movieBaseId, imdbID, imdbRating, imdbLastCrawlTime }) => {
     const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime };
     return Mongo.updateDocument({ _id: new ObjectId(movieBaseId) }, newInfo, 'yahooMovies');

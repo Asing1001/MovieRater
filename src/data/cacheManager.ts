@@ -54,7 +54,7 @@ export default class cacheManager {
     return mergedDatas;
   }
 
-  private static setMovieLookupCache(movies: Array<Movie>) {
+  static setMovieLookupCache(movies: Array<Movie>) {
     const moviesByChineseTitle = {};
     movies.forEach((movie) => {
       if (movie.chineseTitle && !moviesByChineseTitle[movie.chineseTitle]) {
