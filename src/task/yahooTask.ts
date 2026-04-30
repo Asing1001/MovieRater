@@ -2,7 +2,6 @@ import { getTheaterList } from '../crawler/theaterCrawler';
 import { getYahooMovieInfo } from '../crawler/yahooCrawler';
 import { Mongo } from '../data/db';
 import Theater from '../models/theater';
-import * as Q from 'q';
 import Schedule from '../models/schedule';
 import { getGeoLocation } from '../thirdPartyIntegration/googleMapApi';
 
@@ -63,17 +62,15 @@ async function getRangeYahooMovies({ startYahooId, endYahooId }) {
     promises.push(promise);
   }
 
-  const results = await Q.allSettled(promises);
-  let yahooMovies = [];
-  results.forEach((result) => {
-    if (result.state === 'fulfilled') {
-      var value = result.value;
-      yahooMovies.push(value);
+  const results = await Promise.allSettled(promises);
+  const yahooMovies = [];
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      yahooMovies.push(result.value);
     } else {
-      var reason = result.reason;
-      console.error(reason);
+      console.error(result.reason);
     }
-  });
+  }
   return yahooMovies;
 }
 

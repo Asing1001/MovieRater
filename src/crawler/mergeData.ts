@@ -1,7 +1,7 @@
 import MovieBase from '../models/movieBase';
 import Movie from '../models/movie';
 import Article from '../models/article';
-import * as moment from 'moment';
+import moment from 'moment';
 import isValideDate from '../helper/isValideDate';
 
 export function mergeData(yahooMovies: Array<MovieBase>, allArticles: Article[]): Movie[] {

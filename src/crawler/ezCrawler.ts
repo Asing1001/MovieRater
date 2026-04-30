@@ -1,4 +1,3 @@
-import * as fetch from "isomorphic-fetch";
 import { stringify } from 'querystring';
 
 const ezApi = 'https://www.ezding.com.tw/ajaxfun';

@@ -1,6 +1,6 @@
 import { crawlMovieSchdule } from '../crawler/movieSchduleCrawler';
 import Schedule from '../models/schedule';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Mongo } from '../data/db';
 import Redis from 'ioredis';
 import { systemSetting } from '../configs/systemSetting';

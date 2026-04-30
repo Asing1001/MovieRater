@@ -1,4 +1,4 @@
-import moment = require('moment');
+import moment from 'moment';
 import { LINEMovieItem, getLINEArticle, getPlayingMovies } from '../crawler/lineCrawler';
 import MovieBase from '../models/movieBase';
 import { Mongo } from '../data/db';

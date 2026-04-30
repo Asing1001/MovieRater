@@ -1,6 +1,6 @@
 import { getCheerio$ } from '../helper/util';
 import Schedule from '../models/schedule';
-import * as moment from 'moment';
+import moment from 'moment';
 
 const movieSchduleUrl = 'http://www.atmovies.com.tw';
 export async function crawlMovieSchdule(scheduleUrl, date) {

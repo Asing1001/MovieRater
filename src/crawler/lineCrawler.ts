@@ -1,4 +1,3 @@
-import * as fetch from 'isomorphic-fetch';
 import { LINEPage } from '../models/LINEPage';
 
 export async function getPlayingMovies(): Promise<LINEMovieResponse> {

@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import Movie from '../models/movie';
-import * as moment from 'moment';
+import moment from 'moment';
 
 interface IMDB {
     imdbID: string

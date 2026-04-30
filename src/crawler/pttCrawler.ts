@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import * as moment from 'moment';
+import moment from 'moment';
 import Article from '../models/article';
 import PttPage from '../models/pttPage';
 import MovieBase from '../models/movieBase';

@@ -1,12 +1,16 @@
 import { Mongo } from '../data/db';
-import * as moment from 'moment';
+import moment from 'moment';
 import Movie from '../models/movie';
 import { getPlayingMovies } from '../crawler/lineCrawler';
 import { getMoviesSchedules, updateMoviesSchedules } from '../task/atmoviesTask';
 import isValideDate from '../helper/isValideDate';
 
+// Use globalThis to share cache across module instances (important for Next.js dev mode)
+declare global { var __cacheStore: Map<string, any> | undefined; }
+if (!globalThis.__cacheStore) globalThis.__cacheStore = new Map<string, any>();
+
 export default class cacheManager {
-  private static _store = new Map<string, any>();
+  private static get _store() { return globalThis.__cacheStore!; }
   static All_MOVIES = 'allMovies';
   static All_MOVIES_NAMES = 'allMoviesNames';
   static MOVIES_BY_CHINESE_TITLE = 'moviesByChineseTitle';

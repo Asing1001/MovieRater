@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import { crawlMovieSchdule } from '../crawler/movieSchduleCrawler';
-import * as moment from 'moment';
+import moment from 'moment';
 
 const should = chai.should();
 

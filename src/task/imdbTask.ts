@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import { Mongo } from '../data/db';
 import cacheManager from '../data/cacheManager';
 import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
