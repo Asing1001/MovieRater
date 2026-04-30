@@ -33,9 +33,23 @@ export default class cacheManager {
 
   private static async getMergedDatas() {
     console.time('Get mergedDatas');
-    const mergedDatas = await Mongo.getCollection<Movie>({
-      name: 'mergedDatas',
-    });
+    const mergedDatas = await Mongo.getCollection<Movie>({ name: 'mergedDatas' });
+
+    // Enrich with lineMovieDbId from yahooMovies (not yet in the daily merged snapshot)
+    const yahooMovies = await Mongo.db
+      .collection<{ lineMovieId: string; lineMovieDbId: string }>('yahooMovies')
+      .find({ lineMovieDbId: { $exists: true } }, { projection: { lineMovieId: 1, lineMovieDbId: 1, _id: 0 } })
+      .toArray();
+    const dbIdByLineId: Record<string, string> = {};
+    for (const y of yahooMovies) {
+      if (y.lineMovieId && y.lineMovieDbId) dbIdByLineId[y.lineMovieId] = y.lineMovieDbId;
+    }
+    for (const movie of mergedDatas) {
+      if (movie.lineMovieId && dbIdByLineId[movie.lineMovieId]) {
+        (movie as any).lineMovieDbId = dbIdByLineId[movie.lineMovieId];
+      }
+    }
+
     console.timeEnd('Get mergedDatas');
     return mergedDatas;
   }
