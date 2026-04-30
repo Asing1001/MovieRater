@@ -30,3 +30,6 @@ npm-debug.log
 .terraform/
 
 .env.next/
+.env
+.env.local
+.next/

@@ -46,7 +46,10 @@
       "Bash(curl -s --max-time 5 http://localhost:3005/upcoming)",
       "Bash(python3 -c \"import sys,re; h=sys.stdin.read\\(\\); p=re.findall\\(r'push\\\\\\(\\\\[1,\\\\\"\\(.*?\\)\\\\\"\\\\]\\\\\\)',h,re.DOTALL\\); rsc=''.join\\(p\\); print\\('上映日期 count:', rsc.count\\('上映日期'\\)\\)\")",
       "Bash(curl -s --max-time 5 http://localhost:3005/theaters)",
-      "Bash(python3 -c \"import sys,re; h=sys.stdin.read\\(\\); p=re.findall\\(r'push\\\\\\(\\\\[1,\\\\\"\\(.*?\\)\\\\\"\\\\]\\\\\\)',h,re.DOTALL\\); rsc=''.join\\(p\\); theater_titles=re.findall\\(r'[一-鿿]{2,20}影城|[一-鿿]{2,20}影院|[一-鿿]{2,20}電影院', rsc\\); print\\('Theater names:', theater_titles[:5]\\)\")"
+      "Bash(python3 -c \"import sys,re; h=sys.stdin.read\\(\\); p=re.findall\\(r'push\\\\\\(\\\\[1,\\\\\"\\(.*?\\)\\\\\"\\\\]\\\\\\)',h,re.DOTALL\\); rsc=''.join\\(p\\); theater_titles=re.findall\\(r'[一-鿿]{2,20}影城|[一-鿿]{2,20}影院|[一-鿿]{2,20}電影院', rsc\\); print\\('Theater names:', theater_titles[:5]\\)\")",
+      "Bash(grep -E \"\\\\.env|env$\")",
+      "Bash(git commit *)",
+      "Bash(git config *)"
     ]
   }
 }
