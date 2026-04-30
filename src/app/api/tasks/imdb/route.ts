@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getNewImdbInfos, updateNewImdbInfos } from '@/task/imdbTask';
 import cacheManager from '@/data/cacheManager';
 import Movie from '@/models/movie';
@@ -25,6 +26,8 @@ export async function POST() {
 
     const found = movieInfos.filter((m) => m.imdbID).length;
     const notFound = movieInfos.length - found;
+    // Bust ISR cache so movie pages show updated IMDB ratings immediately
+    revalidatePath('/movie/[id]', 'page');
     return NextResponse.json({ ok: true, found, notFound });
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
