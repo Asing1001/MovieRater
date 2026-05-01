@@ -200,14 +200,6 @@ resource "google_cloud_run_v2_service" "main" {
         name  = "WEBSITE_URL"
         value = "https://www.mvrater.com"
       }
-      env {
-        name  = "ENABLE_SCHEDULER"
-        value = "false"
-      }
-      env {
-        name  = "ENABLE_GRAPHIQL"
-        value = "false"
-      }
 
       env {
         name = "DB_URL"

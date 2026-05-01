@@ -6,12 +6,6 @@ import Movie from '../models/movie';
 import { promiseMap } from '../helper/promiseMap';
 import { ObjectId } from 'mongodb';
 
-export async function updateImdbInfo() {
-  const movieInfos = await getNewImdbInfos();
-  logResult(movieInfos);
-  await updateNewImdbInfos(movieInfos);
-}
-
 const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
 export async function getNewImdbInfos(): Promise<Movie[]> {
   const imdbLastCrawlTime = moment().format(imdbLastCrawlTimeFormat);
@@ -43,13 +37,6 @@ function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbID, imdbRating, i
   const dataJustCrawled = imdbID && imdbRating && now.diff(moment(imdbLastCrawlTime), 'days') <= 7;
   const shouldCrawl = !dataJustCrawled && englishTitle && isRecentMovie;
   return shouldCrawl;
-}
-
-function logResult(movieInfos: Movie[]) {
-  const foundMovies = movieInfos.filter((movie) => movie.imdbID);
-  const notfoundMovieIds = movieInfos.filter((movie) => !movie.imdbID).map((movie) => movie.movieBaseId);
-  console.log(`Found imdbInfos: ${foundMovies.length}, NotFound: ${notfoundMovieIds.length}`);
-  console.log(`Not found YahooIds: ${notfoundMovieIds}`);
 }
 
 export async function updateNewImdbInfos(movieInfos: Movie[]) {

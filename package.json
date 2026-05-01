@@ -11,7 +11,6 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
-    "mergedata": "node -e \"require('./src/backgroundService/mergeDataJob')\"",
     "sitemap": "node -e \"require('./src/helper/sitemapGenrator')\""
   },
   "private": true,
@@ -19,29 +18,22 @@
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@google/maps": "^0.3.1",
     "@mui/icons-material": "^6.4.0",
     "@mui/material": "^6.4.0",
     "@mui/material-nextjs": "^6.4.0",
     "cheerio": "^1.0.0-rc.2",
-    "compression": "^1.6.2",
     "hls.js": "0.12.4",
-    "ioredis": "^5.6.0",
     "moment": "^2.16.0",
     "mongodb": "^6",
     "next": "^15.3.0",
-    "node-cron": "^3.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.2",
     "@types/node": "^22.0.0",
-    "@types/node-cron": "^3.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "concurrently": "^8.0.0",
-    "rimraf": "^5.0.0",
     "typescript": "^5.8.0",
     "vitest": "^2.0.0"
   }

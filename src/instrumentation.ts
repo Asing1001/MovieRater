@@ -2,7 +2,6 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     const { Mongo } = await import('./data/db');
     const cacheManager = (await import('./data/cacheManager')).default;
-    const { initScheduler } = await import('./backgroundService/scheduler');
     await Mongo.openDbConnection();
     cacheManager.init().then(async () => {
       const { updateLineSchedules } = await import('./task/lineScheduleTask');
@@ -10,6 +9,5 @@ export async function register() {
       await cacheManager.setMoviesSchedulesCache();
       await cacheManager.setTheatersCache();
     }).catch(console.error);
-    initScheduler();
   }
 }
