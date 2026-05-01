@@ -10,8 +10,21 @@ import Image from 'next/image';
 import moment from 'moment';
 import type { EnrichedSchedule } from '@/lib/theaters';
 
-function getNextDays(count = 7) {
-  return Array.from({ length: count }, (_, i) => moment().add(i, 'days').format('YYYYMMDD'));
+// Schedules are keyed by calendar day in Asia/Taipei (LINE returns local TW dates).
+// The browser may be in any timezone, so derive the day list explicitly in TW time
+// instead of relying on the browser's local clock.
+const TAIPEI_FMT = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Taipei',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
+function getNextDays(count = 7): string[] {
+  const now = Date.now();
+  return Array.from({ length: count }, (_, i) =>
+    TAIPEI_FMT.format(new Date(now + i * 86_400_000)).replace(/-/g, '')
+  );
 }
 
 function RatingBadge({ label, value, color }: { label: string; value: string; color: string }) {
@@ -65,7 +78,7 @@ export default function TheaterSchedules({ schedules }: { schedules: EnrichedSch
         {days.map((d) => (
           <Chip
             key={d}
-            label={d === days[0] ? `今天 ${moment(d).format('MM/DD')}` : moment(d).format('MM/DD ddd')}
+            label={d === days[0] ? `今天 ${moment(d, 'YYYYMMDD').format('MM/DD')}` : moment(d, 'YYYYMMDD').format('MM/DD ddd')}
             onClick={() => setSelectedDay(d)}
             color={d === selectedDay ? 'primary' : 'default'}
             variant={d === selectedDay ? 'filled' : 'outlined'}
