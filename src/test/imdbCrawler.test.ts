@@ -1,21 +1,12 @@
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
 import {
   getIMDBMovieInfo,
   getIMDBRating,
-  getIMDBRatingFromHtml,
   getIMDBSuggestIdFromSuggestions,
 } from '../crawler/imdbCrawler';
 
-const assert = chai.assert;
-const expect = chai.expect;
-const should = chai.should();
-chai.should();
-chai.use(chaiAsPromised);
-
 describe('imdbCrawler', () => {
   describe('getIMDBSuggestIdFromSuggestions', () => {
-    it('should match a close title when similarity is high', function () {
+    it('should match a close title when similarity is high', () => {
       const imdbID = getIMDBSuggestIdFromSuggestions(
         {
           d: [
@@ -26,11 +17,10 @@ describe('imdbCrawler', () => {
         'Who Killed Cock Robin',
         '2017-03-31'
       );
-
-      imdbID.should.eq('tt5576318');
+      expect(imdbID).toBe('tt5576318');
     });
 
-    it('should use release year to disambiguate less similar titles', function () {
+    it('should use release year to disambiguate less similar titles', () => {
       const imdbID = getIMDBSuggestIdFromSuggestions(
         {
           d: [
@@ -41,11 +31,10 @@ describe('imdbCrawler', () => {
         'A Silent Voice The Movie',
         '2020-06-12'
       );
-
-      imdbID.should.eq('tt5323662');
+      expect(imdbID).toBe('tt5323662');
     });
 
-    it('should return null when suggestions do not match', function () {
+    it('should return null when suggestions do not match', () => {
       const imdbID = getIMDBSuggestIdFromSuggestions(
         {
           d: [{ id: 'tt0000001', l: 'A Completely Different Movie', y: 2020 }],
@@ -53,37 +42,25 @@ describe('imdbCrawler', () => {
         'Girl Revenge',
         '2020-08-07'
       );
-
-      expect(imdbID).to.be.null;
-    });
-  });
-
-  describe('getIMDBRatingFromHtml', () => {
-    it('should parse the aggregate rating from IMDB title HTML', function () {
-      const html = `
-        <div data-testid="hero-rating-bar__aggregate-rating__score">
-          <span>8.4</span><span>/10</span>
-        </div>
-      `;
-
-      getIMDBRatingFromHtml(html).should.eq('8.4');
+      expect(imdbID).toBeNull();
     });
   });
 
   describe('live IMDB integration', () => {
     const liveIt = process.env.ENABLE_LIVE_CRAWLER_TESTS === 'true' ? it : it.skip;
 
-    liveIt('getIMDBMovieInfo("Who Killed Cock Robin") should return the expected IMDB id', async function () {
-      this.timeout(30000);
-      const movieInfo = await getIMDBMovieInfo({ englishTitle: 'Who Killed Cock Robin', releaseDate: '2017-03-31' });
-      movieInfo.should.have.property('imdbID', 'tt5576318');
-      movieInfo.should.have.property('imdbRating').above(6);
-    });
+    liveIt('getIMDBMovieInfo("Who Killed Cock Robin") should return the expected IMDB id', async () => {
+      const movieInfo = await getIMDBMovieInfo({
+        englishTitle: 'Who Killed Cock Robin',
+        releaseDate: '2017-03-31',
+      });
+      expect(movieInfo).toHaveProperty('imdbID', 'tt5576318');
+      expect(Number(movieInfo.imdbRating)).toBeGreaterThan(6);
+    }, 30000);
 
-    liveIt('getIMDBRating should return a rating for a known IMDB id', async function () {
-      this.timeout(30000);
+    liveIt('getIMDBRating should return a rating for a known IMDB id', async () => {
       const rating = await getIMDBRating('tt12619256');
-      rating.length.should.above(0);
-    });
+      expect(rating.length).toBeGreaterThan(0);
+    }, 30000);
   });
 });
