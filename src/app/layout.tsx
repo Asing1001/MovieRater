@@ -19,6 +19,17 @@ export const metadata: Metadata = {
     description: '24小時不斷更新IMDB, LINE, PTT電影評價、電影時刻表，一目了然讓你不再踩雷！',
     images: ['/favicons/android-chrome-384x384.png'],
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicons/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/favicons/apple-touch-icon.png',
+    shortcut: '/favicon.ico',
+  },
+  manifest: '/favicons/manifest.json',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
