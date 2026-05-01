@@ -14,8 +14,10 @@ const nextConfig: NextConfig = {
     // and serves a stale response up to stale-while-revalidate seconds while it refreshes
     // in the background. swr is the key knob that makes Cloud Run cold starts invisible:
     // even when origin takes 5s to wake up, the edge serves stale instantly.
-    // Vary is collapsed to Accept-Encoding in src/middleware.ts (next.config.ts
-    // headers can only ADD to the framework's Vary, not replace it).
+    // Vary normalization happens in a Cloudflare Worker (cloudflare/worker.js)
+    // because next.config.ts headers and middleware can't override the
+    // framework-set Vary in App Router — confirmed Next.js limitation:
+    // https://github.com/vercel/next.js/discussions/82571
     const oneHour = 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400';
     const tenMin = 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400';
     const fiveMin = 'public, max-age=0, s-maxage=300, stale-while-revalidate=3600';
