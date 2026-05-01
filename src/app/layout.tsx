@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import AppBar from '@/components/AppBar';
+import AnalyticsAndAds from '@/components/AnalyticsAndAds';
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-TW">
       <body>
+        <AnalyticsAndAds />
         <ThemeRegistry>
           <Suspense>
             <AppBar />
