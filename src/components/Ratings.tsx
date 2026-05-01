@@ -61,21 +61,13 @@ export default function Ratings({ movie, sx }: { movie: Movie; sx?: SxProps }) {
         value={movie.imdbRating || 'N/A'}
         href={movie.imdbID ? `https://www.imdb.com/title/${movie.imdbID}` : undefined}
       />
-      {movie.lineRating ? (
-        <Badge
-          color="#06c755"
-          label="LINE"
-          value={movie.lineRating}
-          href={`https://today.line.me/tw/v2/movie/${movie.lineUrlHash}/2`}
-        />
-      ) : (
-        <Badge
-          color="#720e9e"
-          label="Yahoo"
-          value={movie.yahooRating || 'N/A'}
-          href={`https://movies.yahoo.com.tw/movieinfo_main.html/id=${movie.yahooId}`}
-        />
-      )}
+      <Badge
+        color="#06c755"
+        label="LINE"
+        value={movie.lineRating || 'N/A'}
+        href={movie.lineUrlHash ? `https://today.line.me/tw/v2/movie/${movie.lineUrlHash}/2` : undefined}
+      />
+      {/* Yahoo branch removed — Yahoo movie section closed in 2023/10. */}
       <Badge color="#1a1a1a" label="PTT" value={pttValue} />
     </Box>
   );
