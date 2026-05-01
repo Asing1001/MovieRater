@@ -9,23 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import moment from 'moment';
 import type { EnrichedSchedule } from '@/lib/theaters';
-
-// Schedules are keyed by calendar day in Asia/Taipei (LINE returns local TW dates).
-// The browser may be in any timezone, so derive the day list explicitly in TW time
-// instead of relying on the browser's local clock.
-const TAIPEI_FMT = new Intl.DateTimeFormat('en-CA', {
-  timeZone: 'Asia/Taipei',
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-});
-
-function getNextDays(count = 7): string[] {
-  const now = Date.now();
-  return Array.from({ length: count }, (_, i) =>
-    TAIPEI_FMT.format(new Date(now + i * 86_400_000)).replace(/-/g, '')
-  );
-}
+import { getNextTaipeiDays } from '@/lib/taipeiDate';
 
 function RatingBadge({ label, value, color }: { label: string; value: string; color: string }) {
   return (
@@ -51,7 +35,7 @@ function RatingBadge({ label, value, color }: { label: string; value: string; co
 }
 
 export default function TheaterSchedules({ schedules }: { schedules: EnrichedSchedule[] }) {
-  const days = getNextDays();
+  const days = getNextTaipeiDays();
   const [selectedDay, setSelectedDay] = useState(days[0]);
 
   const filtered = schedules.filter((s) => s.date === selectedDay);

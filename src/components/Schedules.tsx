@@ -7,13 +7,10 @@ import Paper from '@mui/material/Paper';
 import Link from 'next/link';
 import Schedule from '@/models/schedule';
 import moment from 'moment';
-
-function getNextDays(count = 7) {
-  return Array.from({ length: count }, (_, i) => moment().add(i, 'days').format('YYYYMMDD'));
-}
+import { getNextTaipeiDays } from '@/lib/taipeiDate';
 
 export default function Schedules({ schedules, titleKey = 'theaterName' }: { schedules: Schedule[]; titleKey?: 'theaterName' | 'movieName' }) {
-  const days = getNextDays();
+  const days = getNextTaipeiDays();
   const [selectedDay, setSelectedDay] = useState(days[0]);
 
   const filtered = schedules.filter((s) => s.date === selectedDay);
@@ -25,7 +22,7 @@ export default function Schedules({ schedules, titleKey = 'theaterName' }: { sch
         {days.map((d) => (
           <Chip
             key={d}
-            label={moment(d).format('MM/DD')}
+            label={moment(d, 'YYYYMMDD').format('MM/DD')}
             onClick={() => setSelectedDay(d)}
             color={d === selectedDay ? 'primary' : 'default'}
             variant={d === selectedDay ? 'filled' : 'outlined'}
