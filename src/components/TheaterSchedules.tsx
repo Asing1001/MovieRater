@@ -87,7 +87,7 @@ export default function TheaterSchedules({ schedules }: { schedules: EnrichedSch
               <Card
                 key={item.lineMovieDbId ?? item.movieName}
                 variant="outlined"
-                sx={{ borderRadius: 2, '&:hover': { boxShadow: 2 } }}
+                sx={{ position: 'relative', borderRadius: 2, '&:hover': { boxShadow: 2 } }}
               >
                 <CardContent sx={{ p: '12px !important', display: 'flex', gap: 1.5 }}>
                   {/* Poster */}
@@ -129,15 +129,28 @@ export default function TheaterSchedules({ schedules }: { schedules: EnrichedSch
 
                   {/* Info */}
                   <Box sx={{ flex: 1, minWidth: 0 }}>
-                    {/* Title */}
+                    {/* Title — stretched-link makes the whole card clickable when href exists */}
                     <Typography
                       fontWeight={700}
                       sx={{ mb: 0.5, lineHeight: 1.3, fontSize: '0.95rem' }}
                     >
                       {href ? (
-                        <Link href={href} style={{ color: 'inherit', textDecoration: 'none' }}>
+                        <Box
+                          component={Link}
+                          href={href}
+                          sx={{
+                            color: 'inherit',
+                            textDecoration: 'none',
+                            '&::after': {
+                              content: '""',
+                              position: 'absolute',
+                              inset: 0,
+                              zIndex: 1,
+                            },
+                          }}
+                        >
                           {meta?.chineseTitle ?? item.movieName}
-                        </Link>
+                        </Box>
                       ) : (
                         item.movieName
                       )}

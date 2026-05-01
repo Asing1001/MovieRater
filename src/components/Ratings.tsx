@@ -30,8 +30,15 @@ function Badge({ color, textColor = '#fff', label, value, href }: BadgeProps) {
   );
 
   if (href) {
+    // position:relative + zIndex:2 so this link stays clickable on top of any
+    // parent stretched-link overlay (e.g. inside MovieCard).
     return (
-      <a href={href} target="_blank" rel="noopener" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener"
+        style={{ textDecoration: 'none', color: 'inherit', position: 'relative', zIndex: 2 }}
+      >
         {content}
       </a>
     );

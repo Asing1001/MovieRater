@@ -1,8 +1,6 @@
 import Link from 'next/link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import Divider from '@mui/material/Divider';
 import Ratings from './Ratings';
 import Movie from '@/models/movie';
 
@@ -12,6 +10,7 @@ export default function MovieCard({ movie, children }: { movie: Movie; children?
   return (
     <Box
       sx={{
+        position: 'relative',
         display: 'flex',
         mb: 1.5,
         borderRadius: 2,
@@ -23,25 +22,38 @@ export default function MovieCard({ movie, children }: { movie: Movie; children?
       }}
     >
       {/* Poster */}
-      <Link href={href} style={{ flexShrink: 0, display: 'block' }}>
-        <Box
-          component="img"
-          src={movie.posterUrl}
-          alt={movie.chineseTitle}
-          loading="lazy"
-          sx={{
-            width: { xs: 90, sm: 120 },
-            height: { xs: 130, sm: 175 },
-            objectFit: 'cover',
-            display: 'block',
-            bgcolor: 'grey.100',
-          }}
-        />
-      </Link>
+      <Box
+        component="img"
+        src={movie.posterUrl}
+        alt={movie.chineseTitle}
+        loading="lazy"
+        sx={{
+          flexShrink: 0,
+          width: { xs: 90, sm: 120 },
+          height: { xs: 130, sm: 175 },
+          objectFit: 'cover',
+          display: 'block',
+          bgcolor: 'grey.100',
+        }}
+      />
 
       {/* Content */}
       <Box sx={{ flex: 1, p: { xs: 1.5, sm: 2 }, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <Link href={href} style={{ textDecoration: 'none', color: 'inherit' }}>
+        {/* Stretched link: title text is the anchor, ::after overlays the whole card */}
+        <Box
+          component={Link}
+          href={href}
+          sx={{
+            color: 'inherit',
+            textDecoration: 'none',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
+            },
+          }}
+        >
           <Typography
             variant="subtitle1"
             fontWeight={700}
@@ -58,7 +70,7 @@ export default function MovieCard({ movie, children }: { movie: Movie; children?
           >
             {movie.englishTitle}
           </Typography>
-        </Link>
+        </Box>
 
         {/* Meta row */}
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1, fontSize: '0.75rem', color: 'text.secondary' }}>
