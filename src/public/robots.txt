@@ -1,3 +1,0 @@
-user-agent: *
-disallow: /bbs/movie*
-disallow: /artist_filmography.html*

@@ -8,10 +8,15 @@ import Box from '@mui/material/Box';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.mvrater.com'),
   title: 'Movie Rater',
   description: '24小時不斷更新IMDB, YAHOO, PTT電影評價、電影時刻表，一目了然讓你不再踩雷！',
   openGraph: {
-    images: ['/public/favicons/android-chrome-384x384.png'],
+    type: 'website',
+    url: 'https://www.mvrater.com',
+    title: 'Movie Rater',
+    description: '24小時不斷更新IMDB, YAHOO, PTT電影評價、電影時刻表，一目了然讓你不再踩雷！',
+    images: ['/favicons/android-chrome-384x384.png'],
   },
 };
 

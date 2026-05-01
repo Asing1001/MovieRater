@@ -28,6 +28,7 @@ export async function POST() {
     const notFound = movieInfos.length - found;
     // Bust ISR cache so movie pages show updated IMDB ratings immediately
     revalidatePath('/movie/[id]', 'page');
+    revalidatePath('/sitemap.xml');
     return NextResponse.json({ ok: true, found, notFound });
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });

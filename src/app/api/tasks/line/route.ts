@@ -15,6 +15,7 @@ export async function POST() {
     // Bust ISR cache so individual theater pages show fresh data immediately.
     // /theaters itself is force-dynamic; CDN edge cache is handled via Cache-Control.
     revalidatePath('/theater/[name]', 'page');
+    revalidatePath('/sitemap.xml');
     return NextResponse.json({ ok: true, scheduleCount: count });
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { Mongo } from '@/data/db';
 import cacheManager from '@/data/cacheManager';
 import { updatePttArticles } from '@/task/pttTask';
@@ -26,6 +27,7 @@ export async function POST() {
     const apply = (arr: Movie[]) => arr.map((m) => m.movieBaseId && patchMap[m.movieBaseId] ? { ...m, ...patchMap[m.movieBaseId] } : m);
     cacheManager.set(cacheManager.All_MOVIES, apply(cacheManager.get(cacheManager.All_MOVIES) ?? []));
     cacheManager.set(cacheManager.RECENT_MOVIES, apply(cacheManager.get(cacheManager.RECENT_MOVIES) ?? []));
+    revalidatePath('/sitemap.xml');
     return NextResponse.json({ ok: true, updatedMovies: pttCounts.length });
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });

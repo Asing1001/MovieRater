@@ -10,8 +10,7 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "sitemap": "node -e \"require('./src/helper/sitemapGenrator')\""
+    "test:watch": "vitest"
   },
   "private": true,
   "dependencies": {
