@@ -6,6 +6,7 @@ import Movie from '@/models/movie';
 import Schedule from '@/models/schedule';
 import { getArticlesByMovieBaseId } from '@/lib/articles';
 import { classifyArticle, getMovieSchema, serialize } from '@/lib/utils';
+import { cleanMovieSummary } from '@/lib/text';
 import Ratings from '@/components/Ratings';
 import PttArticles from '@/components/PttArticles';
 import Schedules from '@/components/Schedules';
@@ -44,9 +45,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const movie = await fetchMovie(id);
   if (!movie) return { title: 'Movie Rater' };
+  const summary = cleanMovieSummary(movie.summary);
   return {
     title: `${movie.chineseTitle} ${movie.englishTitle} | Movie Rater`,
-    description: movie.summary?.slice(0, 160),
+    description: summary.slice(0, 160),
     openGraph: { images: movie.posterUrl ? [movie.posterUrl] : [] },
   };
 }
@@ -67,7 +69,7 @@ export default async function MoviePage({ params }: Props) {
       : Promise.resolve([]),
   ]);
 
-  const movie = classifyArticle({ ...raw, relatedArticles: articles });
+  const movie = classifyArticle({ ...raw, summary: cleanMovieSummary(raw.summary), relatedArticles: articles });
   const schema = getMovieSchema(movie);
   const posterUrl = movie.posterUrl?.replace('/w280', '/w644') ?? '';
 

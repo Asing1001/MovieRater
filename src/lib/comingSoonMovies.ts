@@ -1,4 +1,5 @@
 import { LINEMovieItem } from '@/crawler/lineCrawler';
+import { cleanMovieSummary } from '@/lib/text';
 
 export interface ComingSoonMovie {
   _id?: unknown;
@@ -68,14 +69,6 @@ function formatTaipeiWeekday(date: string) {
   }).format(new Date(`${date}T00:00:00+08:00`));
 }
 
-function stripHtml(value?: string | null) {
-  return (value ?? '')
-    .replace(/<br\s*\/?>/gi, ' ')
-    .replace(/<[^>]*>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
 function compactArray<T>(value?: T[] | null): T[] {
   return Array.isArray(value) ? value.filter(Boolean) : [];
 }
@@ -102,7 +95,7 @@ export function mapLineComingSoonMovie(item: LINEMovieItem): ComingSoonMovie {
     directors: compactArray(item.directors),
     actors: compactArray(item.cast),
     launchCompany: item.production,
-    summary: stripHtml(item.shortDescription || item.synopsis),
+    summary: cleanMovieSummary(item.shortDescription || item.synopsis),
     lineTrailerHash: trailerHash,
     likeCount: Number(item.likeCount) || 0,
     certificate: item.certificate,

@@ -1,6 +1,7 @@
 import cacheManager from '../data/cacheManager';
 import Movie from '../models/movie';
 import { ObjectId } from 'mongodb';
+import { cleanMovieSummary } from './text';
 
 export function getRecentMovies(): Movie[] {
   return cacheManager.get(cacheManager.RECENT_MOVIES) ?? [];
@@ -25,8 +26,9 @@ export function getMovieById(id: string): Movie | undefined {
 }
 
 export function briefSummary(summary?: string): string {
-  if (!summary) return '';
-  return summary.length > 70 ? summary.slice(0, 70) + '...' : summary;
+  const clean = cleanMovieSummary(summary);
+  if (!clean) return '';
+  return clean.length > 70 ? clean.slice(0, 70) + '...' : clean;
 }
 
 export function getAllMovieNames(): { value: string; text: string }[] {

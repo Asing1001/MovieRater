@@ -3,6 +3,7 @@ import { LINEMovieItem, getLINEArticle, getPlayingMovies } from '../crawler/line
 import MovieBase from '../models/movieBase';
 import { Mongo } from '../data/db';
 import { promiseMap } from '../helper/promiseMap';
+import { cleanMovieSummary } from '../lib/text';
 
 export async function updateLINEMovies() {
   const playingMovies = await getPlayingMovies();
@@ -37,7 +38,7 @@ async function mapToYahooMovieModel(item: LINEMovieItem): Promise<MovieBase | nu
     actors: item.cast,
     launchCompany: item.production,
     lineRating: lineRating,
-    summary: item.synopsis,
+    summary: cleanMovieSummary(item.synopsis),
     lineTrailerHash: await getLINETrailerHash(item),
   };
   return movie;
