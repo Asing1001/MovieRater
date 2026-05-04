@@ -1,6 +1,5 @@
 import Movie from '../models/movie';
 import moment from 'moment';
-import { omdbSetting } from '../configs/systemSetting';
 
 interface IMDB {
     imdbID: string
@@ -52,7 +51,7 @@ function getIMDBSuggestJsonUrl(englishTitle: string) {
 export async function getIMDBRating(imdbID: string): Promise<string> {
     if (!imdbID) return null;
     try {
-        const res = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${omdbSetting.apiKey}`);
+        const res = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${process.env.OMDB_API_KEY || ''}`);
         const data = await res.json();
         return data.Response === 'True' ? data.imdbRating : null;
     } catch (e) {

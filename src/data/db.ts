@@ -1,6 +1,11 @@
 import { MongoClient, Db } from 'mongodb';
-import { systemSetting } from '../configs/systemSetting';
 import log from '../helper/log';
+
+const DEFAULT_DB_URL = 'mongodb://localhost:27018/movierater';
+
+function getDbUrl() {
+  return process.env.DB_URL || DEFAULT_DB_URL;
+}
 
 declare global {
   var __mongoClient: MongoClient | undefined;
@@ -16,7 +21,7 @@ export class Mongo {
   public static async openDbConnection() {
     try {
       if (!this.dbConnection) {
-        this.dbConnection = new MongoClient(systemSetting.dbUrl);
+        this.dbConnection = new MongoClient(getDbUrl());
         await this.dbConnection.connect();
         this.db = this.dbConnection.db();
         console.log('connect to mongodb correctly');

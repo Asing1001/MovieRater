@@ -193,14 +193,6 @@ resource "google_cloud_run_v2_service" "main" {
         value = "production"
       }
       env {
-        name  = "TZ"
-        value = "Asia/Taipei"
-      }
-      env {
-        name  = "WEBSITE_URL"
-        value = "https://www.mvrater.com"
-      }
-      env {
         name  = "SCHEDULE_TASK_API_TOKEN"
         value = var.schedule_task_api_token
       }
