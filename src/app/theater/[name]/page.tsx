@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Mongo } from '@/data/db';
+import { COLLECTIONS } from '@/data/collections';
 import Theater from '@/models/theater';
 import Schedule from '@/models/schedule';
 import Movie from '@/models/movie';
@@ -25,7 +26,7 @@ export default async function TheaterPage({ params }: Props) {
   const decoded = decodeURIComponent(name);
 
   await Mongo.openDbConnection();
-  const theaterCollection = Mongo.db.collection<Theater>('theaters');
+  const theaterCollection = Mongo.db.collection<Theater>(COLLECTIONS.theaters);
   const theater = serialize(
     await theaterCollection.findOne({
       name: decoded,
@@ -37,18 +38,18 @@ export default async function TheaterPage({ params }: Props) {
   const schedules = serialize(
     theater.lineTheaterId
       ? await Mongo.db
-          .collection<Schedule>('schedules')
+          .collection<Schedule>(COLLECTIONS.schedules)
           .find({ lineTheaterId: theater.lineTheaterId })
           .toArray()
       : []
   );
 
   // Enrich schedules with movie metadata for poster/rating display.
-  // Query yahooMovies (written by lineTask) — mergedDatas may be stale.
+  // Query movieBases directly; mergedDatas may be stale.
   const lineMovieDbIds = [...new Set(schedules.map((s) => s.lineMovieDbId).filter(Boolean))];
   const movieDocs = lineMovieDbIds.length
     ? await Mongo.db
-        .collection('yahooMovies')
+        .collection(COLLECTIONS.movieBases)
         .find({ lineMovieDbId: { $in: lineMovieDbIds } })
         .project({ lineMovieDbId: 1, _id: 1, posterUrl: 1, chineseTitle: 1, englishTitle: 1, imdbRating: 1, imdbID: 1, lineRating: 1, lineUrlHash: 1, types: 1, runTime: 1 })
         .toArray()

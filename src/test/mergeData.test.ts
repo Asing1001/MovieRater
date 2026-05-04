@@ -4,7 +4,7 @@ import Movie from '../models/movie';
 
 describe('mergeData', () => {
   it('should not merge if chineseTitle matches but article date is out of range', () => {
-    const yahooMovies: Movie[] = [
+    const movieBases: Movie[] = [
       { _id: new ObjectId(), chineseTitle: '測試資料1', releaseDate: '2016-11-07' },
     ];
     const pttArticles = [
@@ -14,12 +14,12 @@ describe('mergeData', () => {
         date: '2016/06/06',
       },
     ];
-    const actual = mergeData(yahooMovies, pttArticles);
+    const actual = mergeData(movieBases, pttArticles);
     expect(actual[0].relatedArticles).toEqual([]);
   });
 
   it('should merge if chineseTitle matches and article date is in range', () => {
-    const yahooMovies: Movie[] = [
+    const movieBases: Movie[] = [
       { _id: new ObjectId(), chineseTitle: '測試', releaseDate: '2016-09-07' },
     ];
     const pttArticles = [
@@ -29,7 +29,7 @@ describe('mergeData', () => {
         date: '2016/08/07',
       },
     ];
-    const actual = mergeData(yahooMovies, pttArticles);
+    const actual = mergeData(movieBases, pttArticles);
     expect(actual[0].relatedArticles).toEqual(pttArticles);
   });
 });

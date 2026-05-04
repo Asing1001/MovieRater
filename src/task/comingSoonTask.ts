@@ -1,4 +1,5 @@
 import { getComingSoonMovies } from '@/crawler/lineCrawler';
+import { COLLECTIONS } from '@/data/collections';
 import { Mongo } from '@/data/db';
 import {
   ComingSoonMovie,
@@ -20,9 +21,7 @@ export async function updateComingSoonMovies(months = getComingSoonStartMonths()
     }
   }
 
-  const collection = Mongo.db.collection<ComingSoonMovie>('comingSoonMovies');
-  await collection.createIndex({ lineMovieDbId: 1 }, { unique: true });
-  await collection.createIndex({ releaseDate: 1, likeCount: -1 });
+  const collection = Mongo.db.collection<ComingSoonMovie>(COLLECTIONS.comingSoonMovies);
 
   const movies = [...byLineMovieDbId.values()];
   if (!movies.length) {

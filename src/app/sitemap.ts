@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { COLLECTIONS } from '@/data/collections';
 import { Mongo } from '@/data/db';
 import Movie from '@/models/movie';
 import Theater from '@/models/theater';
@@ -19,12 +20,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await Mongo.openDbConnection();
   const [movies, theaters] = await Promise.all([
     Mongo.db
-      .collection<Movie>('mergedDatas')
+      .collection<Movie>(COLLECTIONS.mergedDatas)
       .find({ chineseTitle: { $exists: true, $ne: '' } })
       .project({ movieBaseId: 1, imdbLastCrawlTime: 1 })
       .toArray(),
     Mongo.db
-      .collection<Theater>('theaters')
+      .collection<Theater>(COLLECTIONS.theaters)
       .find({ lineTheaterId: { $exists: true, $ne: null } })
       .project({ name: 1 })
       .toArray(),

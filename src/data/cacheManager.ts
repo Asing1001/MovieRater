@@ -4,6 +4,7 @@ import Movie from '../models/movie';
 import { getPlayingMovies } from '../crawler/lineCrawler';
 import Schedule from '../models/schedule';
 import isValideDate from '../helper/isValideDate';
+import { COLLECTIONS } from './collections';
 
 // Use globalThis to share cache across module instances (important for Next.js dev mode)
 declare global { var __cacheStore: Map<string, any> | undefined; }
@@ -44,26 +45,25 @@ export default class cacheManager {
 
   private static async getMergedDatas() {
     console.time('Get mergedDatas');
-    const mergedDatas = await Mongo.getCollection<Movie>({ name: 'mergedDatas' });
+    const mergedDatas = await Mongo.getCollection<Movie>({ name: COLLECTIONS.mergedDatas });
 
-    // Enrich from yahooMovies: fields that may not be in the daily merged snapshot yet.
-    // Join by _id (movieBaseId is yahooMovies._id.toHexString()) — more reliable than lineMovieId.
-    // yahooMovies._id is stored as a plain string (hex), not an ObjectId
-    const yahooMovies = await Mongo.db
-      .collection<{ _id: string; lineMovieId?: string; lineMovieDbId?: string; imdbID?: string; imdbRating?: string; imdbLastCrawlTime?: string }>('yahooMovies')
+    // Enrich from movieBases: fields that may not be in the daily merged snapshot yet.
+    // Join by _id (movieBaseId is movieBases._id.toHexString()) — more reliable than lineMovieId.
+    const movieBases = await Mongo.db
+      .collection<{ _id: string; lineMovieId?: string; lineMovieDbId?: string; imdbID?: string; imdbRating?: string; imdbLastCrawlTime?: string }>(COLLECTIONS.movieBases)
       .find({}, { projection: { lineMovieId: 1, lineMovieDbId: 1, imdbID: 1, imdbRating: 1, imdbLastCrawlTime: 1 } })
       .toArray();
-    const yahooById: Record<string, typeof yahooMovies[0]> = {};
-    for (const y of yahooMovies) {
-      yahooById[String(y._id)] = y;
+    const movieBaseById: Record<string, typeof movieBases[0]> = {};
+    for (const movieBase of movieBases) {
+      movieBaseById[String(movieBase._id)] = movieBase;
     }
     for (const movie of mergedDatas) {
-      const y = yahooById[movie.movieBaseId];
-      if (!y) continue;
-      if (y.lineMovieDbId) (movie as any).lineMovieDbId = y.lineMovieDbId;
-      if (y.imdbID)            movie.imdbID            = y.imdbID;
-      if (y.imdbRating)        movie.imdbRating        = y.imdbRating;
-      if (y.imdbLastCrawlTime) movie.imdbLastCrawlTime = y.imdbLastCrawlTime;
+      const movieBase = movieBaseById[movie.movieBaseId];
+      if (!movieBase) continue;
+      if (movieBase.lineMovieDbId) (movie as any).lineMovieDbId = movieBase.lineMovieDbId;
+      if (movieBase.imdbID)            movie.imdbID            = movieBase.imdbID;
+      if (movieBase.imdbRating)        movie.imdbRating        = movieBase.imdbRating;
+      if (movieBase.imdbLastCrawlTime) movie.imdbLastCrawlTime = movieBase.imdbLastCrawlTime;
     }
 
     console.timeEnd('Get mergedDatas');
@@ -104,7 +104,7 @@ export default class cacheManager {
   public static async setTheatersCache() {
     console.time('setTheatersCache');
     const theaterListWithLocation = await Mongo.getCollection({
-      name: 'theaters',
+      name: COLLECTIONS.theaters,
       sort: { regionIndex: 1 },
     });
     console.timeEnd('setTheatersCache');
@@ -138,7 +138,7 @@ export default class cacheManager {
   public static async setMoviesSchedulesCache() {
     console.time('setMoviesSchedulesCache');
     try {
-      const schedules = await Mongo.getCollection<Schedule>({ name: 'schedules' });
+      const schedules = await Mongo.getCollection<Schedule>({ name: COLLECTIONS.schedules });
       cacheManager.set(cacheManager.MOVIES_SCHEDULES, schedules);
       cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_MOVIE_NAME, cacheManager.groupBy(schedules, 'movieName'));
       cacheManager.set(cacheManager.MOVIES_SCHEDULES_BY_LINE_MOVIE_DB_ID, cacheManager.groupBy(schedules, 'lineMovieDbId'));

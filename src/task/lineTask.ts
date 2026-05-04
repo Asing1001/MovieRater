@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { LINEMovieItem, getLINEArticle, getPlayingMovies } from '../crawler/lineCrawler';
 import MovieBase from '../models/movieBase';
+import { COLLECTIONS } from '../data/collections';
 import { Mongo } from '../data/db';
 import { promiseMap } from '../helper/promiseMap';
 import { cleanMovieSummary } from '../lib/text';
@@ -11,8 +12,8 @@ export async function updateLINEMovies() {
   const movies = await promiseMap(
     playingMovies.items,
     async (item) => {
-      const movie = await mapToYahooMovieModel(item);
-      await Mongo.updateDocument({ lineMovieId: movie.lineMovieId }, movie, 'yahooMovies');
+      const movie = await mapLineMovieToMovieBase(item);
+      await Mongo.updateDocument({ lineMovieId: movie.lineMovieId }, movie, COLLECTIONS.movieBases);
       return movie;
     },
     { concurrency: 10 }
@@ -21,7 +22,7 @@ export async function updateLINEMovies() {
   return movies;
 }
 
-async function mapToYahooMovieModel(item: LINEMovieItem): Promise<MovieBase | null> {
+async function mapLineMovieToMovieBase(item: LINEMovieItem): Promise<MovieBase | null> {
   const lineRating = item.rating ? item.rating.average.toFixed(1) : undefined;
 
   const movie: MovieBase = {

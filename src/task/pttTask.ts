@@ -3,6 +3,7 @@ import { Mongo } from '../data/db';
 import { ObjectId } from 'mongodb';
 import Article from '../models/article';
 import PttPage from '../models/pttPage';
+import { COLLECTIONS } from '../data/collections';
 
 export async function updatePttArticles(howManyPagePerTime) {
   const range = await getCurrentCrawlRange(howManyPagePerTime);
@@ -17,12 +18,12 @@ export async function updatePttArticles(howManyPagePerTime) {
   }));
   await Promise.all(
     enriched.map((article) =>
-      Mongo.updateDocument({ url: article.url }, article, 'pttArticles')
+      Mongo.updateDocument({ url: article.url }, article, COLLECTIONS.pttArticles)
     )
   );
 
   // Aggregate counts from ALL pttArticles per movieBaseId and persist to DB
-  const countAgg = await Mongo.db.collection('pttArticles').aggregate([
+  const countAgg = await Mongo.db.collection(COLLECTIONS.pttArticles).aggregate([
     { $match: { movieBaseId: { $exists: true, $ne: null } } },
     { $group: {
       _id: '$movieBaseId',
@@ -36,8 +37,8 @@ export async function updatePttArticles(howManyPagePerTime) {
   ]).toArray();
 
   if (countAgg.length > 0) {
-    const bulkY = Mongo.db.collection('yahooMovies').initializeUnorderedBulkOp();
-    const bulkM = Mongo.db.collection('mergedDatas').initializeUnorderedBulkOp();
+    const bulkY = Mongo.db.collection(COLLECTIONS.movieBases).initializeUnorderedBulkOp();
+    const bulkM = Mongo.db.collection(COLLECTIONS.mergedDatas).initializeUnorderedBulkOp();
     for (const { _id, pttGoodCount, pttNormalCount, pttBadCount } of countAgg) {
       const counts = { pttGoodCount, pttNormalCount, pttBadCount };
       try { bulkY.find({ _id: new ObjectId(_id) }).updateOne({ $set: counts }); } catch {}
@@ -52,7 +53,7 @@ export async function updatePttArticles(howManyPagePerTime) {
 
 const crawlerStatusFilter = { name: 'crawlerStatus' };
 async function getCurrentCrawlRange(howManyPagePerTime) {
-  const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, 'configs');
+  const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, COLLECTIONS.configs);
   const startPttIndex = crawlerStatus.lastCrawlPttIndex + 1;
   return { startPttIndex, endPttIndex: startPttIndex + howManyPagePerTime - 1 };
 }
@@ -72,13 +73,13 @@ async function getRangePttPages({ startPttIndex, endPttIndex }) {
 
 async function updateMaxPttIndex(pttPages: PttPage[], startPttIndex: number) {
   const pttIndexes = pttPages.map(({ pageIndex }) => pageIndex);
-  const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, 'configs');
+  const crawlerStatus = await Mongo.getDocument(crawlerStatusFilter, COLLECTIONS.configs);
   const maxCrawledPttIndex = Math.max(...pttIndexes, startPttIndex);
   const alreadyCrawlTheNewest = maxCrawledPttIndex === startPttIndex;
   if (alreadyCrawlTheNewest) {
     const lastCrawlPttIndex =
       maxCrawledPttIndex - 100 > 0 ? maxCrawledPttIndex - 100 : 0;
-    Mongo.updateDocument(crawlerStatusFilter, { lastCrawlPttIndex }, 'configs');
+    Mongo.updateDocument(crawlerStatusFilter, { lastCrawlPttIndex }, COLLECTIONS.configs);
   } else {
     Mongo.updateDocument(
       crawlerStatusFilter,
@@ -86,7 +87,7 @@ async function updateMaxPttIndex(pttPages: PttPage[], startPttIndex: number) {
         maxPttIndex: Math.max(maxCrawledPttIndex, crawlerStatus.maxPttIndex),
         lastCrawlPttIndex: maxCrawledPttIndex,
       },
-      'configs'
+      COLLECTIONS.configs
     );
   }
   console.log(

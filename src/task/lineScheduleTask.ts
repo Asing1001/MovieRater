@@ -1,16 +1,17 @@
 import moment from 'moment';
 import { Mongo } from '../data/db';
+import { COLLECTIONS } from '../data/collections';
 import { crawlLineSchedules, LineTheaterInfo } from '../crawler/lineScheduleCrawler';
 import { getPlayingMovies } from '../crawler/lineCrawler';
 import { promiseMap } from '../helper/promiseMap';
 
 export async function updateLineSchedules(): Promise<void> {
-  // Query yahooMovies directly — mergedDatas (in-memory cache) may not have lineMovieDbId yet
+  // Query movieBases directly; mergedDatas may not have the latest LINE ids yet.
   const inTheaterResponse = await getPlayingMovies();
   const inTheaterLineIds = new Set(inTheaterResponse.items.map((i) => i.id));
 
   const moviesWithDbId = await Mongo.db
-    .collection<{ lineMovieId: string; lineMovieDbId: string }>('yahooMovies')
+    .collection<{ lineMovieId: string; lineMovieDbId: string }>(COLLECTIONS.movieBases)
     .find({ lineMovieDbId: { $exists: true, $ne: null } })
     .project({ lineMovieId: 1, lineMovieDbId: 1, _id: 0 })
     .toArray();
@@ -44,19 +45,16 @@ export async function updateLineSchedules(): Promise<void> {
     }
   }
 
-  const scheduleCol = Mongo.db.collection('schedules');
+  const scheduleCol = Mongo.db.collection(COLLECTIONS.schedules);
   await scheduleCol.deleteMany({});
   if (allSchedules.length) {
     await scheduleCol.insertMany(allSchedules);
-    await scheduleCol.createIndex({ lineMovieDbId: 1, date: 1 });
-    await scheduleCol.createIndex({ lineTheaterId: 1, date: 1 });
-    await scheduleCol.createIndex({ theaterName: 1, date: 1 });
   }
 
   // Upsert LINE theaters into theaters collection. Prefer the stable LINE id,
   // but claim older seeded same-name records that do not have a LINE id yet so
   // /theater/[name] does not resolve to a duplicate record with no schedules.
-  const theaterCol = Mongo.db.collection('theaters');
+  const theaterCol = Mongo.db.collection(COLLECTIONS.theaters);
   await Promise.all([...allTheaters.values()].map(async (t) => {
     const existing =
       await theaterCol.findOne({ lineTheaterId: t.lineTheaterId }) ??

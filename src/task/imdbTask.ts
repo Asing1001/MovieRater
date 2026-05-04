@@ -5,6 +5,7 @@ import { getIMDBMovieInfo } from '../crawler/imdbCrawler';
 import Movie from '../models/movie';
 import { promiseMap } from '../helper/promiseMap';
 import { ObjectId } from 'mongodb';
+import { COLLECTIONS } from '../data/collections';
 
 const imdbLastCrawlTimeFormat = 'YYYY-MM-DDTHH';
 export async function getNewImdbInfos(): Promise<Movie[]> {
@@ -42,7 +43,7 @@ function filterNeedCrawlMovie({ englishTitle, releaseDate, imdbID, imdbRating, i
 export async function updateNewImdbInfos(movieInfos: Movie[]) {
   var promises = movieInfos.map(({ movieBaseId, imdbID, imdbRating, imdbLastCrawlTime }) => {
     const newInfo = imdbID ? { imdbID, imdbRating, imdbLastCrawlTime } : { imdbLastCrawlTime };
-    return Mongo.updateDocument({ _id: new ObjectId(movieBaseId) }, newInfo, 'yahooMovies');
+    return Mongo.updateDocument({ _id: new ObjectId(movieBaseId) }, newInfo, COLLECTIONS.movieBases);
   });
   await Promise.all(promises);
 }

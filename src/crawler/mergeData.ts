@@ -4,8 +4,8 @@ import Article from '../models/article';
 import moment from 'moment';
 import isValideDate from '../helper/isValideDate';
 
-export function mergeData(yahooMovies: Array<MovieBase>, allArticles: Article[]): Movie[] {
-  const mergedMovies = yahooMovies.map(mergeByChineseTitle);
+export function mergeData(movieBases: Array<MovieBase>, allArticles: Article[]): Movie[] {
+  const mergedMovies = movieBases.map(mergeByChineseTitle);
   return mergedMovies;
 
   function mergeByChineseTitle({ _id, ...movieBase }: MovieBase): Movie {

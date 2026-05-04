@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { ObjectId } from 'mongodb';
 import { Mongo } from '@/data/db';
+import { COLLECTIONS } from '@/data/collections';
 import Movie from '@/models/movie';
 import Schedule from '@/models/schedule';
 import { getArticlesByMovieBaseId } from '@/lib/articles';
@@ -25,17 +26,17 @@ const fetchMovie = cache(async (id: string): Promise<Movie | null> => {
   const query = ObjectId.isValid(id)
     ? { movieBaseId: id }
     : { yahooId: Number(id) };
-  const raw = await Mongo.db.collection<Movie>('mergedDatas').findOne(query);
+  const raw = await Mongo.db.collection<Movie>(COLLECTIONS.mergedDatas).findOne(query);
   if (!raw) return null;
 
-  // Enrich lineMovieDbId from yahooMovies if not already set
+  // Enrich from movieBases if mergedDatas has not caught up yet.
   if (!raw.lineMovieDbId && raw.movieBaseId) {
-    const yahoo = await Mongo.db
-      .collection<{ _id: string; lineMovieDbId?: string; imdbRating?: string; imdbID?: string }>('yahooMovies')
+    const movieBase = await Mongo.db
+      .collection<{ _id: string; lineMovieDbId?: string; imdbRating?: string; imdbID?: string }>(COLLECTIONS.movieBases)
       .findOne({ _id: raw.movieBaseId } as any, { projection: { lineMovieDbId: 1, imdbRating: 1, imdbID: 1 } });
-    if (yahoo?.lineMovieDbId) raw.lineMovieDbId = yahoo.lineMovieDbId;
-    if (yahoo?.imdbRating && !raw.imdbRating) raw.imdbRating = yahoo.imdbRating;
-    if (yahoo?.imdbID && !raw.imdbID) raw.imdbID = yahoo.imdbID;
+    if (movieBase?.lineMovieDbId) raw.lineMovieDbId = movieBase.lineMovieDbId;
+    if (movieBase?.imdbRating && !raw.imdbRating) raw.imdbRating = movieBase.imdbRating;
+    if (movieBase?.imdbID && !raw.imdbID) raw.imdbID = movieBase.imdbID;
   }
 
   return serialize(raw);
@@ -62,7 +63,7 @@ export default async function MoviePage({ params }: Props) {
     getArticlesByMovieBaseId(raw.movieBaseId ?? ''),
     raw.lineMovieDbId
       ? Mongo.db
-          .collection<Schedule>('schedules')
+          .collection<Schedule>(COLLECTIONS.schedules)
           .find({ lineMovieDbId: raw.lineMovieDbId })
           .toArray()
           .then(serialize)

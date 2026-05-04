@@ -1,51 +1,16 @@
 /**
- * Cloudflare Worker: vary-fix
+ * Cloudflare Worker for www.mvrater.com HTML caching.
  *
- * Sits between Cloudflare's edge and Cloud Run (the Next.js origin) to
- * normalize the response Vary header so Cloudflare's Free-tier cache will
- * actually cache HTML responses.
+ * Next App Router HTML responses include RSC-specific Vary values that make
+ * Cloudflare skip cache. For normal HTML GETs, this Worker caches the response
+ * after normalizing Vary to Accept-Encoding.
  *
- * Why this exists:
- *   Next.js 15 App Router emits `Vary: rsc, next-router-state-tree,
- *   next-router-prefetch, next-router-segment-prefetch, Accept-Encoding`.
- *   Cloudflare Free/Pro only honors `Accept-Encoding` in Vary; with extra
- *   variants present it marks the response cf-cache-status: DYNAMIC and
- *   refuses to cache. There is no way (as of Next.js 15.5) to override
- *   this from middleware or next.config.ts — the framework re-sets the
- *   header after both. Confirmed by Next.js discussions #82571 and #66471.
- *   Cloudflare's own docs recommend a Worker for this exact scenario.
- *
- * What this Worker does:
- *   1. /api/* and non-GET requests pass straight through to origin (no caching).
- *   2. RSC navigation requests (those with `rsc: 1` request header from
- *      Next.js client-side routing) bypass cache so they get a fresh RSC
- *      payload and don't pollute the HTML cache.
- *   3. Everything else: try Cloudflare's edge cache. On miss, fetch origin,
- *      strip the offending Vary entries (set to just Accept-Encoding), and
- *      explicitly put the modified response into the cache via cache.put().
- *      Origin's Cache-Control (s-maxage / stale-while-revalidate) controls
- *      TTL — the Worker just normalizes Vary so CF stops bailing out.
- *
- * Deployment (Cloudflare dashboard):
- *   1. Workers & Pages → Create application → Create Worker → name it
- *      "mvrater-vary-fix".
- *   2. Replace the template with the contents of this file → Deploy.
- *   3. Open the Worker → Settings → Triggers → Add a Custom Domain
- *      `www.mvrater.com` (preferred — it bypasses CF's normal proxy path
- *      and the Worker becomes the front door). Or add a Route
- *      `www.mvrater.com/*` if you want the Worker only for that hostname.
- *   4. Disable the existing Cache Rule "Honor origin Cache-Control" — the
- *      Worker now owns caching. Keep "Bypass cache for RSC navigation" off
- *      too; the Worker handles RSC bypass itself.
- *   5. Verify: `curl -sI https://www.mvrater.com/` should show
- *      `vary: Accept-Encoding` and second hit `cf-cache-status: HIT`.
- *
- * Free-tier budget:
- *   100,000 Worker requests/day. This site is well under that — the Worker
- *   only runs for cache misses + RSC requests; HTML cache hits are served
- *   directly from Cloudflare's edge cache without invoking the Worker.
- *   Actually: with Custom Domain triggers ALL requests run the Worker once,
- *   but it returns from cache.match() in a few ms.
+ * Bypass rules:
+ * - /api/* and non-GET requests go to origin.
+ * - RSC requests (`rsc: 1`) go to origin and are never cached.
+ * - Cache TTL comes from origin Cache-Control in next.config.ts.
+ * - Verify with GET, not HEAD:
+ *   `curl -s -D - -o /dev/null https://www.mvrater.com/`
  */
 
 export default {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { Mongo } from '@/data/db';
+import { COLLECTIONS } from '@/data/collections';
 import cacheManager from '@/data/cacheManager';
 import { updatePttArticles } from '@/task/pttTask';
 import Movie from '@/models/movie';
@@ -15,9 +16,9 @@ export async function POST() {
     await Mongo.updateDocument(
       { name: 'crawlerStatus' },
       { lastCrawlPttIndex: 10900 },
-      'configs'
+      COLLECTIONS.configs
     );
-    // Crawl articles + aggregate counts + persist to yahooMovies/mergedDatas
+    // Crawl articles + aggregate counts + persist to movieBases/mergedDatas
     const pttCounts = await updatePttArticles(5);
     // Patch in-memory caches immediately (same pattern as imdbTask)
     const patchMap: Record<string, object> = {};

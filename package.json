@@ -9,6 +9,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "db:indexes": "node scripts/createIndexes.js",
+    "db:rename-movie-bases": "node scripts/renameYahooMoviesCollection.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },
