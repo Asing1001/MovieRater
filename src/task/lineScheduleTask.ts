@@ -53,12 +53,24 @@ export async function updateLineSchedules(): Promise<void> {
     await scheduleCol.createIndex({ theaterName: 1, date: 1 });
   }
 
-  // Upsert LINE theaters into theaters collection — keyed by lineTheaterId
-  // Only sets lineTheaterId, name, theaterCity, address from LINE; preserves other fields (phone, location)
+  // Upsert LINE theaters into theaters collection. Prefer the stable LINE id,
+  // but claim older seeded same-name records that do not have a LINE id yet so
+  // /theater/[name] does not resolve to a duplicate record with no schedules.
   const theaterCol = Mongo.db.collection('theaters');
-  await Promise.all([...allTheaters.values()].map((t) =>
-    theaterCol.updateOne(
-      { lineTheaterId: t.lineTheaterId },
+  await Promise.all([...allTheaters.values()].map(async (t) => {
+    const existing =
+      await theaterCol.findOne({ lineTheaterId: t.lineTheaterId }) ??
+      await theaterCol.findOne({
+        name: t.name,
+        $or: [
+          { lineTheaterId: { $exists: false } },
+          { lineTheaterId: null },
+          { lineTheaterId: '' },
+        ],
+      });
+
+    return theaterCol.updateOne(
+      existing?._id ? { _id: existing._id } : { lineTheaterId: t.lineTheaterId },
       {
         $set: {
           lineTheaterId: t.lineTheaterId,
@@ -68,8 +80,8 @@ export async function updateLineSchedules(): Promise<void> {
         },
       },
       { upsert: true }
-    )
-  ));
+    );
+  }));
 
   console.log(`updateLineSchedules: stored ${allSchedules.length} schedule entries, upserted ${allTheaters.size} theaters`);
 }

@@ -25,16 +25,22 @@ export default async function TheaterPage({ params }: Props) {
   const decoded = decodeURIComponent(name);
 
   await Mongo.openDbConnection();
+  const theaterCollection = Mongo.db.collection<Theater>('theaters');
   const theater = serialize(
-    await Mongo.db.collection<Theater>('theaters').findOne({ name: decoded })
+    await theaterCollection.findOne({
+      name: decoded,
+      lineTheaterId: { $exists: true, $nin: [null, ''] },
+    }) ?? await theaterCollection.findOne({ name: decoded })
   );
   if (!theater) notFound();
 
   const schedules = serialize(
-    await Mongo.db
-      .collection<Schedule>('schedules')
-      .find({ lineTheaterId: theater.lineTheaterId ?? null })
-      .toArray()
+    theater.lineTheaterId
+      ? await Mongo.db
+          .collection<Schedule>('schedules')
+          .find({ lineTheaterId: theater.lineTheaterId })
+          .toArray()
+      : []
   );
 
   // Enrich schedules with movie metadata for poster/rating display.
