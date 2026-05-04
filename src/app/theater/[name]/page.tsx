@@ -50,7 +50,7 @@ export default async function TheaterPage({ params }: Props) {
     ? await Mongo.db
         .collection('yahooMovies')
         .find({ lineMovieDbId: { $in: lineMovieDbIds } })
-        .project({ lineMovieDbId: 1, _id: 1, posterUrl: 1, chineseTitle: 1, englishTitle: 1, imdbRating: 1, lineRating: 1, types: 1, runTime: 1 })
+        .project({ lineMovieDbId: 1, _id: 1, posterUrl: 1, chineseTitle: 1, englishTitle: 1, imdbRating: 1, imdbID: 1, lineRating: 1, lineUrlHash: 1, types: 1, runTime: 1 })
         .toArray()
     : [];
   const movieByLineId: Record<string, MovieMeta> = {};

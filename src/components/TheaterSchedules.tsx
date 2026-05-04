@@ -10,29 +10,8 @@ import Image from 'next/image';
 import moment from 'moment';
 import type { EnrichedSchedule } from '@/lib/theaters';
 import { getNextTaipeiDays } from '@/lib/taipeiDate';
-
-function RatingBadge({ label, value, color }: { label: string; value: string; color: string }) {
-  return (
-    <Box
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 0.4,
-        px: 1,
-        py: 0.3,
-        borderRadius: 1,
-        bgcolor: color,
-        color: '#fff',
-        fontSize: '0.72rem',
-        fontWeight: 700,
-        lineHeight: 1.4,
-      }}
-    >
-      <span style={{ opacity: 0.85, fontWeight: 400 }}>{label}</span>
-      <span>★ {value}</span>
-    </Box>
-  );
-}
+import Ratings from '@/components/Ratings';
+import type Movie from '@/models/movie';
 
 export default function TheaterSchedules({ schedules }: { schedules: EnrichedSchedule[] }) {
   const days = getNextTaipeiDays();
@@ -169,14 +148,11 @@ export default function TheaterSchedules({ schedules }: { schedules: EnrichedSch
 
                     {/* Ratings */}
                     {(meta?.imdbRating || meta?.lineRating) && (
-                      <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1 }}>
-                        {meta?.imdbRating && meta.imdbRating !== 'N/A' && (
-                          <RatingBadge label="IMDb" value={meta.imdbRating} color="#f5c518cc" />
-                        )}
-                        {meta?.lineRating && (
-                          <RatingBadge label="LINE" value={meta.lineRating} color="#00b90099" />
-                        )}
-                      </Box>
+                      <Ratings
+                        movie={meta as Movie}
+                        showPtt={false}
+                        sx={{ mb: 1, columnGap: 1, rowGap: 0.4 }}
+                      />
                     )}
 
                     {/* Room types */}

@@ -9,7 +9,9 @@ export type MovieMeta = {
   chineseTitle?: string;
   englishTitle?: string;
   imdbRating?: string;
+  imdbID?: string;
   lineRating?: string;
+  lineUrlHash?: string;
   types?: string[];
   runTime?: string;
 };
@@ -31,7 +33,9 @@ export function getEnrichedSchedulesByLineTheaterId(lineTheaterId: string): Enri
           chineseTitle: m.chineseTitle,
           englishTitle: m.englishTitle,
           imdbRating: m.imdbRating,
+          imdbID: m.imdbID,
           lineRating: m.lineRating,
+          lineUrlHash: m.lineUrlHash,
           types: m.types,
           runTime: m.runTime,
         } as MovieMeta,

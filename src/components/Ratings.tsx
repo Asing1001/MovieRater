@@ -6,24 +6,47 @@ interface BadgeProps { color: string; textColor?: string; label: string; value: 
 
 function Badge({ color, textColor = '#fff', label, value, href }: BadgeProps) {
   const content = (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: '4px', mr: 1, mb: 0.5 }}>
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 0.5,
+        minHeight: 24,
+        whiteSpace: 'nowrap',
+      }}
+    >
       <Box
         component="span"
         sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minWidth: 42,
+          height: 20,
           background: color,
           color: textColor,
           fontSize: '0.65rem',
           fontWeight: 800,
-          px: '5px',
-          py: '2px',
+          px: 0.75,
           borderRadius: '4px',
-          letterSpacing: '0.02em',
-          lineHeight: 1.4,
+          lineHeight: 1,
         }}
       >
         {label}
       </Box>
-      <Box component="span" sx={{ fontWeight: 600, fontSize: '0.9rem', color: 'text.primary' }}>
+      <Box
+        component="span"
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          minHeight: 20,
+          fontWeight: 600,
+          fontSize: '0.875rem',
+          lineHeight: 1,
+          color: 'text.primary',
+        }}
+      >
         {value}
       </Box>
     </Box>
@@ -37,7 +60,7 @@ function Badge({ color, textColor = '#fff', label, value, href }: BadgeProps) {
         href={href}
         target="_blank"
         rel="noopener"
-        style={{ textDecoration: 'none', color: 'inherit', position: 'relative', zIndex: 2 }}
+        style={{ display: 'inline-flex', textDecoration: 'none', color: 'inherit', position: 'relative', zIndex: 2 }}
       >
         {content}
       </a>
@@ -46,14 +69,14 @@ function Badge({ color, textColor = '#fff', label, value, href }: BadgeProps) {
   return content;
 }
 
-export default function Ratings({ movie, sx }: { movie: Movie; sx?: SxProps }) {
+export default function Ratings({ movie, sx, showPtt = true }: { movie: Movie; sx?: SxProps; showPtt?: boolean }) {
   const g = movie.goodRateArticles?.length ?? movie.pttGoodCount ?? 0;
   const n = movie.normalRateArticles?.length ?? movie.pttNormalCount ?? 0;
   const b = movie.badRateArticles?.length ?? movie.pttBadCount ?? 0;
   const pttValue = g + n + b > 0 ? `好${g} 普${n} 負${b}` : 'N/A';
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', ...sx }}>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', columnGap: 1.25, rowGap: 0.5, ...sx }}>
       <Badge
         color="#f5c518"
         textColor="#000"
@@ -67,8 +90,7 @@ export default function Ratings({ movie, sx }: { movie: Movie; sx?: SxProps }) {
         value={movie.lineRating || 'N/A'}
         href={movie.lineUrlHash ? `https://today.line.me/tw/v2/movie/${movie.lineUrlHash}/2` : undefined}
       />
-      {/* Yahoo branch removed — Yahoo movie section closed in 2023/10. */}
-      <Badge color="#1a1a1a" label="PTT" value={pttValue} />
+      {showPtt && <Badge color="#1a1a1a" label="PTT" value={pttValue} />}
     </Box>
   );
 }
