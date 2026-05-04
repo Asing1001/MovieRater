@@ -8,6 +8,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import type { Metadata } from 'next';
+import { buildMetadata, itemListJsonLd, jsonLd } from '@/lib/seo';
 import {
   ComingSoonMovie,
   groupComingSoonMoviesByMonth,
@@ -15,10 +16,11 @@ import {
 import { getComingSoonCalendarMovies } from '@/lib/comingSoonData';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: '即將上映 - Movie Rater',
   description: '依台灣上映日期整理即將上映電影、預告與片型，快速找到值得留意的新片。',
-};
+  path: '/upcoming',
+});
 
 function lineMovieUrl(movie: ComingSoonMovie) {
   return movie.lineUrlHash ? `https://today.line.me/tw/v2/movie/${movie.lineUrlHash}` : null;
@@ -163,8 +165,19 @@ export default async function UpcomingPage() {
     );
   }
 
+  const schema = itemListJsonLd(
+    movies.map((movie) => ({
+      name: [movie.chineseTitle, movie.englishTitle].filter(Boolean).join(' '),
+      url: lineMovieUrl(movie) ?? '/upcoming',
+      image: movie.posterUrl ?? undefined,
+    })),
+    '台灣即將上映電影',
+    'Movie'
+  );
+
   return (
     <Box sx={{ py: 1 }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
       <Box sx={{ mb: 2.5 }}>
         <Typography variant="h5" component="h1" fontWeight={800} sx={{ mb: 0.5 }}>
           即將上映

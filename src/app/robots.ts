@@ -8,6 +8,16 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/bbs/movie', '/artist_filmography.html'],
       },
+      {
+        userAgent: 'OAI-SearchBot',
+        allow: '/',
+        disallow: ['/bbs/movie', '/artist_filmography.html'],
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: '/',
+        disallow: ['/bbs/movie', '/artist_filmography.html'],
+      },
     ],
     sitemap: 'https://www.mvrater.com/sitemap.xml',
     host: 'https://www.mvrater.com',

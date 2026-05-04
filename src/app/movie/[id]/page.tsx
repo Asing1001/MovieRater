@@ -6,8 +6,9 @@ import { COLLECTIONS } from '@/data/collections';
 import Movie from '@/models/movie';
 import Schedule from '@/models/schedule';
 import { getArticlesByMovieBaseId } from '@/lib/articles';
-import { classifyArticle, getMovieSchema, serialize } from '@/lib/utils';
+import { classifyArticle, serialize } from '@/lib/utils';
 import { cleanMovieSummary } from '@/lib/text';
+import { buildMetadata, compactText, jsonLd, movieJsonLd, moviePath, movieTitle, posterImage } from '@/lib/seo';
 import Ratings from '@/components/Ratings';
 import PttArticles from '@/components/PttArticles';
 import Schedules from '@/components/Schedules';
@@ -47,11 +48,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const movie = await fetchMovie(id);
   if (!movie) return { title: 'Movie Rater' };
   const summary = cleanMovieSummary(movie.summary);
-  return {
-    title: `${movie.chineseTitle} ${movie.englishTitle} | Movie Rater`,
-    description: summary.slice(0, 160),
-    openGraph: { images: movie.posterUrl ? [movie.posterUrl] : [] },
-  };
+  const title = `${movieTitle(movie) || movie.chineseTitle || '電影'} | Movie Rater`;
+  return buildMetadata({
+    title,
+    description: compactText(summary),
+    path: moviePath(movie, id),
+    image: posterImage(movie.posterUrl),
+    type: 'article',
+  });
 }
 
 export default async function MoviePage({ params }: Props) {
@@ -71,12 +75,12 @@ export default async function MoviePage({ params }: Props) {
   ]);
 
   const movie = classifyArticle({ ...raw, summary: cleanMovieSummary(raw.summary), relatedArticles: articles });
-  const schema = getMovieSchema(movie);
+  const schema = movieJsonLd(movie, id);
   const posterUrl = movie.posterUrl?.replace('/w280', '/w644') ?? '';
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 
       <Paper elevation={0} variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
         <Box sx={{ display: 'flex', gap: 0, flexDirection: { xs: 'column', sm: 'row' } }}>

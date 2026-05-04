@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { Mongo } from '@/data/db';
 import { COLLECTIONS } from '@/data/collections';
@@ -5,6 +6,7 @@ import Theater from '@/models/theater';
 import Schedule from '@/models/schedule';
 import Movie from '@/models/movie';
 import { serialize } from '@/lib/utils';
+import { buildMetadata, jsonLd, theaterJsonLd, theaterPath } from '@/lib/seo';
 import type { EnrichedSchedule, MovieMeta } from '@/lib/theaters';
 import TheaterSchedules from '@/components/TheaterSchedules';
 import Typography from '@mui/material/Typography';
@@ -16,23 +18,34 @@ export const revalidate = 3600;
 
 type Props = { params: Promise<{ name: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { name } = await params;
-  return { title: `${decodeURIComponent(name)} - Movie Rater` };
-}
-
-export default async function TheaterPage({ params }: Props) {
-  const { name } = await params;
-  const decoded = decodeURIComponent(name);
-
+const fetchTheater = cache(async (name: string): Promise<Theater | null> => {
   await Mongo.openDbConnection();
+  const decoded = decodeURIComponent(name);
   const theaterCollection = Mongo.db.collection<Theater>(COLLECTIONS.theaters);
-  const theater = serialize(
+  return serialize(
     await theaterCollection.findOne({
       name: decoded,
       lineTheaterId: { $exists: true, $nin: [null, ''] },
     }) ?? await theaterCollection.findOne({ name: decoded })
   );
+});
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { name } = await params;
+  const decoded = decodeURIComponent(name);
+  const theater = await fetchTheater(name);
+  return buildMetadata({
+    title: `${theater?.name ?? decoded} - Movie Rater`,
+    description: theater
+      ? `查詢${theater.name}電影時刻表、地址${theater.address ? `「${theater.address}」` : ''}與聯絡資訊。`
+      : `查詢${decoded}電影時刻表、地址與聯絡資訊。`,
+    path: theaterPath(theater?.name ?? decoded),
+  });
+}
+
+export default async function TheaterPage({ params }: Props) {
+  const { name } = await params;
+  const theater = await fetchTheater(name);
   if (!theater) notFound();
 
   const schedules = serialize(
@@ -71,6 +84,7 @@ export default async function TheaterPage({ params }: Props) {
 
   return (
     <Box>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(theaterJsonLd(theater)) }} />
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
           {(theater.theaterCity ?? theater.region) && (

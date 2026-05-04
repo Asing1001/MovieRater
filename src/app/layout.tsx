@@ -4,20 +4,13 @@ import ThemeRegistry from '@/components/ThemeRegistry';
 import AppBar from '@/components/AppBar';
 import AnalyticsAndAds from '@/components/AnalyticsAndAds';
 import NavigationLoadingBoundary from '@/components/NavigationLoadingBoundary';
+import { buildMetadata, jsonLd, SITE_URL, websiteJsonLd } from '@/lib/seo';
 import Container from '@mui/material/Container';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.mvrater.com'),
-  title: 'Movie Rater',
-  description: '24小時不斷更新IMDB, LINE, PTT電影評價、電影時刻表，一目了然讓你不再踩雷！',
-  openGraph: {
-    type: 'website',
-    url: 'https://www.mvrater.com',
-    title: 'Movie Rater',
-    description: '24小時不斷更新IMDB, LINE, PTT電影評價、電影時刻表，一目了然讓你不再踩雷！',
-    images: ['/favicons/android-chrome-384x384.png'],
-  },
+  metadataBase: new URL(SITE_URL),
+  ...buildMetadata({ title: 'Movie Rater', path: '/' }),
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -35,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-TW">
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(websiteJsonLd()) }} />
         <AnalyticsAndAds />
         <ThemeRegistry>
           <Suspense>

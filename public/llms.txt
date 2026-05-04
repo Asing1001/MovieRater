@@ -1,0 +1,23 @@
+# Movie Rater
+
+Movie Rater is a Traditional Chinese website for Taiwan movie discovery. It compares IMDb, LINE, and PTT movie signals, shows current Taiwan theater schedules, and lists upcoming movie releases.
+
+## Primary Pages
+
+- Home / now playing: https://www.mvrater.com/
+- Upcoming releases: https://www.mvrater.com/upcoming
+- Theater list: https://www.mvrater.com/theaters
+- Search: https://www.mvrater.com/search
+- Sitemap: https://www.mvrater.com/sitemap.xml
+- Robots: https://www.mvrater.com/robots.txt
+
+## URL Patterns
+
+- Movie detail pages: `https://www.mvrater.com/movie/{movieBaseId}`
+- Theater schedule pages: `https://www.mvrater.com/theater/{encodedTheaterName}`
+
+## Content Notes
+
+- Movie pages include title, poster, release date, genres, runtime, directors, actors, summary, rating signals, Taiwan showtimes when available, and related PTT articles.
+- Theater pages include theater name, region/city, address, phone, and current showtimes when available.
+- Data is refreshed by scheduled crawlers and exposed through server-rendered HTML for crawlers and browsers.

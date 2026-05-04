@@ -30,8 +30,9 @@ const nextConfig: NextConfig = {
       { source: '/sitemap.xml', headers: [{ key: 'Cache-Control', value: oneHour }] },
       // Search — ?q= is unbounded; only repeat queries within 5 min hit cache.
       { source: '/search', headers: [{ key: 'Cache-Control', value: fiveMin }] },
-      // robots.txt effectively never changes.
+      // robots.txt and llms.txt effectively never change.
       { source: '/robots.txt', headers: [{ key: 'Cache-Control', value: oneDay }] },
+      { source: '/llms.txt', headers: [{ key: 'Cache-Control', value: oneDay }] },
       // API routes must never be cached (auth headers, POST, side effects).
       { source: '/api/:path*', headers: [{ key: 'Cache-Control', value: 'no-store' }] },
     ];
