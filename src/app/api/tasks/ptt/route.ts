@@ -5,8 +5,12 @@ import { COLLECTIONS } from '@/data/collections';
 import cacheManager from '@/data/cacheManager';
 import { updatePttArticles } from '@/task/pttTask';
 import Movie from '@/models/movie';
+import { authorizeTaskRequest } from '../auth';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const unauthorized = authorizeTaskRequest(request);
+  if (unauthorized) return unauthorized;
+
   try {
     // Ensure All_MOVIES cache is warm so findMovieBaseId can match article titles
     if ((cacheManager.get(cacheManager.All_MOVIES) ?? []).length === 0) {

@@ -3,8 +3,12 @@ import { revalidatePath } from 'next/cache';
 import { getNewImdbInfos, updateNewImdbInfos } from '@/task/imdbTask';
 import cacheManager from '@/data/cacheManager';
 import Movie from '@/models/movie';
+import { authorizeTaskRequest } from '../auth';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const unauthorized = authorizeTaskRequest(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const movieInfos = await getNewImdbInfos();
     await updateNewImdbInfos(movieInfos);

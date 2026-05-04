@@ -4,8 +4,12 @@ import { updateLINEMovies } from '@/task/lineTask';
 import cacheManager from '@/data/cacheManager';
 import { updateLineSchedules } from '@/task/lineScheduleTask';
 import { updateComingSoonMovies } from '@/task/comingSoonTask';
+import { authorizeTaskRequest } from '../auth';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const unauthorized = authorizeTaskRequest(request);
+  if (unauthorized) return unauthorized;
+
   try {
     await updateLINEMovies();
     let comingSoonCount = 0;

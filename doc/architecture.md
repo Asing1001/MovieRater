@@ -23,6 +23,8 @@ Other scheduled tasks:
 - `POST /api/tasks/imdb`: backfills IMDb fields, then revalidates movie pages and sitemap.
 - `POST /api/tasks/ptt`: crawls PTT articles, updates PTT counts in movie data, then revalidates sitemap.
 
+All `/api/tasks/*` endpoints require `X-Schedule-Task-Token` to match `SCHEDULE_TASK_API_TOKEN`. Cloud Scheduler injects the header from Terraform's sensitive `schedule_task_api_token` variable.
+
 Cloud Scheduler config lives in `terraform/gcp.tf`:
 
 - LINE hourly: `10 * * * *`

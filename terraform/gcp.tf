@@ -200,6 +200,10 @@ resource "google_cloud_run_v2_service" "main" {
         name  = "WEBSITE_URL"
         value = "https://www.mvrater.com"
       }
+      env {
+        name  = "SCHEDULE_TASK_API_TOKEN"
+        value = var.schedule_task_api_token
+      }
 
       env {
         name = "DB_URL"
@@ -279,6 +283,9 @@ resource "google_cloud_scheduler_job" "line_hourly" {
   http_target {
     http_method = "POST"
     uri         = "${google_cloud_run_v2_service.main.uri}/api/tasks/line"
+    headers = {
+      "X-Schedule-Task-Token" = var.schedule_task_api_token
+    }
     oidc_token {
       service_account_email = google_service_account.scheduler.email
     }
@@ -297,6 +304,9 @@ resource "google_cloud_scheduler_job" "imdb_daily" {
   http_target {
     http_method = "POST"
     uri         = "${google_cloud_run_v2_service.main.uri}/api/tasks/imdb"
+    headers = {
+      "X-Schedule-Task-Token" = var.schedule_task_api_token
+    }
     oidc_token {
       service_account_email = google_service_account.scheduler.email
     }
@@ -315,6 +325,9 @@ resource "google_cloud_scheduler_job" "ptt_daily" {
   http_target {
     http_method = "POST"
     uri         = "${google_cloud_run_v2_service.main.uri}/api/tasks/ptt"
+    headers = {
+      "X-Schedule-Task-Token" = var.schedule_task_api_token
+    }
     oidc_token {
       service_account_email = google_service_account.scheduler.email
     }

@@ -6,7 +6,7 @@ Live site: https://www.mvrater.com
 
 ## Quick Start
 
-Required: Node 22+, `.env` with `DB_URL` and `OMDB_API_KEY`.
+Required: Node 22+, `.env` with `DB_URL`, `OMDB_API_KEY`, and `SCHEDULE_TASK_API_TOKEN`.
 
 ```bash
 npm install
@@ -26,10 +26,12 @@ Read [doc/architecture.md](doc/architecture.md) first. It is the compact map for
 Local crawler run:
 
 ```bash
-curl -X POST http://localhost:3000/api/tasks/line
-curl -X POST http://localhost:3000/api/tasks/imdb
-curl -X POST http://localhost:3000/api/tasks/ptt
+curl -X POST -H "X-Schedule-Task-Token: $SCHEDULE_TASK_API_TOKEN" http://localhost:3000/api/tasks/line
+curl -X POST -H "X-Schedule-Task-Token: $SCHEDULE_TASK_API_TOKEN" http://localhost:3000/api/tasks/imdb
+curl -X POST -H "X-Schedule-Task-Token: $SCHEDULE_TASK_API_TOKEN" http://localhost:3000/api/tasks/ptt
 ```
+
+Cloud Scheduler sends the same `X-Schedule-Task-Token` header. Configure production with the sensitive Terraform variable `schedule_task_api_token`.
 
 Live crawler tests are opt-in:
 
