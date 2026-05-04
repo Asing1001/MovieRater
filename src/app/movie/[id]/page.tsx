@@ -8,6 +8,13 @@ import Schedule from '@/models/schedule';
 import { getArticlesByMovieBaseId } from '@/lib/articles';
 import { classifyArticle, serialize } from '@/lib/utils';
 import { cleanMovieSummary } from '@/lib/text';
+import {
+  lineImageUrl,
+  lineTrailerArticleHash,
+  lineTrailerArticleUrl,
+  lineTrailerVideoHash,
+  lineTrailerVideoUrl,
+} from '@/lib/lineTrailer';
 import { buildMetadata, compactText, jsonLd, movieJsonLd, moviePath, movieTitle, posterImage } from '@/lib/seo';
 import Ratings from '@/components/Ratings';
 import PttArticles from '@/components/PttArticles';
@@ -23,8 +30,31 @@ export const revalidate = 3600;
 
 type Props = { params: Promise<{ id: string }> };
 
-function lineTrailerUrl(movie: Movie) {
-  return movie.lineTrailerHash ? `https://today.line.me/tw/v2/article/${movie.lineTrailerHash}` : null;
+async function findLineTrailerArticleHash(lineMovieDbId?: string, lineMovieId?: string) {
+  if (!lineMovieDbId && !lineMovieId) return null;
+
+  try {
+    const res = await fetch(
+      'https://today.line.me/webapi/movie/incinemas/listings/inCinemas?offset=0&length=200&country=tw',
+      { next: { revalidate } }
+    );
+    if (!res.ok) return null;
+
+    const response = (await res.json()) as {
+      items?: Array<{
+        id?: string;
+        movieId?: string;
+        latestTrailer?: { hash?: string } | null;
+        mainTrailer?: { url?: { hash?: string } | null } | null;
+        trailers?: Array<{ url?: { hash?: string } | null }>;
+      }>;
+    };
+    const item = response.items?.find((movie) => movie.movieId === lineMovieDbId || movie.id === lineMovieId);
+    return item?.mainTrailer?.url?.hash ?? item?.latestTrailer?.hash ?? item?.trailers?.[0]?.url?.hash ?? null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 const fetchMovie = cache(async (id: string): Promise<Movie | null> => {
@@ -36,14 +66,54 @@ const fetchMovie = cache(async (id: string): Promise<Movie | null> => {
   if (!raw) return null;
 
   // Enrich from movieBases if mergedDatas has not caught up yet.
-  if (raw.movieBaseId && (!raw.lineMovieDbId || !raw.imdbRating || !raw.imdbID || !raw.lineTrailerHash)) {
+  if (
+    raw.movieBaseId &&
+    (!raw.lineMovieDbId ||
+      !raw.imdbRating ||
+      !raw.imdbID ||
+      !raw.lineTrailerHash ||
+      !raw.lineTrailerMediaHash ||
+      !raw.lineTrailerThumbnailHash)
+  ) {
+    const movieBaseId = ObjectId.isValid(raw.movieBaseId) ? new ObjectId(raw.movieBaseId) : raw.movieBaseId;
     const movieBase = await Mongo.db
-      .collection<{ _id: string; lineMovieDbId?: string; imdbRating?: string; imdbID?: string; lineTrailerHash?: string }>(COLLECTIONS.movieBases)
-      .findOne({ _id: raw.movieBaseId } as any, { projection: { lineMovieDbId: 1, imdbRating: 1, imdbID: 1, lineTrailerHash: 1 } });
+      .collection<{
+        _id: string;
+        lineMovieDbId?: string;
+        imdbRating?: string;
+        imdbID?: string;
+        lineTrailerHash?: string;
+        lineTrailerMediaHash?: string;
+        lineTrailerThumbnailHash?: string;
+      }>(COLLECTIONS.movieBases)
+      .findOne(
+        { _id: movieBaseId } as any,
+        {
+          projection: {
+            lineMovieDbId: 1,
+            imdbRating: 1,
+            imdbID: 1,
+            lineTrailerHash: 1,
+            lineTrailerMediaHash: 1,
+            lineTrailerThumbnailHash: 1,
+          },
+        }
+      );
     if (movieBase?.lineMovieDbId && !raw.lineMovieDbId) raw.lineMovieDbId = movieBase.lineMovieDbId;
     if (movieBase?.imdbRating && !raw.imdbRating) raw.imdbRating = movieBase.imdbRating;
     if (movieBase?.imdbID && !raw.imdbID) raw.imdbID = movieBase.imdbID;
     if (movieBase?.lineTrailerHash && !raw.lineTrailerHash) raw.lineTrailerHash = movieBase.lineTrailerHash;
+    if (movieBase?.lineTrailerMediaHash && !raw.lineTrailerMediaHash) raw.lineTrailerMediaHash = movieBase.lineTrailerMediaHash;
+    if (movieBase?.lineTrailerThumbnailHash && !raw.lineTrailerThumbnailHash) {
+      raw.lineTrailerThumbnailHash = movieBase.lineTrailerThumbnailHash;
+    }
+  }
+
+  const legacyTrailerVideoHash = lineTrailerVideoHash(raw);
+  if (!lineTrailerArticleHash(raw) && legacyTrailerVideoHash) {
+    const articleHash = await findLineTrailerArticleHash(raw.lineMovieDbId, raw.lineMovieId);
+    if (articleHash) raw.lineTrailerHash = articleHash;
+    if (!raw.lineTrailerMediaHash) raw.lineTrailerMediaHash = legacyTrailerVideoHash;
   }
 
   return serialize(raw);
@@ -83,7 +153,10 @@ export default async function MoviePage({ params }: Props) {
   const movie = classifyArticle({ ...raw, summary: cleanMovieSummary(raw.summary), relatedArticles: articles });
   const schema = movieJsonLd(movie, id);
   const posterUrl = movie.posterUrl?.replace('/w280', '/w644') ?? '';
-  const trailerUrl = lineTrailerUrl(movie);
+  const trailerUrl = lineTrailerArticleUrl(movie);
+  const trailerVideoUrl = lineTrailerVideoUrl(movie);
+  const trailerPosterUrl = lineImageUrl(movie.lineTrailerThumbnailHash);
+  const hasTrailer = Boolean(trailerUrl || trailerVideoUrl);
   const pttArticleCount = [
     movie.goodRateArticles,
     movie.normalRateArticles,
@@ -140,7 +213,7 @@ export default async function MoviePage({ params }: Props) {
           mb: 2,
         }}
       >
-        {trailerUrl && (
+        {hasTrailer && (
           <Button component="a" href="#trailer" variant="outlined" size="small">
             預告
           </Button>
@@ -153,7 +226,7 @@ export default async function MoviePage({ params }: Props) {
         </Button>
       </Box>
 
-      {trailerUrl && (
+      {hasTrailer && (
         <Paper
           component="section"
           id="trailer"
@@ -163,12 +236,22 @@ export default async function MoviePage({ params }: Props) {
           <Typography variant="h6" component="h2" fontWeight={800} sx={{ mb: 0.75 }}>
             預告
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-            前往 LINE TODAY 觀看電影預告。
-          </Typography>
-          <Button component="a" href={trailerUrl} target="_blank" rel="noopener" variant="contained">
-            開啟預告
-          </Button>
+          {trailerVideoUrl && (
+            <Box
+              component="video"
+              controls
+              preload="metadata"
+              poster={trailerPosterUrl ?? undefined}
+              sx={{ display: 'block', width: '100%', aspectRatio: '16 / 9', bgcolor: 'black', borderRadius: 1, mb: 1.5 }}
+            >
+              <source src={trailerVideoUrl} type="video/mp4" />
+            </Box>
+          )}
+          {trailerUrl && (
+            <Button component="a" href={trailerUrl} target="_blank" rel="noopener" variant="contained">
+              LINE TODAY
+            </Button>
+          )}
         </Paper>
       )}
 

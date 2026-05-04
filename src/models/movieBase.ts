@@ -20,6 +20,8 @@ export default class MovieBase {
   summary?: string;
   lineUrlHash?: string;
   lineTrailerHash?: string;
+  lineTrailerMediaHash?: string;
+  lineTrailerThumbnailHash?: string;
 }
 
 interface ObjectIdLike {

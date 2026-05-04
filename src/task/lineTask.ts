@@ -25,6 +25,7 @@ export async function updateLINEMovies() {
 async function mapLineMovieToMovieBase(item: LINEMovieItem): Promise<MovieBase | null> {
   const lineRating = item.rating ? item.rating.average.toFixed(1) : undefined;
 
+  const trailer = await getLINETrailer(item);
   const movie: MovieBase = {
     lineMovieId: item.id,
     lineMovieDbId: item.movieId,
@@ -40,26 +41,33 @@ async function mapLineMovieToMovieBase(item: LINEMovieItem): Promise<MovieBase |
     launchCompany: item.production,
     lineRating: lineRating,
     summary: cleanMovieSummary(item.synopsis),
-    lineTrailerHash: await getLINETrailerHash(item),
+    lineTrailerHash: trailer.articleHash,
+    lineTrailerMediaHash: trailer.mediaHash,
+    lineTrailerThumbnailHash: trailer.thumbnailHash,
   };
   return movie;
 }
 
-async function getLINETrailerHash(item: LINEMovieItem) {
-  // if the trailer type is not video, get article from trailer url hash, and then get the response.data.media.hash
+async function getLINETrailer(item: LINEMovieItem) {
+  const trailer = item.mainTrailer ?? item.trailers?.[0] ?? null;
+  const articleHash = trailer?.url?.hash ?? item.latestTrailer?.hash ?? null;
+  const fallbackMediaHash = trailer?.thumbnail?.type === 'VIDEO' ? trailer.thumbnail.hash : null;
+  const fallbackThumbnailHash = trailer?.thumbnail?.type === 'IMAGE' ? trailer.thumbnail.hash : null;
+
+  if (!articleHash) {
+    return { articleHash: null, mediaHash: fallbackMediaHash, thumbnailHash: fallbackThumbnailHash };
+  }
+
   try {
-    if (item.mainTrailer) {
-      const trailer = item.mainTrailer;
-      const lineTrailerThumbnail = trailer.thumbnail;
-      if (lineTrailerThumbnail && lineTrailerThumbnail.type === 'VIDEO') {
-        return lineTrailerThumbnail.hash || null;
-      } else if (trailer.url && trailer.url.hash) {
-        const article = await getLINEArticle(trailer.url.hash);
-        return article.data.media.hash || null;
-      }
-    }
+    const article = await getLINEArticle(articleHash);
+    const media = article?.data?.media;
+    return {
+      articleHash,
+      mediaHash: media?.hash ?? fallbackMediaHash,
+      thumbnailHash: media?.thumbnailHash ?? fallbackThumbnailHash,
+    };
   } catch (error) {
     console.error(error);
   }
-  return null;
+  return { articleHash, mediaHash: fallbackMediaHash, thumbnailHash: fallbackThumbnailHash };
 }
