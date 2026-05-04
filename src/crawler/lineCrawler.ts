@@ -18,6 +18,28 @@ export async function getPlayingMovies(): Promise<LINEMovieResponse> {
   }
 }
 
+export async function getComingSoonMovies(startMonth: string, offset = 0, length = 100): Promise<LINEMovieResponse> {
+  try {
+    const params = new URLSearchParams({
+      offset: String(offset),
+      length: String(length),
+      country: 'tw',
+      startMonth,
+    });
+    const res = await fetch(`https://today.line.me/webapi/movie/comingsoon/listings/comingSoon?${params.toString()}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
+    const response: LINEMovieResponse = await res.json();
+    return response;
+  } catch (error) {
+    console.error('An error occurred:', error);
+    throw error;
+  }
+}
+
 export async function getLINEArticle(hash: string) {
   // https://today.line.me/webapi/portal/page/setting/article?country=tw&hash=1DODQOz&group=NA
   try {
@@ -46,33 +68,33 @@ export interface LINEMovieResponse {
 export interface LINEMovieItem {
   id: string;
   title: string;
-  thumbnail: {
+  thumbnail?: {
     type: string;
     hash: string;
-  };
-  url: {
+  } | null;
+  url?: {
     hash: string;
-  };
+  } | null;
   movieId: string;
-  movieGroupId: string;
+  movieGroupId?: string;
   engTitle: string;
   broadcastStatus: string;
   certificate: string;
   releaseDate: number;
-  rating: {
+  rating?: {
     totalScore: number;
     count: number;
     average: number;
-  };
-  genres: string[];
-  runtime: number;
+  } | null;
+  genres?: string[] | null;
+  runtime?: number | null;
   showtimeCount: number;
-  directors: string[];
-  cast: string[];
-  latestTrailer: {
+  directors?: string[] | null;
+  cast?: string[] | null;
+  latestTrailer?: {
     hash: string;
-  };
-  mainTrailer: {
+  } | null;
+  mainTrailer?: {
     id: string;
     title: string;
     publisher: string;
@@ -88,15 +110,15 @@ export interface LINEMovieItem {
     };
     ageLimit: boolean;
     categoryId: number;
-  };
-  bookable: boolean;
+  } | null;
+  bookable?: boolean;
   source: string;
-  likeCount: number;
-  badgeText: string;
-  shortDescription: string;
-  writers: string[];
-  production: string;
-  synopsis: string;
+  likeCount?: number | null;
+  badgeText?: string;
+  shortDescription?: string;
+  writers?: string[];
+  production?: string;
+  synopsis?: string;
   trailers: {
     id: string;
     title: string;
@@ -118,6 +140,6 @@ export interface LINEMovieItem {
     type: string;
     hash: string;
   }[];
-  commentSetting: string;
+  commentSetting?: string;
   manualTags: string[];
 }

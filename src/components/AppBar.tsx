@@ -38,7 +38,7 @@ const sortOptions: { label: string; value: SortKey }[] = [
   { label: '依 PTT 評分', value: 'ptt' },
 ];
 
-const sortableRoutes = ['/', '/upcoming', '/theater'];
+const sortableRoutes = ['/', '/theater'];
 
 type Suggestion = { value: string; text: string };
 
