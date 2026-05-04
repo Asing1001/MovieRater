@@ -9,6 +9,15 @@ npm run db:indexes
 
 `db:rename-movie-bases` is a one-time migration from the legacy collection name to `movieBases`; it is safe to rerun after migration.
 
+Test DB scripts on local Docker MongoDB before Atlas:
+
+```bash
+docker compose up -d mongodb
+DB_URL=mongodb://localhost:27018/movie-rater npm run db:indexes
+```
+
+Production DB changes should follow the pause/deploy/migrate/verify/resume workflow in [architecture.md](architecture.md).
+
 ```js
 db.schedules.createIndex({ lineMovieDbId: 1, date: 1 })
 db.schedules.createIndex({ lineTheaterId: 1, date: 1 })

@@ -41,6 +41,24 @@ Cloud Scheduler config lives in `terraform/gcp.tf`:
 
 Important mapping rule: schedule joins should use LINE ids (`lineTheaterId`, `lineMovieDbId`). Do not depend on theater/movie display names when an id exists.
 
+## DB Change Workflow
+
+Use local Docker MongoDB first for scripts and destructive/refactor migrations:
+
+```bash
+docker compose up -d mongodb
+DB_URL=mongodb://localhost:27018/movie-rater npm run <db-script>
+```
+
+Only run against Atlas during the production migration window. For collection renames or destructive index work:
+
+1. Pause Cloud Scheduler jobs in `asia-east1`.
+2. Deploy code that expects the new schema/collection.
+3. Run the DB migration script against Atlas.
+4. Run `npm run db:indexes`.
+5. Verify key live pages.
+6. Resume Scheduler.
+
 ## Pages
 
 - `/`: recent movies from cached movie data.
