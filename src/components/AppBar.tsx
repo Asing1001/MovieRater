@@ -23,6 +23,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SortIcon from '@mui/icons-material/Sort';
 import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
+import { announceClientNavigation } from '@/lib/navigationEvents';
 import { SortKey } from '@/lib/utils';
 
 const navItems = [
@@ -76,7 +77,9 @@ function SearchBar({ onClose }: { onClose: () => void }) {
   }, [query]);
 
   function selectSuggestion(s: Suggestion) {
-    router.push(`/movie/${s.value}`);
+    const href = `/movie/${s.value}`;
+    announceClientNavigation(href);
+    router.push(href);
     onClose();
   }
 

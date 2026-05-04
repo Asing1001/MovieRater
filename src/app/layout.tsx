@@ -3,9 +3,8 @@ import { Suspense } from 'react';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import AppBar from '@/components/AppBar';
 import AnalyticsAndAds from '@/components/AnalyticsAndAds';
+import NavigationLoadingBoundary from '@/components/NavigationLoadingBoundary';
 import Container from '@mui/material/Container';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -42,9 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AppBar />
           </Suspense>
           <Container maxWidth="md" sx={{ mt: 1, mb: 4 }}>
-            <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>}>
-              {children}
-            </Suspense>
+            <NavigationLoadingBoundary>{children}</NavigationLoadingBoundary>
           </Container>
         </ThemeRegistry>
       </body>
