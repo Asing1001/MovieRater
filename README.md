@@ -17,6 +17,12 @@ npm run build
 
 Dev server defaults to http://localhost:3000.
 
+Runtime configuration is intentionally small:
+
+- `DB_URL`: MongoDB connection string.
+- `OMDB_API_KEY`: OMDb API key for IMDb rating backfill.
+- `SCHEDULE_TASK_API_TOKEN`: shared token for `/api/tasks/*`.
+
 ## Architecture
 
 Read [doc/architecture.md](doc/architecture.md) first. It is the compact map for data flow, caching, Cloudflare behavior, and the App Router loading pattern.

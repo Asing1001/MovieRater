@@ -8,6 +8,9 @@ This is the doc to read before changing data flow, caching, routing, or crawlers
 - Hosted on Cloud Run behind Cloudflare.
 - MongoDB Atlas is the source of truth. Pages query MongoDB directly.
 - `src/instrumentation.ts` opens MongoDB and warms in-memory caches on server start; those caches help tasks, not page correctness.
+- Runtime env is limited to `DB_URL`, `OMDB_API_KEY`, and `SCHEDULE_TASK_API_TOKEN`; Cloud Run also sets `NODE_ENV=production`.
+- Cloud Run env, Cloud Scheduler, IAM, secrets, and domains are managed by Terraform. GitHub Actions builds and deploys container images only.
+- There is no Redis runtime dependency; cache state is process-local and MongoDB remains authoritative.
 
 ## Data Flow
 
