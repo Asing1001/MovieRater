@@ -28,11 +28,18 @@ MongoDB Atlas
          /api/tasks/line   → LINE crawler → upserts theaters + schedules
          /api/tasks/imdb   → IMDB ratings backfill → upserts yahooMovies
          /api/tasks/ptt    → PTT crawler → upserts pttArticles
+
+Cloudflare
+    │
+    └─ www.mvrater.com → Cloudflare Worker → Cloud Run origin
+         Worker normalizes Next.js App Router Vary headers and caches
+         cacheable HTML at the edge.
 ```
 
 ## Caching Strategy
 
 - **ISR (1 hour)**: `/theaters`, `/theater/[name]`, `/movie/[id]` — rendered from MongoDB on first request per revalidation window, then served from Next.js full-route cache. CDN can cache the response.
+- **Cloudflare edge cache**: `www.mvrater.com` is fronted by the Worker in `cloudflare/vary-fix-worker.js`. The Worker bypasses `/api/*`, non-GET requests, and RSC navigation requests, but caches normal HTML GET responses after normalizing `Vary` to `Accept-Encoding`. Origin `Cache-Control` from `next.config.ts` controls `s-maxage` and `stale-while-revalidate`, so a recently changed MongoDB row may still appear stale on the clean public URL while the edge or Next full-route cache refreshes. A cache-busting query string can verify origin behavior during debugging, but the public URL should be fixed by deploy, cache expiry, or explicit revalidation.
 - **In-memory cacheManager**: used only by scheduler tasks for fast lookups (movie by lineMovieDbId, schedules by theater, etc.). Lost on instance restart — does not affect page correctness.
 - **Cold starts**: Cloud Run scale-to-zero means the first request after idle starts a new instance (~2s). Pages query MongoDB directly so there is no warm-up penalty for users.
 
