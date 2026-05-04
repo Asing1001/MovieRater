@@ -1,7 +1,3 @@
-'use client';
-import { useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
@@ -10,17 +6,17 @@ import Article from '@/models/article';
 const tabLabels = ['好雷', '普雷', '負雷', '其他'];
 
 function ArticleList({ articles }: { articles: Article[] }) {
-  if (!articles.length) return <Typography sx={{ p: 2 }} color="text.secondary">無文章</Typography>;
+  if (!articles.length) return <Typography sx={{ mt: 0.75 }} color="text.secondary">無文章</Typography>;
   return (
-    <Box sx={{ p: 1 }}>
+    <Box component="ul" sx={{ mt: 0.75, mb: 0, pl: 2.5 }}>
       {articles.map((a, i) => (
-        <Box key={i} sx={{ mb: 0.5 }}>
+        <Box component="li" key={i} sx={{ mb: 0.5 }}>
           <Link
             href={a.url ?? '#'}
             target="_blank"
             rel="noopener"
             underline="hover"
-            sx={{ fontSize: '0.9rem', color: '#aaa' }}
+            sx={{ fontSize: '0.9rem', color: 'inherit' }}
           >
             {a.title}
           </Link>
@@ -38,23 +34,34 @@ export default function PttArticles({
   bad: Article[];
   other: Article[];
 }) {
-  const [tab, setTab] = useState(0);
   const groups = [good, normal, bad, other];
 
   return (
-    <Box sx={{ mt: 2, bgcolor: '#1a1a1a', color: 'white', borderRadius: 1 }}>
-      <Tabs
-        value={tab}
-        onChange={(_, v) => setTab(v)}
-        textColor="inherit"
-        indicatorColor="secondary"
-        variant="fullWidth"
-      >
-        {tabLabels.map((label, i) => (
-          <Tab key={i} label={`${label} (${groups[i].length})`} />
-        ))}
-      </Tabs>
-      <ArticleList articles={groups[tab]} />
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+        gap: 1.5,
+      }}
+    >
+      {tabLabels.map((label, i) => (
+        <Box
+          key={label}
+          sx={{
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 1,
+            p: 1.5,
+            bgcolor: 'background.paper',
+            minWidth: 0,
+          }}
+        >
+          <Typography variant="subtitle2" component="h3" fontWeight={800}>
+            {label} ({groups[i].length})
+          </Typography>
+          <ArticleList articles={groups[i]} />
+        </Box>
+      ))}
     </Box>
   );
 }
