@@ -8,13 +8,7 @@ import Schedule from '@/models/schedule';
 import { getArticlesByMovieBaseId } from '@/lib/articles';
 import { classifyArticle, serialize } from '@/lib/utils';
 import { cleanMovieSummary } from '@/lib/text';
-import {
-  lineImageUrl,
-  lineTrailerArticleHash,
-  lineTrailerArticleUrl,
-  lineTrailerVideoHash,
-  lineTrailerVideoUrl,
-} from '@/lib/lineTrailer';
+import { lineImageUrl, lineTrailerVideoHash, lineTrailerVideoUrl } from '@/lib/lineTrailer';
 import { buildMetadata, compactText, jsonLd, movieJsonLd, moviePath, movieTitle, posterImage } from '@/lib/seo';
 import Ratings from '@/components/Ratings';
 import PttArticles from '@/components/PttArticles';
@@ -29,33 +23,6 @@ import type { Metadata } from 'next';
 export const revalidate = 3600;
 
 type Props = { params: Promise<{ id: string }> };
-
-async function findLineTrailerArticleHash(lineMovieDbId?: string, lineMovieId?: string) {
-  if (!lineMovieDbId && !lineMovieId) return null;
-
-  try {
-    const res = await fetch(
-      'https://today.line.me/webapi/movie/incinemas/listings/inCinemas?offset=0&length=200&country=tw',
-      { next: { revalidate } }
-    );
-    if (!res.ok) return null;
-
-    const response = (await res.json()) as {
-      items?: Array<{
-        id?: string;
-        movieId?: string;
-        latestTrailer?: { hash?: string } | null;
-        mainTrailer?: { url?: { hash?: string } | null } | null;
-        trailers?: Array<{ url?: { hash?: string } | null }>;
-      }>;
-    };
-    const item = response.items?.find((movie) => movie.movieId === lineMovieDbId || movie.id === lineMovieId);
-    return item?.mainTrailer?.url?.hash ?? item?.latestTrailer?.hash ?? item?.trailers?.[0]?.url?.hash ?? null;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
 
 const fetchMovie = cache(async (id: string): Promise<Movie | null> => {
   await Mongo.openDbConnection();
@@ -110,9 +77,7 @@ const fetchMovie = cache(async (id: string): Promise<Movie | null> => {
   }
 
   const legacyTrailerVideoHash = lineTrailerVideoHash(raw);
-  if (!lineTrailerArticleHash(raw) && legacyTrailerVideoHash) {
-    const articleHash = await findLineTrailerArticleHash(raw.lineMovieDbId, raw.lineMovieId);
-    if (articleHash) raw.lineTrailerHash = articleHash;
+  if (legacyTrailerVideoHash) {
     if (!raw.lineTrailerMediaHash) raw.lineTrailerMediaHash = legacyTrailerVideoHash;
   }
 
@@ -153,10 +118,8 @@ export default async function MoviePage({ params }: Props) {
   const movie = classifyArticle({ ...raw, summary: cleanMovieSummary(raw.summary), relatedArticles: articles });
   const schema = movieJsonLd(movie, id);
   const posterUrl = movie.posterUrl?.replace('/w280', '/w644') ?? '';
-  const trailerUrl = lineTrailerArticleUrl(movie);
   const trailerVideoUrl = lineTrailerVideoUrl(movie);
   const trailerPosterUrl = lineImageUrl(movie.lineTrailerThumbnailHash);
-  const hasTrailer = Boolean(trailerUrl || trailerVideoUrl);
   const pttArticleCount = [
     movie.goodRateArticles,
     movie.normalRateArticles,
@@ -213,7 +176,7 @@ export default async function MoviePage({ params }: Props) {
           mb: 2,
         }}
       >
-        {hasTrailer && (
+        {trailerVideoUrl && (
           <Button component="a" href="#trailer" variant="outlined" size="small">
             預告
           </Button>
@@ -226,32 +189,23 @@ export default async function MoviePage({ params }: Props) {
         </Button>
       </Box>
 
-      {hasTrailer && (
+      {trailerVideoUrl && (
         <Paper
           component="section"
           id="trailer"
           variant="outlined"
-          sx={{ scrollMarginTop: 88, p: 2, mb: 3 }}
+          aria-label="預告"
+          sx={{ scrollMarginTop: 88, p: 0, mb: 3, overflow: 'hidden' }}
         >
-          <Typography variant="h6" component="h2" fontWeight={800} sx={{ mb: 0.75 }}>
-            預告
-          </Typography>
-          {trailerVideoUrl && (
-            <Box
-              component="video"
-              controls
-              preload="metadata"
-              poster={trailerPosterUrl ?? undefined}
-              sx={{ display: 'block', width: '100%', aspectRatio: '16 / 9', bgcolor: 'black', borderRadius: 1, mb: 1.5 }}
-            >
-              <source src={trailerVideoUrl} type="video/mp4" />
-            </Box>
-          )}
-          {trailerUrl && (
-            <Button component="a" href={trailerUrl} target="_blank" rel="noopener" variant="contained">
-              LINE TODAY
-            </Button>
-          )}
+          <Box
+            component="video"
+            controls
+            preload="metadata"
+            poster={trailerPosterUrl ?? undefined}
+            sx={{ display: 'block', width: '100%', aspectRatio: '16 / 9', bgcolor: 'black' }}
+          >
+            <source src={trailerVideoUrl} type="video/mp4" />
+          </Box>
         </Paper>
       )}
 
