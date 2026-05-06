@@ -3,11 +3,13 @@ export async function register() {
     const { Mongo } = await import('./data/db');
     const cacheManager = (await import('./data/cacheManager')).default;
     await Mongo.openDbConnection();
-    cacheManager.init().then(async () => {
+    await cacheManager.init();
+    // Best-effort post-boot refresh; the hourly scheduler is the source of truth.
+    (async () => {
       const { updateLineSchedules } = await import('./task/lineScheduleTask');
       await updateLineSchedules();
       await cacheManager.setMoviesSchedulesCache();
       await cacheManager.setTheatersCache();
-    }).catch(console.error);
+    })().catch(console.error);
   }
 }
