@@ -2,8 +2,7 @@ import * as cheerio from 'cheerio';
 import moment from 'moment';
 import Article from '../models/article';
 import PttPage from '../models/pttPage';
-import Movie from '../models/movie';
-import cacheManager from '../data/cacheManager';
+import MovieBase from '../models/movieBase';
 import isValideDate from '../helper/isValideDate';
 
 export async function getPttPage(index: number): Promise<PttPage> {
@@ -35,10 +34,9 @@ export async function getPttPage(index: number): Promise<PttPage> {
   };
 }
 
-export function findMovieBaseId(articleTitle: string, date: string): string | null {
-  const allMovies: Movie[] = cacheManager.get(cacheManager.All_MOVIES) ?? [];
+export function findMovieBaseId(articleTitle: string, date: string, movieBases: MovieBase[]): string | null {
   const articleDate = moment(date, 'YYYY/MM/DD');
-  const matched = allMovies.find((movie) => {
+  const matched = movieBases.find((movie) => {
     if (!movie.chineseTitle || movie.chineseTitle.length < 2) return false;
     if (!articleTitle.includes(movie.chineseTitle)) return false;
     const releaseDate = isValideDate(movie.releaseDate) ? moment(movie.releaseDate) : moment();
@@ -47,5 +45,5 @@ export function findMovieBaseId(articleTitle: string, date: string): string | nu
       releaseDate.clone().add(6, 'months')
     );
   });
-  return matched?.movieBaseId ?? null;
+  return matched?._id?.toHexString?.() ?? null;
 }

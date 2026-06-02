@@ -4,6 +4,7 @@ import { updateLINEMovies } from '@/task/lineTask';
 import cacheManager from '@/data/cacheManager';
 import { updateLineSchedules } from '@/task/lineScheduleTask';
 import { updateComingSoonMovies } from '@/task/comingSoonTask';
+import { linkPttArticlesForMovieBases, runMergeForMovieBases } from '@/task/mergeTask';
 import { authorizeTaskRequest } from '../auth';
 
 export async function POST(request: Request) {
@@ -11,7 +12,10 @@ export async function POST(request: Request) {
   if (unauthorized) return unauthorized;
 
   try {
-    await updateLINEMovies();
+    const lineMovies = await updateLINEMovies();
+    const linkedPttArticles = await linkPttArticlesForMovieBases(lineMovies);
+    const mergedMovies = await runMergeForMovieBases(lineMovies);
+    await cacheManager.refreshMoviesCache();
     let comingSoonCount = 0;
     let comingSoonError: string | undefined;
     try {
@@ -29,9 +33,10 @@ export async function POST(request: Request) {
     // Bust ISR cache so individual theater pages show fresh data immediately.
     // /theaters itself is force-dynamic; CDN edge cache is handled via Cache-Control.
     revalidatePath('/theater/[name]', 'page');
+    revalidatePath('/');
     revalidatePath('/upcoming');
     revalidatePath('/sitemap.xml');
-    return NextResponse.json({ ok: true, scheduleCount: count, comingSoonCount, comingSoonError });
+    return NextResponse.json({ ok: true, scheduleCount: count, mergedCount: mergedMovies.length, linkedPttArticles, comingSoonCount, comingSoonError });
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
   }

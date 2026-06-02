@@ -18,8 +18,15 @@ export async function updateLINEMovies() {
     },
     { concurrency: 10 }
   );
+  const lineMovieIds = movies.map((movie) => movie.lineMovieId).filter(Boolean);
+  const persistedMovies = lineMovieIds.length
+    ? await Mongo.db
+        .collection<MovieBase>(COLLECTIONS.movieBases)
+        .find({ lineMovieId: { $in: lineMovieIds } })
+        .toArray()
+    : [];
   console.log('Updated LINEMovies success.');
-  return movies;
+  return persistedMovies;
 }
 
 async function mapLineMovieToMovieBase(item: LINEMovieItem): Promise<MovieBase | null> {

@@ -26,10 +26,7 @@ export default class cacheManager {
   static THEATERS_BY_SCHEDULE_URL = 'theatersByScheduleUrl';
   static THEATERS_BY_LINE_THEATER_ID = 'theatersByLineTheaterId';
   static async init() {
-    const mergedDatas = await cacheManager.getMergedDatas();
-    cacheManager.set(cacheManager.All_MOVIES, mergedDatas);
-    cacheManager.setMovieLookupCache(mergedDatas);
-    cacheManager.setAllMoviesNamesCache(mergedDatas);
+    await cacheManager.refreshMoviesCache();
     await cacheManager.setTheatersCache();
     await cacheManager.setRecentMoviesCache();
     await cacheManager.setMoviesSchedulesCache();

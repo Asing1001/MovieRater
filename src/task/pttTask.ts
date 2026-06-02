@@ -2,29 +2,56 @@ import { getPttPage, findMovieBaseId } from '../crawler/pttCrawler';
 import { Mongo } from '../data/db';
 import { ObjectId } from 'mongodb';
 import Article from '../models/article';
+import MovieBase from '../models/movieBase';
 import PttPage from '../models/pttPage';
 import { COLLECTIONS } from '../data/collections';
+
+export interface PttUpdateResult {
+  counts: PttCount[];
+  movieBaseIds: string[];
+  articleCount: number;
+}
+
+interface PttCount {
+  _id: string;
+  pttGoodCount: number;
+  pttNormalCount: number;
+  pttBadCount: number;
+}
 
 export async function updatePttArticles(howManyPagePerTime) {
   const range = await getCurrentCrawlRange(howManyPagePerTime);
   const pttPages = await getRangePttPages(range);
-  updateMaxPttIndex(pttPages, range.startPttIndex);
+  await updateMaxPttIndex(pttPages, range.startPttIndex);
   const pttArticles: Article[] = ([] as Article[]).concat(
     ...pttPages.map(({ articles }) => articles)
   );
+  const movieBases = await Mongo.db
+    .collection<MovieBase>(COLLECTIONS.movieBases)
+    .find({
+      chineseTitle: { $exists: true, $ne: null },
+      releaseDate: { $exists: true, $ne: null },
+    })
+    .project({ _id: 1, chineseTitle: 1, releaseDate: 1 })
+    .toArray();
   const enriched = pttArticles.map((article) => ({
     ...article,
-    movieBaseId: findMovieBaseId(article.title ?? '', article.date ?? ''),
+    movieBaseId: findMovieBaseId(article.title ?? '', article.date ?? '', movieBases),
   }));
   await Promise.all(
     enriched.map((article) =>
       Mongo.updateDocument({ url: article.url }, article, COLLECTIONS.pttArticles)
     )
   );
+  const movieBaseIds = [...new Set(enriched.map((article) => article.movieBaseId).filter((id): id is string => Boolean(id)))];
 
-  // Aggregate counts from ALL pttArticles per movieBaseId and persist to DB
-  const countAgg = await Mongo.db.collection(COLLECTIONS.pttArticles).aggregate([
-    { $match: { movieBaseId: { $exists: true, $ne: null } } },
+  if (!movieBaseIds.length) {
+    return { counts: [], movieBaseIds: [], articleCount: enriched.length } satisfies PttUpdateResult;
+  }
+
+  // Aggregate counts only for movies touched by this crawl and persist to DB.
+  const countAgg = await Mongo.db.collection(COLLECTIONS.pttArticles).aggregate<PttCount>([
+    { $match: { movieBaseId: { $in: movieBaseIds } } },
     { $group: {
       _id: '$movieBaseId',
       pttGoodCount: { $sum: { $cond: [{ $or: [
@@ -48,7 +75,7 @@ export async function updatePttArticles(howManyPagePerTime) {
     console.log(`updatePttArticles: wrote counts for ${countAgg.length} movies`);
   }
 
-  return countAgg;
+  return { counts: countAgg, movieBaseIds, articleCount: enriched.length } satisfies PttUpdateResult;
 }
 
 const crawlerStatusFilter = { name: 'crawlerStatus' };
@@ -79,9 +106,9 @@ async function updateMaxPttIndex(pttPages: PttPage[], startPttIndex: number) {
   if (alreadyCrawlTheNewest) {
     const lastCrawlPttIndex =
       maxCrawledPttIndex - 100 > 0 ? maxCrawledPttIndex - 100 : 0;
-    Mongo.updateDocument(crawlerStatusFilter, { lastCrawlPttIndex }, COLLECTIONS.configs);
+    await Mongo.updateDocument(crawlerStatusFilter, { lastCrawlPttIndex }, COLLECTIONS.configs);
   } else {
-    Mongo.updateDocument(
+    await Mongo.updateDocument(
       crawlerStatusFilter,
       {
         maxPttIndex: Math.max(maxCrawledPttIndex, crawlerStatus.maxPttIndex),
