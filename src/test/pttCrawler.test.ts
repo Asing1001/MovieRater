@@ -1,27 +1,24 @@
 import { findMovieBaseId, getPttPage } from '../crawler/pttCrawler';
-import cacheManager from '../data/cacheManager';
 
 describe('pttCrawler', () => {
   describe('findMovieBaseId', () => {
-    beforeAll(() => {
-      cacheManager.set(cacheManager.All_MOVIES, [
-        {
-          movieBaseId: 'abc123',
-          chineseTitle: '羅根',
-          englishTitle: 'Logan',
-          releaseDate: '2017-02-28',
-        },
-        {
-          movieBaseId: 'def456',
-          chineseTitle: 'chineseTitle',
-          englishTitle: 'englishTitle',
-          releaseDate: '2013-02-28',
-        },
-      ]);
-    });
+    const movieBases = [
+      {
+        _id: { toHexString: () => 'abc123' },
+        chineseTitle: '羅根',
+        englishTitle: 'Logan',
+        releaseDate: '2017-02-28',
+      },
+      {
+        _id: { toHexString: () => 'def456' },
+        chineseTitle: 'chineseTitle',
+        englishTitle: 'englishTitle',
+        releaseDate: '2013-02-28',
+      },
+    ];
 
     it('should find the matching movieBaseId by chineseTitle within the release window', () => {
-      expect(findMovieBaseId('[普雷] 羅根 (原來還蠻血腥的)', '2017/03/14')).toBe('abc123');
+      expect(findMovieBaseId('[普雷] 羅根 (原來還蠻血腥的)', '2017/03/14', movieBases)).toBe('abc123');
     });
   });
 

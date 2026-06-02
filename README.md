@@ -45,6 +45,13 @@ Live crawler tests are opt-in:
 ENABLE_LIVE_CRAWLER_TESTS=true npm test
 ```
 
+Mongo integration tests use the local docker-compose MongoDB on port `27018`:
+
+```bash
+docker compose up -d mongodb
+npm run test:integration:mongo
+```
+
 MongoDB indexes: [doc/dbSetup.md](doc/dbSetup.md).
 
 ```bash
