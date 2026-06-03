@@ -35,15 +35,29 @@ function getPendingNavigation(href: string, currentPathname: string): PendingNav
 export default function NavigationLoadingBoundary({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [pendingNavigation, setPendingNavigation] = useState<PendingNavigation>(null);
+  const [showPendingNavigation, setShowPendingNavigation] = useState(false);
 
   useEffect(() => {
     setPendingNavigation(null);
+    setShowPendingNavigation(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!pendingNavigation) return;
-    const timeout = window.setTimeout(() => setPendingNavigation(null), 15000);
-    return () => window.clearTimeout(timeout);
+    if (!pendingNavigation) {
+      setShowPendingNavigation(false);
+      return;
+    }
+
+    const showTimeout = window.setTimeout(() => setShowPendingNavigation(true), 250);
+    const clearTimeout = window.setTimeout(() => {
+      setPendingNavigation(null);
+      setShowPendingNavigation(false);
+    }, 15000);
+
+    return () => {
+      window.clearTimeout(showTimeout);
+      window.clearTimeout(clearTimeout);
+    };
   }, [pendingNavigation]);
 
   useEffect(() => {
@@ -71,10 +85,10 @@ export default function NavigationLoadingBoundary({ children }: { children: Reac
     };
   }, []);
 
-  if (pendingNavigation === 'movie-list') return <MovieListPageSkeleton />;
-  if (pendingNavigation === 'movie') return <MoviePageSkeleton />;
-  if (pendingNavigation === 'theater') return <TheaterPageSkeleton />;
-  if (pendingNavigation === 'theaters') return <TheatersPageSkeleton />;
-  if (pendingNavigation === 'upcoming') return <UpcomingPageSkeleton />;
+  if (showPendingNavigation && pendingNavigation === 'movie-list') return <MovieListPageSkeleton />;
+  if (showPendingNavigation && pendingNavigation === 'movie') return <MoviePageSkeleton />;
+  if (showPendingNavigation && pendingNavigation === 'theater') return <TheaterPageSkeleton />;
+  if (showPendingNavigation && pendingNavigation === 'theaters') return <TheatersPageSkeleton />;
+  if (showPendingNavigation && pendingNavigation === 'upcoming') return <UpcomingPageSkeleton />;
   return children;
 }
