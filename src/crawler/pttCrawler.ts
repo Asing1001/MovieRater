@@ -34,6 +34,28 @@ export async function getPttPage(index: number): Promise<PttPage> {
   };
 }
 
+export async function getLatestPttIndex(): Promise<number> {
+  const response = await fetch('https://www.ptt.cc/bbs/movie/index.html');
+  const html = await response.text();
+  const $ = cheerio.load(html);
+  const previousPageHref = $('.action-bar a.btn.wide')
+    .map((_, el) => ({
+      href: $(el).attr('href'),
+      text: $(el).text(),
+    }))
+    .get()
+    .find(({ href, text }) => text.includes('上頁') && /\/bbs\/movie\/index\d+\.html/.test(href ?? ''))
+    ?.href;
+  const previousPageIndex = previousPageHref?.match(/index(\d+)\.html/)?.[1];
+
+  if (!previousPageIndex) {
+    const serverReturn = $('.bbs-screen.bbs-content').text() || `${response.status} - ${response.statusText}`;
+    throw new Error(`Can not detect latest ptt index, server return:${serverReturn}`);
+  }
+
+  return Number(previousPageIndex) + 1;
+}
+
 export function findMovieBaseId(articleTitle: string, date: string, movieBases: MovieBase[]): string | null {
   const articleDate = moment(date, 'YYYY/MM/DD');
   const matched = movieBases.find((movie) => {

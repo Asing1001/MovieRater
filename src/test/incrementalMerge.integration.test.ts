@@ -16,6 +16,7 @@ vi.mock('../crawler/pttCrawler', async (importOriginal) => {
         { title: '[閒聊] 不相關文章', url: `https://example.test/${index}-chat`, date: '2026/06/03' },
       ],
     })),
+    getLatestPttIndex: vi.fn(async () => 12),
   };
 });
 
