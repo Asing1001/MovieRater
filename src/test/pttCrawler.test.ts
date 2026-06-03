@@ -1,4 +1,4 @@
-import { findMovieBaseId, getPttPage } from '../crawler/pttCrawler';
+import { findMovieBaseId, getLatestPttIndex, getPttPage } from '../crawler/pttCrawler';
 
 describe('pttCrawler', () => {
   describe('findMovieBaseId', () => {
@@ -36,5 +36,27 @@ describe('pttCrawler', () => {
       const pttPage = await getPttPage(4000);
       expect(pttPage.articles.length).toBeGreaterThan(0);
     }, 5000);
+  });
+
+  describe('getLatestPttIndex', () => {
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('detects latest index from the previous-page link on PTT latest page', async () => {
+      vi.stubGlobal('fetch', vi.fn(async () => ({
+        text: async () => `
+          <div class="action-bar">
+            <a class="btn wide" href="/bbs/movie/index1.html">最舊</a>
+            <a class="btn wide" href="/bbs/movie/index11002.html">&lsaquo; 上頁</a>
+            <a class="btn wide disabled">下頁 &rsaquo;</a>
+          </div>
+        `,
+        status: 200,
+        statusText: 'OK',
+      })));
+
+      await expect(getLatestPttIndex()).resolves.toBe(11003);
+    });
   });
 });
