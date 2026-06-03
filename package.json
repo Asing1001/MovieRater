@@ -13,6 +13,7 @@
     "db:merge": "tsx scripts/runMerge.ts",
     "db:rename-movie-bases": "node scripts/renameYahooMoviesCollection.js",
     "test": "vitest run",
+    "test:e2e": "npm run build && playwright test",
     "test:integration:mongo": "INTEGRATION_MONGO_URL=mongodb://localhost:27018/movierater_incremental_integration vitest run src/test/incrementalMerge.integration.test.ts",
     "test:watch": "vitest"
   },
@@ -33,6 +34,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/cheerio": "^0.22.2",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
